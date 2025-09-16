@@ -1,0 +1,386 @@
+{
+ "actions": [],
+ "allow_copy": 0,
+ "allow_events_in_timeline": 0,
+ "allow_guest_to_view": 0,
+ "allow_import": 1,
+ "allow_rename": 0,
+ "autoname": "format:CA-{YYYY}-{MM}-{#####}",
+ "beta": 0,
+ "creation": "2025-09-10 22:37:36.000000",
+ "custom": 0,
+ "docstatus": 0,
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "ca_number",
+   "fieldtype": "Data",
+   "label": "CA Number",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "label": "Priority",
+   "options": "Low\nMedium\nHigh\nCritical",
+   "reqd": 1
+  },
+  {
+   "fieldname": "plant",
+   "fieldtype": "Link",
+   "label": "Plant",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "raised_by",
+   "fieldtype": "Link",
+   "label": "Raised By",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "raised_date",
+   "fieldtype": "Date",
+   "label": "Raised Date",
+   "reqd": 1
+  },
+  {
+   "default": "Open",
+   "fieldname": "ca_status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Open\nIn Progress\nPending Verification\nClosed\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "related_alert",
+   "fieldtype": "Link",
+   "label": "Related SPC Alert",
+   "options": "SPC Alert"
+  },
+  {
+   "fieldname": "workstation",
+   "fieldtype": "Link",
+   "label": "Workstation",
+   "options": "SPC Workstation"
+  },
+  {
+   "fieldname": "problem_details_section",
+   "fieldtype": "Section Break",
+   "label": "Problem Details"
+  },
+  {
+   "fieldname": "problem_description",
+   "fieldtype": "Text Editor",
+   "label": "Problem Description",
+   "reqd": 1
+  },
+  {
+   "fieldname": "problem_category",
+   "fieldtype": "Select",
+   "label": "Problem Category",
+   "options": "Quality Issue\nProcess Deviation\nEquipment Failure\nHuman Error\nMaterial Defect\nEnvironmental\nOther"
+  },
+  {
+   "fieldname": "impact_assessment",
+   "fieldtype": "Select",
+   "label": "Impact Assessment",
+   "options": "Low - Local impact\nMedium - Department impact\nHigh - Plant impact\nCritical - Company impact"
+  },
+  {
+   "fieldname": "column_break_16",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "occurrence_frequency",
+   "fieldtype": "Select",
+   "label": "Occurrence Frequency",
+   "options": "First Time\nOccasional\nFrequent\nContinuous"
+  },
+  {
+   "fieldname": "cost_impact",
+   "fieldtype": "Currency",
+   "label": "Estimated Cost Impact"
+  },
+  {
+   "fieldname": "customer_impact",
+   "fieldtype": "Select",
+   "label": "Customer Impact",
+   "options": "None\nPotential\nActual\nCritical"
+  },
+  {
+   "fieldname": "root_cause_analysis_section",
+   "fieldtype": "Section Break",
+   "label": "Root Cause Analysis"
+  },
+  {
+   "fieldname": "root_cause_analysis",
+   "fieldtype": "Text Editor",
+   "label": "Root Cause Analysis"
+  },
+  {
+   "fieldname": "analysis_method",
+   "fieldtype": "Select",
+   "label": "Analysis Method",
+   "options": "5 Why\nFishbone Diagram\nFault Tree\nPareto Analysis\nFMEA\nOther"
+  },
+  {
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "contributing_factors",
+   "fieldtype": "Table",
+   "label": "Contributing Factors",
+   "options": "SPC Corrective Action Factor"
+  },
+  {
+   "fieldname": "action_plan_section",
+   "fieldtype": "Section Break",
+   "label": "Action Plan"
+  },
+  {
+   "fieldname": "corrective_actions",
+   "fieldtype": "Table",
+   "label": "Corrective Actions",
+   "options": "SPC Corrective Action Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "preventive_actions",
+   "fieldtype": "Table",
+   "label": "Preventive Actions",
+   "options": "SPC Corrective Action Item"
+  },
+  {
+   "fieldname": "overall_responsible_person",
+   "fieldtype": "Link",
+   "label": "Overall Responsible Person",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_completion_date",
+   "fieldtype": "Date",
+   "label": "Target Completion Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "actual_completion_date",
+   "fieldtype": "Date",
+   "label": "Actual Completion Date"
+  },
+  {
+   "fieldname": "implementation_notes",
+   "fieldtype": "Text",
+   "label": "Implementation Notes"
+  },
+  {
+   "fieldname": "verification_section",
+   "fieldtype": "Section Break",
+   "label": "Verification"
+  },
+  {
+   "fieldname": "effectiveness_check",
+   "fieldtype": "Text Editor",
+   "label": "Effectiveness Check"
+  },
+  {
+   "fieldname": "verification_method",
+   "fieldtype": "Select",
+   "label": "Verification Method",
+   "options": "Data Analysis\nAudit\nInspection\nTesting\nMonitoring\nCustomer Feedback"
+  },
+  {
+   "fieldname": "verification_date",
+   "fieldtype": "Date",
+   "label": "Verification Date"
+  },
+  {
+   "fieldname": "verified_by",
+   "fieldtype": "Link",
+   "label": "Verified By",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_35",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "verification_results",
+   "fieldtype": "Select",
+   "label": "Verification Results",
+   "options": "Effective\nPartially Effective\nIneffective\nPending"
+  },
+  {
+   "fieldname": "follow_up_required",
+   "fieldtype": "Check",
+   "label": "Follow-up Required"
+  },
+  {
+   "fieldname": "follow_up_date",
+   "fieldtype": "Date",
+   "label": "Follow-up Date"
+  },
+  {
+   "fieldname": "closure_section",
+   "fieldtype": "Section Break",
+   "label": "Closure"
+  },
+  {
+   "fieldname": "closure_date",
+   "fieldtype": "Date",
+   "label": "Closure Date"
+  },
+  {
+   "fieldname": "closed_by",
+   "fieldtype": "Link",
+   "label": "Closed By",
+   "options": "User"
+  },
+  {
+   "fieldname": "closure_comments",
+   "fieldtype": "Text",
+   "label": "Closure Comments"
+  },
+  {
+   "fieldname": "column_break_42",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lessons_learned",
+   "fieldtype": "Text",
+   "label": "Lessons Learned"
+  },
+  {
+   "fieldname": "knowledge_sharing",
+   "fieldtype": "Check",
+   "label": "Knowledge Shared with Team"
+  },
+  {
+   "fieldname": "approval_section",
+   "fieldtype": "Section Break",
+   "label": "Approval"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "User"
+  },
+  {
+   "fieldname": "approval_date",
+   "fieldtype": "Date",
+   "label": "Approval Date"
+  },
+  {
+   "fieldname": "approval_comments",
+   "fieldtype": "Text",
+   "label": "Approval Comments"
+  }
+ ],
+ "has_web_view": 0,
+ "hide_heading": 0,
+ "hide_toolbar": 0,
+ "idx": 0,
+ "image_view": 0,
+ "in_create": 0,
+ "is_submittable": 1,
+ "issingle": 0,
+ "istable": 0,
+ "max_attachments": 0,
+ "modified": "2025-09-10 22:37:36.000000",
+ "modified_by": "Administrator",
+ "module": "SPC Quality Management",
+ "name": "SPC Corrective Action",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Quality Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Production Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Quality Engineer",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Production User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 0,
+ "read_only": 0,
+ "read_only_onload": 0,
+ "show_name_in_global_search": 0,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "title",
+ "track_changes": 1,
+ "track_seen": 0,
+ "track_views": 0,
+ "app": "amb_w_spc"
+}
