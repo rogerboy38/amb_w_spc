@@ -1,0 +1,105 @@
+MIT License
+
+Copyright (c) 2025 AMB_W_SPC Development Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMplied, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+
+This project incorporates statistical algorithms and methodologies that are
+based on industry-standard practices and may be subject to additional terms:
+
+1. Western Electric Rules: Implementation based on publicly available
+   statistical process control methodologies.
+
+2. Statistical Calculations: Process capability indices (Cp, Cpk, Pp, Ppk)
+   calculations follow standard statistical formulas and are not subject to
+   proprietary restrictions.
+
+3. FDA 21 CFR Part 11 Compliance: Implementation follows published FDA
+   guidelines and regulations, which are public domain.
+
+4. Quality Management Standards: Methodologies align with ISO 9001 and other
+   international quality standards.
+
+TRADEMARKS AND THIRD-PARTY NOTICES:
+
+- ERPNext is a trademark of Frappe Technologies Pvt. Ltd.
+- Frappe Framework is licensed under the MIT License
+- Six Sigma is a registered trademark of Motorola, Inc.
+- Statistical process control methodologies are based on work by Walter A.
+  Shewhart and other pioneers in the field
+
+DISCLAIMER:
+
+This software is designed to assist with statistical process control and
+quality management activities. While it implements FDA 21 CFR Part 11
+compliance features, users are responsible for:
+
+- Validating the system according to their specific regulatory requirements
+- Ensuring proper installation, configuration, and maintenance
+- Conducting appropriate validation studies and documentation
+- Maintaining backup and disaster recovery procedures
+- Training personnel on proper use of the system
+- Conducting periodic system reviews and audits
+
+The developers make no warranty regarding regulatory compliance or fitness
+for any specific regulatory environment. Users in regulated industries should
+consult with qualified validation specialists and regulatory experts to ensure
+the system meets their specific compliance requirements.
+
+DATA PRIVACY AND SECURITY:
+
+This software may process sensitive manufacturing and quality data. Users are
+responsible for:
+
+- Implementing appropriate access controls and user authentication
+- Ensuring data encryption in transit and at rest as required
+- Maintaining audit trails according to regulatory requirements
+- Implementing backup and disaster recovery procedures
+- Complying with applicable data privacy regulations (GDPR, CCPA, etc.)
+- Conducting security assessments and penetration testing as appropriate
+
+CONTRIBUTION GUIDELINES:
+
+Contributions to this project are welcome and encouraged. By contributing,
+you agree that your contributions will be licensed under the same MIT License.
+Contributors should:
+
+- Follow the established coding standards and documentation requirements
+- Include appropriate tests for new functionality
+- Ensure compliance with regulatory requirements where applicable
+- Provide clear documentation for new features or changes
+- Respect intellectual property rights of third parties
+
+SUPPORT AND MAINTENANCE:
+
+This software is provided "as is" without warranty. While the development
+team strives to maintain and improve the software, users should:
+
+- Maintain current backups of all data and configurations
+- Test updates in a non-production environment before deployment
+- Have qualified technical support available for critical deployments
+- Consider commercial support options for mission-critical applications
+
+For technical support, documentation, and updates, please visit:
+https://github.com/rogerboy38/amb_w_spc
+
+Version: 2.1.0
+Last Updated: September 17, 2025
