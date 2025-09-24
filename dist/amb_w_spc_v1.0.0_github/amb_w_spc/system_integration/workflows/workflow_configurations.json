@@ -1,0 +1,492 @@
+{
+  "workflows": {
+    "description": "Comprehensive workflow configurations for SPC system automation",
+    "version": "1.0",
+    "last_updated": "2025-09-10",
+    "workflow_definitions": {
+      "SPC Alert Workflow": {
+        "document_type": "SPC Alert",
+        "is_active": 1,
+        "workflow_name": "SPC Alert Workflow",
+        "states": [
+          {
+            "state": "Open",
+            "doc_status": 0,
+            "allow_edit": "Quality User, Inspector User",
+            "next_action_email_template": "SPC Alert - New Alert",
+            "message": "Alert has been created and requires attention"
+          },
+          {
+            "state": "Acknowledged",
+            "doc_status": 0,
+            "allow_edit": "Quality User, Inspector User",
+            "next_action_email_template": "",
+            "message": "Alert has been acknowledged"
+          },
+          {
+            "state": "Under Investigation",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "next_action_email_template": "",
+            "message": "Alert is being investigated"
+          },
+          {
+            "state": "Resolved",
+            "doc_status": 1,
+            "allow_edit": "Quality User",
+            "next_action_email_template": "",
+            "message": "Alert has been resolved"
+          },
+          {
+            "state": "Closed",
+            "doc_status": 1,
+            "allow_edit": "",
+            "next_action_email_template": "",
+            "message": "Alert has been closed"
+          },
+          {
+            "state": "Escalated",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "next_action_email_template": "SPC Alert - Escalation",
+            "message": "Alert has been escalated due to delay"
+          }
+        ],
+        "transitions": [
+          {
+            "state": "Open",
+            "action": "Acknowledge",
+            "next_state": "Acknowledged",
+            "allowed": "Quality User, Inspector User",
+            "condition": "doc.acknowledged_by"
+          },
+          {
+            "state": "Open",
+            "action": "Investigate",
+            "next_state": "Under Investigation",
+            "allowed": "Quality User",
+            "condition": "doc.severity == 'Critical'"
+          },
+          {
+            "state": "Open",
+            "action": "Escalate",
+            "next_state": "Escalated",
+            "allowed": "System",
+            "condition": "frappe.utils.time_diff_in_hours(frappe.utils.now(), doc.creation) > 24"
+          },
+          {
+            "state": "Acknowledged",
+            "action": "Close",
+            "next_state": "Closed",
+            "allowed": "Quality User, Inspector User",
+            "condition": "doc.resolution_notes"
+          },
+          {
+            "state": "Under Investigation",
+            "action": "Resolve",
+            "next_state": "Resolved",
+            "allowed": "Quality User",
+            "condition": "doc.investigation_notes and doc.root_cause"
+          },
+          {
+            "state": "Resolved",
+            "action": "Close",
+            "next_state": "Closed",
+            "allowed": "Quality User",
+            "condition": "doc.verification_notes"
+          },
+          {
+            "state": "Escalated",
+            "action": "Investigate",
+            "next_state": "Under Investigation",
+            "allowed": "Quality User",
+            "condition": ""
+          }
+        ]
+      },
+      "Process Capability Workflow": {
+        "document_type": "SPC Process Capability",
+        "is_active": 1,
+        "workflow_name": "Process Capability Workflow",
+        "states": [
+          {
+            "state": "Draft",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "message": "Process capability study is in draft"
+          },
+          {
+            "state": "In Progress",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "message": "Data collection in progress"
+          },
+          {
+            "state": "Completed",
+            "doc_status": 1,
+            "allow_edit": "Quality User",
+            "next_action_email_template": "Process Capability - Study Completed",
+            "message": "Study completed, awaiting approval"
+          },
+          {
+            "state": "Approved",
+            "doc_status": 1,
+            "allow_edit": "",
+            "message": "Process capability study approved"
+          },
+          {
+            "state": "On Hold",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "message": "Study is on hold"
+          }
+        ],
+        "transitions": [
+          {
+            "state": "Draft",
+            "action": "Start Study",
+            "next_state": "In Progress",
+            "allowed": "Quality User",
+            "condition": "doc.parameter and doc.workstation and doc.target_sample_size"
+          },
+          {
+            "state": "In Progress",
+            "action": "Complete",
+            "next_state": "Completed",
+            "allowed": "Quality User",
+            "condition": "doc.sample_size >= doc.target_sample_size and doc.cpk_value"
+          },
+          {
+            "state": "In Progress",
+            "action": "Hold",
+            "next_state": "On Hold",
+            "allowed": "Quality User",
+            "condition": ""
+          },
+          {
+            "state": "Completed",
+            "action": "Approve",
+            "next_state": "Approved",
+            "allowed": "Quality User",
+            "condition": "doc.reviewed_by"
+          },
+          {
+            "state": "On Hold",
+            "action": "Resume",
+            "next_state": "In Progress",
+            "allowed": "Quality User",
+            "condition": ""
+          }
+        ]
+      },
+      "Corrective Action Workflow": {
+        "document_type": "SPC Corrective Action",
+        "is_active": 1,
+        "workflow_name": "Corrective Action Workflow",
+        "states": [
+          {
+            "state": "Open",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "next_action_email_template": "Corrective Action - New CA",
+            "message": "Corrective action has been created"
+          },
+          {
+            "state": "In Progress",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "message": "Corrective action is in progress"
+          },
+          {
+            "state": "Completed",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "message": "Action items completed, pending verification"
+          },
+          {
+            "state": "Verified",
+            "doc_status": 1,
+            "allow_edit": "Quality User",
+            "message": "Corrective action verified as effective"
+          },
+          {
+            "state": "Closed",
+            "doc_status": 1,
+            "allow_edit": "",
+            "message": "Corrective action closed"
+          },
+          {
+            "state": "On Hold",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "message": "Corrective action on hold"
+          }
+        ],
+        "transitions": [
+          {
+            "state": "Open",
+            "action": "Start",
+            "next_state": "In Progress",
+            "allowed": "Quality User",
+            "condition": "doc.assigned_to and doc.due_date"
+          },
+          {
+            "state": "In Progress",
+            "action": "Complete",
+            "next_state": "Completed",
+            "allowed": "Quality User",
+            "condition": "doc.completion_notes"
+          },
+          {
+            "state": "In Progress",
+            "action": "Hold",
+            "next_state": "On Hold",
+            "allowed": "Quality User",
+            "condition": ""
+          },
+          {
+            "state": "Completed",
+            "action": "Verify",
+            "next_state": "Verified",
+            "allowed": "Quality User",
+            "condition": "doc.verification_notes and doc.verified_by"
+          },
+          {
+            "state": "Verified",
+            "action": "Close",
+            "next_state": "Closed",
+            "allowed": "Quality User",
+            "condition": "doc.effectiveness_verified == 1"
+          },
+          {
+            "state": "On Hold",
+            "action": "Resume",
+            "next_state": "In Progress",
+            "allowed": "Quality User",
+            "condition": ""
+          }
+        ]
+      },
+      "Deviation Workflow": {
+        "document_type": "SPC Deviation",
+        "is_active": 1,
+        "workflow_name": "Deviation Workflow",
+        "states": [
+          {
+            "state": "Open",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "message": "Deviation reported and under review"
+          },
+          {
+            "state": "Under Investigation",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "message": "Investigation team assigned"
+          },
+          {
+            "state": "Investigation Complete",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "message": "Investigation completed, determining CAPA requirement"
+          },
+          {
+            "state": "CAPA Required",
+            "doc_status": 0,
+            "allow_edit": "Quality User",
+            "message": "CAPA actions required"
+          },
+          {
+            "state": "No CAPA Required",
+            "doc_status": 1,
+            "allow_edit": "Quality User",
+            "message": "No CAPA actions required"
+          },
+          {
+            "state": "CAPA Complete",
+            "doc_status": 1,
+            "allow_edit": "Quality User",
+            "message": "All CAPA actions completed"
+          },
+          {
+            "state": "Closed",
+            "doc_status": 1,
+            "allow_edit": "",
+            "message": "Deviation closed"
+          }
+        ],
+        "transitions": [
+          {
+            "state": "Open",
+            "action": "Start Investigation",
+            "next_state": "Under Investigation",
+            "allowed": "Quality User",
+            "condition": "doc.team_members"
+          },
+          {
+            "state": "Under Investigation",
+            "action": "Complete Investigation",
+            "next_state": "Investigation Complete",
+            "allowed": "Quality User",
+            "condition": "doc.investigation_summary and doc.root_cause"
+          },
+          {
+            "state": "Investigation Complete",
+            "action": "CAPA Required",
+            "next_state": "CAPA Required",
+            "allowed": "Quality User",
+            "condition": "doc.capa_required == 1"
+          },
+          {
+            "state": "Investigation Complete",
+            "action": "No CAPA Required",
+            "next_state": "No CAPA Required",
+            "allowed": "Quality User",
+            "condition": "doc.capa_required == 0"
+          },
+          {
+            "state": "CAPA Required",
+            "action": "CAPA Complete",
+            "next_state": "CAPA Complete",
+            "allowed": "Quality User",
+            "condition": "doc.capa_effectiveness_verified == 1"
+          },
+          {
+            "state": "No CAPA Required",
+            "action": "Close",
+            "next_state": "Closed",
+            "allowed": "Quality User",
+            "condition": "doc.closure_approved_by"
+          },
+          {
+            "state": "CAPA Complete",
+            "action": "Close",
+            "next_state": "Closed",
+            "allowed": "Quality User",
+            "condition": "doc.closure_approved_by"
+          }
+        ]
+      }
+    },
+    "automation_rules": {
+      "description": "Automated workflow triggers and actions",
+      "rules": {
+        "auto_escalate_alerts": {
+          "document_type": "SPC Alert",
+          "trigger": "Time Based",
+          "condition": "doc.status == 'Open' and frappe.utils.time_diff_in_hours(frappe.utils.now(), doc.creation) > 24",
+          "action": "Change workflow state to 'Escalated'",
+          "frequency": "Hourly"
+        },
+        "auto_create_deviation": {
+          "document_type": "SPC Alert",
+          "trigger": "Field Change",
+          "condition": "doc.severity == 'Critical' and doc.status == 'Open'",
+          "action": "Create Deviation document",
+          "frequency": "Immediate"
+        },
+        "auto_assign_corrective_action": {
+          "document_type": "SPC Alert",
+          "trigger": "Workflow State",
+          "condition": "doc.workflow_state == 'Under Investigation'",
+          "action": "Create Corrective Action",
+          "frequency": "Immediate"
+        },
+        "auto_update_capability": {
+          "document_type": "SPC Data Point",
+          "trigger": "After Insert",
+          "condition": "doc.measurement_value and doc.specification",
+          "action": "Update Process Capability calculations",
+          "frequency": "Daily"
+        },
+        "auto_generate_reports": {
+          "document_type": "SPC Report",
+          "trigger": "Scheduled",
+          "condition": "doc.auto_generate == 1 and doc.next_generation_date <= frappe.utils.now()",
+          "action": "Generate and send SPC Report",
+          "frequency": "Hourly"
+        }
+      }
+    },
+    "notification_templates": {
+      "SPC Alert - New Alert": {
+        "subject": "[SPC Alert] New {{ doc.severity }} Alert - {{ doc.parameter }}",
+        "message": "A new {{ doc.severity.lower() }} SPC alert has been generated.\n\nDetails:\n- Parameter: {{ doc.parameter }}\n- Workstation: {{ doc.workstation }}\n- Value: {{ doc.measurement_value }}\n- Limit Violated: {{ doc.limit_violated }}\n- Deviation: {{ doc.deviation_amount }}\n\nPlease investigate and take appropriate action.\n\nAlert URL: {{ doc.get_url() }}",
+        "document_type": "SPC Alert",
+        "is_standard": 1,
+        "channel": "Email"
+      },
+      "SPC Alert - Escalation": {
+        "subject": "[SPC Alert ESCALATION] Unresolved {{ doc.severity }} Alert - {{ doc.parameter }}",
+        "message": "ESCALATION: The following SPC alert has not been resolved within the expected timeframe.\n\nAlert Details:\n- Parameter: {{ doc.parameter }}\n- Workstation: {{ doc.workstation }}\n- Created: {{ frappe.utils.format_datetime(doc.creation) }}\n- Current Status: {{ doc.status }}\n- Severity: {{ doc.severity }}\n\nImmediate attention required.\n\nAlert URL: {{ doc.get_url() }}",
+        "document_type": "SPC Alert",
+        "is_standard": 1,
+        "channel": "Email"
+      },
+      "Process Capability - Study Completed": {
+        "subject": "[Process Capability] Study Completed - {{ doc.parameter }}",
+        "message": "A process capability study has been completed.\n\nStudy Results:\n- Parameter: {{ doc.parameter }}\n- Workstation: {{ doc.workstation }}\n- Cp: {{ doc.cp_value }}\n- Cpk: {{ doc.cpk_value }}\n- Status: {{ doc.capability_status }}\n- Sample Size: {{ doc.sample_size }}\n\nPlease review and approve the study.\n\nStudy URL: {{ doc.get_url() }}",
+        "document_type": "SPC Process Capability",
+        "is_standard": 1,
+        "channel": "Email"
+      },
+      "Corrective Action - New CA": {
+        "subject": "[Corrective Action] New Action Required - {{ doc.title }}",
+        "message": "A new corrective action has been created and requires your attention.\n\nDetails:\n- Title: {{ doc.title }}\n- Related Alert: {{ doc.alert }}\n- Priority: {{ doc.priority }}\n- Assigned To: {{ doc.assigned_to }}\n- Due Date: {{ frappe.utils.format_date(doc.due_date) }}\n\nDescription:\n{{ doc.description }}\n\nAction URL: {{ doc.get_url() }}",
+        "document_type": "SPC Corrective Action",
+        "is_standard": 1,
+        "channel": "Email"
+      },
+      "Corrective Action - Due Reminder": {
+        "subject": "[REMINDER] Corrective Action Due - {{ doc.title }}",
+        "message": "REMINDER: The following corrective action is due for completion.\n\nDetails:\n- Title: {{ doc.title }}\n- Assigned To: {{ doc.assigned_to }}\n- Due Date: {{ frappe.utils.format_date(doc.due_date) }}\n- Status: {{ doc.status }}\n\nPlease complete the required actions or update the status.\n\nAction URL: {{ doc.get_url() }}",
+        "document_type": "SPC Corrective Action",
+        "is_standard": 1,
+        "channel": "Email"
+      },
+      "SPC Report - Auto Generated": {
+        "subject": "[SPC Report] Automated Report Generated - {{ doc.report_type }}",
+        "message": "An automated SPC report has been generated.\n\nReport Details:\n- Type: {{ doc.report_type }}\n- Plant: {{ doc.plant }}\n- Period: {{ doc.report_period }}\n- Generated: {{ frappe.utils.format_datetime(doc.creation) }}\n\nThe report is attached to this email.\n\nReport URL: {{ doc.get_url() }}",
+        "document_type": "SPC Report",
+        "is_standard": 1,
+        "channel": "Email",
+        "attach_print": 1
+      }
+    },
+    "scheduled_tasks": {
+      "description": "Background tasks for workflow automation",
+      "tasks": {
+        "process_alert_escalations": {
+          "frequency": "Hourly",
+          "function": "spc_system.automation.process_alert_escalations",
+          "description": "Check for alerts that need escalation"
+        },
+        "generate_scheduled_reports": {
+          "frequency": "Hourly",
+          "function": "spc_system.automation.generate_scheduled_reports",
+          "description": "Generate and send scheduled SPC reports"
+        },
+        "update_process_capability": {
+          "frequency": "Daily",
+          "function": "spc_system.automation.update_process_capability",
+          "description": "Update process capability calculations"
+        },
+        "cleanup_old_data": {
+          "frequency": "Daily",
+          "function": "spc_system.maintenance.cleanup_old_data",
+          "description": "Archive old audit trails and clean up expired tokens"
+        },
+        "send_due_reminders": {
+          "frequency": "Daily",
+          "function": "spc_system.automation.send_due_reminders",
+          "description": "Send reminders for overdue corrective actions"
+        },
+        "system_health_check": {
+          "frequency": "Daily",
+          "function": "spc_system.maintenance.system_health_check",
+          "description": "Perform system health checks and validation"
+        }
+      }
+    }
+  }
+}

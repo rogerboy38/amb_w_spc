@@ -1,0 +1,235 @@
+{
+ "actions": [],
+ "allow_copy": 0,
+ "allow_events_in_timeline": 0,
+ "allow_guest_to_view": 0,
+ "allow_import": 1,
+ "allow_rename": 0,
+ "autoname": "format:ALERT-{YYYY}-{MM}-{#####}",
+ "beta": 0,
+ "creation": "2025-09-10 22:37:36.000000",
+ "custom": 0,
+ "docstatus": 0,
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "alert_details_section",
+   "fieldtype": "Section Break",
+   "label": "Alert Details"
+  },
+  {
+   "fieldname": "alert_id",
+   "fieldtype": "Data",
+   "label": "Alert ID",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "default": "now",
+   "fieldname": "timestamp",
+   "fieldtype": "Datetime",
+   "label": "Timestamp",
+   "reqd": 1
+  },
+  {
+   "fieldname": "plant",
+   "fieldtype": "Link",
+   "label": "Plant",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "workstation",
+   "fieldtype": "Link",
+   "label": "Workstation",
+   "options": "SPC Workstation",
+   "reqd": 1
+  },
+  {
+   "fieldname": "parameter",
+   "fieldtype": "Data",
+   "label": "Parameter",
+   "reqd": 1
+  },
+  {
+   "fieldname": "alert_type",
+   "fieldtype": "Select",
+   "label": "Alert Type",
+   "options": "Out of Control\nTrend\nShift\nRun",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "severity_level",
+   "fieldtype": "Select",
+   "label": "Severity Level",
+   "options": "Low\nMedium\nHigh\nCritical",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rule_violated",
+   "fieldtype": "Select",
+   "label": "Rule Violated (Western Electric)",
+   "options": "Rule 1: One point beyond 3σ\nRule 2: Nine points on one side of centerline\nRule 3: Six consecutive points increasing/decreasing\nRule 4: Fourteen consecutive points alternating\nRule 5: Two out of three points beyond 2σ\nRule 6: Four out of five points beyond 1σ\nRule 7: Fifteen consecutive points within 1σ\nRule 8: Eight consecutive points beyond 1σ"
+  },
+  {
+   "fieldname": "consecutive_points",
+   "fieldtype": "Int",
+   "label": "Consecutive Points"
+  },
+  {
+   "fieldname": "trend_direction",
+   "fieldtype": "Select",
+   "label": "Trend Direction",
+   "options": "Increasing\nDecreasing\nStable\nOscillating"
+  },
+  {
+   "fieldname": "response_section",
+   "fieldtype": "Section Break",
+   "label": "Response Details"
+  },
+  {
+   "fieldname": "acknowledged_by",
+   "fieldtype": "Link",
+   "label": "Acknowledged By",
+   "options": "User"
+  },
+  {
+   "fieldname": "acknowledged_time",
+   "fieldtype": "Datetime",
+   "label": "Acknowledged Time"
+  },
+  {
+   "default": "0",
+   "fieldname": "response_required",
+   "fieldtype": "Check",
+   "label": "Response Required"
+  },
+  {
+   "fieldname": "escalation_level",
+   "fieldtype": "Select",
+   "label": "Escalation Level",
+   "options": "Level 1 - Operator\nLevel 2 - Supervisor\nLevel 3 - Manager\nLevel 4 - Plant Manager"
+  },
+  {
+   "fieldname": "column_break_16",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Open",
+   "fieldname": "alert_status",
+   "fieldtype": "Select",
+   "label": "Alert Status",
+   "options": "Open\nAcknowledged\nInvestigating\nResolved",
+   "reqd": 1
+  },
+  {
+   "fieldname": "resolution_time",
+   "fieldtype": "Datetime",
+   "label": "Resolution Time"
+  },
+  {
+   "fieldname": "resolution_notes",
+   "fieldtype": "Text",
+   "label": "Resolution Notes"
+  },
+  {
+   "fieldname": "notifications_section",
+   "fieldtype": "Section Break",
+   "label": "Notifications"
+  },
+  {
+   "default": "0",
+   "fieldname": "email_sent",
+   "fieldtype": "Check",
+   "label": "Email Sent"
+  },
+  {
+   "default": "0",
+   "fieldname": "sms_sent",
+   "fieldtype": "Check",
+   "label": "SMS Sent"
+  },
+  {
+   "default": "0",
+   "fieldname": "dashboard_notification",
+   "fieldtype": "Check",
+   "label": "Dashboard Notification"
+  },
+  {
+   "fieldname": "notification_recipients",
+   "fieldtype": "Table",
+   "label": "Notification Recipients",
+   "options": "SPC Alert Recipient"
+  }
+ ],
+ "has_web_view": 0,
+ "hide_heading": 0,
+ "hide_toolbar": 0,
+ "idx": 0,
+ "image_view": 0,
+ "in_create": 0,
+ "is_submittable": 1,
+ "issingle": 0,
+ "istable": 0,
+ "max_attachments": 0,
+ "modified": "2025-09-10 22:37:36.000000",
+ "modified_by": "Administrator",
+ "module": "SPC Quality Management",
+ "name": "SPC Alert",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Quality Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Production Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Production User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "read_only": 0,
+ "read_only_onload": 0,
+ "show_name_in_global_search": 0,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "alert_id",
+ "track_changes": 1,
+ "track_seen": 0,
+ "track_views": 0,
+ "app": "amb_w_spc"
+}

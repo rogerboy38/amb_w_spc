@@ -1,0 +1,10 @@
+Manufacturing Operations
+Operator Management
+Real Time Monitoring
+Sensor Management
+Shop Floor Control
+Core SPC
+SPC Quality Management
+FDA Compliance
+Plant Equipment
+System Integration
