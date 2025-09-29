@@ -21,6 +21,6 @@
  "send_system_notification": 1,
  "sender_email": "quality@company.com",
  "subject": "🚨 SPC Alert: {{ doc.alert_type }} - {{ doc.parameter }} ({{ doc.plant }})",
- "module": "SPC Quality Management",
+ "module": "spc_quality_management",
  "app": "amb_w_spc"
 }

@@ -1,10 +1,8 @@
-Manufacturing Operations
-Operator Management
-Real Time Monitoring
-Sensor Management
-Shop Floor Control
 Core SPC
-SPC Quality Management
+Manufacturing Operations
 FDA Compliance
 Plant Equipment
+SPC Quality Management
 System Integration
+Batch Management
+

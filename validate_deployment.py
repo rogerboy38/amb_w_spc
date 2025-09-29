@@ -112,7 +112,7 @@ class DeploymentValidator:
         if os.path.exists(app_dir):
             # Check core modules
             core_modules = [
-                'core_spc', 'manufacturing_operations', 'shop_floor_control',
+                'core_spc', 'sfc_manufacturing', 'shop_floor_control',
                 'operator_management', 'sensor_management', 'real_time_monitoring',
                 'spc_quality_management', 'fda_compliance', 'plant_equipment',
                 'system_integration'

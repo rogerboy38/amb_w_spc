@@ -1,7 +1,7 @@
 {
  "doctype": "DocType",
  "name": "SPC Deviation",
- "module": "FDA Compliance",
+ "module": "fda_compliance",
  "custom": 1,
  "is_submittable": 1,
  "track_changes": 1,

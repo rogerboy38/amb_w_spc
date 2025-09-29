@@ -352,7 +352,7 @@
  "max_attachments": 0,
  "modified": "2025-09-10 03:38:54.000000",
  "modified_by": "Administrator",
- "module": "Plant Equipment",
+ "module": "plant_equipment",
  "name": "PLC Parameter Mapping",
  "owner": "Administrator",
  "permissions": [],

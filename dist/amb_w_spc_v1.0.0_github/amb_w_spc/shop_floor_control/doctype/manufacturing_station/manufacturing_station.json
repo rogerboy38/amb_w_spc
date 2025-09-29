@@ -288,7 +288,7 @@
  "links": [],
  "modified": "2025-09-18 03:31:01",
  "modified_by": "Administrator",
- "module": "Shop Floor Control",
+ "module": "shop_floor_control",
  "name": "Manufacturing Station",
  "naming_rule": "By fieldname",
  "owner": "Administrator",

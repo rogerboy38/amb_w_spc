@@ -276,7 +276,7 @@
  "links": [],
  "modified": "2025-09-18 03:31:01",
  "modified_by": "Administrator",
- "module": "Sensor Management",
+ "module": "sensor_management",
  "name": "Sensor Configuration",
  "naming_rule": "By fieldname",
  "owner": "Administrator",

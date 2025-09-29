@@ -89,6 +89,6 @@
  ],
  "workflow_name": "Process Capability Workflow",
  "workflow_state_field": "study_status",
- "module": "SPC Quality Management",
+ "module": "spc_quality_management",
  "app": "amb_w_spc"
 }

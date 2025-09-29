@@ -86,25 +86,7 @@ app_license = "mit"
 # ------------
 
 # before_install = "amb_w_spc.install.before_install"
-
-# In hooks.py - use this format instead
-'''
-fixtures = [
-    {
-        "dt": "Workflow Action", 
-        "filters": [
-            ["name", "in", [
-                "Start Work", "Submit for Verification", "Verify and Close",
-                "Return for Rework", "Cancel", "Acknowledge", "Start Investigation",
-                "Resolve", "Escalate", "Start Study", "Complete Study", "Approve",
-                "Reject", "Revise"
-            ]]
-        ]
-    }
-]
-'''
-# Installation
-after_install = "amb_w_spc.post_install.after_install"
+after_install = "amb_w_spc.post_install.run"
 
 # Uninstallation
 # ------------

@@ -24,6 +24,6 @@
  "send_system_notification": 1,
  "sender_email": "quality@company.com",
  "subject": "📋 New Corrective Action: {{ doc.title }} - {{ doc.priority }} Priority",
- "module": "SPC Quality Management",
+ "module": "spc_quality_management",
  "app": "amb_w_spc"
 }

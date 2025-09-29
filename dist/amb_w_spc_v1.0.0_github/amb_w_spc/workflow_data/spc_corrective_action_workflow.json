@@ -89,6 +89,6 @@
  ],
  "workflow_name": "Corrective Action Workflow",
  "workflow_state_field": "ca_status",
- "module": "SPC Quality Management",
+ "module": "spc_quality_management",
  "app": "amb_w_spc"
 }

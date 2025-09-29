@@ -22,6 +22,6 @@
  "sender_email": "quality@company.com",
  "subject": "📊 Process Capability Study Completed: {{ doc.parameter }}",
  "value_changed": "study_status",
- "module": "SPC Quality Management",
+ "module": "spc_quality_management",
  "app": "amb_w_spc"
 }

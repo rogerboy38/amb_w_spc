@@ -1,7 +1,7 @@
 {
  "doctype": "DocType",
  "name": "SPC Batch Deviation",
- "module": "FDA Compliance",
+ "module": "fda_compliance",
  "custom": 1,
  "istable": 1,
  "track_changes": 1,

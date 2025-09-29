@@ -60,7 +60,7 @@
  "max_attachments": 0,
  "modified": "2025-09-10 22:37:36.000000",
  "modified_by": "Administrator",
- "module": "SPC Quality Management",
+ "module": "spc_quality_management",
  "name": "SPC Report Recipient",
  "owner": "Administrator",
  "permissions": [],

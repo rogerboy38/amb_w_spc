@@ -22,6 +22,6 @@
  "sender_email": "quality@company.com",
  "subject": "📈 SPC Report Available: {{ doc.report_name }}",
  "value_changed": "generation_status",
- "module": "SPC Quality Management",
+ "module": "spc_quality_management",
  "app": "amb_w_spc"
 }

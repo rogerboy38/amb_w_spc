@@ -26,6 +26,6 @@
  "send_system_notification": 1,
  "sender_email": "quality@company.com",
  "subject": "⏰ Corrective Action Due Soon: {{ doc.title }}",
- "module": "SPC Quality Management",
+ "module": "spc_quality_management",
  "app": "amb_w_spc"
 }

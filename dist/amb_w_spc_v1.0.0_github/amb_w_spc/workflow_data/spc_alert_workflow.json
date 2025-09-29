@@ -74,6 +74,6 @@
  ],
  "workflow_name": "SPC Alert Workflow",
  "workflow_state_field": "alert_status",
- "module": "SPC Quality Management",
+ "module": "spc_quality_management",
  "app": "amb_w_spc"
 }

@@ -25,6 +25,6 @@
  "sender_email": "quality@company.com",
  "subject": "⚠️ SPC Alert Escalation: {{ doc.parameter }} - {{ doc.severity_level }} Priority",
  "value_changed": "alert_status",
- "module": "SPC Quality Management",
+ "module": "spc_quality_management",
  "app": "amb_w_spc"
 }
