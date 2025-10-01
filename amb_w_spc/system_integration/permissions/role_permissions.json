@@ -1,0 +1,161 @@
+{
+  "permission_structure": {
+    "description": "Comprehensive role-based permission matrix for SPC ERPNext system",
+    "version": "1.0",
+    "last_updated": "2025-09-10",
+    "roles": {
+      "Quality User": {
+        "description": "Quality engineers and managers with full quality system access",
+        "user_type": "System User",
+        "permissions": {
+          "Plant Configuration": {
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "import": 1,
+            "if_owner": 0,
+            "select": 1,
+            "email": 1,
+            "print": 1,
+            "share": 1
+          },
+          "SPC Data Point": {
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 1,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "import": 1,
+            "if_owner": 0,
+            "select": 1,
+            "email": 1,
+            "print": 1,
+            "share": 1
+          },
+          "SPC Alert": {
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "import": 0,
+            "if_owner": 0,
+            "select": 1,
+            "email": 1,
+            "print": 1,
+            "share": 1
+          },
+          "Electronic Signature": {
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0,
+            "report": 1,
+            "export": 1,
+            "import": 0,
+            "if_owner": 0,
+            "select": 1,
+            "email": 1,
+            "print": 1,
+            "share": 0
+          }
+        }
+      },
+      "Inspector User": {
+        "description": "Quality inspectors and technicians with data entry access",
+        "permissions": {
+          "SPC Data Point": {
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 1,
+            "if_owner": 1
+          },
+          "SPC Alert": {
+            "read": 1,
+            "write": 1,
+            "if_owner": 1
+          }
+        }
+      },
+      "Manufacturing User": {
+        "description": "Production operators with workstation data access",
+        "permissions": {
+          "SPC Data Point": {
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "if_owner": 1
+          }
+        }
+      },
+      "Warehouse Bot User": {
+        "description": "Automated warehouse systems",
+        "permissions": {
+          "SPC Data Point": {
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "if_owner": 1
+          }
+        },
+        "api_restrictions": {
+          "rate_limit": "60/minute",
+          "allowed_doctypes": ["SPC Data Point"]
+        }
+      },
+      "Workstation Bot User": {
+        "description": "Manufacturing equipment integration",
+        "permissions": {
+          "SPC Data Point": {
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "if_owner": 1
+          },
+          "PLC Integration": {
+            "read": 1,
+            "write": 1,
+            "if_owner": 1
+          }
+        },
+        "api_restrictions": {
+          "rate_limit": "120/minute"
+        }
+      },
+      "Weight Bot User": {
+        "description": "Automated weighing systems",
+        "permissions": {
+          "SPC Data Point": {
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "if_owner": 1
+          }
+        },
+        "api_restrictions": {
+          "rate_limit": "30/minute",
+          "parameter_filter": "parameter_type = 'Weight'"
+        }
+      }
+    }
+  }
+}

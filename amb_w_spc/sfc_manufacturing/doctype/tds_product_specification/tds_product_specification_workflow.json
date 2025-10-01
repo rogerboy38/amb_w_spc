@@ -1,0 +1,143 @@
+{
+    "workflow_name": "TDS Product Specification Workflow",
+    "document_type": "TDS Product Specification",
+    "is_active": 1,
+    "override_status": 0,
+    "send_email_alert": 1,
+    "workflow_state_field": "workflow_state",
+    "states": [
+        {
+            "state": "Draft",
+            "doc_status": 0,
+            "update_field": "status",
+            "update_value": "Draft",
+            "allow_edit": "RND Manager"
+        },
+        {
+            "state": "Pending Sales",
+            "doc_status": 0,
+            "update_field": "status",
+            "update_value": "Pending Sales Approval",
+            "allow_edit": "Sales Manager"
+        },
+        {
+            "state": "Pending Quality",
+            "doc_status": 0,
+            "update_field": "status",
+            "update_value": "Pending Quality Approval",
+            "allow_edit": "Quality Manager"
+        },
+        {
+            "state": "Pending Director",
+            "doc_status": 0,
+            "update_field": "status",
+            "update_value": "Pending Director Approval",
+            "allow_edit": "Marketing Manager,Quality Manager"
+        },
+        {
+            "state": "Approved",
+            "doc_status": 1,
+            "update_field": "status",
+            "update_value": "Approved",
+            "allow_edit": "Quality Manager"
+        },
+        {
+            "state": "Frozen",
+            "doc_status": 0,
+            "update_field": "status",
+            "update_value": "Frozen",
+            "allow_edit": "RND Manager"
+        },
+        {
+            "state": "Rejected",
+            "doc_status": 0,
+            "update_field": "status",
+            "update_value": "Rejected",
+            "allow_edit": "RND Manager"
+        }
+    ],
+    "transitions": [
+        {
+            "state": "Draft",
+            "action": "Submit for Sales Approval",
+            "next_state": "Pending Sales",
+            "allowed": "RND Manager",
+            "allow_self_approval": 1,
+            "condition": "doc.product_item"
+        },
+        {
+            "state": "Pending Sales",
+            "action": "Approve (Sales)",
+            "next_state": "Pending Quality",
+            "allowed": "Sales Manager",
+            "allow_self_approval": 0,
+            "condition": "doc.tds_settings"
+        },
+        {
+            "state": "Pending Sales",
+            "action": "Reject",
+            "next_state": "Draft",
+            "allowed": "Sales Manager",
+            "allow_self_approval": 0
+        },
+        {
+            "state": "Pending Quality",
+            "action": "Approve (Quality)",
+            "next_state": "Pending Director",
+            "allowed": "Quality Manager",
+            "allow_self_approval": 0,
+            "condition": "doc.item_quality_inspection_parameter"
+        },
+        {
+            "state": "Pending Quality",
+            "action": "Approve (Final)",
+            "next_state": "Approved",
+            "allowed": "Quality Manager",
+            "allow_self_approval": 0,
+            "condition": "doc.approval_date"
+        },
+        {
+            "state": "Pending Quality",
+            "action": "Reject",
+            "next_state": "Draft",
+            "allowed": "Quality Manager",
+            "allow_self_approval": 0
+        },
+        {
+            "state": "Pending Director",
+            "action": "Approve",
+            "next_state": "Approved",
+            "allowed": "Marketing Manager,Quality Manager",
+            "allow_self_approval": 0,
+            "condition": "doc.approval_date"
+        },
+        {
+            "state": "Pending Director",
+            "action": "Reject",
+            "next_state": "Pending Quality",
+            "allowed": "Marketing Manager,Quality Manager",
+            "allow_self_approval": 0
+        },
+        {
+            "state": "Approved",
+            "action": "Freeze",
+            "next_state": "Frozen",
+            "allowed": "RND Manager",
+            "allow_self_approval": 0
+        },
+        {
+            "state": "Approved",
+            "action": "Amend",
+            "next_state": "Draft",
+            "allowed": "RND Manager",
+            "allow_self_approval": 1
+        },
+        {
+            "state": "Frozen",
+            "action": "Unfreeze",
+            "next_state": "Approved",
+            "allowed": "RND Manager",
+            "allow_self_approval": 1
+        }
+    ]
+}

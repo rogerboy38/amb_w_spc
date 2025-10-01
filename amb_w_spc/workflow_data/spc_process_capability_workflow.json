@@ -1,0 +1,94 @@
+{
+ "creation": "2025-09-10 22:37:36.000000",
+ "doctype": "Workflow",
+ "document_type": "SPC Process Capability",
+ "is_active": 0,
+ "modified": "2025-09-10 22:37:36.000000",
+ "modified_by": "Administrator",
+ "name": "SPC Process Capability Workflow",
+ "owner": "Administrator",
+ "send_email_alert": 1,
+ "states": [
+  {
+   "allow_edit": "Quality Engineer",
+   "doc_status": "0",
+   "state": "Draft",
+   "update_field": "study_status",
+   "update_value": "Draft"
+  },
+  {
+   "allow_edit": "Quality Engineer",
+   "doc_status": "0",
+   "state": "In Progress",
+   "update_field": "study_status",
+   "update_value": "In Progress"
+  },
+  {
+   "allow_edit": "Quality Engineer",
+   "doc_status": "0",
+   "state": "Completed",
+   "update_field": "study_status",
+   "update_value": "Completed"
+  },
+  {
+   "allow_edit": "Quality Manager",
+   "doc_status": "1",
+   "state": "Approved",
+   "update_field": "study_status",
+   "update_value": "Approved"
+  },
+  {
+   "allow_edit": "Quality Manager",
+   "doc_status": "2",
+   "state": "Rejected",
+   "update_field": "study_status",
+   "update_value": "Rejected"
+  }
+ ],
+ "transitions": [
+  {
+   "action": "Start Study",
+   "allowed": "Quality Engineer",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "In Progress",
+   "state": "Draft"
+  },
+  {
+   "action": "Complete Study",
+   "allowed": "Quality Engineer",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "Completed",
+   "state": "In Progress"
+  },
+  {
+   "action": "Approve",
+   "allowed": "Quality Manager",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "Approved",
+   "state": "Completed"
+  },
+  {
+   "action": "Reject",
+   "allowed": "Quality Manager",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "Rejected",
+   "state": "Completed"
+  },
+  {
+   "action": "Revise",
+   "allowed": "Quality Engineer",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "In Progress",
+   "state": "Rejected"
+  }
+ ],
+ "workflow_name": "Process Capability Workflow",
+ "workflow_state_field": "study_status",
+ "module": "spc_quality_management",
+ "app": "amb_w_spc"
+}

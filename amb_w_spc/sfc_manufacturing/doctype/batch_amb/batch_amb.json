@@ -1,0 +1,376 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:batch_code",
+ "creation": "2025-09-22 13:31:36.000000",
+ "default_view": "Tree",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_info_section",
+  "batch_code",
+  "batch_name",
+  "parent_batch_amb",
+  "is_group",
+  "column_break_5",
+  "custom_batch_level",
+  "current_plant",
+  "target_plant",
+  "quality_status",
+  "manufacturing_section",
+  "work_order_reference",
+  "item_code",
+  "item_name",
+  "column_break_11",
+  "quantity",
+  "uom",
+  "total_weight",
+  "net_weight",
+  "container_weight_section",
+  "gross_weight",
+  "tare_weight",
+  "packaging_type",
+  "column_break_17",
+  "container_serial",
+  "barrel_count",
+  "scanning_level",
+  "barcode_data",
+  "tracking_section",
+  "batch_status",
+  "created_date",
+  "expiry_date",
+  "column_break_24",
+  "last_modified_by",
+  "last_modified_date",
+  "coa_reference",
+  "history_section",
+  "batch_processing_history",
+  "tree_details_section",
+  "lft",
+  "rgt",
+  "old_parent"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_info_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Information"
+  },
+  {
+   "fieldname": "batch_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_tree_view": 1,
+   "label": "Batch Code",
+   "unique": 1
+  },
+  {
+   "fieldname": "batch_name",
+   "fieldtype": "Data",
+   "in_tree_view": 1,
+   "label": "Batch Name"
+  },
+  {
+   "fieldname": "parent_batch_amb",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_tree_view": 1,
+   "label": "Parent Batch",
+   "options": "Batch AMB"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "in_tree_view": 1,
+   "label": "Is Group"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "custom_batch_level",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_tree_view": 1,
+   "label": "Batch Level",
+   "options": "1\n2\n3\n4",
+   "reqd": 1
+  },
+  {
+   "fieldname": "current_plant",
+   "fieldtype": "Select",
+   "in_tree_view": 1,
+   "label": "Current Plant",
+   "options": "Mix Plant\nDry Plant\nJuice Plant\nLaboratory\nFormulated Plant"
+  },
+  {
+   "fieldname": "target_plant",
+   "fieldtype": "Select",
+   "label": "Target Plant",
+   "options": "Mix Plant\nDry Plant\nJuice Plant\nLaboratory\nFormulated Plant"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "quality_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_tree_view": 1,
+   "label": "Quality Status",
+   "options": "Pending\nPassed\nFailed\nHold"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "manufacturing_section",
+   "fieldtype": "Section Break",
+   "label": "Manufacturing Details"
+  },
+  {
+   "fieldname": "work_order_reference",
+   "fieldtype": "Link",
+   "label": "Work Order Reference",
+   "options": "Work Order"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fetch_from": "item_code.item_name",
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_11",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "label": "Quantity",
+   "precision": "3"
+  },
+  {
+   "fetch_from": "item_code.stock_uom",
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "UOM",
+   "options": "UOM",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_weight",
+   "fieldtype": "Float",
+   "label": "Total Weight (kg)",
+   "precision": "3"
+  },
+  {
+   "fieldname": "net_weight",
+   "fieldtype": "Float",
+   "label": "Net Weight (kg)",
+   "precision": "3",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "container_weight_section",
+   "fieldtype": "Section Break",
+   "label": "Container & Weight Management"
+  },
+  {
+   "fieldname": "gross_weight",
+   "fieldtype": "Float",
+   "label": "Gross Weight (kg)",
+   "precision": "3"
+  },
+  {
+   "fieldname": "tare_weight",
+   "fieldtype": "Float",
+   "label": "Tare Weight (kg)",
+   "precision": "3"
+  },
+  {
+   "fieldname": "packaging_type",
+   "fieldtype": "Link",
+   "label": "Packaging Type",
+   "options": "Item"
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "container_serial",
+   "fieldtype": "Data",
+   "label": "Container Serial Number"
+  },
+  {
+   "fieldname": "barrel_count",
+   "fieldtype": "Int",
+   "label": "Barrel Count"
+  },
+  {
+   "default": "4",
+   "fieldname": "scanning_level",
+   "fieldtype": "Select",
+   "label": "Scanning Level",
+   "options": "1\n2\n3\n4"
+  },
+  {
+   "fieldname": "barcode_data",
+   "fieldtype": "Data",
+   "label": "Barcode Data (CODE-39)"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "tracking_section",
+   "fieldtype": "Section Break",
+   "label": "Status & Tracking"
+  },
+  {
+   "default": "Active",
+   "fieldname": "batch_status",
+   "fieldtype": "Select",
+   "in_tree_view": 1,
+   "label": "Batch Status",
+   "options": "Active\nInactive\nTransferred\nConsumed\nExpired"
+  },
+  {
+   "default": "Today",
+   "fieldname": "created_date",
+   "fieldtype": "Date",
+   "label": "Created Date"
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "label": "Expiry Date"
+  },
+  {
+   "fieldname": "column_break_24",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_modified_by",
+   "fieldtype": "Data",
+   "label": "Last Modified By",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_modified_date",
+   "fieldtype": "Datetime",
+   "label": "Last Modified Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "coa_reference",
+   "fieldtype": "Link",
+   "label": "COA Reference",
+   "options": "COA AMB"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "history_section",
+   "fieldtype": "Section Break",
+   "label": "Processing History"
+  },
+  {
+   "fieldname": "batch_processing_history",
+   "fieldtype": "Table",
+   "label": "Batch Processing History",
+   "options": "Batch Processing History"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:!doc.__islocal",
+   "fieldname": "tree_details_section",
+   "fieldtype": "Section Break",
+   "label": "Tree Details"
+  },
+  {
+   "fieldname": "lft",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Left",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rgt",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Right",
+   "read_only": 1
+  },
+  {
+   "fieldname": "old_parent",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Old Parent"
+  }
+ ],
+ "icon": "fa fa-sitemap",
+ "idx": 1,
+ "in_create": 1,
+ "is_tree": 1,
+ "links": [],
+ "modified": "2025-09-22 13:31:36.000000",
+ "modified_by": "Administrator",
+ "module": "sfc_manufacturing",
+ "name": "Batch AMB",
+ "nsm_parent_field": "parent_batch_amb",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Manufacturing Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Manufacturing User",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "batch_code,batch_name,quality_status,current_plant",
+ "sort_field": "lft",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "batch_name",
+ "track_changes": 1,
+ "tree_meta": {
+  "parent_field": "parent_batch_amb",
+  "title_field": "batch_name"
+ }
+}

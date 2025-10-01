@@ -1,0 +1,83 @@
+{
+ "creation": "2025-09-10 03:38:53",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "email",
+  "column_break_3",
+  "alert_method",
+  "phone_number",
+  "section_break_6",
+  "alert_types",
+  "priority_level"
+ ],
+ "fields": [
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User / Usuario",
+   "options": "User",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email / Correo Electrónico",
+   "options": "Email",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "alert_method",
+   "fieldtype": "Select",
+   "label": "Alert Method / Método de Alerta",
+   "options": "Email\nSMS\nPush Notification\nAll Methods",
+   "default": "Email",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "phone_number",
+   "fieldtype": "Data",
+   "label": "Phone Number / Número de Teléfono",
+   "depends_on": "eval:doc.alert_method.includes('SMS')"
+  },
+  {
+   "fieldname": "section_break_6",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "alert_types",
+   "fieldtype": "Table MultiSelect",
+   "label": "Alert Types / Tipos de Alerta",
+   "options": "Out of Control\nOut of Specification\nTrend Alert\nCapability Alert\nSystem Alert",
+   "reqd": 1
+  },
+  {
+   "fieldname": "priority_level",
+   "fieldtype": "Select",
+   "label": "Priority Level / Nivel de Prioridad",
+   "options": "Critical\nHigh\nNormal\nLow",
+   "default": "Normal",
+   "reqd": 1
+  }
+ ],
+ "idx": 1,
+ "istable": 1,
+ "modified": "2025-09-10 03:38:53",
+ "modified_by": "Administrator",
+ "module": "core_spc",
+ "name": "SPC Alert Recipient",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "app": "amb_w_spc"
+}
