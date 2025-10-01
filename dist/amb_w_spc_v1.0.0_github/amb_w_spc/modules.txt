@@ -1,6 +1,9 @@
-Core SPC
-FDA Compliance
-Plant Equipment
-SPC Quality Management
-System Integration
-
+core_spc
+spc_quality_management
+sfc_manufacturing
+shop_floor_control
+plant_equipment
+real_time_monitoring
+sensor_management
+system_integration
+fda_compliance
