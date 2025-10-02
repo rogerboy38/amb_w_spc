@@ -1,319 +1,111 @@
-# AMB W SPC - Advanced Manufacturing Business with Statistical Process Control
+# AMB W SPC - Advanced Manufacturing & Statistical Process Control
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Frappe Framework](https://img.shields.io/badge/Frappe-v15.0+-blue.svg)](https://frappeframework.com)
-[![ERPNext](https://img.shields.io/badge/ERPNext-v15.0+-green.svg)](https://erpnext.com)
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+**Version:** 1.0.1  
+**Compatibility:** ERPNext v15+ (includes Frappe v15.84.0+ compatibility fix)  
+**License:** MIT
 
-## 🎯 Overview
+## Overview
 
-**AMB W SPC** is a comprehensive Frappe/ERPNext application designed for modern manufacturing environments, providing advanced Statistical Process Control (SPC), Shop Floor Control (SFC), and real-time manufacturing operations management.
+AMB W SPC is a comprehensive ERPNext application designed for advanced manufacturing environments. It integrates Statistical Process Control (SPC), Shop Floor Control (SFC), and real-time manufacturing operations management.
 
-### 🏭 Key Features
+## Key Features
 
-- **📊 Statistical Process Control (SPC)**
-  - Real-time control charts and process monitoring
-  - Automated alert generation and escalation
-  - Process capability analysis (Cp, Cpk calculations)
-  - Trend analysis and predictive insights
+- **Real-time Control Charts:** Monitor process parameters with live statistical analysis
+- **Production Monitoring:** Track work orders, equipment status, and operator performance
+- **IoT Device Integration:** Connect sensors and PLCs for automated data collection
+- **Quality Management:** FDA-compliant tools including audit trails and electronic signatures
+- **Shop Floor Control:** Comprehensive SFC functionality for production management
+- **Plant Equipment Management:** Track and monitor manufacturing equipment
 
-- **🏗️ Shop Floor Control (SFC)**
-  - Real-time production monitoring
-  - Work order routing and operations tracking
-  - Equipment status monitoring
-  - Operator management and skill tracking
+## Installation
 
-- **📡 Real-Time Data Integration**
-  - Sensor data collection and processing
-  - IoT device integration
-  - Live dashboard updates
-  - Automated data archiving
+### Frappe Cloud Installation
 
-- **👨‍🔧 Operator Management**
-  - Skill-based work assignments
-  - Attendance tracking
-  - Performance monitoring
-  - Training management
+This version includes automatic fixes for Frappe v15.84.0 installation issues.
 
-- **🔍 Quality Management**
-  - FDA compliance tools
-  - Deviation management (CAPA)
-  - Electronic signatures
-  - Audit trail maintenance
+1. **Upload to your Frappe Cloud:**
+   ```bash
+   # Option 1: Upload via web interface
+   # - Go to your Frappe Cloud dashboard
+   # - Upload the amb_w_spc folder
+   
+   # Option 2: Git deployment
+   git clone [your-repo-url]
+   cd frappe-bench
+   bench get-app [your-repo-url]
+   ```
 
-- **⚙️ Manufacturing Operations**
-  - Station-based OEE calculations
-  - Production scheduling
-  - Material tracking
-  - Maintenance management
+2. **Install the app:**
+   ```bash
+   bench --site [your-site] install-app amb_w_spc
+   ```
 
-## 🚀 Quick Start
+3. **Verification:**
+   ```bash
+   bench --site [your-site] console
+   ```
+   ```python
+   # In the console:
+   from amb_w_spc.install import check_installation
+   check_installation()
+   ```
 
-### Prerequisites
-
-- **Frappe Framework**: v15.0 or higher
-- **ERPNext**: v15.0 or higher  
-- **Python**: 3.8 or higher
-- **Node.js**: 16 or higher
-- **MariaDB**: 10.5 or higher
-
-### 📦 Installation
-
-#### Method 1: Using Frappe Bench (Recommended)
+### Local Development Installation
 
 ```bash
-# 1. Navigate to your frappe-bench directory
-cd /path/to/frappe-bench
+# Get the app
+bench get-app [repo-url]
 
-# 2. Get the app from GitHub
-bench get-app https://github.com/your-username/amb_w_spc.git
+# Install on your site
+bench --site [site-name] install-app amb_w_spc
 
-# 3. Install the app on your site
-bench --site your-site-name install-app amb_w_spc
-
-# 4. Restart bench
-bench restart
+# Start development
+bench start
 ```
 
-#### Method 2: Manual Installation
+## Compatibility Notes
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/your-username/amb_w_spc.git
-cd amb_w_spc
+### Frappe v15.84.0 Fix
 
-# 2. Install dependencies
-pip install -r requirements.txt
+This version automatically handles the known module installation bug in Frappe v15.84.0 where the installer tries to use v16 database field names on a v15 schema.
 
-# 3. Copy to your Frappe apps directory
-cp -r . /path/to/frappe-bench/apps/amb_w_spc
+**Automatic Fix Included:**
+- ✅ Patch-based module creation
+- ✅ Multiple fallback methods
+- ✅ Comprehensive error handling
+- ✅ Detailed logging for troubleshooting
 
-# 4. Install using bench
-cd /path/to/frappe-bench
-bench --site your-site-name install-app amb_w_spc
-```
+## Modules
 
-#### Method 3: Production Deployment
+The application includes 10 specialized modules:
 
-```bash
-# Download the latest release
-wget https://github.com/your-username/amb_w_spc/releases/latest/download/amb_w_spc_production.tar.gz
+1. **core_spc** - Core SPC functionality
+2. **spc_quality_management** - Quality management tools
+3. **sfc_manufacturing** - Shop floor control
+4. **operator_management** - Operator tracking and management
+5. **shop_floor_control** - Production line control
+6. **plant_equipment** - Equipment management
+7. **real_time_monitoring** - Live data monitoring
+8. **sensor_management** - IoT sensor integration
+9. **system_integration** - System integration tools
+10. **fda_compliance** - FDA compliance features
 
-# Extract and install
-tar -xzf amb_w_spc_production.tar.gz
-cd amb_w_spc
-bash install.sh
-```
+## Support
 
-### ⚡ Quick Setup
+For issues related to:
+- **Installation:** Check the automatic compatibility patches
+- **Frappe Cloud:** All fixes are designed to work without shell access
+- **Development:** Standard ERPNext development practices apply
 
-After installation, run the setup wizard:
+## License
 
-```bash
-# Initialize the system
-bench --site your-site-name execute amb_w_spc.system_integration.installation.install_spc_system.setup_system
+MIT License - see LICENSE file for details.
 
-# Create sample data (optional)
-bench --site your-site-name execute amb_w_spc.fixtures.create_sample_data
-```
+## Version History
 
-## 📖 Documentation
-
-### 🏗️ Architecture
-
-The application is organized into the following modules:
-
-| Module | Purpose | Key Features |
-|--------|---------|-------------|
-| **Core SPC** | Statistical Process Control engine | Control charts, alerts, data analysis |
-| **Manufacturing Operations** | Production management | Work orders, routing, scheduling |
-| **Shop Floor Control** | Real-time floor management | Station monitoring, equipment tracking |
-| **Operator Management** | Workforce management | Skills, attendance, assignments |
-| **Sensor Management** | IoT integration | Data collection, sensor configuration |
-| **Real Time Monitoring** | Live dashboards | Alerts, notifications, status updates |
-| **Quality Management** | Quality assurance | CAPA, deviations, compliance |
-| **FDA Compliance** | Regulatory compliance | Audit trails, electronic signatures |
-| **Plant Equipment** | Equipment management | Maintenance, calibration, configuration |
-| **System Integration** | Integration tools | APIs, workflows, permissions |
-
-### 🔧 Configuration
-
-#### Initial Setup
-
-1. **Configure Manufacturing Stations**
-   ```
-   Manufacturing > Setup > Manufacturing Station
-   ```
-
-2. **Setup SPC Parameters**
-   ```
-   Quality > SPC Setup > SPC Parameter Master
-   ```
-
-3. **Configure Sensors** (if using IoT)
-   ```
-   Manufacturing > Sensor Management > Sensor Configuration
-   ```
-
-4. **Setup Operators**
-   ```
-   Manufacturing > Operator Management > SFC Operator
-   ```
-
-#### Advanced Configuration
-
-- **Scheduler Settings**: Customize background job frequencies in `hooks.py`
-- **Alert Thresholds**: Configure in SPC Parameter Control Limits
-- **Workflow Customization**: Modify in System Integration > Workflows
-
-### 📊 Usage Examples
-
-#### Creating SPC Control Charts
-
-```python
-# Example: Create a control chart for a process parameter
-frappe.get_doc({
-    "doctype": "SPC Control Chart",
-    "parameter": "Temperature",
-    "chart_type": "X-Bar R",
-    "upper_control_limit": 75.0,
-    "lower_control_limit": 65.0,
-    "target_value": 70.0
-}).insert()
-```
-
-#### Real-time Data Collection
-
-```python
-# Example: Log sensor data
-frappe.get_doc({
-    "doctype": "SPC Data Point",
-    "parameter": "Temperature",
-    "value": 72.5,
-    "timestamp": frappe.utils.now(),
-    "station": "Station-001"
-}).insert()
-```
-
-## 🛠️ Development
-
-### Setting up Development Environment
-
-```bash
-# 1. Fork and clone the repository
-git clone https://github.com/your-username/amb_w_spc.git
-cd amb_w_spc
-
-# 2. Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate  # Windows
-
-# 3. Install development dependencies
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-
-# 4. Install pre-commit hooks
-pre-commit install
-```
-
-### Running Tests
-
-```bash
-# Run all tests
-bench --site test_site run-tests --app amb_w_spc
-
-# Run specific test
-bench --site test_site run-tests --app amb_w_spc --module amb_w_spc.tests.test_spc
-
-# Run with coverage
-bench --site test_site run-tests --app amb_w_spc --coverage
-```
-
-### Building for Production
-
-```bash
-# Create production build
-python setup.py sdist bdist_wheel
-
-# Create distribution package
-bash create_distribution.sh
-```
-
-## 🔧 API Reference
-
-### REST API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/resource/SPC Data Point` | GET/POST | Manage SPC data points |
-| `/api/resource/SFC Operator` | GET/POST | Operator management |
-| `/api/resource/Manufacturing Station` | GET/POST | Station configuration |
-| `/api/method/amb_w_spc.api.get_live_data` | GET | Real-time dashboard data |
-| `/api/method/amb_w_spc.api.trigger_alert` | POST | Manual alert triggering |
-
-### WebSocket Events
-
-- `sensor_data_update`: Real-time sensor data
-- `station_status_change`: Manufacturing station updates  
-- `new_alert`: SPC alert notifications
-- `operator_checkin`: Operator status changes
-
-## 🔒 Security
-
-- All API endpoints require authentication
-- Role-based access control (RBAC)
-- Audit trail for all transactions
-- Electronic signature support for FDA compliance
-- Data encryption for sensitive information
-
-## 📈 Performance
-
-- **Database Optimization**: Indexed queries for real-time performance
-- **Caching**: Redis-based caching for frequently accessed data
-- **Background Jobs**: Async processing for heavy operations
-- **Data Archiving**: Automated cleanup of historical data
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-### 📋 Development Guidelines
-
-1. **Code Style**: Follow PEP 8 for Python, Frappe conventions for JavaScript
-2. **Testing**: Write tests for all new features
-3. **Documentation**: Update documentation for any changes
-4. **Commit Messages**: Use conventional commit format
-
-### 🐛 Bug Reports
-
-Please use the [GitHub Issues](https://github.com/your-username/amb_w_spc/issues) page to report bugs.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-- **Documentation**: [Wiki](https://github.com/your-username/amb_w_spc/wiki)
-- **Community**: [Discussions](https://github.com/your-username/amb_w_spc/discussions)
-- **Issues**: [GitHub Issues](https://github.com/your-username/amb_w_spc/issues)
-- **Email**: support@ambsystems.com
-
-## 🎉 Acknowledgments
-
-- Built on the excellent [Frappe Framework](https://frappeframework.com)
-- Inspired by modern manufacturing best practices
-- Thanks to all contributors and the open-source community
-
----
-
-**Made with ❤️ for the Manufacturing Community**
-
-## 📊 Statistics
-
-- **15 Modules**: Comprehensive manufacturing coverage
-- **49 DocTypes**: Extensive data model
-- **132 Python Files**: Robust backend logic
-- **Real-time Processing**: Live data updates
-- **FDA Compliant**: Regulatory ready
+### v1.0.1
+- ✅ Fixed Frappe v15.84.0 installation compatibility
+- ✅ Added automatic patch system
+- ✅ Enhanced error handling and logging
+- ✅ Multiple installation fallback methods
+- ✅ Frappe Cloud deployment ready
