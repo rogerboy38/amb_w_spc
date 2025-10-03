@@ -1,452 +1,612 @@
 import frappe
 from frappe.model.document import Document
-from frappe.utils import nowdate, now_datetime, cint
 from frappe import _
-from frappe.utils.nestedset import NestedSet
+from frappe.utils import nowdate, now_datetime
 
-class BatchAMB(NestedSet):
+class BatchAMB(Document):
     def validate(self):
-        """Validate the document before saving"""
-        self.validate_batch_code()
-        self.calculate_weights()
-        self.update_tree_fields()
-        self.set_default_dates()
-        self.validate_quality_status()
-        self.update_tracking_fields()
-        super(BatchAMB, self).validate()
+        self.validate_batch_hierarchy()
+        self.validate_container_data()
+        self.calculate_totals()
+        self.auto_generate_batch_code()
+        self.validate_erpnext_integration()
+        self.sync_erpnext_fields()
+        self.validate_fda_compliance()
+        self.validate_batch_hierarchy_integrity()
         
     def before_save(self):
-        """Executed before saving the document"""
-        self.generate_barcode_data()
-        self.update_batch_hierarchy_level()
+        # Set workflow state if not set
+        if not self.workflow_state:
+            self.workflow_state = "Draft"
+            
+    def after_insert(self):
+        """Create related records after insert"""
+        self.create_erpnext_batch()
+        self.create_spc_batch_record()
+        self.create_batch_processing_history()
         
     def on_update(self):
-        """Executed after saving the document"""
-        super(BatchAMB, self).on_update()
-        self.create_processing_history()
-        self.update_parent_batch_totals()
-        
-    def on_trash(self):
-        """Executed when document is trashed"""
-        super(BatchAMB, self).on_trash()
-        
-    def before_submit(self):
-        """Executed before submitting the document"""
-        self.validate_batch_for_submission()
+        """Sync with related records on update"""
+        self.sync_erpnext_batch()
+        self.update_processing_history()
+        self.sync_spc_parameters()
         
     def on_submit(self):
-        """Executed after submitting the document"""
-        self.update_batch_status("Active")
-        self.create_batch_transition_record()
+        """Handle batch submission"""
+        self.validate_batch_completeness()
+        self.create_integration_records()
+        self.create_batch_processing_history_entry("Batch Submitted")
         
-    def on_cancel(self):
-        """Executed when document is cancelled"""
-        self.update_batch_status("Cancelled")
-        self.reverse_parent_batch_totals()
+    # ========== ENHANCED INTEGRATION METHODS ==========
+    
+    def validate_batch_completeness(self):
+        """Validate batch is complete before submission"""
+        if self.custom_batch_level == "1":
+            if not self.manufacturing_date:
+                frappe.throw(_("Manufacturing Date is required for Level 1 batches"))
+            if not self.expiry_date:
+                frappe.throw(_("Expiry Date is required for Level 1 batches"))
         
-    def validate_batch_code(self):
-        """Ensure batch code is unique and follows naming convention"""
-        if not self.batch_code:
-            frappe.throw(_("Batch Code is required"))
+        if self.custom_batch_level == "3" and not self.container_barrels:
+            frappe.throw(_("Container barrels are required for Level 3 batches"))
             
-        if self.batch_code:
+        # Validate SPC requirements for Level 1 batches
+        if self.custom_batch_level == "1" and self.spc_batch_record:
+            spc_record = frappe.get_doc("SPC Batch Record", self.spc_batch_record)
+            if spc_record.batch_status in ["Rejected", "Hold"]:
+                frappe.throw(_("Cannot submit batch with SPC status: {0}").format(spc_record.batch_status))
+
+    def create_integration_records(self):
+        """Create all integration records on submit"""
+        # Create ERPNext Batch for Level 1 if not exists
+        if self.custom_batch_level == "1" and not self.erpnext_batch_reference:
+            self.create_erpnext_batch()
+        
+        # Create SPC Record for Level 1 if not exists
+        if self.custom_batch_level == "1" and not self.spc_batch_record:
+            self.create_spc_batch_record()
+        
+        # Update all linked records
+        self.sync_all_systems()
+
+    def sync_all_systems(self):
+        """Sync all integrated systems"""
+        self.sync_erpnext_batch()
+        self.sync_spc_parameters()
+        self.update_batch_quantity()
+
+    def validate_batch_hierarchy_integrity(self):
+        """Validate and maintain batch hierarchy integrity"""
+        if self.custom_batch_level == "1":
+            # Level 1 batches should not have parent
+            if self.parent_batch_amb:
+                frappe.throw(_("Level 1 batches cannot have a parent batch"))
+        else:
+            # Sublots must have parent
+            if not self.parent_batch_amb:
+                frappe.throw(_("Parent Batch AMB is required for level {0} batches").format(
+                    self.custom_batch_level))
+            
+            # Validate parent exists and is correct level
+            if not frappe.db.exists("Batch AMB", self.parent_batch_amb):
+                frappe.throw(_("Parent Batch AMB {0} does not exist").format(self.parent_batch_amb))
+            
+            parent_level = frappe.db.get_value("Batch AMB", self.parent_batch_amb, "custom_batch_level")
+            if parent_level and int(parent_level) != int(self.custom_batch_level) - 1:
+                frappe.throw(_("Parent batch must be level {0} for this level {1} batch").format(
+                    int(self.custom_batch_level) - 1, self.custom_batch_level))
+
+    def sync_spc_parameters(self):
+        """Sync SPC parameters between systems"""
+        if not self.spc_batch_record:
+            return
+            
+        try:
+            from amb_w_spc.sfc_manufacturing.integration.batch_amb_integration import BatchAMBIntegration
+            BatchAMBIntegration.sync_spc_parameters(self)
+        except Exception as e:
+            frappe.log_error(f"Error syncing SPC parameters: {str(e)}")
+
+    def update_batch_quantity(self):
+        """Update batch quantity from integrated systems"""
+        try:
+            from amb_w_spc.sfc_manufacturing.integration.batch_amb_integration import BatchAMBIntegration
+            BatchAMBIntegration.update_batch_qty(self.name)
+        except Exception as e:
+            frappe.log_error(f"Error updating batch quantity: {str(e)}")
+
+    def create_batch_processing_history_entry(self, action, remarks=None):
+        """Create processing history entry"""
+        try:
+            from amb_w_spc.sfc_manufacturing.integration.batch_amb_integration import BatchAMBIntegration
+            BatchAMBIntegration.create_batch_processing_history(self, action, remarks)
+        except Exception as e:
+            frappe.log_error(f"Error creating processing history entry: {str(e)}")
+
+    def get_integrated_batch_info(self):
+        """Get comprehensive integrated batch information"""
+        info = {
+            'batch_amb': {
+                'name': self.name,
+                'level': self.custom_batch_level,
+                'workflow_state': self.workflow_state,
+                'item': self.item_to_manufacture,
+                'quantity': self.batch_qty
+            },
+            'erpnext': {},
+            'spc': {},
+            'processing': {}
+        }
+        
+        # ERPNext Integration Info
+        if self.erpnext_batch_reference:
+            try:
+                erp_batch = frappe.get_doc("Batch", self.erpnext_batch_reference)
+                info['erpnext'] = {
+                    'batch_id': erp_batch.batch_id,
+                    'stock_uom': erp_batch.stock_uom,
+                    'expiry_date': erp_batch.expiry_date,
+                    'manufacturing_date': erp_batch.manufacturing_date
+                }
+            except Exception:
+                info['erpnext']['error'] = 'Batch not found'
+        
+        # SPC Integration Info
+        if self.spc_batch_record:
+            try:
+                spc_record = frappe.get_doc("SPC Batch Record", self.spc_batch_record)
+                info['spc'] = {
+                    'status': spc_record.batch_status,
+                    'specifications_met': spc_record.specifications_met,
+                    'production_date': spc_record.production_date,
+                    'reviewer': spc_record.batch_reviewer
+                }
+            except Exception:
+                info['spc']['error'] = 'SPC Record not found'
+        
+        # Processing History Info
+        if self.batch_processing_history:
+            try:
+                history = frappe.get_doc("Batch Processing History", self.batch_processing_history)
+                info['processing'] = {
+                    'status': history.status,
+                    'start_date': history.start_date,
+                    'steps_count': len(history.processing_steps) if history.processing_steps else 0
+                }
+            except Exception:
+                info['processing']['error'] = 'History not found'
+        
+        return info
+
+    # ========== EXISTING METHODS (ENHANCED) ==========
+    
+    def create_erpnext_batch(self):
+        """Create ERPNext Batch for level 1 batches"""
+        from amb_w_spc.sfc_manufacturing.integration.batch_amb_integration import BatchAMBIntegration
+        
+        if self.custom_batch_level == "1" and not self.erpnext_batch_reference:
+            BatchAMBIntegration.create_erpnext_batch(self)
+    
+    def create_spc_batch_record(self):
+        """Create SPC Batch Record for FDA compliance"""
+        if not self.spc_batch_record and self.custom_batch_level == "1":
+            try:
+                from amb_w_spc.sfc_manufacturing.integration.batch_amb_integration import BatchAMBIntegration
+                BatchAMBIntegration.create_spc_batch_record(self)
+            except Exception as e:
+                frappe.log_error(f"Error creating SPC Batch Record: {str(e)}")
+    
+    def create_batch_processing_history(self):
+        """Create Batch Processing History record"""
+        if not self.batch_processing_history:
+            try:
+                from amb_w_spc.sfc_manufacturing.integration.batch_amb_integration import BatchAMBIntegration
+                BatchAMBIntegration.create_batch_processing_history(self, "Batch Created")
+            except Exception as e:
+                frappe.log_error(f"Error creating Batch Processing History: {str(e)}")
+    
+    def sync_erpnext_batch(self):
+        """Sync with ERPNext Batch"""
+        from amb_w_spc.sfc_manufacturing.integration.batch_amb_integration import BatchAMBIntegration
+        
+        if self.erpnext_batch_reference:
+            BatchAMBIntegration.sync_batch_data(self)
+            BatchAMBIntegration.update_batch_qty(self.name)
+    
+    def update_processing_history(self):
+        """Update processing history with current state"""
+        if self.batch_processing_history:
+            try:
+                history = frappe.get_doc("Batch Processing History", self.batch_processing_history)
+                history.update({
+                    "workflow_state": self.workflow_state,
+                    "batch_level": self.custom_batch_level,
+                    "last_updated": now_datetime()
+                })
+                
+                # Add history entry for state changes
+                if hasattr(history, 'has_value_changed') and history.has_value_changed("workflow_state"):
+                    history.append("processing_steps", {
+                        "step_name": f"State changed to {self.workflow_state}",
+                        "timestamp": now_datetime(),
+                        "status": "Completed",
+                        "remarks": f"Batch moved to {self.workflow_state} state",
+                        "changed_by": frappe.session.user
+                    })
+                
+                history.save()
+            except Exception as e:
+                frappe.log_error(f"Error updating processing history: {str(e)}")
+    
+    def validate_fda_compliance(self):
+        """Validate FDA compliance requirements"""
+        if self.custom_batch_level == "1":
+            # Level 1 batches require manufacturing date
+            if not self.manufacturing_date:
+                frappe.throw(_("Manufacturing Date is required for Level 1 batches for FDA compliance"))
+            
+            # Validate expiry date is after manufacturing date
+            if self.manufacturing_date and self.expiry_date and self.expiry_date <= self.manufacturing_date:
+                frappe.throw(_("Expiry Date must be after Manufacturing Date"))
+    
+    def sync_erpnext_fields(self):
+        """Sync ERPNext related fields"""
+        if self.item_to_manufacture and not self.item:
+            self.item = self.item_to_manufacture
+            
+        if not self.manufacturing_date:
+            self.manufacturing_date = nowdate()
+            
+    def validate_erpnext_integration(self):
+        """Validate ERPNext integration requirements"""
+        if self.custom_batch_level == "1" and not self.item_to_manufacture:
+            frappe.throw(_("Item to Manufacture is required for Level 1 batches"))
+            
+        # Validate that ERPNext batch reference is unique
+        if self.erpnext_batch_reference:
             existing = frappe.db.exists("Batch AMB", {
-                "batch_code": self.batch_code,
+                "erpnext_batch_reference": self.erpnext_batch_reference,
                 "name": ["!=", self.name]
             })
             if existing:
-                frappe.throw(_("Batch Code {0} already exists in {1}").format(self.batch_code, existing))
-    
-    def calculate_weights(self):
-        """Calculate net weight and validate weight relationships"""
-        if self.gross_weight and self.tare_weight:
-            self.net_weight = self.gross_weight - self.tare_weight
+                frappe.throw(_("ERPNext Batch Reference {0} is already used by {1}").format(
+                    self.erpnext_batch_reference, existing))
             
-            if self.net_weight < 0:
-                frappe.throw(_("Net weight cannot be negative. Check gross and tare weights."))
-                
-        if self.total_weight and self.quantity:
-            if self.total_weight <= 0:
-                frappe.throw(_("Total weight must be greater than 0"))
-    
-    def update_tree_fields(self):
-        """Update tree structure fields and validate hierarchy"""
-        if self.is_group:
-            # Group batches can have children but no manufacturing details
-            if self.quantity or self.total_weight:
-                frappe.msgprint(_("Group batches should not have quantity or weight values"), alert=True)
-        else:
-            # Non-group batches must have a parent and can have manufacturing details
-            if not self.parent_batch_amb:
-                frappe.throw(_("Non-group batches must have a parent batch"))
-                
-            if not self.quantity:
-                frappe.throw(_("Quantity is required for non-group batches"))
+    def validate_batch_hierarchy(self):
+        """Validate batch hierarchy rules"""
+        if self.parent_batch_amb == self.name:
+            frappe.throw(_("A batch cannot be its own parent"))
             
-            self.validate_non_group_batch()
-    
-    def validate_non_group_batch(self):
-        """Additional validation for non-group batches"""
-        if not self.item_code:
-            frappe.throw(_("Item Code is required for non-group batches"))
-        
-        if not self.work_order_reference:
-            frappe.throw(_("Work Order Reference is required for non-group batches"))
-    
-    def set_default_dates(self):
-        """Set default dates if not provided"""
-        if not self.created_date:
-            self.created_date = nowdate()
+        if int(self.custom_batch_level or 1) > 1 and not self.parent_batch_amb:
+            frappe.throw(_("Parent Batch AMB is required for level {0}").format(self.custom_batch_level))
             
-        if not self.expiry_date and self.created_date:
-            # Set default expiry date (e.g., 1 year from creation)
-            from frappe.utils import add_days
-            self.expiry_date = add_days(self.created_date, 365)
-    
-    def validate_quality_status(self):
-        """Validate quality status transitions and business rules"""
-        if self.quality_status == "Failed" and self.batch_status == "Active":
-            frappe.msgprint(
-                _("Batch with Failed quality status should not be Active"),
-                indicator="orange",
-                alert=True
-            )
-            
-        if self.quality_status == "Hold" and not self.get("hold_reason"):
-            frappe.msgprint(
-                _("Please specify a reason for putting the batch on hold"),
-                indicator="yellow",
-                alert=True
-            )
-    
-    def update_tracking_fields(self):
-        """Update last modified tracking fields"""
-        self.last_modified_by = frappe.session.user
-        self.last_modified_date = now_datetime()
-        
-        # Auto-set batch status based on quality status
-        if not self.batch_status:
-            if self.quality_status == "Passed":
-                self.batch_status = "Active"
-            elif self.quality_status == "Failed":
-                self.batch_status = "Inactive"
-            else:
-                self.batch_status = "Active"
-    
-    def generate_barcode_data(self):
-        """Generate barcode data if not provided"""
-        if not self.barcode_data and self.batch_code:
-            # Generate barcode in CODE-39 format
-            level = cint(self.custom_batch_level) or 1
-            self.barcode_data = f"AMB-{self.batch_code}-L{level}"
-    
-    def update_batch_hierarchy_level(self):
-        """Update batch level based on parent hierarchy"""
-        if self.parent_batch_amb:
+        # Validate parent level is one less than current level
+        if self.parent_batch_amb and self.custom_batch_level:
             parent_level = frappe.db.get_value("Batch AMB", self.parent_batch_amb, "custom_batch_level")
-            if parent_level:
-                self.custom_batch_level = str(cint(parent_level) + 1)
+            if parent_level and int(parent_level) != int(self.custom_batch_level) - 1:
+                frappe.throw(_("Parent batch must be level {0} for this level {1} batch").format(
+                    int(self.custom_batch_level) - 1, self.custom_batch_level))
     
-    def create_processing_history(self):
-        """Create processing history record on significant changes"""
-        if self.is_new():
-            # Initial history record for new batches
-            self.append("batch_processing_history", {
-                "timestamp": now_datetime(),
-                "action": "Batch Created",
-                "description": f"Batch {self.batch_code} created",
-                "user": frappe.session.user,
-                "plant": self.current_plant
-            })
+    def validate_container_data(self):
+        """Validate container/barrel data for level 3 batches"""
+        if self.custom_batch_level != "3" or not self.container_barrels:
             return
             
-        old_doc = self.get_doc_before_save()
-        if not old_doc:
-            return
-            
-        # Track significant field changes
-        significant_fields = [
-            'current_plant', 'target_plant', 'quality_status', 
-            'batch_status', 'quantity', 'total_weight', 'gross_weight', 'tare_weight'
-        ]
-        
-        changes = []
-        for field in significant_fields:
-            old_value = getattr(old_doc, field, None)
-            new_value = getattr(self, field, None)
-            if old_value != new_value:
-                changes.append(f"{field}: {old_value} → {new_value}")
-        
-        if changes:
-            self.append("batch_processing_history", {
-                "timestamp": now_datetime(),
-                "action": "Field Updates",
-                "description": "; ".join(changes),
-                "user": frappe.session.user,
-                "plant": self.current_plant
-            })
-    
-    def update_parent_batch_totals(self):
-        """Update parent batch totals when child batch changes"""
-        if self.parent_batch_amb and not self.is_group:
-            self.update_parent_totals(self.parent_batch_amb)
-    
-    def reverse_parent_batch_totals(self):
-        """Reverse parent batch totals when child batch is cancelled"""
-        if self.parent_batch_amb and not self.is_group:
-            self.update_parent_totals(self.parent_batch_amb, reverse=True)
-    
-    def update_parent_totals(self, parent_batch, reverse=False):
-        """Update totals for parent batch"""
-        try:
-            parent = frappe.get_doc("Batch AMB", parent_batch)
-            factor = -1 if reverse else 1
-            
-            # Update parent totals (you can customize this logic)
-            if self.quantity:
-                # Add your parent batch aggregation logic here
-                pass
+        for barrel in self.container_barrels:
+            if barrel.barrel_serial_number and not barrel.gross_weight:
+                frappe.throw(_("Gross weight is required for barrel {0}").format(barrel.barrel_serial_number))
                 
-            parent.save(ignore_permissions=True)
-        except Exception as e:
-            frappe.log_error(f"Error updating parent batch totals: {str(e)}")
+            if barrel.gross_weight and barrel.tara_weight and barrel.net_weight <= 0:
+                frappe.throw(_("Net weight cannot be zero or negative for barrel {0}").format(barrel.barrel_serial_number))
     
-    def validate_batch_for_submission(self):
-        """Validate batch before submission"""
-        if not self.quality_status:
-            frappe.throw(_("Quality Status is required before submission"))
+    def calculate_totals(self):
+        """Calculate weight totals for level 3 batches"""
+        if self.custom_batch_level != "3" or not self.container_barrels:
+            self.total_gross_weight = 0
+            self.total_tara_weight = 0
+            self.total_net_weight = 0
+            self.barrel_count = 0
+            return
             
-        if self.quality_status == "Pending":
-            frappe.throw(_("Cannot submit batch with Pending quality status"))
+        total_gross = 0
+        total_tara = 0
+        total_net = 0
+        barrel_count = 0
+        
+        for barrel in self.container_barrels:
+            if barrel.gross_weight:
+                total_gross += barrel.gross_weight
+            if barrel.tara_weight:
+                total_tara += barrel.tara_weight
+            if barrel.net_weight:
+                total_net += barrel.net_weight
+            if barrel.barrel_serial_number:
+                barrel_count += 1
+                
+        self.total_gross_weight = total_gross
+        self.total_tara_weight = total_tara
+        self.total_net_weight = total_net
+        self.barrel_count = barrel_count
+    
+    def auto_generate_batch_code(self):
+        """Auto-generate batch code if conditions are met"""
+        if not self.should_auto_generate():
+            return
             
-        if not self.batch_code:
-            frappe.throw(_("Batch Code is required"))
+        if self.custom_batch_level == "1":
+            self.generate_level_1_batch_code()
+        else:
+            self.generate_sublot_batch_code()
     
-    def update_batch_status(self, status):
-        """Update batch status"""
-        self.db_set('batch_status', status)
+    def should_auto_generate(self):
+        """Check if batch code should be auto-generated"""
+        return (self.work_order_ref and 
+                self.custom_batch_level and 
+                (self.custom_plant_code or self.production_plant_name) and
+                not self.name)
     
-    def create_batch_transition_record(self):
-        """Create transition record when batch is submitted"""
-        self.append("batch_processing_history", {
-            "timestamp": now_datetime(),
-            "action": "Batch Submitted",
-            "description": f"Batch submitted with status: {self.batch_status}",
-            "user": frappe.session.user,
-            "plant": self.current_plant
-        })
-
-# Server-side API methods for Tree View
-@frappe.whitelist()
-def get_children(doctype, parent=None, company=None, is_root=False):
-    """Get children for tree view"""
-    fields = [
-        'name as value', 
-        'batch_name as title', 
-        'is_group as expandable',
-        'batch_code',
-        'quality_status',
-        'current_plant',
-        'batch_status'
-    ]
+    def generate_level_1_batch_code(self):
+        """Generate level 1 batch code"""
+        components = self.get_base_components()
+        consecutive = str(components['consecutive']).zfill(5)
+        plant_code = str(components['plant_code'])
+        
+        if components['series_type'] == 'P':
+            final_batch_code = f"{components['product_code']}-{consecutive}-{plant_code}"
+        else:
+            final_batch_code = f"{components['product_code']}{consecutive}{plant_code}"
+            
+        self.name = final_batch_code
+        self.custom_generated_batch_name = final_batch_code
+        self.custom_consecutive_number = consecutive
     
-    filters = [['docstatus', '<', 2]]  # Not cancelled
+    def generate_sublot_batch_code(self):
+        """Generate sublot batch code for levels 2-4"""
+        if not self.parent_batch_amb:
+            return
+            
+        parent_batch = frappe.get_doc("Batch AMB", self.parent_batch_amb)
+        parent_code = parent_batch.name
+        
+        if not parent_code:
+            frappe.throw(_("Parent batch does not have a valid batch code"))
+            
+        next_consecutive = self.get_next_sublot_consecutive(parent_code)
+        
+        if self.custom_batch_level == "3":
+            final_batch_code = f"{parent_code}-C{next_consecutive}"
+        else:
+            final_batch_code = f"{parent_code}-{next_consecutive}"
+            
+        self.name = final_batch_code
+        self.custom_generated_batch_name = final_batch_code
+        self.custom_sublot_consecutive = next_consecutive
     
-    if parent and parent != 'All Batches':
-        filters.append(['parent_batch_amb', '=', parent])
-    else:
-        filters.append(['ifnull(`parent_batch_amb`, "")', '=', ''])
+    def get_base_components(self):
+        """Get base components for batch code generation"""
+        if not self.work_order_ref:
+            return {
+                'product_code': '0000',
+                'consecutive': 1,
+                'plant_code': self.derive_plant_code(),
+                'series_type': 'WO'
+            }
+            
+        try:
+            wo = frappe.get_doc("Work Order", self.work_order_ref)
+            naming = (wo.naming_series or wo.name or "").upper()
+            
+            is_p_inv = naming.startswith('P-INV')
+            is_p_vta = naming.startswith('P-VTA')
+            
+            if is_p_inv or is_p_vta:
+                series_type = 'P'
+                product_code = 'P-INV' if is_p_inv else 'P-VTA'
+            else:
+                series_type = 'WO'
+                if wo.production_item:
+                    product_code = wo.production_item[:4] if len(wo.production_item) >= 4 else '0000'
+                else:
+                    product_code = '0000'
+            
+            consecutive = 1
+            if wo.name and wo.name[-5:].isdigit():
+                consecutive = int(wo.name[-5:])
+                
+            return {
+                'product_code': product_code,
+                'consecutive': consecutive,
+                'plant_code': self.derive_plant_code(),
+                'series_type': series_type
+            }
+        except Exception:
+            return {
+                'product_code': '0000',
+                'consecutive': 1,
+                'plant_code': self.derive_plant_code(),
+                'series_type': 'WO'
+            }
     
-    if company:
-        filters.append(['company', '=', company])
+    def derive_plant_code(self):
+        """Derive plant code from available fields"""
+        if self.custom_plant_code and str(self.custom_plant_code).isdigit():
+            return int(self.custom_plant_code)
+            
+        if self.production_plant_name:
+            import re
+            numbers = re.findall(r'\d+', self.production_plant_name)
+            if numbers:
+                return int(numbers[0])
+                
+        return 1
     
-    batches = frappe.get_list(doctype, 
-        fields=fields,
-        filters=filters,
-        order_by='name'
-    )
-    
-    return batches
-
-@frappe.whitelist()
-def get_all_batch_nodes():
-    """Get all batches for tree view"""
-    return frappe.get_all("Batch AMB",
-        fields=[
-            "name", "batch_code", "batch_name", "parent_batch_amb", 
-            "is_group", "custom_batch_level", "quality_status", 
-            "current_plant", "batch_status"
-        ],
-        filters={"docstatus": ["<", 2]},
-        order_by="lft"
-    )
-
-@frappe.whitelist()
-def get_batch_tree_data(company=None, plant=None):
-    """Get batch data for widget display - grouped by plant and level"""
-    filters = {"docstatus": 1}  # Only submitted documents
-    
-    if company:
-        filters["company"] = company
-    if plant:
-        filters["current_plant"] = plant
-    
-    batches = frappe.get_all("Batch AMB",
-        filters=filters,
-        fields=[
-            "name", "batch_code", "batch_name", "custom_batch_level", 
-            "quality_status", "current_plant", "batch_status", 
-            "quantity", "total_weight", "is_group"
-        ]
-    )
-    
-    # Group by plant
-    plant_data = {}
-    for batch in batches:
-        plant = batch.current_plant or "Unknown"
-        if plant not in plant_data:
-            plant_data[plant] = []
-        plant_data[plant].append(batch)
-    
-    return plant_data
-
-@frappe.whitelist()
-def get_child_batches(batch_name):
-    """Get all child batches for a given batch"""
-    return frappe.get_all("Batch AMB",
-        filters={"parent_batch_amb": batch_name},
-        fields=[
-            "name", "batch_code", "batch_name", "custom_batch_level", 
-            "quality_status", "batch_status", "quantity", "total_weight"
-        ]
-    )
-
-@frappe.whitelist()
-def create_child_batch(parent_batch, batch_data):
-    """Create a child batch under parent batch"""
-    if isinstance(batch_data, str):
-        import json
-        batch_data = json.loads(batch_data)
-    
-    parent = frappe.get_doc("Batch AMB", parent_batch)
-    if not parent.is_group:
-        frappe.throw(_("Parent batch {0} is not a group batch").format(parent_batch))
-    
-    child_batch = frappe.new_doc("Batch AMB")
-    child_batch.update(batch_data)
-    child_batch.parent_batch_amb = parent_batch
-    child_batch.insert()
-    
-    frappe.msgprint(_("Child batch {0} created successfully").format(child_batch.name))
-    return child_batch.name
-
-@frappe.whitelist()
-def transfer_batch_plant(batch_name, new_plant, target_plant=None):
-    """Transfer batch to a new plant"""
-    batch = frappe.get_doc("Batch AMB", batch_name)
-    old_plant = batch.current_plant
-    
-    batch.current_plant = new_plant
-    if target_plant:
-        batch.target_plant = target_plant
-    
-    # Add to processing history
-    batch.append("batch_processing_history", {
-        "timestamp": now_datetime(),
-        "action": "Plant Transfer",
-        "description": f"Transferred from {old_plant} to {new_plant}",
-        "user": frappe.session.user,
-        "plant": new_plant
-    })
-    
-    batch.save()
-    
-    frappe.msgprint(_("Batch {0} transferred from {1} to {2}").format(batch.batch_code, old_plant, new_plant))
-    return batch.name
-
-@frappe.whitelist()
-def update_batch_quality(batch_name, new_quality_status, notes=None):
-    """Update batch quality status with notes"""
-    batch = frappe.get_doc("Batch AMB", batch_name)
-    old_status = batch.quality_status
-    
-    batch.quality_status = new_quality_status
-    
-    # Add to processing history
-    description = _("Quality status changed from {0} to {1}").format(old_status, new_quality_status)
-    if notes:
-        description += f". Notes: {notes}"
-    
-    batch.append("batch_processing_history", {
-        "timestamp": now_datetime(),
-        "action": "Quality Update",
-        "description": description,
-        "user": frappe.session.user,
-        "plant": batch.current_plant
-    })
-    
-    batch.save()
-    
-    frappe.msgprint(_("Batch {0} quality status updated to {1}").format(batch.batch_code, new_quality_status))
-    return batch.name
-
-@frappe.whitelist()
-def get_batch_quality_summary(batch_name):
-    """Get quality status summary for a batch and its children"""
-    def get_quality_counts(batch_name):
-        children = frappe.get_all("Batch AMB",
-            filters={"parent_batch_amb": batch_name},
-            fields=["quality_status", "name", "is_group"]
+    def get_next_sublot_consecutive(self, parent_batch_code):
+        """Get next consecutive number for sublot"""
+        existing_batches = frappe.get_all(
+            "Batch AMB",
+            filters={
+                'parent_batch_amb': self.parent_batch_amb,
+                'name': ['!=', self.name or '']
+            },
+            fields=['name', 'custom_generated_batch_name']
         )
         
-        counts = {"Pending": 0, "Passed": 0, "Failed": 0, "Hold": 0, "Total": 0}
-        for child in children:
-            counts["Total"] += 1
-            if child.quality_status in counts:
-                counts[child.quality_status] += 1
-            if child.is_group:
-                child_counts = get_quality_counts(child.name)
-                for status in counts:
-                    counts[status] += child_counts[status]
-        
-        return counts
-    
-    batch = frappe.get_doc("Batch AMB", batch_name)
-    if batch.is_group:
-        return get_quality_counts(batch_name)
-    else:
-        return {batch.quality_status: 1, "Total": 1}
+        max_consecutive = 0
+        for batch in existing_batches:
+            batch_name = batch.get('name') or batch.get('custom_generated_batch_name') or ''
+            if parent_batch_code in batch_name:
+                import re
+                pattern = f"^{re.escape(parent_batch_code)}-C?(\\d+)$"
+                match = re.match(pattern, batch_name)
+                if match:
+                    current_consecutive = int(match.group(1))
+                    max_consecutive = max(max_consecutive, current_consecutive)
+                    
+        return max_consecutive + 1
+
+    def create_spc_deviation(self, deviation_type, description, severity="Medium"):
+        """Create SPC Batch Deviation record"""
+        try:
+            deviation = frappe.new_doc("SPC Batch Deviation")
+            deviation.update({
+                "batch_amb_reference": self.name,
+                "deviation_type": deviation_type,
+                "description": description,
+                "severity": severity,
+                "detection_date": now_datetime(),
+                "status": "Open"
+            })
+            deviation.insert()
+            
+            # Link deviation to batch
+            if not self.spc_batch_deviation:
+                self.db_set("spc_batch_deviation", deviation.name)
+            
+            frappe.msgprint(_("SPC Batch Deviation {0} created").format(deviation.name))
+            return deviation.name
+            
+        except Exception as e:
+            frappe.log_error(f"Error creating SPC Batch Deviation: {str(e)}")
+            return None
+
+# Whitelisted methods for client-side calls
+@frappe.whitelist()
+def get_erpnext_batch_info(batch_amb_name):
+    """Get ERPNext Batch information for client-side"""
+    from amb_w_spc.sfc_manufacturing.integration.batch_amb_integration import get_batch_stock_info
+    return get_batch_stock_info(batch_amb_name)
 
 @frappe.whitelist()
-def scan_batch_barcode(barcode_data):
-    """Process barcode scan and return batch information"""
-    if not barcode_data:
-        return {"success": False, "message": "No barcode data provided"}
+def create_erpnext_batch(batch_amb_name):
+    """Manually create ERPNext Batch"""
+    batch_amb = frappe.get_doc("Batch AMB", batch_amb_name)
+    batch_amb.create_erpnext_batch()
+    return {"success": True, "batch_reference": batch_amb.erpnext_batch_reference}
+
+@frappe.whitelist()
+def create_spc_deviation(batch_amb_name, deviation_type, description, severity="Medium"):
+    """Create SPC Batch Deviation"""
+    batch_amb = frappe.get_doc("Batch AMB", batch_amb_name)
+    deviation_id = batch_amb.create_spc_deviation(deviation_type, description, severity)
+    return {"success": bool(deviation_id), "deviation_id": deviation_id}
+
+@frappe.whitelist()
+def get_batch_hierarchy(batch_name):
+    """Get complete hierarchy for a batch"""
+    batch = frappe.get_doc("Batch AMB", batch_name)
     
+    hierarchy = {
+        'current': {
+            'name': batch.name,
+            'level': batch.custom_batch_level,
+            'parent': batch.parent_batch_amb,
+            'workflow_state': batch.workflow_state
+        },
+        'children': [],
+        'parents': []
+    }
+    
+    # Get children
+    children = frappe.get_all(
+        "Batch AMB",
+        filters={'parent_batch_amb': batch_name},
+        fields=['name', 'custom_batch_level', 'workflow_state']
+    )
+    hierarchy['children'] = children
+    
+    # Get parent hierarchy
+    current_parent = batch.parent_batch_amb
+    while current_parent:
+        parent = frappe.get_doc("Batch AMB", current_parent)
+        hierarchy['parents'].append({
+            'name': parent.name,
+            'level': parent.custom_batch_level,
+            'workflow_state': parent.workflow_state
+        })
+        current_parent = parent.parent_batch_amb
+    
+    return hierarchy
+
+@frappe.whitelist()
+def get_batch_comprehensive_info(batch_name):
+    """Get comprehensive information about a batch"""
+    batch = frappe.get_doc("Batch AMB", batch_name)
+    
+    info = {
+        'basic_info': {
+            'name': batch.name,
+            'level': batch.custom_batch_level,
+            'workflow_state': batch.workflow_state,
+            'item': batch.item_to_manufacture,
+            'work_order': batch.work_order_ref
+        },
+        'erpnext_integration': {
+            'erpnext_batch': batch.erpnext_batch_reference,
+            'stock_balance': batch.batch_qty
+        },
+        'fda_compliance': {
+            'spc_batch_record': batch.spc_batch_record,
+            'spc_batch_deviation': batch.spc_batch_deviation
+        },
+        'processing': {
+            'processing_history': batch.batch_processing_history
+        },
+        'containers': {
+            'barrel_count': batch.barrel_count,
+            'total_net_weight': batch.total_net_weight
+        }
+    }
+    
+    return info
+
+@frappe.whitelist()
+def sync_batch_systems(batch_amb_name):
+    """Manual sync of all batch systems"""
     try:
-        # Parse barcode data (assuming format: AMB-{batch_code}-L{level})
-        if barcode_data.startswith("AMB-"):
-            parts = barcode_data.split("-")
-            if len(parts) >= 3:
-                batch_code = parts[1]
-                
-                # Find batch by code
-                batch = frappe.get_all("Batch AMB",
-                    filters={"batch_code": batch_code},
-                    fields=["name", "batch_code", "batch_name", "quality_status", "batch_status", "current_plant"]
-                )
-                
-                if batch:
-                    return {
-                        "success": True,
-                        "batch": batch[0],
-                        "message": f"Batch {batch_code} found"
-                    }
-                else:
-                    return {"success": False, "message": f"Batch with code {batch_code} not found"}
-        
-        return {"success": False, "message": "Invalid barcode format"}
-        
+        batch_amb = frappe.get_doc("Batch AMB", batch_amb_name)
+        batch_amb.sync_all_systems()
+        frappe.msgprint(_("All batch systems synchronized successfully"))
+        return {'success': True}
     except Exception as e:
-        frappe.log_error(f"Barcode scan error: {str(e)}")
-        return {"success": False, "message": f"Error processing barcode: {str(e)}"}
+        frappe.log_error(f"Error syncing batch systems: {str(e)}")
+        return {'success': False, 'error': str(e)}
+
+@frappe.whitelist()
+def get_integrated_batch_info(batch_amb_name):
+    """Get comprehensive integrated batch information"""
+    try:
+        batch_amb = frappe.get_doc("Batch AMB", batch_amb_name)
+        return batch_amb.get_integrated_batch_info()
+    except Exception as e:
+        frappe.log_error(f"Error getting integrated batch info: {str(e)}")
+        return {'error': str(e)}
+
+@frappe.whitelist()
+def validate_batch_completeness(batch_amb_name):
+    """Validate batch completeness before submission"""
+    try:
+        batch_amb = frappe.get_doc("Batch AMB", batch_amb_name)
+        batch_amb.validate_batch_completeness()
+        return {'success': True, 'message': 'Batch is complete and ready for submission'}
+    except Exception as e:
+        return {'success': False, 'error': str(e)}

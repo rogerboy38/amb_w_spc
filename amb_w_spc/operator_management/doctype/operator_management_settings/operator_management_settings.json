@@ -1,0 +1,15 @@
+{
+  "doctype": "DocType",
+  "module": "operator_management",
+  "name": "Operator_management Settings",
+  "issingle": 1,
+  "is_single": 1,
+  "autoname": "operator_management.settings",
+  "fields": [
+    {
+      "fieldname": "dummy_field",
+      "fieldtype": "Data",
+      "label": "Dummy Field"
+    }
+  ]
+}

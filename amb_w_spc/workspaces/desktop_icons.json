@@ -1,0 +1,42 @@
+{
+    "doctype": "Desktop Icon",
+    "standard": 1,
+    "icons": [
+        {
+            "module_name": "core_spc",
+            "label": "SPC Control", 
+            "type": "link",
+            "link": "modules/core_spc",
+            "color": "#3498db",
+            "icon": "chart-line",
+            "_doctype": "Desktop Icon"
+        },
+        {
+            "module_name": "spc_quality_management",
+            "label": "SPC Quality",
+            "type": "link", 
+            "link": "modules/spc_quality_management",
+            "color": "#e74c3c",
+            "icon": "quality-check",
+            "_doctype": "Desktop Icon"
+        },
+        {
+            "module_name": "sfc_manufacturing", 
+            "label": "Manufacturing",
+            "type": "link",
+            "link": "modules/sfc_manufacturing", 
+            "color": "#2ecc71",
+            "icon": "manufacturing",
+            "_doctype": "Desktop Icon"
+        },
+        {
+            "module_name": "fda_compliance",
+            "label": "FDA Compliance",
+            "type": "link",
+            "link": "modules/fda_compliance",
+            "color": "#9b59b6", 
+            "icon": "shield-check",
+            "_doctype": "Desktop Icon"
+        }
+    ]
+}

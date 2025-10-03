@@ -1,0 +1,31 @@
+{
+    "doctype": "Workspace", 
+    "name": "SPC Quality Management",
+    "label": "SPC Quality",
+    "title": "SPC Quality Management",
+    "module": "spc_quality_management",
+    "is_standard": 1,
+    "public": 1,
+    "sequence_id": 2,
+    "charts": [],
+    "shortcuts": [
+        {
+            "type": "DocType",
+            "link_to": "SPC Corrective Action",
+            "label": "Corrective Actions",
+            "description": "Manage quality corrective actions"
+        },
+        {
+            "type": "DocType",
+            "link_to": "SPC Process Capability",
+            "label": "Process Capability", 
+            "description": "Analyze process capability studies"
+        },
+        {
+            "type": "DocType",
+            "link_to": "SPC Report",
+            "label": "Quality Reports",
+            "description": "Generate quality reports and analytics"
+        }
+    ]
+}

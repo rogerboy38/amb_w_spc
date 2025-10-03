@@ -10,12 +10,15 @@ def run():
     """
     workflows_to_install = [
         'spc_corrective_action_workflow.json',
-        'spc_alert_workflow.json',
+        'spc_alert_workflow.json', 
         'spc_process_capability_workflow.json'
     ]
     
-    # Path where we stored the workflow JSONs
-    workflows_dir = '/tmp/workflows'
+    # Use the app's workflow directory instead of /tmp
+    app_path = frappe.get_app_path("amb_w_spc")
+    workflows_dir = os.path.join(app_path, "workflow_data")
+    
+    print(f"Looking for workflows in: {workflows_dir}")
 
     for wf_json in workflows_to_install:
         json_path = os.path.join(workflows_dir, wf_json)
@@ -32,13 +35,15 @@ def run():
                         doc = frappe.get_doc(data)
                         doc.insert()
                         frappe.db.commit()
-                        print(f"Successfully installed workflow: {data['name']}")
+                        print(f"✅ Successfully installed workflow: {data['name']}")
                     else:
-                        print(f"Workflow {data['name']} already exists.")
+                        print(f"⚠️ Workflow {data['name']} already exists.")
                         
             except Exception as e:
-                print(f"Error installing workflow {wf_json}: {str(e)}")
+                print(f"❌ Error installing workflow {wf_json}: {str(e)}")
+                import traceback
+                traceback.print_exc()
         else:
-            print(f"Workflow file not found: {json_path}")
+            print(f"❌ Workflow file not found: {json_path}")
     
-    print("Post-installation workflow setup completed.")
+    print("🎉 Post-installation workflow setup completed.")

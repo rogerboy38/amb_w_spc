@@ -16,30 +16,10 @@ Key Features:
 - Alert management and corrective actions
 """
 
-import frappe
-
-def get_version():
-    return __version__
-
-def connect():
-    return frappe.connect()
-
-# App configuration
-app_name = "amb_w_spc"
-app_title = "AMB W SPC"
-app_publisher = "AMB Systems"
-app_description = "Advanced Manufacturing Business - Workforce Statistical Process Control"
-app_email = "info@ambsystems.com"
-app_license = "MIT"
-
-# Version compatibility
-required_apps = [
-    "frappe>=15.0.0",
-    "erpnext>=15.0.0"
-]
-
-# Installation hooks
-installation_hooks = [
-    "amb_w_spc.install.before_install",
-    "amb_w_spc.install.after_install"
-]
+# Load compatibility layer early
+try:
+    from amb_w_spc.compat import patch_frappe_utils
+    patch_frappe_utils()
+except ImportError:
+    # Compatibility module might not be available during initial install
+    pass

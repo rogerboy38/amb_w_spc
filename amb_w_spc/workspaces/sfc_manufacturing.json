@@ -1,0 +1,36 @@
+{
+    "doctype": "Workspace",
+    "name": "Manufacturing Control", 
+    "label": "Manufacturing",
+    "title": "Manufacturing Control",
+    "module": "sfc_manufacturing",
+    "is_standard": 1,
+    "public": 1,
+    "sequence_id": 3,
+    "shortcuts": [
+        {
+            "type": "DocType", 
+            "link_to": "Batch AMB",
+            "label": "Batches",
+            "description": "Manage manufacturing batches"
+        },
+        {
+            "type": "DocType",
+            "link_to": "SFC Operator", 
+            "label": "Operators",
+            "description": "Operator management and skills"
+        },
+        {
+            "type": "DocType",
+            "link_to": "Work Order Routing",
+            "label": "Work Orders", 
+            "description": "Production work orders and routing"
+        },
+        {
+            "type": "DocType",
+            "link_to": "TDS Product Specification",
+            "label": "Product Specs",
+            "description": "Product specifications and TDS"
+        }
+    ]
+}
