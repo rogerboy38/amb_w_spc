@@ -71,7 +71,7 @@ def create_standard_workspace():
             "shortcuts": [
                 {
                     "type": "Dashboard",
-                    "link_to": "SPC Dashboard",
+                    "link_to": "SPC Control Chart",
                     "format_type": "Link"
                 }
             ]
