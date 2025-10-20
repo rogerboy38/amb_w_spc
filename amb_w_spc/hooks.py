@@ -4,7 +4,7 @@ app_publisher = "AMB-Wellness"
 app_description = "Advanced Manufacturing, Warehouse Management & Statistical Process Control for ERPNext"
 app_email = "fcrm@amb-wellness.com"
 app_license = "MIT"
-app_version = "2.0.0"
+app_version = "2.0.3"
 
 # Required property for ERPNext
 required_apps = ["frappe", "erpnext"]
@@ -29,22 +29,19 @@ modules = [
 # DocType overrides
 # override_doctype_class = {}
 
-# Document Events - COMMENTED OUT TEMPORARILY
+# Document Events - Minimal working set
 doc_events = {
-    # "Sales Order": {
-    #     "on_submit": "amb_w_spc.sfc_manufacturing.warehouse_management.sales_order_integration.SalesOrderIntegration.on_sales_order_submit",
-    # },
-    # "Delivery Note": {
-    #     "before_submit": "amb_w_spc.sfc_manufacturing.warehouse_management.delivery_note_integration.DeliveryNoteIntegration.on_delivery_note_before_submit",
-    # },
-    # Add other doc_events as needed when modules are available
+    # Basic events that don't require complex dependencies
+    "Sales Order": {
+        "on_submit": "amb_w_spc.sfc_manufacturing.api.sfc_operations.on_sales_order_submit",
+    },
 }
 
-# Scheduled Tasks - COMMENTED OUT TEMPORARILY
+# Scheduled Tasks - Minimal working set
 scheduler_events = {
-    # "daily": [
-    #     "amb_w_spc.system_integration.scheduler.sync_warehouse_data"
-    # ],
+    "daily": [
+        "amb_w_spc.sfc_manufacturing.scheduler.daily_cleanup",
+    ],
 }
 
 # Application includes
@@ -57,13 +54,13 @@ app_include_js = [
     "/assets/amb_w_spc/js/warehouse_utils.js"
 ]
 
-# Boot Session - COMMENTED OUT TEMPORARILY
-# boot_session = "amb_w_spc.sfc_manufacturing.warehouse_management.boot.get_warehouse_boot_session"
+# Boot Session - Simple implementation
+boot_session = "amb_w_spc.system_integration.permissions.get_boot_info"
 
-# Installation
-post_install = [
-     "amb_w_spc.post_install.run"
-]
+# Installation hooks
+before_install = "amb_w_spc.install.before_install"
+after_install = "amb_w_spc.install.after_install"
+before_uninstall = "amb_w_spc.install.before_uninstall"
 
 # Workspaces
 workspaces = [
@@ -77,34 +74,47 @@ fixtures = [
     {"dt": "Workspace", "filters": [["name", "in", workspaces]]},
     {"dt": "Workflow", "filters": [["name", "in", [
         "SPC Alert Workflow",
-        "SPC Corrective Action Workflow",
+        "SPC Corrective Action Workflow", 
         "SPC Process Capability Workflow",
         "TDS Product Specification Workflow"
     ]]]},
     {"dt": "Custom Field", "filters": [["module", "=", "AMB W SPC"]]},
+    {"dt": "Property Setter", "filters": [["module", "=", "AMB W SPC"]]},
 ]
 
-# Jinja template functions - COMMENTED OUT TEMPORARILY
+# Jinja template functions
 jinja = {
     "methods": [
-        # "amb_w_spc.system_integration.utils.get_user_warehouse_permissions"
+        "amb_w_spc.system_integration.utils.get_app_version",
     ]
 }
 
 # Website routes
 website_route_rules = [
     {"from_route": "/warehouse-dashboard", "to_route": "warehouse_dashboard"},
+    {"from_route": "/spc-dashboard", "to_route": "spc_dashboard"},
 ]
 
 # Website context
 website_context = {
-    "splash_image": "/assets/amb_w_spc/images/warehouse_splash.png"
+    "splash_image": "/assets/amb_w_spc/images/warehouse_splash.png",
+    "favicon": "/assets/amb_w_spc/images/favicon.ico"
 }
 
-# Override whitelisted methods - COMMENTED OUT TEMPORARILY
-# override_whitelisted_methods = {}
+# Override whitelisted methods
+override_whitelisted_methods = {
+    "amb_w_spc.sfc_manufacturing.api.sfc_operations.get_dashboard_data": "amb_w_spc.sfc_manufacturing.api.sfc_operations.get_dashboard_data",
+}
 
-# All installation hooks commented out temporarily
-# before_install = []
-# after_migrate = []
+# Migration hooks
+after_migrate = [
+    "amb_w_spc.system_integration.installation.install_spc_system.install_spc_system"
+]
 
+# Testing
+before_tests = "amb_w_spc.install.before_tests"
+
+# Source parser
+source_parser = {
+    "github.com": "frappe.www.doctype.web_page.web_page.get_source"
+}
