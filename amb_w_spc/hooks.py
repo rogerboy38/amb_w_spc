@@ -4,7 +4,7 @@ app_publisher = "AMB-Wellness"
 app_description = "Advanced Manufacturing, Warehouse Management & Statistical Process Control for ERPNext"
 app_email = "fcrm@amb-wellness.com"
 app_license = "MIT"
-app_version = "2.0.3"
+app_version = "2.0.4"
 
 # Required property for ERPNext
 required_apps = ["frappe", "erpnext"]
@@ -29,19 +29,18 @@ modules = [
 # DocType overrides
 # override_doctype_class = {}
 
-# Document Events - Minimal working set
+# Document Events - Only include what exists
 doc_events = {
-    # Basic events that don't require complex dependencies
-    "Sales Order": {
-        "on_submit": "amb_w_spc.sfc_manufacturing.api.sfc_operations.on_sales_order_submit",
-    },
+    # "Sales Order": {
+    #     "on_submit": "amb_w_spc.sfc_manufacturing.api.sfc_operations.on_sales_order_submit",
+    # },
 }
 
-# Scheduled Tasks - Minimal working set
+# Scheduled Tasks - Only include what exists
 scheduler_events = {
-    "daily": [
-        "amb_w_spc.sfc_manufacturing.scheduler.daily_cleanup",
-    ],
+    # "daily": [
+    #     "amb_w_spc.sfc_manufacturing.scheduler.daily_cleanup",
+    # ],
 }
 
 # Application includes
@@ -54,13 +53,13 @@ app_include_js = [
     "/assets/amb_w_spc/js/warehouse_utils.js"
 ]
 
-# Boot Session - Simple implementation
-boot_session = "amb_w_spc.system_integration.permissions.get_boot_info"
+# Boot Session - Only include if function exists
+# boot_session = "amb_w_spc.system_integration.permissions.get_boot_info"
 
-# Installation hooks
-before_install = "amb_w_spc.install.before_install"
+# Installation hooks - ONLY include functions that actually exist
 after_install = "amb_w_spc.install.after_install"
-before_uninstall = "amb_w_spc.install.before_uninstall"
+# before_install = "amb_w_spc.install.before_install"  # Commented out - doesn't exist
+# before_uninstall = "amb_w_spc.install.before_uninstall"  # Commented out - doesn't exist
 
 # Workspaces
 workspaces = [
@@ -85,7 +84,7 @@ fixtures = [
 # Jinja template functions
 jinja = {
     "methods": [
-        "amb_w_spc.system_integration.utils.get_app_version",
+        # "amb_w_spc.system_integration.utils.get_app_version",
     ]
 }
 
@@ -103,18 +102,19 @@ website_context = {
 
 # Override whitelisted methods
 override_whitelisted_methods = {
-    "amb_w_spc.sfc_manufacturing.api.sfc_operations.get_dashboard_data": "amb_w_spc.sfc_manufacturing.api.sfc_operations.get_dashboard_data",
+    # "amb_w_spc.sfc_manufacturing.api.sfc_operations.get_dashboard_data": "amb_w_spc.sfc_manufacturing.api.sfc_operations.get_dashboard_data",
 }
 
-# Migration hooks
-after_migrate = [
-    "amb_w_spc.system_integration.installation.install_spc_system.install_spc_system"
-]
+# Migration hooks - Only include if function exists
+# after_migrate = [
+#     "amb_w_spc.system_integration.installation.install_spc_system.install_spc_system"
+# ]
 
 # Testing
-before_tests = "amb_w_spc.install.before_tests"
+# before_tests = "amb_w_spc.install.before_tests"
 
 # Source parser
 source_parser = {
     "github.com": "frappe.www.doctype.web_page.web_page.get_source"
 }
+

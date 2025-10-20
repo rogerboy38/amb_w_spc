@@ -84,13 +84,25 @@ def create_standard_workspace():
             
     except Exception as e:
         print(f"⚠️  Could not create workspace: {str(e)}")
+# Add the missing functions to install.py
+
+def before_install():
+    """Run before app installation - minimal implementation"""
+    print("🔧 Preparing AMB W SPC installation...")
+    pass
+
 
 def before_uninstall():
     """
     Cleanup before uninstalling the app
     """
-    print("🧹 Cleaning up AMB W SPC...")
+    print("🧹 Cleaning up AMB W SPC before uninstall...")
     # Add any cleanup logic here
+
+def before_tests():
+    """Run before tests - minimal implementation"""
+    print("🧪 Preparing tests for AMB W SPC...")
+    pass
 
 # Main execution block
 if __name__ == "__main__":
