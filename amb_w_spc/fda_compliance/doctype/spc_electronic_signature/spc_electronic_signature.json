@@ -1,0 +1,216 @@
+{
+    "doctype": "DocType",
+    "name": "spc_electronic_signature",
+    "module": "fda_compliance",
+    "custom": 1,
+    "is_submittable": 1,
+    "track_changes": 1,
+    "track_seen": 1,
+    "max_attachments": 10,
+    "description": "FDA 21 CFR Part 11 compliant electronic signature management",
+    "fields": [
+        {
+            "fieldname": "signature_details_section",
+            "fieldtype": "Section Break",
+            "label": "Signature Details",
+            "collapsible": 0
+        },
+        {
+            "fieldname": "signature_id",
+            "fieldtype": "Data",
+            "label": "Signature ID",
+            "reqd": 1,
+            "unique": 1,
+            "description": "Unique identifier for the electronic signature"
+        },
+        {
+            "fieldname": "document_type",
+            "fieldtype": "Link",
+            "label": "Document Type",
+            "options": "DocType",
+            "reqd": 1,
+            "description": "Type of document being signed"
+        },
+        {
+            "fieldname": "document_name",
+            "fieldtype": "Dynamic Link",
+            "label": "Document Name",
+            "options": "document_type",
+            "reqd": 1,
+            "description": "Specific document being signed"
+        },
+        {
+            "fieldname": "signer_name",
+            "fieldtype": "Link",
+            "label": "Signer Name",
+            "options": "User",
+            "reqd": 1,
+            "description": "User who is signing the document"
+        },
+        {
+            "fieldname": "signer_role",
+            "fieldtype": "Link",
+            "label": "Signer Role",
+            "options": "Role",
+            "reqd": 1,
+            "description": "Role of the person signing"
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "signature_meaning",
+            "fieldtype": "Select",
+            "label": "Signature Meaning",
+            "options": "Authored\nReviewed\nApproved\nWitnessed\nResponsible\nDelegate",
+            "reqd": 1,
+            "description": "Meaning or purpose of the signature"
+        },
+        {
+            "fieldname": "signature_date",
+            "fieldtype": "Datetime",
+            "label": "Signature Date",
+            "reqd": 1,
+            "default": "now",
+            "description": "Date and time when signature was applied"
+        },
+        {
+            "fieldname": "signature_method",
+            "fieldtype": "Select",
+            "label": "Signature Method",
+            "options": "Password\nBiometric\nToken\nDigital Certificate\nMulti-Factor",
+            "reqd": 1,
+            "description": "Method used for electronic signature"
+        },
+        {
+            "fieldname": "authentication_section",
+            "fieldtype": "Section Break",
+            "label": "Authentication & Authorization",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "user_credentials_verified",
+            "fieldtype": "Check",
+            "label": "User Credentials Verified",
+            "default": 0,
+            "reqd": 1,
+            "description": "Confirmation that user credentials were verified"
+        },
+        {
+            "fieldname": "multi_factor_auth",
+            "fieldtype": "Check",
+            "label": "Multi-Factor Authentication",
+            "default": 0,
+            "description": "Whether multi-factor authentication was used"
+        },
+        {
+            "fieldname": "authorization_level",
+            "fieldtype": "Select",
+            "label": "Authorization Level",
+            "options": "Level 1 - Basic\nLevel 2 - Intermediate\nLevel 3 - Advanced\nLevel 4 - Critical",
+            "reqd": 1,
+            "description": "Level of authorization required for this signature"
+        },
+        {
+            "fieldname": "column_break_2",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "cfr_part11_compliant",
+            "fieldtype": "Check",
+            "label": "CFR Part 11 Compliant",
+            "default": 1,
+            "reqd": 1,
+            "description": "Confirmation of FDA 21 CFR Part 11 compliance"
+        },
+        {
+            "fieldname": "signature_components",
+            "fieldtype": "Long Text",
+            "label": "Signature Components",
+            "description": "JSON formatted signature components (printed name, date, meaning)"
+        },
+        {
+            "fieldname": "verification_section",
+            "fieldtype": "Section Break",
+            "label": "Verification & Validation",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "signature_valid",
+            "fieldtype": "Check",
+            "label": "Signature Valid",
+            "default": 1,
+            "description": "Current validity status of the signature"
+        },
+        {
+            "fieldname": "verification_method",
+            "fieldtype": "Select",
+            "label": "Verification Method",
+            "options": "Digital Certificate\nHash Validation\nTimestamp Verification\nBiometric Match\nDatabase Verification",
+            "description": "Method used to verify signature authenticity"
+        },
+        {
+            "fieldname": "witness_signature",
+            "fieldtype": "Link",
+            "label": "Witness Signature",
+            "options": "SPC Electronic Signature",
+            "description": "Reference to witness signature if required"
+        },
+        {
+            "fieldname": "column_break_3",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "signature_hash",
+            "fieldtype": "Data",
+            "label": "Signature Hash",
+            "description": "Cryptographic hash of the signature"
+        },
+        {
+            "fieldname": "certificate_serial",
+            "fieldtype": "Data",
+            "label": "Certificate Serial Number",
+            "description": "Serial number of digital certificate used"
+        },
+        {
+            "fieldname": "expiration_date",
+            "fieldtype": "Datetime",
+            "label": "Signature Expiration",
+            "description": "Expiration date of the signature validity"
+        }
+    ],
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 1,
+            "cancel": 1,
+            "report": 1,
+            "export": 1
+        },
+        {
+            "role": "Quality Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "submit": 1,
+            "report": 1,
+            "export": 1
+        },
+        {
+            "role": "Manufacturing User",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "submit": 1
+        }
+    ],
+    "sort_field": "signature_date",
+    "sort_order": "DESC",
+    "app": "amb_w_spc",
+    "title": "SPC Electronic Signature"
+}

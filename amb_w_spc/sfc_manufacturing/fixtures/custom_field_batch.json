@@ -1,0 +1,154 @@
+[
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_warehouse_section",
+  "dt": "Batch",
+  "label": "Warehouse Management",
+  "fieldname": "amb_warehouse_section",
+  "fieldtype": "Section Break",
+  "insert_after": "expiry_date",
+  "collapsible": 0,
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_current_warehouse",
+  "dt": "Batch",
+  "label": "Current Warehouse",
+  "fieldname": "amb_current_warehouse",
+  "fieldtype": "Link",
+  "options": "Warehouse",
+  "insert_after": "amb_warehouse_section",
+  "read_only": 1,
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_warehouse_zone",
+  "dt": "Batch",
+  "label": "Current Zone",
+  "fieldname": "amb_warehouse_zone",
+  "fieldtype": "Data",
+  "insert_after": "amb_current_warehouse",
+  "read_only": 1,
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_temperature_controlled",
+  "dt": "Batch",
+  "label": "Temperature Controlled",
+  "fieldname": "amb_temperature_controlled",
+  "fieldtype": "Check",
+  "insert_after": "amb_warehouse_zone",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_storage_temperature",
+  "dt": "Batch",
+  "label": "Required Storage Temperature (°C)",
+  "fieldname": "amb_storage_temperature",
+  "fieldtype": "Float",
+  "precision": 1,
+  "insert_after": "amb_temperature_controlled",
+  "depends_on": "eval:doc.amb_temperature_controlled",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_column_break_1",
+  "dt": "Batch",
+  "fieldname": "amb_column_break_1",
+  "fieldtype": "Column Break",
+  "insert_after": "amb_storage_temperature",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_quality_status",
+  "dt": "Batch",
+  "label": "Quality Status",
+  "fieldname": "amb_quality_status",
+  "fieldtype": "Select",
+  "options": "Approved\nPending\nRejected\nQuarantined\nExpired",
+  "insert_after": "amb_column_break_1",
+  "default": "Pending",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_last_movement_date",
+  "dt": "Batch",
+  "label": "Last Movement Date",
+  "fieldname": "amb_last_movement_date",
+  "fieldtype": "Datetime",
+  "insert_after": "amb_quality_status",
+  "read_only": 1,
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_quarantine_until",
+  "dt": "Batch",
+  "label": "Quarantine Until",
+  "fieldname": "amb_quarantine_until",
+  "fieldtype": "Date",
+  "insert_after": "amb_last_movement_date",
+  "depends_on": "eval:doc.amb_quality_status === 'Quarantined'",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_tracking_section",
+  "dt": "Batch",
+  "label": "Batch Tracking",
+  "fieldname": "amb_tracking_section",
+  "fieldtype": "Section Break",
+  "insert_after": "amb_quarantine_until",
+  "collapsible": 1,
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_batch_amb_reference",
+  "dt": "Batch",
+  "label": "Batch AMB Reference",
+  "fieldname": "amb_batch_amb_reference",
+  "fieldtype": "Link",
+  "options": "Batch AMB",
+  "insert_after": "amb_tracking_section",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_material_assessment_log",
+  "dt": "Batch",
+  "label": "Material Assessment Log",
+  "fieldname": "amb_material_assessment_log",
+  "fieldtype": "Link",
+  "options": "Material Assessment Log",
+  "insert_after": "amb_batch_amb_reference",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_supplier_batch_no",
+  "dt": "Batch",
+  "label": "Supplier Batch Number",
+  "fieldname": "amb_supplier_batch_no",
+  "fieldtype": "Data",
+  "insert_after": "amb_material_assessment_log",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Batch-amb_received_date",
+  "dt": "Batch",
+  "label": "Received Date",
+  "fieldname": "amb_received_date",
+  "fieldtype": "Date",
+  "insert_after": "amb_supplier_batch_no",
+  "module": "AMB W SPC"
+ }
+]

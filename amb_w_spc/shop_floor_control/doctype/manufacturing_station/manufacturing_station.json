@@ -1,0 +1,337 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "autoname": "field:station_id",
+    "creation": "2025-09-18 03:31:01",
+    "default_view": "List",
+    "doctype": "DocType",
+    "document_type": "Document",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "basic_info_section",
+        "station_id",
+        "station_name",
+        "station_type",
+        "production_line",
+        "location",
+        "column_break_1",
+        "hostname",
+        "ip_address",
+        "port_number",
+        "status",
+        "communication_section",
+        "read_interval",
+        "reply_interval",
+        "polling_enabled",
+        "column_break_2",
+        "last_communication",
+        "communication_status",
+        "connection_timeout",
+        "retry_attempts",
+        "equipment_section",
+        "equipment_list",
+        "performance_section",
+        "current_oee",
+        "oee_target",
+        "column_break_3",
+        "uptime_percentage",
+        "total_production_count",
+        "last_maintenance_date",
+        "next_maintenance_due",
+        "alerts_section",
+        "alert_enabled",
+        "speaker_on_duration",
+        "speaker_off_duration",
+        "speaker_repeat_times",
+        "column_break_4",
+        "warning_interval",
+        "escalation_enabled",
+        "escalation_timeout"
+    ],
+    "fields": [
+        {
+            "fieldname": "basic_info_section",
+            "fieldtype": "Section Break",
+            "label": "Basic Information"
+        },
+        {
+            "fieldname": "station_id",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Station ID",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "station_name",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Station Name",
+            "reqd": 1
+        },
+        {
+            "fieldname": "station_type",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Station Type",
+            "options": "Assembly\nTesting\nPackaging\nQuality Control\nSMO\nInspection\nMaintenance",
+            "reqd": 1
+        },
+        {
+            "fieldname": "production_line",
+            "fieldtype": "Link",
+            "label": "Production Line",
+            "options": "Production Line"
+        },
+        {
+            "fieldname": "location",
+            "fieldtype": "Link",
+            "label": "Location",
+            "options": "Location"
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "hostname",
+            "fieldtype": "Data",
+            "label": "Hostname"
+        },
+        {
+            "fieldname": "ip_address",
+            "fieldtype": "Data",
+            "label": "IP Address"
+        },
+        {
+            "fieldname": "port_number",
+            "fieldtype": "Int",
+            "default": "55962",
+            "label": "Port Number"
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Status",
+            "options": "Active\nInactive\nMaintenance\nFailed\nOffline",
+            "default": "Active"
+        },
+        {
+            "fieldname": "communication_section",
+            "fieldtype": "Section Break",
+            "label": "Communication Settings"
+        },
+        {
+            "fieldname": "read_interval",
+            "fieldtype": "Int",
+            "default": "100",
+            "description": "Data collection interval in milliseconds",
+            "label": "Read Interval (ms)"
+        },
+        {
+            "fieldname": "reply_interval",
+            "fieldtype": "Int",
+            "default": "5",
+            "description": "Response timeout in seconds",
+            "label": "Reply Interval (sec)"
+        },
+        {
+            "fieldname": "polling_enabled",
+            "fieldtype": "Check",
+            "default": "1",
+            "label": "Enable Polling"
+        },
+        {
+            "fieldname": "column_break_2",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "last_communication",
+            "fieldtype": "Datetime",
+            "label": "Last Communication",
+            "read_only": 1
+        },
+        {
+            "fieldname": "communication_status",
+            "fieldtype": "Select",
+            "label": "Communication Status",
+            "options": "Online\nOffline\nError\nTimeout",
+            "read_only": 1
+        },
+        {
+            "fieldname": "connection_timeout",
+            "fieldtype": "Int",
+            "default": "30",
+            "label": "Connection Timeout (sec)"
+        },
+        {
+            "fieldname": "retry_attempts",
+            "fieldtype": "Int",
+            "default": "3",
+            "label": "Retry Attempts"
+        },
+        {
+            "fieldname": "equipment_section",
+            "fieldtype": "Section Break",
+            "label": "Equipment Configuration"
+        },
+        {
+            "fieldname": "equipment_list",
+            "fieldtype": "Table",
+            "label": "Linked Equipment",
+            "options": "Station Equipment"
+        },
+        {
+            "fieldname": "performance_section",
+            "fieldtype": "Section Break",
+            "label": "Performance Metrics"
+        },
+        {
+            "fieldname": "current_oee",
+            "fieldtype": "Percent",
+            "label": "Current OEE",
+            "read_only": 1
+        },
+        {
+            "fieldname": "oee_target",
+            "fieldtype": "Percent",
+            "default": "85",
+            "label": "OEE Target"
+        },
+        {
+            "fieldname": "column_break_3",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "uptime_percentage",
+            "fieldtype": "Percent",
+            "label": "Uptime %",
+            "read_only": 1
+        },
+        {
+            "fieldname": "total_production_count",
+            "fieldtype": "Int",
+            "default": "0",
+            "label": "Total Production Count",
+            "read_only": 1
+        },
+        {
+            "fieldname": "last_maintenance_date",
+            "fieldtype": "Date",
+            "label": "Last Maintenance"
+        },
+        {
+            "fieldname": "next_maintenance_due",
+            "fieldtype": "Date",
+            "label": "Next Maintenance Due"
+        },
+        {
+            "fieldname": "alerts_section",
+            "fieldtype": "Section Break",
+            "label": "Alert Configuration"
+        },
+        {
+            "fieldname": "alert_enabled",
+            "fieldtype": "Check",
+            "default": "1",
+            "label": "Enable Alerts"
+        },
+        {
+            "fieldname": "speaker_on_duration",
+            "fieldtype": "Int",
+            "default": "1",
+            "description": "Speaker on duration in seconds",
+            "label": "Speaker On (sec)"
+        },
+        {
+            "fieldname": "speaker_off_duration",
+            "fieldtype": "Int",
+            "default": "1",
+            "description": "Speaker off duration in seconds",
+            "label": "Speaker Off (sec)"
+        },
+        {
+            "fieldname": "speaker_repeat_times",
+            "fieldtype": "Int",
+            "default": "3",
+            "description": "Number of times to repeat alert",
+            "label": "Repeat Times"
+        },
+        {
+            "fieldname": "column_break_4",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "warning_interval",
+            "fieldtype": "Int",
+            "default": "500",
+            "description": "Warning check interval in milliseconds",
+            "label": "Warning Interval (ms)"
+        },
+        {
+            "fieldname": "escalation_enabled",
+            "fieldtype": "Check",
+            "default": "0",
+            "label": "Enable Escalation"
+        },
+        {
+            "fieldname": "escalation_timeout",
+            "fieldtype": "Int",
+            "default": "300",
+            "description": "Time before escalating unacknowledged alerts (seconds)",
+            "label": "Escalation Timeout (sec)"
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "links": [],
+    "modified": "2025-09-18 03:31:01",
+    "modified_by": "Administrator",
+    "module": "shop_floor_control",
+    "name": "manufacturing_station",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Manufacturing Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Shop Floor Operator",
+            "share": 1
+        }
+    ],
+    "quick_entry": 1,
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1,
+    "track_seen": 1,
+    "track_views": 1,
+    "title": "Manufacturing Station"
+}

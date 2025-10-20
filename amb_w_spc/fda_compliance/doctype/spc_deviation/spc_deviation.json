@@ -1,0 +1,370 @@
+{
+    "doctype": "DocType",
+    "name": "spc_deviation",
+    "module": "fda_compliance",
+    "custom": 1,
+    "is_submittable": 1,
+    "track_changes": 1,
+    "track_seen": 1,
+    "max_attachments": 15,
+    "description": "FDA compliant deviation management for regulatory compliance and CAPA tracking",
+    "fields": [
+        {
+            "fieldname": "deviation_identification_section",
+            "fieldtype": "Section Break",
+            "label": "Deviation Identification",
+            "collapsible": 0
+        },
+        {
+            "fieldname": "deviation_number",
+            "fieldtype": "Data",
+            "label": "Deviation Number",
+            "reqd": 1,
+            "unique": 1,
+            "description": "Unique deviation identifier"
+        },
+        {
+            "fieldname": "deviation_type",
+            "fieldtype": "Select",
+            "label": "Deviation Type",
+            "options": "Manufacturing\nQuality Control\nDocumentation\nEquipment\nPersonnel\nEnvironmental\nSystem\nOther",
+            "reqd": 1,
+            "description": "Category of the deviation"
+        },
+        {
+            "fieldname": "severity",
+            "fieldtype": "Select",
+            "label": "Severity",
+            "options": "Critical\nMajor\nMinor",
+            "reqd": 1,
+            "description": "Severity level of the deviation"
+        },
+        {
+            "fieldname": "plant",
+            "fieldtype": "Link",
+            "label": "Plant",
+            "options": "Warehouse",
+            "reqd": 1,
+            "description": "Plant where deviation occurred"
+        },
+        {
+            "fieldname": "department",
+            "fieldtype": "Link",
+            "label": "Department",
+            "options": "Department",
+            "reqd": 1,
+            "description": "Department affected by deviation"
+        },
+        {
+            "fieldname": "reported_by",
+            "fieldtype": "Link",
+            "label": "Reported By",
+            "options": "Employee",
+            "reqd": 1,
+            "default": "user",
+            "description": "Person who reported the deviation"
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "occurrence_date",
+            "fieldtype": "Datetime",
+            "label": "Occurrence Date",
+            "reqd": 1,
+            "description": "When the deviation occurred"
+        },
+        {
+            "fieldname": "detection_date",
+            "fieldtype": "Datetime",
+            "label": "Detection Date",
+            "reqd": 1,
+            "default": "now",
+            "description": "When the deviation was detected"
+        },
+        {
+            "fieldname": "batch_affected",
+            "fieldtype": "Link",
+            "label": "Batch Affected",
+            "options": "SPC Batch Record",
+            "description": "Batch record affected by deviation"
+        },
+        {
+            "fieldname": "product_affected",
+            "fieldtype": "Link",
+            "label": "Product Affected",
+            "options": "Item",
+            "description": "Product affected by deviation"
+        },
+        {
+            "fieldname": "details_section",
+            "fieldtype": "Section Break",
+            "label": "Deviation Details",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "deviation_description",
+            "fieldtype": "Text Editor",
+            "label": "Deviation Description",
+            "reqd": 1,
+            "description": "Detailed description of what deviated from standard"
+        },
+        {
+            "fieldname": "impact_assessment",
+            "fieldtype": "Text Editor",
+            "label": "Impact Assessment",
+            "reqd": 1,
+            "description": "Assessment of potential impact on product quality and patient safety"
+        },
+        {
+            "fieldname": "immediate_actions",
+            "fieldtype": "Text Editor",
+            "label": "Immediate Actions",
+            "description": "Immediate actions taken to address the deviation"
+        },
+        {
+            "fieldname": "containment_measures",
+            "fieldtype": "Text Editor",
+            "label": "Containment Measures",
+            "description": "Measures taken to contain the deviation"
+        },
+        {
+            "fieldname": "investigation_section",
+            "fieldtype": "Section Break",
+            "label": "Investigation",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "root_cause_analysis",
+            "fieldtype": "Text Editor",
+            "label": "Root Cause Analysis",
+            "description": "Detailed root cause analysis findings"
+        },
+        {
+            "fieldname": "investigation_team",
+            "fieldtype": "Table",
+            "label": "Investigation Team",
+            "options": "Deviation Team Member",
+            "description": "Team members involved in investigation"
+        },
+        {
+            "fieldname": "investigation_timeline",
+            "fieldtype": "Table",
+            "label": "Investigation Timeline",
+            "options": "Deviation Timeline",
+            "description": "Timeline of investigation activities"
+        },
+        {
+            "fieldname": "column_break_2",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "investigation_start_date",
+            "fieldtype": "Date",
+            "label": "Investigation Start Date",
+            "description": "Date investigation was initiated"
+        },
+        {
+            "fieldname": "investigation_target_date",
+            "fieldtype": "Date",
+            "label": "Investigation Target Date",
+            "description": "Target completion date for investigation"
+        },
+        {
+            "fieldname": "investigation_completion_date",
+            "fieldtype": "Date",
+            "label": "Investigation Completion Date",
+            "description": "Actual investigation completion date"
+        },
+        {
+            "fieldname": "capa_section",
+            "fieldtype": "Section Break",
+            "label": "CAPA (Corrective & Preventive Actions)",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "corrective_actions",
+            "fieldtype": "Table",
+            "label": "Corrective Actions",
+            "options": "Deviation CAPA Action",
+            "description": "Actions to correct the immediate problem"
+        },
+        {
+            "fieldname": "preventive_actions",
+            "fieldtype": "Table",
+            "label": "Preventive Actions",
+            "options": "Deviation CAPA Action",
+            "description": "Actions to prevent recurrence"
+        },
+        {
+            "fieldname": "capa_number",
+            "fieldtype": "Data",
+            "label": "CAPA Number",
+            "description": "Associated CAPA system reference number"
+        },
+        {
+            "fieldname": "effectiveness_verification",
+            "fieldtype": "Text Editor",
+            "label": "Effectiveness Verification",
+            "description": "Verification that CAPA actions were effective"
+        },
+        {
+            "fieldname": "regulatory_section",
+            "fieldtype": "Section Break",
+            "label": "Regulatory Requirements",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "regulatory_reportable",
+            "fieldtype": "Check",
+            "label": "Regulatory Reportable",
+            "default": 0,
+            "description": "Whether deviation must be reported to regulatory authorities"
+        },
+        {
+            "fieldname": "regulatory_timeline",
+            "fieldtype": "Date",
+            "label": "Regulatory Reporting Timeline",
+            "depends_on": "regulatory_reportable",
+            "description": "Deadline for regulatory reporting"
+        },
+        {
+            "fieldname": "customer_notification_required",
+            "fieldtype": "Check",
+            "label": "Customer Notification Required",
+            "default": 0,
+            "description": "Whether customers need to be notified"
+        },
+        {
+            "fieldname": "column_break_3",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "fda_report_number",
+            "fieldtype": "Data",
+            "label": "FDA Report Number",
+            "depends_on": "regulatory_reportable",
+            "description": "FDA report reference number if applicable"
+        },
+        {
+            "fieldname": "regulatory_submission_date",
+            "fieldtype": "Date",
+            "label": "Regulatory Submission Date",
+            "depends_on": "regulatory_reportable",
+            "description": "Date regulatory report was submitted"
+        },
+        {
+            "fieldname": "customer_notification_date",
+            "fieldtype": "Date",
+            "label": "Customer Notification Date",
+            "depends_on": "customer_notification_required",
+            "description": "Date customers were notified"
+        },
+        {
+            "fieldname": "closure_section",
+            "fieldtype": "Section Break",
+            "label": "Deviation Closure",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "deviation_status",
+            "fieldtype": "Select",
+            "label": "Deviation Status",
+            "options": "Open\nUnder Investigation\nPending CAPA\nCAPAs In Progress\nPending QA Review\nClosed\nCancelled",
+            "default": "Open",
+            "reqd": 1,
+            "description": "Current status of the deviation"
+        },
+        {
+            "fieldname": "closure_approval",
+            "fieldtype": "Link",
+            "label": "Closure Approval",
+            "options": "Employee",
+            "description": "Person who approved deviation closure"
+        },
+        {
+            "fieldname": "quality_assurance_review",
+            "fieldtype": "Link",
+            "label": "Quality Assurance Review",
+            "options": "Employee",
+            "description": "QA reviewer for deviation closure"
+        },
+        {
+            "fieldname": "closure_date",
+            "fieldtype": "Date",
+            "label": "Closure Date",
+            "description": "Date when deviation was officially closed"
+        },
+        {
+            "fieldname": "column_break_4",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "closure_justification",
+            "fieldtype": "Text Editor",
+            "label": "Closure Justification",
+            "description": "Justification for closing the deviation"
+        },
+        {
+            "fieldname": "lessons_learned",
+            "fieldtype": "Text Editor",
+            "label": "Lessons Learned",
+            "description": "Key lessons learned from this deviation"
+        },
+        {
+            "fieldname": "training_required",
+            "fieldtype": "Check",
+            "label": "Training Required",
+            "default": 0,
+            "description": "Whether additional training is required"
+        }
+    ],
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 1,
+            "cancel": 1,
+            "report": 1,
+            "export": 1
+        },
+        {
+            "role": "Quality Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "submit": 1,
+            "cancel": 1,
+            "report": 1,
+            "export": 1
+        },
+        {
+            "role": "Production Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "submit": 1,
+            "report": 1
+        },
+        {
+            "role": "Manufacturing User",
+            "read": 1,
+            "write": 1,
+            "create": 1
+        },
+        {
+            "role": "Auditor",
+            "read": 1,
+            "report": 1,
+            "export": 1
+        }
+    ],
+    "sort_field": "creation",
+    "sort_order": "DESC",
+    "app": "amb_w_spc",
+    "title": "SPC Deviation"
+}

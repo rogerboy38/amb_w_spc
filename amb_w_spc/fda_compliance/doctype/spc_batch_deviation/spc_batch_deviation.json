@@ -1,0 +1,47 @@
+{
+    "doctype": "DocType",
+    "name": "spc_batch_deviation",
+    "module": "fda_compliance",
+    "custom": 1,
+    "istable": 1,
+    "track_changes": 1,
+    "description": "Child table for SPC batch record deviations",
+    "fields": [
+        {
+            "fieldname": "deviation_number",
+            "fieldtype": "Link",
+            "label": "Deviation Number",
+            "options": "SPC Deviation",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Reference to deviation record"
+        },
+        {
+            "fieldname": "deviation_type",
+            "fieldtype": "Data",
+            "label": "Deviation Type",
+            "in_list_view": 1,
+            "read_only": 1,
+            "description": "Type of deviation"
+        },
+        {
+            "fieldname": "impact",
+            "fieldtype": "Select",
+            "label": "Impact",
+            "options": "No Impact\nMinor\nMajor\nCritical",
+            "in_list_view": 1,
+            "description": "Impact level on batch"
+        },
+        {
+            "fieldname": "resolution_status",
+            "fieldtype": "Select",
+            "label": "Resolution Status",
+            "options": "Open\nResolved\nAccepted",
+            "default": "Open",
+            "in_list_view": 1,
+            "description": "Current resolution status"
+        }
+    ],
+    "app": "amb_w_spc",
+    "title": "SPC Batch Deviation"
+}

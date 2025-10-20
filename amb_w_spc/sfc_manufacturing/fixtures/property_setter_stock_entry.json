@@ -1,0 +1,92 @@
+[
+ {
+  "doctype": "Property Setter",
+  "name": "Stock Entry-amb_warehouse_zone-hidden",
+  "property": "hidden",
+  "property_type": "Check",
+  "doc_type": "Stock Entry",
+  "field_name": "amb_warehouse_zone",
+  "value": "0"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Stock Entry-amb_warehouse_zone-mandatory_depends_on",
+  "property": "mandatory_depends_on",
+  "property_type": "Code",
+  "doc_type": "Stock Entry",
+  "field_name": "amb_warehouse_zone",
+  "value": "eval:doc.purpose === 'Material Transfer'"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Stock Entry-amb_temperature_check-hidden",
+  "property": "hidden",
+  "property_type": "Check",
+  "doc_type": "Stock Entry",
+  "field_name": "amb_temperature_check",
+  "value": "0"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Stock Entry-amb_quality_check_required-default",
+  "property": "default",
+  "property_type": "Text",
+  "doc_type": "Stock Entry",
+  "field_name": "amb_quality_check_required",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Stock Entry-amb_pick_task-read_only",
+  "property": "read_only",
+  "property_type": "Check",
+  "doc_type": "Stock Entry",
+  "field_name": "amb_pick_task",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Stock Entry-amb_material_assessment_log-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Stock Entry",
+  "field_name": "amb_material_assessment_log",
+  "value": "eval:doc.amb_quality_check_required"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Stock Entry-items-width",
+  "property": "width",
+  "property_type": "Data",
+  "doc_type": "Stock Entry",
+  "field_name": "items",
+  "value": "100%"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Stock Entry Detail-amb_warehouse_zone-mandatory_depends_on",
+  "property": "mandatory_depends_on",
+  "property_type": "Code",
+  "doc_type": "Stock Entry Detail",
+  "field_name": "amb_warehouse_zone",
+  "value": "eval:parent.amb_warehouse_zone_required"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Stock Entry Detail-amb_batch_temperature-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Stock Entry Detail",
+  "field_name": "amb_batch_temperature",
+  "value": "eval:parent.amb_temperature_check"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Stock Entry Detail-amb_quality_status-default",
+  "property": "default",
+  "property_type": "Data",
+  "doc_type": "Stock Entry Detail",
+  "field_name": "amb_quality_status",
+  "value": "Pending"
+ }
+]

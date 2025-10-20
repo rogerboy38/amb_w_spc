@@ -1,0 +1,58 @@
+{
+    "doctype": "DocType",
+    "name": "spc_environment",
+    "module": "fda_compliance",
+    "custom": 1,
+    "istable": 1,
+    "track_changes": 1,
+    "description": "Child table for environmental conditions during batch production",
+    "fields": [
+        {
+            "fieldname": "parameter",
+            "fieldtype": "Select",
+            "label": "Parameter",
+            "options": "Temperature\nHumidity\nPressure\nAir Quality\nCleanroom Grade\nParticle Count\nOther",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Environmental parameter monitored"
+        },
+        {
+            "fieldname": "specification",
+            "fieldtype": "Data",
+            "label": "Specification",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Required specification range"
+        },
+        {
+            "fieldname": "actual_value",
+            "fieldtype": "Data",
+            "label": "Actual Value",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Actual measured value"
+        },
+        {
+            "fieldname": "units",
+            "fieldtype": "Data",
+            "label": "Units",
+            "description": "Units of measurement"
+        },
+        {
+            "fieldname": "monitoring_frequency",
+            "fieldtype": "Select",
+            "label": "Monitoring Frequency",
+            "options": "Continuous\nHourly\nDaily\nBatch Start\nBatch End",
+            "description": "How frequently parameter was monitored"
+        },
+        {
+            "fieldname": "compliant",
+            "fieldtype": "Check",
+            "label": "Within Specification",
+            "default": 1,
+            "description": "Whether value was within specification"
+        }
+    ],
+    "app": "amb_w_spc",
+    "title": "SPC Environment"
+}

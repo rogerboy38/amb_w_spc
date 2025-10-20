@@ -1,0 +1,255 @@
+{
+    "creation": "2025-09-14 00:00:00",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "naming_section",
+        "parameter_name",
+        "parameter_code",
+        "company",
+        "plant",
+        "department",
+        "status",
+        "is_active",
+        "section_break_6",
+        "unit_of_measurement",
+        "parameter_type",
+        "data_type",
+        "default_precision",
+        "description",
+        "target_values_section",
+        "target_values",
+        "control_limits_section",
+        "control_limits",
+        "specifications_section",
+        "specifications",
+        "audit_section",
+        "created_date",
+        "created_by",
+        "modified_date",
+        "modified_by",
+        "last_modified",
+        "creation_info"
+    ],
+    "fields": [
+        {
+            "fieldname": "naming_section",
+            "fieldtype": "Section Break",
+            "label": "Parameter Details / Detalles del Par\u00e1metro"
+        },
+        {
+            "fieldname": "parameter_name",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Parameter Name / Nombre del Par\u00e1metro",
+            "reqd": 1,
+            "unique": 1,
+            "description": "Unique name for the SPC parameter",
+            "length": 140
+        },
+        {
+            "fieldname": "parameter_code",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Parameter Code / C\u00f3digo del Par\u00e1metro",
+            "reqd": 1,
+            "unique": 1,
+            "description": "Unique code for the parameter (alphanumeric)",
+            "length": 20
+        },
+        {
+            "fieldname": "company",
+            "fieldtype": "Link",
+            "label": "Company / Empresa",
+            "options": "Company",
+            "description": "Company for multi-plant support"
+        },
+        {
+            "fieldname": "plant",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Plant / Planta",
+            "options": "Warehouse"
+        },
+        {
+            "fieldname": "department",
+            "fieldtype": "Link",
+            "label": "Department / Departamento",
+            "options": "Department"
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "label": "Status / Estado",
+            "options": "Active\nInactive",
+            "default": "Active"
+        },
+        {
+            "fieldname": "is_active",
+            "fieldtype": "Check",
+            "default": "1",
+            "label": "Is Active / Activo"
+        },
+        {
+            "fieldname": "section_break_6",
+            "fieldtype": "Section Break",
+            "label": "Parameter Configuration / Configuraci\u00f3n del Par\u00e1metro"
+        },
+        {
+            "fieldname": "unit_of_measurement",
+            "fieldtype": "Link",
+            "label": "Unit of Measurement / Unidad de Medida",
+            "options": "UOM"
+        },
+        {
+            "fieldname": "parameter_type",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Parameter Type / Tipo de Par\u00e1metro",
+            "options": "Temperature\nBrix\nTotal Solids\npH\nViscosity\nDensity\nMoisture\nProtein\nFat\nAsh"
+        },
+        {
+            "fieldname": "data_type",
+            "fieldtype": "Select",
+            "label": "Data Type / Tipo de Dato",
+            "options": "Numeric\nText",
+            "default": "Numeric"
+        },
+        {
+            "fieldname": "default_precision",
+            "fieldtype": "Int",
+            "label": "Default Precision / Precisi\u00f3n por Defecto",
+            "default": "2",
+            "depends_on": "eval:doc.data_type=='Numeric'"
+        },
+        {
+            "fieldname": "description",
+            "fieldtype": "Text",
+            "label": "Description / Descripci\u00f3n",
+            "description": "Detailed description of the parameter"
+        },
+        {
+            "fieldname": "target_values_section",
+            "fieldtype": "Section Break",
+            "label": "Target Values / Valores Objetivo"
+        },
+        {
+            "fieldname": "target_values",
+            "fieldtype": "Table",
+            "label": "Target Values / Valores Objetivo",
+            "options": "SPC Parameter Target Value"
+        },
+        {
+            "fieldname": "control_limits_section",
+            "fieldtype": "Section Break",
+            "label": "Control Limits / L\u00edmites de Control"
+        },
+        {
+            "fieldname": "control_limits",
+            "fieldtype": "Table",
+            "label": "Control Limits / L\u00edmites de Control",
+            "options": "SPC Parameter Control Limit"
+        },
+        {
+            "fieldname": "specifications_section",
+            "fieldtype": "Section Break",
+            "label": "Specifications / Especificaciones"
+        },
+        {
+            "fieldname": "specifications",
+            "fieldtype": "Table",
+            "label": "Specifications / Especificaciones",
+            "options": "SPC Parameter Specification"
+        },
+        {
+            "fieldname": "audit_section",
+            "fieldtype": "Section Break",
+            "label": "Audit Trail / Rastro de Auditor\u00eda",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "created_date",
+            "fieldtype": "Date",
+            "label": "Created Date / Fecha de Creaci\u00f3n",
+            "default": "Today"
+        },
+        {
+            "fieldname": "created_by",
+            "fieldtype": "Link",
+            "label": "Created By / Creado Por",
+            "options": "User",
+            "read_only": 1
+        },
+        {
+            "fieldname": "modified_date",
+            "fieldtype": "Date",
+            "label": "Modified Date / Fecha de Modificaci\u00f3n"
+        },
+        {
+            "fieldname": "modified_by",
+            "fieldtype": "Link",
+            "label": "Modified By / Modificado Por",
+            "options": "User",
+            "read_only": 1
+        },
+        {
+            "fieldname": "last_modified",
+            "fieldtype": "Datetime",
+            "label": "Last Modified / \u00daltima Modificaci\u00f3n",
+            "read_only": 1
+        },
+        {
+            "fieldname": "creation_info",
+            "fieldtype": "Small Text",
+            "label": "Creation Info / Informaci\u00f3n de Creaci\u00f3n",
+            "read_only": 1
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "links": [],
+    "modified": "2025-09-14 00:00:00",
+    "modified_by": "Administrator",
+    "module": "core_spc",
+    "name": "spc_parameter_master",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Manufacturing Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Quality Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "read": 1,
+            "role": "Manufacturing User"
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1,
+    "track_seen": 1,
+    "track_views": 1,
+    "quick_entry": 1,
+    "app": "amb_w_spc",
+    "title": "SPC Parameter Master"
+}

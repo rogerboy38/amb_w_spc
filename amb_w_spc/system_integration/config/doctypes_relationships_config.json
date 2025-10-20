@@ -1,0 +1,354 @@
+{
+ "doctype_relationships": {
+  "description": "Complete mapping of all DocType relationships in the SPC ERPNext system",
+  "version": "1.0",
+  "last_updated": "2025-09-10",
+  "parent_child_relationships": {
+   "Plant Configuration": {
+    "children": [
+     "Workstation",
+     "SPC Environment",
+     "SPC Equipment",
+     "Bot User Configuration"
+    ],
+    "description": "Root level plant configuration containing all plant-specific entities"
+   },
+   "Workstation": {
+    "parent": "Plant Configuration",
+    "children": [
+     "SPC Parameter Master",
+     "PLC Integration",
+     "SPC Data Point"
+    ],
+    "description": "Manufacturing workstation with associated parameters and data collection"
+   },
+   "SPC Parameter Master": {
+    "parent": "Workstation",
+    "children": [
+     "SPC Specification",
+     "SPC Parameter Control Limit",
+     "SPC Parameter Target Value",
+     "SPC Parameter Specification"
+    ],
+    "description": "Master definition of measurable parameters"
+   },
+   "SPC Specification": {
+    "parent": "SPC Parameter Master",
+    "children": [
+     "SPC Data Point"
+    ],
+    "description": "Specification limits and targets for parameters"
+   },
+   "SPC Data Point": {
+    "parent": [
+     "Workstation",
+     "SPC Specification"
+    ],
+    "children": [
+     "SPC Alert",
+     "SPC Control Chart"
+    ],
+    "triggers": [
+     "SPC Alert (when out of specification)",
+     "Process Capability (for analysis)",
+     "SPC Audit Trail (for compliance)"
+    ],
+    "description": "Individual measurement data points"
+   },
+   "SPC Alert": {
+    "parent": "SPC Data Point",
+    "children": [
+     "SPC Alert Recipient",
+     "SPC Corrective Action"
+    ],
+    "triggers": [
+     "Deviation (if severity high)",
+     "Electronic Signature (for acknowledgment)"
+    ],
+    "description": "Alert generated when measurements exceed limits"
+   },
+   "SPC Control Chart": {
+    "parent": "SPC Data Point",
+    "description": "Statistical control chart visualization of data points"
+   },
+   "Process Capability": {
+    "parent": "SPC Parameter Master",
+    "children": [
+     "SPC Process Capability Measurement"
+    ],
+    "triggers": [
+     "SPC Report (for capability studies)"
+    ],
+    "description": "Statistical process capability analysis"
+   },
+   "SPC Report": {
+    "children": [
+     "SPC Report Parameter",
+     "SPC Report Cpk Value",
+     "SPC Report Violation",
+     "SPC Report Recipient"
+    ],
+    "sources": [
+     "SPC Data Point",
+     "Process Capability",
+     "SPC Control Chart"
+    ],
+    "description": "Comprehensive statistical and compliance reports"
+   },
+   "SPC Corrective Action": {
+    "parent": "SPC Alert",
+    "children": [
+     "Corrective Action Item",
+     "Corrective Action Factor"
+    ],
+    "triggers": [
+     "Electronic Signature (for approval)"
+    ],
+    "description": "CAPA workflow for addressing quality issues"
+   },
+   "Deviation": {
+    "parent": "SPC Alert",
+    "children": [
+     "Deviation Team Member",
+     "Deviation Timeline",
+     "Deviation CAPA Action",
+     "SPC Batch Deviation"
+    ],
+    "triggers": [
+     "Electronic Signature (for investigation)",
+     "Corrective Action (for remediation)"
+    ],
+    "description": "FDA compliance deviation management"
+   },
+   "Electronic Signature": {
+    "applies_to": [
+     "SPC Data Point",
+     "SPC Alert",
+     "Deviation",
+     "SPC Corrective Action",
+     "SPC Report",
+     "Process Capability"
+    ],
+    "description": "21 CFR Part 11 compliant electronic signatures"
+   },
+   "SPC Audit Trail": {
+    "tracks": [
+     "SPC Data Point",
+     "SPC Alert",
+     "Deviation",
+     "Electronic Signature",
+     "SPC Specification",
+     "SPC Corrective Action"
+    ],
+    "description": "Complete audit trail for FDA compliance"
+   },
+   "SPC Batch Record": {
+    "children": [
+     "SPC Batch Parameter",
+     "SPC Batch Deviation"
+    ],
+    "links": [
+     "SPC Data Point",
+     "Deviation"
+    ],
+    "description": "Batch production record with SPC data"
+   },
+   "Bot User Configuration": {
+    "parent": "Plant Configuration",
+    "controls": [
+     "SPC Data Point (automated creation)",
+     "PLC Integration (data collection)",
+     "SPC Alert (automated responses)"
+    ],
+    "description": "Configuration for automated bot users"
+   },
+   "PLC Integration": {
+    "parent": "Workstation",
+    "children": [
+     "PLC Parameter Mapping"
+    ],
+    "creates": [
+     "SPC Data Point"
+    ],
+    "description": "Integration with manufacturing equipment PLCs"
+   }
+  },
+  "field_links": {
+   "description": "Link field relationships between DocTypes",
+   "links": {
+    "Plant Configuration": {
+     "company": "Company.name",
+     "cost_center": "Cost Center.name"
+    },
+    "Workstation": {
+     "plant": "Plant Configuration.name",
+     "workstation": "Workstation.name (ERPNext core)"
+    },
+    "SPC Parameter Master": {
+     "workstation": "Workstation.name",
+     "plant": "Plant Configuration.name",
+     "uom": "UOM.uom_name"
+    },
+    "SPC Specification": {
+     "parameter": "SPC Parameter Master.name",
+     "workstation": "Workstation.name",
+     "plant": "Plant Configuration.name"
+    },
+    "SPC Data Point": {
+     "parameter": "SPC Parameter Master.name",
+     "specification": "SPC Specification.name",
+     "workstation": "Workstation.name",
+     "plant": "Plant Configuration.name",
+     "operator": "User.name",
+     "shift": "Shift Type.name"
+    },
+    "SPC Alert": {
+     "data_point": "SPC Data Point.name",
+     "parameter": "SPC Parameter Master.name",
+     "workstation": "Workstation.name",
+     "plant": "Plant Configuration.name",
+     "assigned_to": "User.name"
+    },
+    "Process Capability": {
+     "parameter": "SPC Parameter Master.name",
+     "workstation": "Workstation.name",
+     "plant": "Plant Configuration.name"
+    },
+    "SPC Report": {
+     "plant": "Plant Configuration.name",
+     "workstation": "Workstation.name",
+     "shift": "Shift Type.name"
+    },
+    "SPC Corrective Action": {
+     "alert": "SPC Alert.name",
+     "parameter": "SPC Parameter Master.name",
+     "workstation": "Workstation.name",
+     "plant": "Plant Configuration.name",
+     "assigned_to": "User.name"
+    },
+    "Deviation": {
+     "alert": "SPC Alert.name",
+     "batch_record": "SPC Batch Record.name",
+     "plant": "Plant Configuration.name",
+     "raised_by": "User.name"
+    },
+    "Electronic Signature": {
+     "document_type": "DocType.name",
+     "document_name": "Dynamic Link",
+     "signed_by": "User.name"
+    },
+    "SPC Audit Trail": {
+     "document_type": "DocType.name",
+     "document_name": "Dynamic Link",
+     "user": "User.name"
+    },
+    "Bot User Configuration": {
+     "plant": "Plant Configuration.name",
+     "user": "User.name"
+    },
+    "PLC Integration": {
+     "workstation": "Workstation.name",
+     "plant": "Plant Configuration.name"
+    }
+   }
+  },
+  "data_flow_connections": {
+   "description": "Automated data flow and trigger relationships",
+   "flows": {
+    "data_collection_flow": {
+     "sequence": [
+      "PLC Integration → SPC Data Point (automated)",
+      "SPC Data Point → SPC Alert (if out of spec)",
+      "SPC Alert → Deviation (if critical)",
+      "Deviation → Corrective Action (workflow)",
+      "All changes → SPC Audit Trail (compliance)"
+     ]
+    },
+    "quality_analysis_flow": {
+     "sequence": [
+      "SPC Data Point → SPC Control Chart (statistical)",
+      "SPC Control Chart → Process Capability (analysis)",
+      "Process Capability → SPC Report (reporting)",
+      "SPC Report → Quality Review (workflow)"
+     ]
+    },
+    "compliance_flow": {
+     "sequence": [
+      "SPC Data Point → Electronic Signature (if required)",
+      "Electronic Signature → SPC Audit Trail (tracking)",
+      "Deviation → Electronic Signature (investigation)",
+      "Corrective Action → Electronic Signature (approval)"
+     ]
+    },
+    "alert_escalation_flow": {
+     "sequence": [
+      "SPC Alert → SPC Alert Recipient (notification)",
+      "SPC Alert → Corrective Action (if not resolved)",
+      "Corrective Action → Electronic Signature (approval)",
+      "Electronic Signature → SPC Audit Trail (compliance)"
+     ]
+    }
+   }
+  },
+  "lookup_relationships": {
+   "description": "Dropdown and lookup field configurations",
+   "lookups": {
+    "plant_filter": {
+     "description": "Filter data based on user's assigned plants",
+     "applies_to": [
+      "Workstation",
+      "SPC Parameter Master",
+      "SPC Data Point",
+      "SPC Alert",
+      "Process Capability",
+      "SPC Report"
+     ]
+    },
+    "workstation_filter": {
+     "description": "Filter workstations based on selected plant",
+     "parent": "plant_filter",
+     "applies_to": [
+      "SPC Parameter Master",
+      "SPC Data Point",
+      "SPC Alert"
+     ]
+    },
+    "parameter_filter": {
+     "description": "Filter parameters based on selected workstation",
+     "parent": "workstation_filter",
+     "applies_to": [
+      "SPC Specification",
+      "SPC Data Point",
+      "SPC Alert"
+     ]
+    },
+    "user_role_filter": {
+     "description": "Filter data based on user role permissions",
+     "roles": {
+      "Quality User": [
+       "all_quality_docs"
+      ],
+      "Inspector User": [
+       "data_entry",
+       "alerts"
+      ],
+      "Manufacturing User": [
+       "workstation_data"
+      ],
+      "Warehouse Bot User": [
+       "warehouse_parameters"
+      ],
+      "Workstation Bot User": [
+       "workstation_automation"
+      ],
+      "Weight Bot User": [
+       "weight_parameters"
+      ]
+     }
+    }
+   }
+  }
+ },
+ "module": "system_integration",
+ "app": "amb_w_spc"
+}

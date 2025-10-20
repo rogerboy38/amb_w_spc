@@ -1,0 +1,152 @@
+[
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt-amb_warehouse_section",
+  "dt": "Purchase Receipt",
+  "label": "Warehouse Management",
+  "fieldname": "amb_warehouse_section",
+  "fieldtype": "Section Break",
+  "insert_after": "supplier_warehouse",
+  "collapsible": 0,
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt-amb_warehouse_zone_assignment",
+  "dt": "Purchase Receipt",
+  "label": "Automatic Zone Assignment",
+  "fieldname": "amb_warehouse_zone_assignment",
+  "fieldtype": "Check",
+  "insert_after": "amb_warehouse_section",
+  "default": "1",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt-amb_quality_inspection_required",
+  "dt": "Purchase Receipt",
+  "label": "Quality Inspection Required",
+  "fieldname": "amb_quality_inspection_required",
+  "fieldtype": "Check",
+  "insert_after": "amb_warehouse_zone_assignment",
+  "default": "1",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt-amb_temperature_check",
+  "dt": "Purchase Receipt",
+  "label": "Temperature Check Required",
+  "fieldname": "amb_temperature_check",
+  "fieldtype": "Check",
+  "insert_after": "amb_quality_inspection_required",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt-amb_batch_tracking_required",
+  "dt": "Purchase Receipt",
+  "label": "Batch Tracking Required",
+  "fieldname": "amb_batch_tracking_required",
+  "fieldtype": "Check",
+  "insert_after": "amb_temperature_check",
+  "default": "1",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt-amb_column_break_1",
+  "dt": "Purchase Receipt",
+  "fieldname": "amb_column_break_1",
+  "fieldtype": "Column Break",
+  "insert_after": "amb_batch_tracking_required",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt-amb_quarantine_required",
+  "dt": "Purchase Receipt",
+  "label": "Quarantine Required",
+  "fieldname": "amb_quarantine_required",
+  "fieldtype": "Check",
+  "insert_after": "amb_column_break_1",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt-amb_material_assessment_log",
+  "dt": "Purchase Receipt",
+  "label": "Material Assessment Log",
+  "fieldname": "amb_material_assessment_log",
+  "fieldtype": "Link",
+  "options": "Material Assessment Log",
+  "insert_after": "amb_quarantine_required",
+  "read_only": 1,
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt-amb_received_datetime",
+  "dt": "Purchase Receipt",
+  "label": "Received Date Time",
+  "fieldname": "amb_received_datetime",
+  "fieldtype": "Datetime",
+  "insert_after": "amb_material_assessment_log",
+  "read_only": 1,
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt Item-amb_warehouse_zone",
+  "dt": "Purchase Receipt Item",
+  "label": "Warehouse Zone",
+  "fieldname": "amb_warehouse_zone",
+  "fieldtype": "Data",
+  "insert_after": "warehouse",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt Item-amb_quality_status",
+  "dt": "Purchase Receipt Item",
+  "label": "Quality Status",
+  "fieldname": "amb_quality_status",
+  "fieldtype": "Select",
+  "options": "Pending Inspection\nApproved\nRejected\nQuarantined",
+  "insert_after": "amb_warehouse_zone",
+  "default": "Pending Inspection",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt Item-amb_temperature_recorded",
+  "dt": "Purchase Receipt Item",
+  "label": "Temperature Recorded (°C)",
+  "fieldname": "amb_temperature_recorded",
+  "fieldtype": "Float",
+  "precision": 1,
+  "insert_after": "amb_quality_status",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt Item-amb_batch_amb_reference",
+  "dt": "Purchase Receipt Item",
+  "label": "Batch AMB Reference",
+  "fieldname": "amb_batch_amb_reference",
+  "fieldtype": "Link",
+  "options": "Batch AMB",
+  "insert_after": "amb_temperature_recorded",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Purchase Receipt Item-amb_expiry_date",
+  "dt": "Purchase Receipt Item",
+  "label": "Material Expiry Date",
+  "fieldname": "amb_expiry_date",
+  "fieldtype": "Date",
+  "insert_after": "amb_batch_amb_reference",
+  "module": "AMB W SPC"
+ }
+]

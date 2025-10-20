@@ -1,0 +1,277 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "autoname": "field:naming_series",
+    "creation": "2025-01-15 09:00:00.000000",
+    "default_view": "List",
+    "doctype": "DocType",
+    "document_type": "Document",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "naming_series",
+        "sales_order",
+        "customer",
+        "delivery_date",
+        "column_break_5",
+        "fulfillment_status",
+        "total_items",
+        "items_section",
+        "fulfillment_items",
+        "pick_tasks_section",
+        "warehouse_pick_tasks",
+        "quality_section",
+        "quality_certificates",
+        "shipping_section",
+        "plant_code",
+        "warehouse",
+        "temperature_requirements",
+        "column_break_shipping",
+        "shipping_method",
+        "tracking_number",
+        "delivery_confirmation",
+        "compliance_section",
+        "fda_compliance_required",
+        "cold_chain_compliance",
+        "batch_tracking_required",
+        "column_break_compliance",
+        "compliance_status",
+        "audit_trail",
+        "timestamps_section",
+        "created_on",
+        "last_updated"
+    ],
+    "fields": [
+        {
+            "fieldname": "naming_series",
+            "fieldtype": "Select",
+            "label": "Series",
+            "options": "SOF-.YY.-.####",
+            "reqd": 1
+        },
+        {
+            "fieldname": "sales_order",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Sales Order",
+            "options": "Sales Order",
+            "reqd": 1
+        },
+        {
+            "fetch_from": "sales_order.customer",
+            "fieldname": "customer",
+            "fieldtype": "Link",
+            "label": "Customer",
+            "options": "Customer",
+            "read_only": 1
+        },
+        {
+            "fetch_from": "sales_order.delivery_date",
+            "fieldname": "delivery_date",
+            "fieldtype": "Date",
+            "label": "Delivery Date",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_5",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "Draft",
+            "fieldname": "fulfillment_status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Fulfillment Status",
+            "options": "Draft\nWarehouse Check\nPick Tasks Created\nPicking In Progress\nPicking Complete\nQuality Check\nReady to Ship\nShipped\nDelivered\nCompleted\nCancelled",
+            "reqd": 1
+        },
+        {
+            "fieldname": "total_items",
+            "fieldtype": "Int",
+            "label": "Total Items",
+            "read_only": 1
+        },
+        {
+            "fieldname": "items_section",
+            "fieldtype": "Section Break",
+            "label": "Fulfillment Items"
+        },
+        {
+            "fieldname": "fulfillment_items",
+            "fieldtype": "Table",
+            "label": "Items",
+            "options": "Sales Order Fulfillment Item",
+            "reqd": 1
+        },
+        {
+            "fieldname": "pick_tasks_section",
+            "fieldtype": "Section Break",
+            "label": "Warehouse Pick Tasks"
+        },
+        {
+            "fieldname": "warehouse_pick_tasks",
+            "fieldtype": "Table",
+            "label": "Pick Tasks",
+            "options": "Warehouse Pick Task"
+        },
+        {
+            "fieldname": "quality_section",
+            "fieldtype": "Section Break",
+            "label": "Quality Certificates"
+        },
+        {
+            "fieldname": "quality_certificates",
+            "fieldtype": "Table",
+            "label": "Quality Certificates",
+            "options": "Quality Certificate Link"
+        },
+        {
+            "fieldname": "shipping_section",
+            "fieldtype": "Section Break",
+            "label": "Shipping Information"
+        },
+        {
+            "fieldname": "plant_code",
+            "fieldtype": "Data",
+            "label": "Plant Code",
+            "read_only": 1
+        },
+        {
+            "fieldname": "warehouse",
+            "fieldtype": "Link",
+            "label": "Primary Warehouse",
+            "options": "Warehouse"
+        },
+        {
+            "fieldname": "temperature_requirements",
+            "fieldtype": "Data",
+            "label": "Temperature Requirements"
+        },
+        {
+            "fieldname": "column_break_shipping",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "shipping_method",
+            "fieldtype": "Select",
+            "label": "Shipping Method",
+            "options": "Ground\nAir\nOcean\nExpress"
+        },
+        {
+            "fieldname": "tracking_number",
+            "fieldtype": "Data",
+            "label": "Tracking Number"
+        },
+        {
+            "fieldname": "delivery_confirmation",
+            "fieldtype": "Check",
+            "label": "Delivery Confirmed"
+        },
+        {
+            "fieldname": "compliance_section",
+            "fieldtype": "Section Break",
+            "label": "Compliance & Tracking"
+        },
+        {
+            "fieldname": "fda_compliance_required",
+            "fieldtype": "Check",
+            "label": "FDA Compliance Required"
+        },
+        {
+            "fieldname": "cold_chain_compliance",
+            "fieldtype": "Check",
+            "label": "Cold Chain Compliance"
+        },
+        {
+            "fieldname": "batch_tracking_required",
+            "fieldtype": "Check",
+            "label": "Batch Tracking Required"
+        },
+        {
+            "fieldname": "column_break_compliance",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "Pending",
+            "fieldname": "compliance_status",
+            "fieldtype": "Select",
+            "label": "Compliance Status",
+            "options": "Pending\nCompliant\nNon-Compliant\nUnder Review"
+        },
+        {
+            "fieldname": "audit_trail",
+            "fieldtype": "Long Text",
+            "label": "Audit Trail",
+            "read_only": 1
+        },
+        {
+            "fieldname": "timestamps_section",
+            "fieldtype": "Section Break",
+            "label": "Timestamps"
+        },
+        {
+            "default": "now",
+            "fieldname": "created_on",
+            "fieldtype": "Datetime",
+            "label": "Created On",
+            "read_only": 1
+        },
+        {
+            "fieldname": "last_updated",
+            "fieldtype": "Datetime",
+            "label": "Last Updated",
+            "read_only": 1
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "is_submittable": 1,
+    "links": [],
+    "modified": "2025-01-15 09:00:00.000000",
+    "modified_by": "Administrator",
+    "module": "SFC Manufacturing",
+    "name": "sales_order_fulfillment",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Sales Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Warehouse Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Sales User",
+            "share": 1
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1,
+    "title": "Sales Order Fulfillment"
+}

@@ -1,0 +1,75 @@
+{
+    "doctype": "DocType",
+    "name": "deviation_capa_action",
+    "module": "fda_compliance",
+    "custom": 1,
+    "istable": 1,
+    "track_changes": 1,
+    "description": "Child table for deviation CAPA (Corrective and Preventive Actions)",
+    "fields": [
+        {
+            "fieldname": "action_description",
+            "fieldtype": "Small Text",
+            "label": "Action Description",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Detailed description of the corrective or preventive action"
+        },
+        {
+            "fieldname": "action_type",
+            "fieldtype": "Select",
+            "label": "Action Type",
+            "options": "Corrective\nPreventive",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Whether this is a corrective or preventive action"
+        },
+        {
+            "fieldname": "responsible_person",
+            "fieldtype": "Link",
+            "label": "Responsible Person",
+            "options": "Employee",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Person responsible for executing the action"
+        },
+        {
+            "fieldname": "target_completion_date",
+            "fieldtype": "Date",
+            "label": "Target Completion Date",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Target date for action completion"
+        },
+        {
+            "fieldname": "actual_completion_date",
+            "fieldtype": "Date",
+            "label": "Actual Completion Date",
+            "description": "Actual date when action was completed"
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "label": "Status",
+            "options": "Open\nIn Progress\nCompleted\nVerified\nClosed",
+            "default": "Open",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Current status of the action"
+        },
+        {
+            "fieldname": "effectiveness_review",
+            "fieldtype": "Small Text",
+            "label": "Effectiveness Review",
+            "description": "Review of action effectiveness"
+        },
+        {
+            "fieldname": "verification_date",
+            "fieldtype": "Date",
+            "label": "Verification Date",
+            "description": "Date when effectiveness was verified"
+        }
+    ],
+    "app": "amb_w_spc",
+    "title": "Deviation CAPA Action"
+}

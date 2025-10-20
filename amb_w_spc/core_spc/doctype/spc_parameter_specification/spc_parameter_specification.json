@@ -1,0 +1,107 @@
+{
+    "creation": "2025-09-10 22:32:02",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "specification_name",
+        "product_code",
+        "column_break_3",
+        "upper_spec_limit",
+        "lower_spec_limit",
+        "column_break_6",
+        "target_value",
+        "cpk_target",
+        "column_break_9",
+        "effective_from",
+        "effective_to",
+        "is_active"
+    ],
+    "fields": [
+        {
+            "fieldname": "specification_name",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Specification Name",
+            "reqd": 1
+        },
+        {
+            "fieldname": "product_code",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Product Code",
+            "options": "Item"
+        },
+        {
+            "fieldname": "column_break_3",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "upper_spec_limit",
+            "fieldtype": "Float",
+            "in_list_view": 1,
+            "label": "Upper Specification Limit (USL)",
+            "precision": "6"
+        },
+        {
+            "fieldname": "lower_spec_limit",
+            "fieldtype": "Float",
+            "in_list_view": 1,
+            "label": "Lower Specification Limit (LSL)",
+            "precision": "6"
+        },
+        {
+            "fieldname": "column_break_6",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "target_value",
+            "fieldtype": "Float",
+            "label": "Target Value",
+            "precision": "6"
+        },
+        {
+            "fieldname": "cpk_target",
+            "fieldtype": "Float",
+            "label": "Cpk Target",
+            "precision": "3",
+            "default": "1.33"
+        },
+        {
+            "fieldname": "column_break_9",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "effective_from",
+            "fieldtype": "Date",
+            "label": "Effective From",
+            "reqd": 1
+        },
+        {
+            "fieldname": "effective_to",
+            "fieldtype": "Date",
+            "label": "Effective To"
+        },
+        {
+            "fieldname": "is_active",
+            "fieldtype": "Check",
+            "label": "Is Active",
+            "default": "1"
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "istable": 1,
+    "links": [],
+    "modified": "2025-09-10 22:32:02",
+    "modified_by": "Administrator",
+    "module": "core_spc",
+    "name": "spc_parameter_specification",
+    "owner": "Administrator",
+    "permissions": [],
+    "sort_field": "creation",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1,
+    "app": "amb_w_spc",
+    "title": "SPC Parameter Specification"
+}

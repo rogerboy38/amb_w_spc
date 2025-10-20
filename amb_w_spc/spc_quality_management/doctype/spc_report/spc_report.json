@@ -1,0 +1,256 @@
+{
+    "actions": [],
+    "allow_copy": 0,
+    "allow_events_in_timeline": 0,
+    "allow_guest_to_view": 0,
+    "allow_import": 1,
+    "allow_rename": 1,
+    "autoname": "field:report_name",
+    "beta": 0,
+    "creation": "2025-09-10 22:37:36.000000",
+    "custom": 0,
+    "docstatus": 0,
+    "doctype": "DocType",
+    "document_type": "Document",
+    "engine": "InnoDB",
+    "fields": [
+        {
+            "fieldname": "report_details_section",
+            "fieldtype": "Section Break",
+            "label": "Report Details"
+        },
+        {
+            "fieldname": "report_name",
+            "fieldtype": "Data",
+            "label": "Report Name",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "report_type",
+            "fieldtype": "Select",
+            "label": "Report Type",
+            "options": "Daily\nWeekly\nMonthly\nCustom",
+            "reqd": 1
+        },
+        {
+            "fieldname": "plant",
+            "fieldtype": "Link",
+            "label": "Plant",
+            "options": "Company",
+            "reqd": 1
+        },
+        {
+            "fieldname": "department",
+            "fieldtype": "Link",
+            "label": "Department",
+            "options": "Department"
+        },
+        {
+            "fieldname": "column_break_5",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "reporting_frequency",
+            "fieldtype": "Select",
+            "label": "Reporting Frequency",
+            "options": "Real-time\nHourly\nDaily\nWeekly\nMonthly\nOn-demand"
+        },
+        {
+            "default": "0",
+            "fieldname": "auto_generation",
+            "fieldtype": "Check",
+            "label": "Auto Generation"
+        },
+        {
+            "fieldname": "report_format",
+            "fieldtype": "Select",
+            "label": "Report Format",
+            "options": "PDF\nExcel\nDashboard\nEmail"
+        },
+        {
+            "fieldname": "time_period_section",
+            "fieldtype": "Section Break",
+            "label": "Time Period"
+        },
+        {
+            "fieldname": "from_date",
+            "fieldtype": "Date",
+            "label": "From Date"
+        },
+        {
+            "fieldname": "to_date",
+            "fieldtype": "Date",
+            "label": "To Date"
+        },
+        {
+            "fieldname": "shift",
+            "fieldtype": "Select",
+            "label": "Shift",
+            "options": "All Shifts\nShift A\nShift B\nShift C\nDay Shift\nNight Shift"
+        },
+        {
+            "fieldname": "column_break_13",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "specific_time_range",
+            "fieldtype": "Time Range",
+            "label": "Specific Time Range"
+        },
+        {
+            "fieldname": "include_weekends",
+            "fieldtype": "Check",
+            "label": "Include Weekends"
+        },
+        {
+            "fieldname": "content_settings_section",
+            "fieldtype": "Section Break",
+            "label": "Content Settings"
+        },
+        {
+            "fieldname": "parameters_included",
+            "fieldtype": "Table",
+            "label": "Parameters Included",
+            "options": "SPC Report Parameter"
+        },
+        {
+            "fieldname": "chart_types",
+            "fieldtype": "Table MultiSelect",
+            "label": "Chart Types",
+            "options": "Control Chart\nHistogram\nCapability Chart\nTrend Chart\nPareto Chart\nScatter Plot"
+        },
+        {
+            "fieldname": "statistical_summaries",
+            "fieldtype": "Table MultiSelect",
+            "label": "Statistical Summaries",
+            "options": "Mean\nStandard Deviation\nRange\nCp\nCpk\nPp\nPpk\nSigma Level"
+        },
+        {
+            "fieldname": "report_data_section",
+            "fieldtype": "Section Break",
+            "label": "Report Data"
+        },
+        {
+            "fieldname": "cpk_values",
+            "fieldtype": "Table",
+            "label": "Cpk Values",
+            "options": "SPC Report Cpk Value"
+        },
+        {
+            "fieldname": "control_chart_violations",
+            "fieldtype": "Table",
+            "label": "Control Chart Violations",
+            "options": "SPC Report Violation"
+        },
+        {
+            "fieldname": "column_break_22",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "trend_analysis",
+            "fieldtype": "Long Text",
+            "label": "Trend Analysis"
+        },
+        {
+            "fieldname": "process_performance",
+            "fieldtype": "Long Text",
+            "label": "Process Performance Summary"
+        },
+        {
+            "fieldname": "distribution_section",
+            "fieldtype": "Section Break",
+            "label": "Distribution"
+        },
+        {
+            "fieldname": "recipients",
+            "fieldtype": "Table",
+            "label": "Recipients",
+            "options": "SPC Report Recipient"
+        },
+        {
+            "fieldname": "column_break_26",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "last_generated",
+            "fieldtype": "Datetime",
+            "label": "Last Generated",
+            "read_only": 1
+        },
+        {
+            "fieldname": "next_generation",
+            "fieldtype": "Datetime",
+            "label": "Next Generation"
+        },
+        {
+            "fieldname": "generation_status",
+            "fieldtype": "Select",
+            "label": "Generation Status",
+            "options": "Scheduled\nGenerating\nCompleted\nFailed"
+        }
+    ],
+    "has_web_view": 0,
+    "hide_heading": 0,
+    "hide_toolbar": 0,
+    "idx": 0,
+    "image_view": 0,
+    "in_create": 0,
+    "is_submittable": 1,
+    "issingle": 0,
+    "istable": 0,
+    "max_attachments": 0,
+    "modified": "2025-09-10 22:37:36.000000",
+    "modified_by": "Administrator",
+    "module": "spc_quality_management",
+    "name": "spc_report",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Quality Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Production Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Production User",
+            "share": 1
+        }
+    ],
+    "quick_entry": 0,
+    "read_only": 0,
+    "read_only_onload": 0,
+    "show_name_in_global_search": 0,
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "track_changes": 1,
+    "track_seen": 0,
+    "track_views": 0,
+    "app": "amb_w_spc",
+    "title": "SPC Report"
+}

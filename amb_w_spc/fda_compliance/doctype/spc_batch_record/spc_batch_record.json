@@ -1,0 +1,287 @@
+{
+    "doctype": "DocType",
+    "name": "spc_batch_record",
+    "module": "fda_compliance",
+    "custom": 1,
+    "is_submittable": 1,
+    "track_changes": 1,
+    "track_seen": 1,
+    "max_attachments": 20,
+    "description": "FDA compliant Statistical Process Control batch manufacturing record",
+    "fields": [
+        {
+            "fieldname": "batch_identification_section",
+            "fieldtype": "Section Break",
+            "label": "Batch Identification",
+            "collapsible": 0
+        },
+        {
+            "fieldname": "batch_number",
+            "fieldtype": "Data",
+            "label": "Batch Number",
+            "reqd": 1,
+            "unique": 1,
+            "description": "Unique batch identifier"
+        },
+        {
+            "fieldname": "product_code",
+            "fieldtype": "Link",
+            "label": "Product Code",
+            "options": "Item",
+            "reqd": 1,
+            "description": "Product being manufactured"
+        },
+        {
+            "fieldname": "plant",
+            "fieldtype": "Link",
+            "label": "Plant",
+            "options": "Warehouse",
+            "reqd": 1,
+            "description": "Manufacturing plant location"
+        },
+        {
+            "fieldname": "production_date",
+            "fieldtype": "Date",
+            "label": "Production Date",
+            "reqd": 1,
+            "default": "Today",
+            "description": "Date of batch production"
+        },
+        {
+            "fieldname": "batch_size",
+            "fieldtype": "Float",
+            "label": "Batch Size",
+            "reqd": 1,
+            "precision": 3,
+            "description": "Quantity produced in this batch"
+        },
+        {
+            "fieldname": "quality_data_section",
+            "fieldtype": "Section Break",
+            "label": "Quality Data",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "parameters_tested",
+            "fieldtype": "Table",
+            "label": "Parameters Tested",
+            "options": "SPC Batch Parameter",
+            "description": "List of quality parameters tested"
+        },
+        {
+            "fieldname": "test_results",
+            "fieldtype": "Long Text",
+            "label": "Test Results",
+            "description": "Detailed test results and measurements"
+        },
+        {
+            "fieldname": "specifications_met",
+            "fieldtype": "Check",
+            "label": "Specifications Met",
+            "default": 0,
+            "description": "Whether all specifications were met"
+        },
+        {
+            "fieldname": "deviations",
+            "fieldtype": "Table",
+            "label": "Deviations",
+            "options": "SPC Batch Deviation",
+            "description": "Any deviations from standard procedures"
+        },
+        {
+            "fieldname": "personnel_section",
+            "fieldtype": "Section Break",
+            "label": "Personnel",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "production_supervisor",
+            "fieldtype": "Link",
+            "label": "Production Supervisor",
+            "options": "Employee",
+            "reqd": 1,
+            "description": "Supervisor responsible for production"
+        },
+        {
+            "fieldname": "quality_inspector",
+            "fieldtype": "Link",
+            "label": "Quality Inspector",
+            "options": "Employee",
+            "reqd": 1,
+            "description": "Quality control inspector"
+        },
+        {
+            "fieldname": "batch_reviewer",
+            "fieldtype": "Link",
+            "label": "Batch Reviewer",
+            "options": "Employee",
+            "description": "Person who reviewed the batch record"
+        },
+        {
+            "fieldname": "batch_approver",
+            "fieldtype": "Link",
+            "label": "Batch Approver",
+            "options": "Employee",
+            "description": "Person who approved the batch for release"
+        },
+        {
+            "fieldname": "documentation_section",
+            "fieldtype": "Section Break",
+            "label": "Documentation",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "manufacturing_instructions",
+            "fieldtype": "Text Editor",
+            "label": "Manufacturing Instructions",
+            "description": "Step-by-step manufacturing instructions followed"
+        },
+        {
+            "fieldname": "quality_procedures",
+            "fieldtype": "Text Editor",
+            "label": "Quality Procedures",
+            "description": "Quality control procedures executed"
+        },
+        {
+            "fieldname": "change_controls",
+            "fieldtype": "Table",
+            "label": "Change Controls",
+            "options": "SPC Change Control",
+            "description": "Any change controls applied during production"
+        },
+        {
+            "fieldname": "traceability_section",
+            "fieldtype": "Section Break",
+            "label": "Traceability",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "raw_materials_used",
+            "fieldtype": "Table",
+            "label": "Raw Materials Used",
+            "options": "SPC Raw Material",
+            "reqd": 1,
+            "description": "All raw materials used in production"
+        },
+        {
+            "fieldname": "equipment_used",
+            "fieldtype": "Table",
+            "label": "Equipment Used",
+            "options": "SPC Equipment",
+            "reqd": 1,
+            "description": "Manufacturing equipment utilized"
+        },
+        {
+            "fieldname": "environmental_conditions",
+            "fieldtype": "Table",
+            "label": "Environmental Conditions",
+            "options": "SPC Environment",
+            "description": "Environmental conditions during production"
+        },
+        {
+            "fieldname": "release_section",
+            "fieldtype": "Section Break",
+            "label": "Batch Release",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "batch_status",
+            "fieldtype": "Select",
+            "label": "Batch Status",
+            "options": "In Process\nComplete\nApproved\nReleased\nRejected\nHold",
+            "default": "In Process",
+            "reqd": 1,
+            "description": "Current status of the batch"
+        },
+        {
+            "fieldname": "release_date",
+            "fieldtype": "Date",
+            "label": "Release Date",
+            "description": "Date when batch was released for distribution"
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "expiry_date",
+            "fieldtype": "Date",
+            "label": "Expiry Date",
+            "description": "Product expiry date"
+        },
+        {
+            "fieldname": "shelf_life",
+            "fieldtype": "Int",
+            "label": "Shelf Life (Months)",
+            "description": "Product shelf life in months"
+        },
+        {
+            "fieldname": "regulatory_compliance_section",
+            "fieldtype": "Section Break",
+            "label": "Regulatory Compliance",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "cfr_part211_compliant",
+            "fieldtype": "Check",
+            "label": "CFR Part 211 Compliant",
+            "default": 1,
+            "description": "Compliance with FDA 21 CFR Part 211"
+        },
+        {
+            "fieldname": "gmp_compliant",
+            "fieldtype": "Check",
+            "label": "GMP Compliant",
+            "default": 1,
+            "description": "Good Manufacturing Practice compliance"
+        },
+        {
+            "fieldname": "data_integrity_verified",
+            "fieldtype": "Check",
+            "label": "Data Integrity Verified",
+            "default": 0,
+            "description": "Confirmation of data integrity (ALCOA+)"
+        }
+    ],
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 1,
+            "cancel": 1,
+            "report": 1,
+            "export": 1
+        },
+        {
+            "role": "Quality Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "submit": 1,
+            "cancel": 1,
+            "report": 1,
+            "export": 1
+        },
+        {
+            "role": "Production Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "submit": 1,
+            "report": 1
+        },
+        {
+            "role": "Manufacturing User",
+            "read": 1,
+            "write": 1,
+            "create": 1
+        }
+    ],
+    "sort_field": "creation",
+    "sort_order": "DESC",
+    "app": "amb_w_spc",
+    "title": "SPC Batch Record"
+}

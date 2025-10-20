@@ -1,0 +1,162 @@
+{
+    "name": "mrp_material_requirement",
+    "doctype": "DocType",
+    "module": "sfc_manufacturing",
+    "is_submittable": 0,
+    "istable": 1,
+    "issingle": 0,
+    "is_tree": 0,
+    "is_calendar_and_gantt": 0,
+    "quick_entry": 0,
+    "track_changes": 0,
+    "track_seen": 0,
+    "track_views": 0,
+    "custom": 0,
+    "beta": 0,
+    "is_virtual": 0,
+    "queue_in_background": 0,
+    "naming_rule": "Random",
+    "autoname": "",
+    "allow_rename": 0,
+    "description": "MRP Material Requirement Child Table",
+    "documentation": "",
+    "permissions": [],
+    "restrict_to_domain": "",
+    "read_only": 0,
+    "in_create": 0,
+    "protect_attached_files": 1,
+    "fields": [
+        {
+            "fieldname": "item_code",
+            "label": "Item Code",
+            "fieldtype": "Link",
+            "options": "Item",
+            "reqd": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "item_name",
+            "label": "Item Name",
+            "fieldtype": "Data",
+            "fetch_from": "item_code.item_name",
+            "read_only": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "item_group",
+            "label": "Item Group",
+            "fieldtype": "Link",
+            "options": "Item Group",
+            "fetch_from": "item_code.item_group",
+            "read_only": 1
+        },
+        {
+            "fieldname": "required_qty",
+            "label": "Required Qty",
+            "fieldtype": "Float",
+            "reqd": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "uom",
+            "label": "UOM",
+            "fieldtype": "Link",
+            "options": "UOM",
+            "fetch_from": "item_code.stock_uom",
+            "read_only": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "available_qty",
+            "label": "Available Qty",
+            "fieldtype": "Float",
+            "read_only": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "shortage_qty",
+            "label": "Shortage Qty",
+            "fieldtype": "Float",
+            "read_only": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "required_date",
+            "label": "Required Date",
+            "fieldtype": "Date",
+            "reqd": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "warehouse",
+            "label": "Warehouse",
+            "fieldtype": "Link",
+            "options": "Warehouse"
+        },
+        {
+            "fieldname": "material_request_type",
+            "label": "Material Request Type",
+            "fieldtype": "Select",
+            "options": "Purchase\nTransfer\nManufacture",
+            "default": "Purchase"
+        },
+        {
+            "fieldname": "supplier",
+            "label": "Supplier",
+            "fieldtype": "Link",
+            "options": "Supplier"
+        },
+        {
+            "fieldname": "rate",
+            "label": "Rate",
+            "fieldtype": "Currency",
+            "fetch_from": "item_code.valuation_rate",
+            "read_only": 1
+        },
+        {
+            "fieldname": "amount",
+            "label": "Amount",
+            "fieldtype": "Currency",
+            "read_only": 1
+        },
+        {
+            "fieldname": "work_order_reference",
+            "label": "Work Order Reference",
+            "fieldtype": "Data",
+            "read_only": 1
+        },
+        {
+            "fieldname": "bom_level",
+            "label": "BOM Level",
+            "fieldtype": "Int",
+            "read_only": 1
+        },
+        {
+            "fieldname": "tds_quality_requirement",
+            "label": "TDS Quality Requirement",
+            "fieldtype": "Text",
+            "read_only": 1
+        },
+        {
+            "fieldname": "safety_stock",
+            "label": "Safety Stock",
+            "fieldtype": "Float",
+            "default": 0
+        },
+        {
+            "fieldname": "lead_time_days",
+            "label": "Lead Time (Days)",
+            "fieldtype": "Int",
+            "default": 0
+        },
+        {
+            "fieldname": "status",
+            "label": "Status",
+            "fieldtype": "Select",
+            "options": "Planned\nRequested\nOrdered\nReceived\nCancelled",
+            "default": "Planned",
+            "read_only": 1
+        }
+    ],
+    "title": "MRP Material Requirement"
+}

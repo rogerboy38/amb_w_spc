@@ -1,0 +1,92 @@
+[
+ {
+  "doctype": "Property Setter",
+  "name": "Work Order-amb_production_zone-mandatory_depends_on",
+  "property": "mandatory_depends_on",
+  "property_type": "Code",
+  "doc_type": "Work Order",
+  "field_name": "amb_production_zone",
+  "value": "eval:doc.docstatus == 0"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Work Order-amb_material_assessment_required-default",
+  "property": "default",
+  "property_type": "Check",
+  "doc_type": "Work Order",
+  "field_name": "amb_material_assessment_required",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Work Order-amb_warehouse_zone_tracking-default",
+  "property": "default",
+  "property_type": "Check",
+  "doc_type": "Work Order",
+  "field_name": "amb_warehouse_zone_tracking",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Work Order-amb_batch_amb_tracking-default",
+  "property": "default",
+  "property_type": "Check",
+  "doc_type": "Work Order",
+  "field_name": "amb_batch_amb_tracking",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Work Order-amb_quality_parameters-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Work Order",
+  "field_name": "amb_quality_parameters",
+  "value": "eval:doc.amb_material_assessment_required"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Work Order-amb_warehouse_location-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Work Order",
+  "field_name": "amb_warehouse_location",
+  "value": "eval:doc.amb_warehouse_zone_tracking"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Work Order-amb_temperature_requirements-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Work Order",
+  "field_name": "amb_temperature_requirements",
+  "value": "eval:doc.amb_material_assessment_required"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Work Order-amb_production_status-read_only",
+  "property": "read_only",
+  "property_type": "Check",
+  "doc_type": "Work Order",
+  "field_name": "amb_production_status",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Work Order-amb_material_pick_completed-read_only",
+  "property": "read_only",
+  "property_type": "Check",
+  "doc_type": "Work Order",
+  "field_name": "amb_material_pick_completed",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Work Order-amb_quality_approval_required-default",
+  "property": "default",
+  "property_type": "Check",
+  "doc_type": "Work Order",
+  "field_name": "amb_quality_approval_required",
+  "value": "0"
+ }
+]

@@ -1,0 +1,92 @@
+[
+ {
+  "doctype": "Property Setter",
+  "name": "Purchase Receipt-amb_warehouse_zone_assignment-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Purchase Receipt",
+  "field_name": "amb_warehouse_zone_assignment",
+  "value": "eval:doc.docstatus == 0"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Purchase Receipt-amb_quality_inspection_required-default",
+  "property": "default",
+  "property_type": "Check",
+  "doc_type": "Purchase Receipt",
+  "field_name": "amb_quality_inspection_required",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Purchase Receipt-amb_temperature_check-default",
+  "property": "default",
+  "property_type": "Check",
+  "doc_type": "Purchase Receipt",
+  "field_name": "amb_temperature_check",
+  "value": "0"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Purchase Receipt-amb_batch_tracking_required-default",
+  "property": "default",
+  "property_type": "Check",
+  "doc_type": "Purchase Receipt",
+  "field_name": "amb_batch_tracking_required",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Purchase Receipt-amb_quarantine_required-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Purchase Receipt",
+  "field_name": "amb_quarantine_required",
+  "value": "eval:doc.amb_quality_inspection_required"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Purchase Receipt-amb_material_assessment_log-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Purchase Receipt",
+  "field_name": "amb_material_assessment_log",
+  "value": "eval:doc.amb_quality_inspection_required"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Purchase Receipt Item-amb_warehouse_zone-mandatory_depends_on",
+  "property": "mandatory_depends_on",
+  "property_type": "Code",
+  "doc_type": "Purchase Receipt Item",
+  "field_name": "amb_warehouse_zone",
+  "value": "eval:parent.amb_warehouse_zone_assignment"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Purchase Receipt Item-amb_quality_status-default",
+  "property": "default",
+  "property_type": "Data",
+  "doc_type": "Purchase Receipt Item",
+  "field_name": "amb_quality_status",
+  "value": "Pending Inspection"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Purchase Receipt Item-amb_temperature_recorded-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Purchase Receipt Item",
+  "field_name": "amb_temperature_recorded",
+  "value": "eval:parent.amb_temperature_check"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Purchase Receipt Item-amb_batch_amb_reference-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Purchase Receipt Item",
+  "field_name": "amb_batch_amb_reference",
+  "value": "eval:parent.amb_batch_tracking_required"
+ }
+]

@@ -1,0 +1,67 @@
+[
+ {
+  "doctype": "Custom Field",
+  "name": "Bin-amb_warehouse_zone",
+  "dt": "Bin",
+  "label": "Warehouse Zone",
+  "fieldname": "amb_warehouse_zone",
+  "fieldtype": "Data",
+  "insert_after": "warehouse",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Bin-amb_pick_sequence",
+  "dt": "Bin",
+  "label": "Pick Sequence",
+  "fieldname": "amb_pick_sequence",
+  "fieldtype": "Int",
+  "insert_after": "amb_warehouse_zone",
+  "default": 1,
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Bin-amb_last_pick_date",
+  "dt": "Bin",
+  "label": "Last Pick Date",
+  "fieldname": "amb_last_pick_date",
+  "fieldtype": "Datetime",
+  "insert_after": "amb_pick_sequence",
+  "read_only": 1,
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Bin-amb_temperature_recorded",
+  "dt": "Bin",
+  "label": "Last Temperature Recorded (°C)",
+  "fieldname": "amb_temperature_recorded",
+  "fieldtype": "Float",
+  "precision": 1,
+  "insert_after": "amb_last_pick_date",
+  "read_only": 1,
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Bin-amb_quality_hold",
+  "dt": "Bin",
+  "label": "Quality Hold",
+  "fieldname": "amb_quality_hold",
+  "fieldtype": "Check",
+  "insert_after": "amb_temperature_recorded",
+  "module": "AMB W SPC"
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "Bin-amb_hold_reason",
+  "dt": "Bin",
+  "label": "Hold Reason",
+  "fieldname": "amb_hold_reason",
+  "fieldtype": "Text",
+  "insert_after": "amb_quality_hold",
+  "depends_on": "eval:doc.amb_quality_hold",
+  "module": "AMB W SPC"
+ }
+]

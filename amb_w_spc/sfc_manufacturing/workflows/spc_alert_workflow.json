@@ -1,0 +1,79 @@
+{
+ "creation": "2025-09-10 22:37:36.000000",
+ "doctype": "Workflow",
+ "document_type": "SPC Alert",
+ "is_active": 0,
+ "modified": "2025-09-10 22:37:36.000000",
+ "modified_by": "Administrator",
+ "name": "SPC Alert Workflow",
+ "owner": "Administrator",
+ "send_email_alert": 1,
+ "states": [
+  {
+   "allow_edit": "Quality Manager",
+   "doc_status": "0",
+   "state": "Open",
+   "update_field": "alert_status",
+   "update_value": "Open"
+  },
+  {
+   "allow_edit": "Production User",
+   "doc_status": "0",
+   "state": "Acknowledged",
+   "update_field": "alert_status",
+   "update_value": "Acknowledged"
+  },
+  {
+   "allow_edit": "Production Manager",
+   "doc_status": "0",
+   "state": "Investigating",
+   "update_field": "alert_status",
+   "update_value": "Investigating"
+  },
+  {
+   "allow_edit": "Quality Manager",
+   "doc_status": "1",
+   "state": "Resolved",
+   "update_field": "alert_status",
+   "update_value": "Resolved"
+  }
+ ],
+ "transitions": [
+  {
+   "action": "Acknowledge",
+   "allowed": "Production User",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "Acknowledged",
+   "state": "Open"
+  },
+  {
+   "action": "Start Investigation",
+   "allowed": "Production Manager",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "Investigating",
+   "state": "Acknowledged"
+  },
+  {
+   "action": "Resolve",
+   "allowed": "Quality Manager",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "Resolved",
+   "state": "Investigating"
+  },
+  {
+   "action": "Escalate",
+   "allowed": "Production Manager",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "Investigating",
+   "state": "Open"
+  }
+ ],
+ "workflow_name": "SPC Alert Workflow",
+ "workflow_state_field": "alert_status",
+ "module": "spc_quality_management",
+ "app": "amb_w_spc"
+}

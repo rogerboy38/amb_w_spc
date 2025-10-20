@@ -1,0 +1,143 @@
+[
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log",
+        "fieldname": "batch_integration_section",
+        "label": "Batch Integration",
+        "fieldtype": "Section Break",
+        "insert_after": "assessment_type",
+        "collapsible": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log",
+        "fieldname": "custom_batch_reference",
+        "label": "Batch Reference",
+        "fieldtype": "Link",
+        "options": "Batch AMB",
+        "insert_after": "batch_integration_section",
+        "description": "Link to Batch AMB for batch context"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log",
+        "fieldname": "custom_warehouse_context",
+        "label": "Warehouse Context",
+        "fieldtype": "Link",
+        "options": "Warehouse",
+        "insert_after": "custom_batch_reference",
+        "description": "Warehouse where assessment is being performed"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log",
+        "fieldname": "column_break_batch_status",
+        "fieldtype": "Column Break",
+        "insert_after": "custom_warehouse_context"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log",
+        "fieldname": "custom_batch_quality_status",
+        "label": "Batch Quality Status",
+        "fieldtype": "Data",
+        "insert_after": "column_break_batch_status",
+        "read_only": 1,
+        "description": "Current quality status from batch tracking"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log",
+        "fieldname": "custom_batch_availability_check",
+        "label": "Batch Availability Check",
+        "fieldtype": "Check",
+        "insert_after": "custom_batch_quality_status",
+        "default": "1",
+        "description": "Verify batch availability during assessment"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log",
+        "fieldname": "custom_expiry_validation",
+        "label": "Expiry Validation",
+        "fieldtype": "Check",
+        "insert_after": "custom_batch_availability_check",
+        "default": "1",
+        "description": "Validate batch expiry dates during assessment"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log Item",
+        "fieldname": "batch_details_section",
+        "label": "Batch Details",
+        "fieldtype": "Section Break",
+        "insert_after": "required_qty",
+        "collapsible": 1,
+        "collapsed": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log Item",
+        "fieldname": "custom_suggested_batch",
+        "label": "Suggested Batch",
+        "fieldtype": "Link",
+        "options": "Batch AMB",
+        "insert_after": "batch_details_section",
+        "description": "System suggested batch for this material"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log Item",
+        "fieldname": "custom_batch_availability_qty",
+        "label": "Batch Available Qty",
+        "fieldtype": "Float",
+        "insert_after": "custom_suggested_batch",
+        "read_only": 1,
+        "precision": 3
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log Item",
+        "fieldname": "custom_batch_expiry_date",
+        "label": "Batch Expiry Date",
+        "fieldtype": "Date",
+        "insert_after": "custom_batch_availability_qty",
+        "read_only": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log Item",
+        "fieldname": "column_break_batch_status",
+        "fieldtype": "Column Break",
+        "insert_after": "custom_batch_expiry_date"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log Item",
+        "fieldname": "custom_batch_quality_status",
+        "label": "Batch Quality Status",
+        "fieldtype": "Data",
+        "insert_after": "column_break_batch_status",
+        "read_only": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log Item",
+        "fieldname": "custom_warehouse_location",
+        "label": "Warehouse Location",
+        "fieldtype": "Link",
+        "options": "Warehouse",
+        "insert_after": "custom_batch_quality_status",
+        "description": "Current warehouse location of the batch"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Material Assessment Log Item",
+        "fieldname": "custom_assessment_result",
+        "label": "Assessment Result",
+        "fieldtype": "Select",
+        "options": "\nAvailable\nPartially Available\nNot Available\nExpired\nQuality Hold\nQuality Failed",
+        "insert_after": "custom_warehouse_location",
+        "read_only": 1
+    }
+]
