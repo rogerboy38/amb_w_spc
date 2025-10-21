@@ -1,11 +1,10 @@
 """
-AMB W SPC Installation Script
-Version: 2.0.3
+AMB W SPC Installation Script - Clean Version
+Version: 2.0.4
 """
 
 import frappe
 import os
-import json
 
 def after_install():
     """
@@ -19,9 +18,6 @@ def after_install():
         
         # Setup default settings
         setup_default_settings()
-        
-        # Create standard workspace
-        create_standard_workspace()
         
         print("✅ AMB W SPC installation completed successfully!")
         
@@ -57,53 +53,20 @@ def setup_default_settings():
     except Exception as e:
         print(f"⚠️  Could not create settings: {str(e)}")
 
-def create_standard_workspace():
-    """Create standard workspace for the app"""
-    try:
-        workspace_data = {
-            "doctype": "Workspace",
-            "label": "AMB W SPC",
-            "title": "AMB W SPC",
-            "sequence_id": 1,
-            "public": 1,
-            "is_hidden": 0,
-            "extends": "Manufacturing",
-            "shortcuts": [
-                {
-                    "type": "Dashboard",
-                    "link_to": "SPC Control Chart",
-                    "format_type": "Link"
-                }
-            ]
-        }
-        
-        if not frappe.db.exists("Workspace", "AMB W SPC"):
-            workspace = frappe.get_doc(workspace_data)
-            workspace.insert(ignore_permissions=True)
-            print("✅ Created AMB W SPC Workspace")
-            
-    except Exception as e:
-        print(f"⚠️  Could not create workspace: {str(e)}")
-# Add the missing functions to install.py
-
 def before_install():
-    """Run before app installation - minimal implementation"""
+    """Run before app installation"""
     print("🔧 Preparing AMB W SPC installation...")
     pass
 
-
 def before_uninstall():
-    """
-    Cleanup before uninstalling the app
-    """
+    """Cleanup before uninstalling"""
     print("🧹 Cleaning up AMB W SPC before uninstall...")
-    # Add any cleanup logic here
+    pass
 
 def before_tests():
-    """Run before tests - minimal implementation"""
+    """Run before tests"""
     print("🧪 Preparing tests for AMB W SPC...")
     pass
 
-# Main execution block
 if __name__ == "__main__":
     after_install()

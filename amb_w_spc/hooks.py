@@ -6,13 +6,11 @@ app_email = "fcrm@amb-wellness.com"
 app_license = "MIT"
 app_version = "2.0.4"
 
-# Required property for ERPNext
 required_apps = ["frappe", "erpnext"]
 
-# Auto-install app after installation
 auto_install_apps = []
 
-# Modules
+# Your core modules - these will appear in modules page
 modules = [
     'core_spc',
     'spc_quality_management',
@@ -26,24 +24,12 @@ modules = [
     'fda_compliance',
 ]
 
-# DocType overrides
-# override_doctype_class = {}
-
-# Document Events - Only include what exists
 doc_events = {
-    # "Sales Order": {
-    #     "on_submit": "amb_w_spc.sfc_manufacturing.api.sfc_operations.on_sales_order_submit",
-    # },
 }
 
-# Scheduled Tasks - Only include what exists
 scheduler_events = {
-    # "daily": [
-    #     "amb_w_spc.sfc_manufacturing.scheduler.daily_cleanup",
-    # ],
 }
 
-# Application includes
 app_include_css = [
     "/assets/amb_w_spc/css/warehouse_management.css",
     "/assets/amb_w_spc/css/spc_quality.css"
@@ -53,24 +39,10 @@ app_include_js = [
     "/assets/amb_w_spc/js/warehouse_utils.js"
 ]
 
-# Boot Session - Only include if function exists
-# boot_session = "amb_w_spc.system_integration.permissions.get_boot_info"
-
-# Installation hooks - ONLY include functions that actually exist
 after_install = "amb_w_spc.install.after_install"
-# before_install = "amb_w_spc.install.before_install"  # Commented out - doesn't exist
-# before_uninstall = "amb_w_spc.install.before_uninstall"  # Commented out - doesn't exist
 
-# Workspaces
-workspaces = [
-    "SPC Dashboard",
-    "SPC Quality Management", 
-    "Manufacturing Control"
-]
-
-# Fixtures to load during installation
+# Only include essential fixtures - NO WORKSPACES
 fixtures = [
-    {"dt": "Workspace", "filters": [["name", "in", workspaces]]},
     {"dt": "Workflow", "filters": [["name", "in", [
         "SPC Alert Workflow",
         "SPC Corrective Action Workflow", 
@@ -81,40 +53,24 @@ fixtures = [
     {"dt": "Property Setter", "filters": [["module", "=", "AMB W SPC"]]},
 ]
 
-# Jinja template functions
 jinja = {
     "methods": [
-        # "amb_w_spc.system_integration.utils.get_app_version",
     ]
 }
 
-# Website routes
 website_route_rules = [
     {"from_route": "/warehouse-dashboard", "to_route": "warehouse_dashboard"},
     {"from_route": "/spc-dashboard", "to_route": "spc_dashboard"},
 ]
 
-# Website context
 website_context = {
     "splash_image": "/assets/amb_w_spc/images/warehouse_splash.png",
     "favicon": "/assets/amb_w_spc/images/favicon.ico"
 }
 
-# Override whitelisted methods
 override_whitelisted_methods = {
-    # "amb_w_spc.sfc_manufacturing.api.sfc_operations.get_dashboard_data": "amb_w_spc.sfc_manufacturing.api.sfc_operations.get_dashboard_data",
 }
 
-# Migration hooks - Only include if function exists
-# after_migrate = [
-#     "amb_w_spc.system_integration.installation.install_spc_system.install_spc_system"
-# ]
-
-# Testing
-# before_tests = "amb_w_spc.install.before_tests"
-
-# Source parser
 source_parser = {
     "github.com": "frappe.www.doctype.web_page.web_page.get_source"
 }
-
