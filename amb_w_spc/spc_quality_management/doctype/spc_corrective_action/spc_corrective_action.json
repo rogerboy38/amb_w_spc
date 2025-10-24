@@ -1,0 +1,97 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:action_name",
+ "creation": "2024-01-01 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "action_name",
+  "problem_description",
+  "root_cause",
+  "corrective_actions",
+  "preventive_actions",
+  "assigned_to",
+  "due_date",
+  "status",
+  "effectiveness"
+ ],
+ "fields": [
+  {
+   "fieldname": "action_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Action Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "problem_description",
+   "fieldtype": "Text",
+   "label": "Problem Description",
+   "reqd": 1
+  },
+  {
+   "fieldname": "root_cause",
+   "fieldtype": "Text",
+   "label": "Root Cause Analysis"
+  },
+  {
+   "fieldname": "corrective_actions",
+   "fieldtype": "Table",
+   "label": "Corrective Actions",
+   "options": "SPC Corrective Action Item"
+  },
+  {
+   "fieldname": "preventive_actions",
+   "fieldtype": "Text",
+   "label": "Preventive Actions"
+  },
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Link",
+   "label": "Assigned To",
+   "options": "User"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Open\nIn Progress\nCompleted\nClosed\nCancelled",
+   "default": "Open"
+  },
+  {
+   "fieldname": "effectiveness",
+   "fieldtype": "Select",
+   "label": "Effectiveness",
+   "options": "Not Evaluated\nEffective\nPartially Effective\nIneffective"
+  }
+ ],
+ "modified": "2024-01-01 00:00:00",
+ "modified_by": "Administrator",
+ "module": "spc_quality_management",
+ "name": "SPC Corrective Action",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

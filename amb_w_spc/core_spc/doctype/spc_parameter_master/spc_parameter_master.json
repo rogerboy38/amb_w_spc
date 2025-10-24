@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:parameter_name",
+ "creation": "2024-01-01 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "parameter_name",
+  "parameter_description",
+  "data_type",
+  "target_value",
+  "upper_spec_limit",
+  "lower_spec_limit",
+  "measurement_unit",
+  "is_critical_parameter"
+ ],
+ "fields": [
+  {
+   "fieldname": "parameter_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Parameter Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "parameter_description",
+   "fieldtype": "Text",
+   "label": "Parameter Description"
+  },
+  {
+   "fieldname": "data_type",
+   "fieldtype": "Select",
+   "label": "Data Type",
+   "options": "Numeric\nText\nBoolean",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_value",
+   "fieldtype": "Float",
+   "label": "Target Value"
+  },
+  {
+   "fieldname": "upper_spec_limit",
+   "fieldtype": "Float",
+   "label": "Upper Spec Limit"
+  },
+  {
+   "fieldname": "lower_spec_limit",
+   "fieldtype": "Float",
+   "label": "Lower Spec Limit"
+  },
+  {
+   "fieldname": "measurement_unit",
+   "fieldtype": "Data",
+   "label": "Measurement Unit"
+  },
+  {
+   "fieldname": "is_critical_parameter",
+   "fieldtype": "Check",
+   "label": "Is Critical Parameter"
+  }
+ ],
+ "modified": "2024-01-01 00:00:00",
+ "modified_by": "Administrator",
+ "module": "core_spc",
+ "name": "SPC Parameter Master",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

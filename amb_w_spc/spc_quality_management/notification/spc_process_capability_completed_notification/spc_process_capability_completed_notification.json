@@ -1,0 +1,30 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "condition": "doc.study_status == 'Completed'",
+ "creation": "2025-09-10 22:37:36",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "SPC Process Capability",
+ "enabled": 1,
+ "event": "Value Change",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "Process Capability Study completed:\n\n**Study Name:** {{ doc.study_name }}\n**Parameter:** {{ doc.parameter }}\n**Plant:** {{ doc.plant }}\n**Study Period:** {{ doc.study_period }}\n\n**Results:**\n- Cp: {{ doc.cp }}\n- Cpk: {{ doc.cpk }}\n- Capability Rating: {{ doc.capability_rating }}\n- Sigma Level: {{ doc.sigma_level }}\n\nPlease review for approval.",
+ "modified": "2025-10-23 14:24:01.527856",
+ "modified_by": "Administrator",
+ "module": "spc_quality_management",
+ "name": "spc_process_capability_completed_notification",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_role": "Quality Manager"
+  }
+ ],
+ "send_system_notification": 1,
+ "send_to_all_assignees": 0,
+ "sender_email": "quality@company.com",
+ "subject": "\ud83d\udcca Process Capability Study Completed: {{ doc.parameter }}",
+ "value_changed": "study_status"
+}

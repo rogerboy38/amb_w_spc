@@ -1,0 +1,32 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "condition": "",
+ "creation": "2025-09-10 22:37:36",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "SPC Corrective Action",
+ "enabled": 1,
+ "event": "New",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "New Corrective Action has been raised:\n\n**CA Number:** {{ doc.ca_number }}\n**Title:** {{ doc.title }}\n**Priority:** {{ doc.priority }}\n**Plant:** {{ doc.plant }}\n**Raised By:** {{ doc.raised_by }}\n**Target Date:** {{ doc.target_completion_date }}\n\n**Problem Description:**\n{{ doc.problem_description }}\n\nPlease review and take necessary action.",
+ "modified": "2025-10-23 14:24:01.103333",
+ "modified_by": "Administrator",
+ "module": "spc_quality_management",
+ "name": "spc_corrective_action_new_notification",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_document_field": "overall_responsible_person"
+  },
+  {
+   "receiver_by_role": "Quality Manager"
+  }
+ ],
+ "send_system_notification": 1,
+ "send_to_all_assignees": 0,
+ "sender_email": "quality@company.com",
+ "subject": "\ud83d\udccb New Corrective Action: {{ doc.title }} - {{ doc.priority }} Priority"
+}

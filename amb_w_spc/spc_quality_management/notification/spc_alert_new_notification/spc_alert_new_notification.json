@@ -1,0 +1,29 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "condition": "doc.alert_status == 'Open'",
+ "creation": "2025-09-10 22:37:36",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "SPC Alert",
+ "enabled": 1,
+ "event": "New",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "A new SPC Alert has been raised:\n\n**Alert ID:** {{ doc.alert_id }}\n**Parameter:** {{ doc.parameter }}\n**Plant:** {{ doc.plant }}\n**Workstation:** {{ doc.workstation }}\n**Alert Type:** {{ doc.alert_type }}\n**Severity:** {{ doc.severity_level }}\n**Rule Violated:** {{ doc.rule_violated }}\n\nImmediate attention required.",
+ "modified": "2025-10-23 14:24:01.293881",
+ "modified_by": "Administrator",
+ "module": "spc_quality_management",
+ "name": "spc_alert_new_notification",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_document_field": "acknowledged_by"
+  }
+ ],
+ "send_system_notification": 1,
+ "send_to_all_assignees": 0,
+ "sender_email": "quality@company.com",
+ "subject": "\ud83d\udea8 SPC Alert: {{ doc.alert_type }} - {{ doc.parameter }} ({{ doc.plant }})"
+}

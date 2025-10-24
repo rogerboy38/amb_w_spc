@@ -1,0 +1,153 @@
+{
+ "charts": [],
+ "content": [
+  {
+   "category": "Modules",
+   "charts": [],
+   "label": "Manufacturing",
+   "links": [
+    {
+     "dependencies": "Batch AMB",
+     "description": "Track manufacturing batches with SPC parameters",
+     "label": "Batch Management",
+     "link_type": "DocType",
+     "onboard": 1,
+     "type": "Card Break"
+    },
+    {
+     "dependencies": "Batch AMB",
+     "description": "Create and manage manufacturing batches",
+     "label": "Batch AMB",
+     "link_type": "DocType",
+     "type": "Link"
+    },
+    {
+     "category": "Shop Floor Control", 
+     "label": "Shop Floor Operations",
+     "link_type": "DocType",
+     "type": "Card Break"
+    },
+    {
+     "dependencies": "SFC Transaction",
+     "description": "Record shop floor transactions",
+     "label": "SFC Transactions", 
+     "link_type": "DocType",
+     "type": "Link"
+    },
+    {
+     "category": "Operator Management", 
+     "label": "Workforce Management",
+     "link_type": "DocType",
+     "type": "Card Break"
+    },
+    {
+     "dependencies": "SFC Operator",
+     "description": "Manage manufacturing operators",
+     "label": "SFC Operator", 
+     "link_type": "DocType",
+     "type": "Link"
+    },
+    {
+     "category": "Real-time Monitoring", 
+     "label": "Process Monitoring",
+     "link_type": "DocType",
+     "type": "Card Break"
+    },
+    {
+     "dependencies": "Real Time Process Data",
+     "description": "View real-time process data",
+     "label": "Real-time Data", 
+     "link_type": "DocType",
+     "type": "Link"
+    },
+    {
+     "category": "Statistical Process Control",
+     "label": "SPC Configuration",
+     "link_type": "DocType",
+     "type": "Card Break"
+    },
+    {
+     "dependencies": "SPC Parameter Master",
+     "description": "Define SPC parameters for quality control",
+     "label": "SPC Parameter Master",
+     "link_type": "DocType",
+     "type": "Link"
+    },
+    {
+     "dependencies": "SPC Control Chart",
+     "description": "Create and view SPC control charts",
+     "label": "SPC Control Chart",
+     "link_type": "DocType",
+     "type": "Link"
+    },
+    {
+     "dependencies": "SPC Data Point",
+     "description": "Record SPC measurement data points", 
+     "label": "SPC Data Point",
+     "link_type": "DocType",
+     "type": "Link"
+    },
+    {
+     "category": "Quality Management",
+     "label": "Quality Actions",
+     "link_type": "DocType",
+     "type": "Card Break"
+    },
+    {
+     "dependencies": "SPC Corrective Action",
+     "description": "Manage corrective and preventive actions",
+     "label": "Corrective Actions",
+     "link_type": "DocType",
+     "type": "Link"
+    }
+   ],
+   "type": "Workspace"
+  }
+ ],
+ "developer_mode_only": 0,
+ "hide_custom": 0, 
+ "is_hidden": 0,
+ "label": "Manufacturing",
+ "links": [],
+ "module": "AMB W SPC",
+ "name": "Manufacturing", 
+ "parent_page": "",
+ "public": 0,
+ "quick_list": "",
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Manufacturing User" 
+  }
+ ],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Batch AMB",
+   "link_to": "Batch AMB",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue", 
+   "doc_view": "List",
+   "label": "SFC Transactions",
+   "link_to": "SFC Transaction",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List", 
+   "label": "Real-time Data",
+   "link_to": "Real Time Process Data",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ]
+}

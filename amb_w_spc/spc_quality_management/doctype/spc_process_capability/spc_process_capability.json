@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:SPC-PC-{YYYY}-{MM}-{#####}",
+ "creation": "2024-01-01 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "study_name",
+  "parameter",
+  "data_points",
+  "cp_value",
+  "cpk_value",
+  "study_status",
+  "completion_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "study_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Study Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "parameter",
+   "fieldtype": "Link",
+   "label": "Parameter",
+   "options": "SPC Parameter Master",
+   "reqd": 1
+  },
+  {
+   "fieldname": "data_points",
+   "fieldtype": "Table",
+   "label": "Data Points",
+   "options": "SPC Data Point"
+  },
+  {
+   "fieldname": "cp_value",
+   "fieldtype": "Float",
+   "label": "Cp Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cpk_value",
+   "fieldtype": "Float",
+   "label": "Cpk Value",
+   "read_only": 1
+  },
+  {
+   "fieldname": "study_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Study Status",
+   "options": "Not Started\nData Collection\nAnalysis\nCompleted",
+   "default": "Not Started"
+  },
+  {
+   "fieldname": "completion_date",
+   "fieldtype": "Date",
+   "label": "Completion Date",
+   "read_only": 1
+  }
+ ],
+ "modified": "2024-01-01 00:00:00",
+ "modified_by": "Administrator",
+ "module": "spc_quality_management",
+ "name": "SPC Process Capability",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

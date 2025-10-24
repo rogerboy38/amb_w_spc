@@ -1,0 +1,30 @@
+{
+ "attach_print": 0,
+ "channel": "Email",
+ "condition": "doc.auto_generation == 1 and doc.generation_status == 'Completed'",
+ "creation": "2025-09-10 22:37:36",
+ "days_in_advance": 0,
+ "docstatus": 0,
+ "doctype": "Notification",
+ "document_type": "SPC Report",
+ "enabled": 1,
+ "event": "Value Change",
+ "idx": 0,
+ "is_standard": 1,
+ "message": "Your scheduled SPC Report has been generated:\n\n**Report Name:** {{ doc.report_name }}\n**Report Type:** {{ doc.report_type }}\n**Plant:** {{ doc.plant }}\n**Period:** {{ doc.from_date }} to {{ doc.to_date }}\n**Generated:** {{ doc.last_generated }}\n\nThe report is now available in {{ doc.report_format }} format.",
+ "modified": "2025-10-23 14:24:01.451107",
+ "modified_by": "Administrator",
+ "module": "spc_quality_management",
+ "name": "spc_report_generated_notification",
+ "owner": "Administrator",
+ "recipients": [
+  {
+   "receiver_by_document_field": "recipients"
+  }
+ ],
+ "send_system_notification": 1,
+ "send_to_all_assignees": 0,
+ "sender_email": "quality@company.com",
+ "subject": "\ud83d\udcc8 SPC Report Available: {{ doc.report_name }}",
+ "value_changed": "generation_status"
+}

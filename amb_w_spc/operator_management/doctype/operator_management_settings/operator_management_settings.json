@@ -1,0 +1,71 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-01 00:00:00",
+ "doctype": "DocType", 
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "default_shift_hours",
+  "skill_verification_required",
+  "max_operators_per_shift",
+  "auto_assign_operators",
+  "training_certification_days"
+ ],
+ "fields": [
+  {
+   "fieldname": "default_shift_hours",
+   "fieldtype": "Float",
+   "label": "Default Shift Hours",
+   "default": 8.0
+  },
+  {
+   "fieldname": "skill_verification_required",
+   "fieldtype": "Check",
+   "label": "Skill Verification Required",
+   "default": 1
+  },
+  {
+   "fieldname": "max_operators_per_shift",
+   "fieldtype": "Int",
+   "label": "Max Operators Per Shift",
+   "default": 10
+  },
+  {
+   "fieldname": "auto_assign_operators",
+   "fieldtype": "Check", 
+   "label": "Auto Assign Operators",
+   "default": 0
+  },
+  {
+   "fieldname": "training_certification_days",
+   "fieldtype": "Int",
+   "label": "Training Certification Days",
+   "default": 30,
+   "description": "Number of days before certification expires"
+  }
+ ],
+ "is_single": 1,
+ "modified": "2024-01-01 00:00:00",
+ "modified_by": "Administrator",
+ "module": "operator_management",
+ "name": "Operator Management Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
