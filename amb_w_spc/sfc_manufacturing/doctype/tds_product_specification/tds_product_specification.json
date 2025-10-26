@@ -1,0 +1,220 @@
+{
+    "name": "tds_product_specification",
+    "doctype": "DocType",
+    "module": "sfc_manufacturing",
+    "is_submittable": 1,
+    "istable": 0,
+    "issingle": 0,
+    "is_tree": 0,
+    "is_calendar_and_gantt": 0,
+    "quick_entry": 1,
+    "track_changes": 1,
+    "track_seen": 1,
+    "track_views": 1,
+    "custom": 0,
+    "beta": 0,
+    "is_virtual": 0,
+    "queue_in_background": 0,
+    "naming_rule": "Expression",
+    "autoname": "field:naming_series",
+    "allow_rename": 1,
+    "description": "Technical Data Sheet Product Specification",
+    "documentation": "",
+    "permissions": [
+        {
+            "role": "System Manager",
+            "permlevel": 0,
+            "select": 1,
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1,
+            "submit": 1
+        },
+        {
+            "role": "Stock User",
+            "permlevel": 0,
+            "select": 1,
+            "read": 1,
+            "write": 0,
+            "create": 0,
+            "delete": 0,
+            "submit": 0
+        },
+        {
+            "role": "Quality Manager",
+            "permlevel": 0,
+            "select": 1,
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 1
+        },
+        {
+            "role": "Manufacturing User",
+            "permlevel": 0,
+            "select": 1,
+            "read": 1,
+            "write": 0,
+            "create": 0,
+            "delete": 0,
+            "submit": 0
+        }
+    ],
+    "restrict_to_domain": "",
+    "read_only": 0,
+    "in_create": 0,
+    "protect_attached_files": 1,
+    "links": [
+        {
+            "link_doctype": "Quality Inspection",
+            "link_fieldname": "quality_inspection_template",
+            "group": "Quality Inspection"
+        }
+    ],
+    "fields": [
+        {
+            "fieldname": "tds_product_specifications_section",
+            "label": "TDS Product Specifications",
+            "fieldtype": "Section Break"
+        },
+        {
+            "fieldname": "naming_series",
+            "label": "TDS Product Specifications Nr.",
+            "fieldtype": "Data",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_lwmn",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "section_break_yikz",
+            "fieldtype": "Section Break"
+        },
+        {
+            "fieldname": "product_item",
+            "label": "Product Item",
+            "fieldtype": "Link",
+            "options": "Item",
+            "reqd": 1,
+            "description": "Links to Item Master (e.g., 0227 for Aloe Concentrate)"
+        },
+        {
+            "fieldname": "item_name",
+            "label": "Item Name",
+            "fieldtype": "Data",
+            "fetch_from": "product_item.item_name",
+            "read_only": 1
+        },
+        {
+            "fieldname": "item_code",
+            "label": "Item Code",
+            "fieldtype": "Data",
+            "fetch_from": "product_item.item_code",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_pqoj",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "approval_date",
+            "label": "Approval Date",
+            "fieldtype": "Date"
+        },
+        {
+            "fieldname": "tds_settings",
+            "label": "Last TDS Settings Version Control",
+            "fieldtype": "Link",
+            "options": "TDS Settings"
+        },
+        {
+            "fieldname": "tds_naming_series",
+            "label": "TDS Naming Series",
+            "fieldtype": "Data"
+        },
+        {
+            "fieldname": "tds_version",
+            "label": "TDS Version Counter",
+            "fieldtype": "Data",
+            "default": "1"
+        },
+        {
+            "fieldname": "tds_sequence",
+            "label": "TDS Sequence number",
+            "fieldtype": "Int"
+        },
+        {
+            "fieldname": "section_break_anhf",
+            "label": "Parameters",
+            "fieldtype": "Section Break"
+        },
+        {
+            "fieldname": "item_quality_inspection_parameter",
+            "label": "Item Quality Inspection Parameter",
+            "fieldtype": "Table",
+            "options": "Item Quality Inspection Parameter",
+            "reqd": 1
+        },
+        {
+            "fieldname": "section_break_vjkv",
+            "fieldtype": "Section Break"
+        },
+        {
+            "fieldname": "cas_number",
+            "label": "CAS Number",
+            "fieldtype": "Select",
+            "options": "\n85507-69-3"
+        },
+        {
+            "fieldname": "inci_name",
+            "label": "INCI Name",
+            "fieldtype": "Select",
+            "options": "\nALOE BARBADENSIS LEAF JUICE\nALOE BARBADENSIS LEAF JUICE POWDER"
+        },
+        {
+            "fieldname": "shelf_life",
+            "label": "SHELF LIFE:",
+            "fieldtype": "Text Editor"
+        },
+        {
+            "fieldname": "packaging",
+            "label": "PACKAGING",
+            "fieldtype": "Text Editor"
+        },
+        {
+            "fieldname": "storage_and_handling_conditions",
+            "label": "STORAGE AND HANDLING CONDITIONS",
+            "fieldtype": "Text Editor"
+        },
+        {
+            "fieldname": "formula_based_criteria",
+            "label": "Formula Based Criteria",
+            "fieldtype": "Text"
+        },
+        {
+            "fieldname": "custom_version",
+            "label": "Custom Version",
+            "fieldtype": "Data"
+        },
+        {
+            "fieldname": "amended_from",
+            "label": "Amended From",
+            "fieldtype": "Data",
+            "read_only": 1,
+            "hidden": 1,
+            "no_copy": 1
+        },
+        {
+            "fieldname": "status",
+            "label": "Status",
+            "fieldtype": "Select",
+            "options": "\nDraft\nSubmitted\nApproved\nObsolete",
+            "default": "Draft",
+            "read_only": 1
+        }
+    ],
+    "title": "TDS Product Specification"
+}

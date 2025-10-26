@@ -1,0 +1,57 @@
+{
+    "doctype": "DocType",
+    "name": "spc_equipment",
+    "module": "fda_compliance",
+    "custom": 1,
+    "istable": 1,
+    "track_changes": 1,
+    "description": "Child table for equipment used in batch production",
+    "fields": [
+        {
+            "fieldname": "equipment_id",
+            "fieldtype": "Data",
+            "label": "Equipment ID",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Unique equipment identifier"
+        },
+        {
+            "fieldname": "equipment_name",
+            "fieldtype": "Data",
+            "label": "Equipment Name",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Name or description of equipment"
+        },
+        {
+            "fieldname": "calibration_status",
+            "fieldtype": "Select",
+            "label": "Calibration Status",
+            "options": "Valid\nDue\nOverdue\nNot Required",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Current calibration status"
+        },
+        {
+            "fieldname": "last_calibration_date",
+            "fieldtype": "Date",
+            "label": "Last Calibration Date",
+            "description": "Date of last calibration"
+        },
+        {
+            "fieldname": "next_calibration_date",
+            "fieldtype": "Date",
+            "label": "Next Calibration Date",
+            "description": "Next calibration due date"
+        },
+        {
+            "fieldname": "usage_hours",
+            "fieldtype": "Float",
+            "label": "Usage Hours",
+            "precision": 2,
+            "description": "Hours of equipment usage"
+        }
+    ],
+    "app": "amb_w_spc",
+    "title": "SPC Equipment"
+}

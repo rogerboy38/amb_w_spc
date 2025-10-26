@@ -1,0 +1,94 @@
+{
+ "creation": "2025-09-10 22:37:36.000000",
+ "doctype": "Workflow",
+ "document_type": "SPC Corrective Action",
+ "is_active": 0,
+ "modified": "2025-09-10 22:37:36.000000",
+ "modified_by": "Administrator",
+ "name": "SPC Corrective Action Workflow",
+ "owner": "Administrator",
+ "send_email_alert": 1,
+ "states": [
+  {
+   "allow_edit": "Quality Engineer",
+   "doc_status": "0",
+   "state": "Open",
+   "update_field": "ca_status",
+   "update_value": "Open"
+  },
+  {
+   "allow_edit": "Production Manager",
+   "doc_status": "0",
+   "state": "In Progress",
+   "update_field": "ca_status",
+   "update_value": "In Progress"
+  },
+  {
+   "allow_edit": "Quality Manager",
+   "doc_status": "0",
+   "state": "Pending Verification",
+   "update_field": "ca_status",
+   "update_value": "Pending Verification"
+  },
+  {
+   "allow_edit": "Quality Manager",
+   "doc_status": "1",
+   "state": "Closed",
+   "update_field": "ca_status",
+   "update_value": "Closed"
+  },
+  {
+   "allow_edit": "Quality Manager",
+   "doc_status": "2",
+   "state": "Cancelled",
+   "update_field": "ca_status",
+   "update_value": "Cancelled"
+  }
+ ],
+ "transitions": [
+  {
+   "action": "Start Work",
+   "allowed": "Production Manager",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "In Progress",
+   "state": "Open"
+  },
+  {
+   "action": "Submit for Verification",
+   "allowed": "Production Manager",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "Pending Verification",
+   "state": "In Progress"
+  },
+  {
+   "action": "Verify and Close",
+   "allowed": "Quality Manager",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "Closed",
+   "state": "Pending Verification"
+  },
+  {
+   "action": "Return for Rework",
+   "allowed": "Quality Manager",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "In Progress",
+   "state": "Pending Verification"
+  },
+  {
+   "action": "Cancel",
+   "allowed": "Quality Manager",
+   "allow_self_approval": 1,
+   "condition": "",
+   "next_state": "Cancelled",
+   "state": "Open"
+  }
+ ],
+ "workflow_name": "Corrective Action Workflow",
+ "workflow_state_field": "ca_status",
+ "module": "spc_quality_management",
+ "app": "amb_w_spc"
+}

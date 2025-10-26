@@ -1,0 +1,59 @@
+{
+    "doctype": "DocType",
+    "name": "deviation_timeline",
+    "module": "fda_compliance",
+    "custom": 1,
+    "istable": 1,
+    "track_changes": 1,
+    "description": "Child table for deviation investigation timeline and milestones",
+    "fields": [
+        {
+            "fieldname": "milestone",
+            "fieldtype": "Data",
+            "label": "Milestone",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Investigation milestone or activity"
+        },
+        {
+            "fieldname": "planned_date",
+            "fieldtype": "Date",
+            "label": "Planned Date",
+            "reqd": 1,
+            "in_list_view": 1,
+            "description": "Planned completion date"
+        },
+        {
+            "fieldname": "actual_date",
+            "fieldtype": "Date",
+            "label": "Actual Date",
+            "in_list_view": 1,
+            "description": "Actual completion date"
+        },
+        {
+            "fieldname": "responsible_person",
+            "fieldtype": "Link",
+            "label": "Responsible Person",
+            "options": "Employee",
+            "reqd": 1,
+            "description": "Person responsible for milestone"
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "label": "Status",
+            "options": "Not Started\nIn Progress\nCompleted\nDelayed\nCancelled",
+            "default": "Not Started",
+            "in_list_view": 1,
+            "description": "Current status of milestone"
+        },
+        {
+            "fieldname": "comments",
+            "fieldtype": "Small Text",
+            "label": "Comments",
+            "description": "Additional comments or notes"
+        }
+    ],
+    "app": "amb_w_spc",
+    "title": "Deviation Timeline"
+}

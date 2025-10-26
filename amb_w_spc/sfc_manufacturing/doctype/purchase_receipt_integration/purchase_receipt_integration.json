@@ -1,0 +1,281 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "autoname": "naming_series:",
+    "creation": "2025-01-03 12:49:29.000000",
+    "doctype": "DocType",
+    "engine": "InnoDB",
+    "field_order": [
+        "section_break_1",
+        "naming_series",
+        "purchase_receipt_reference",
+        "posting_date",
+        "posting_time",
+        "column_break_5",
+        "supplier",
+        "company",
+        "currency",
+        "total_amount",
+        "section_break_9",
+        "total_items_count",
+        "inspection_required_count",
+        "direct_placement_count",
+        "column_break_13",
+        "overall_status",
+        "quality_approval_status",
+        "warehouse_placement_status",
+        "section_break_17",
+        "items",
+        "section_break_19",
+        "warehouse_integration_status",
+        "quality_system_integration_status",
+        "batch_tracking_integration_status",
+        "column_break_23",
+        "sap_movement_integration_status",
+        "fda_compliance_status",
+        "temperature_compliance_status",
+        "section_break_27",
+        "integration_notes",
+        "workflow_state"
+    ],
+    "fields": [
+        {
+            "fieldname": "section_break_1",
+            "fieldtype": "Section Break",
+            "label": "Purchase Receipt Information"
+        },
+        {
+            "fieldname": "naming_series",
+            "fieldtype": "Select",
+            "label": "Naming Series",
+            "options": "PRI-.YY.-.####",
+            "reqd": 1
+        },
+        {
+            "fieldname": "purchase_receipt_reference",
+            "fieldtype": "Link",
+            "label": "Purchase Receipt Reference",
+            "options": "Purchase Receipt",
+            "reqd": 1
+        },
+        {
+            "fieldname": "posting_date",
+            "fieldtype": "Date",
+            "label": "Posting Date",
+            "reqd": 1
+        },
+        {
+            "fieldname": "posting_time",
+            "fieldtype": "Time",
+            "label": "Posting Time"
+        },
+        {
+            "fieldname": "column_break_5",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "supplier",
+            "fieldtype": "Link",
+            "label": "Supplier",
+            "options": "Supplier",
+            "reqd": 1
+        },
+        {
+            "fieldname": "company",
+            "fieldtype": "Link",
+            "label": "Company",
+            "options": "Company",
+            "reqd": 1
+        },
+        {
+            "fieldname": "currency",
+            "fieldtype": "Link",
+            "label": "Currency",
+            "options": "Currency"
+        },
+        {
+            "fieldname": "total_amount",
+            "fieldtype": "Currency",
+            "label": "Total Amount",
+            "precision": "2"
+        },
+        {
+            "fieldname": "section_break_9",
+            "fieldtype": "Section Break",
+            "label": "Processing Summary"
+        },
+        {
+            "fieldname": "total_items_count",
+            "fieldtype": "Int",
+            "label": "Total Items Count",
+            "read_only": 1
+        },
+        {
+            "fieldname": "inspection_required_count",
+            "fieldtype": "Int",
+            "label": "Inspection Required Count",
+            "read_only": 1
+        },
+        {
+            "fieldname": "direct_placement_count",
+            "fieldtype": "Int",
+            "label": "Direct Placement Count",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_13",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "overall_status",
+            "fieldtype": "Select",
+            "label": "Overall Status",
+            "options": "Draft\nPending Inspection\nInspection Complete\nPlacement Complete\nClosed",
+            "read_only": 1
+        },
+        {
+            "fieldname": "quality_approval_status",
+            "fieldtype": "Select",
+            "label": "Quality Approval Status",
+            "options": "Pending\nPartial\nComplete\nRejected",
+            "read_only": 1
+        },
+        {
+            "fieldname": "warehouse_placement_status",
+            "fieldtype": "Select",
+            "label": "Warehouse Placement Status",
+            "options": "Pending\nIn Progress\nComplete",
+            "read_only": 1
+        },
+        {
+            "fieldname": "section_break_17",
+            "fieldtype": "Section Break",
+            "label": "Items"
+        },
+        {
+            "fieldname": "items",
+            "fieldtype": "Table",
+            "label": "Items",
+            "options": "Purchase Receipt Integration Item",
+            "reqd": 1
+        },
+        {
+            "fieldname": "section_break_19",
+            "fieldtype": "Section Break",
+            "label": "Integration Status"
+        },
+        {
+            "fieldname": "warehouse_integration_status",
+            "fieldtype": "Select",
+            "label": "Warehouse Integration Status",
+            "options": "Pending\nCompleted\nFailed",
+            "read_only": 1
+        },
+        {
+            "fieldname": "quality_system_integration_status",
+            "fieldtype": "Select",
+            "label": "Quality System Integration Status",
+            "options": "Pending\nCompleted\nFailed",
+            "read_only": 1
+        },
+        {
+            "fieldname": "batch_tracking_integration_status",
+            "fieldtype": "Select",
+            "label": "Batch Tracking Integration Status",
+            "options": "Pending\nCompleted\nFailed",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_23",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "sap_movement_integration_status",
+            "fieldtype": "Select",
+            "label": "SAP Movement Integration Status",
+            "options": "Pending\nCompleted\nFailed",
+            "read_only": 1
+        },
+        {
+            "fieldname": "fda_compliance_status",
+            "fieldtype": "Select",
+            "label": "FDA Compliance Status",
+            "options": "Pending\nCompleted\nFailed",
+            "read_only": 1
+        },
+        {
+            "fieldname": "temperature_compliance_status",
+            "fieldtype": "Select",
+            "label": "Temperature Compliance Status",
+            "options": "Pending\nCompleted\nFailed",
+            "read_only": 1
+        },
+        {
+            "fieldname": "section_break_27",
+            "fieldtype": "Section Break",
+            "label": "Additional Information"
+        },
+        {
+            "fieldname": "integration_notes",
+            "fieldtype": "Text",
+            "label": "Integration Notes"
+        },
+        {
+            "fieldname": "workflow_state",
+            "fieldtype": "Link",
+            "label": "Workflow State",
+            "options": "Workflow State",
+            "read_only": 1
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "is_submittable": 1,
+    "links": [],
+    "modified": "2025-01-03 12:49:29.000000",
+    "modified_by": "Administrator",
+    "module": "SFC Manufacturing",
+    "name": "purchase_receipt_integration",
+    "naming_rule": "By \"Naming Series\" field",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Warehouse Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Quality Inspector",
+            "share": 1
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1,
+    "title": "Purchase Receipt Integration"
+}

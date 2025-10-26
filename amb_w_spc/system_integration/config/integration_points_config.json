@@ -1,0 +1,593 @@
+{
+ "system_integration_points": {
+  "description": "Integration connections between SPC system and existing ERPNext modules",
+  "version": "1.0",
+  "last_updated": "2025-09-10",
+  "erpnext_module_connections": {
+   "Manufacturing": {
+    "description": "Integration with ERPNext Manufacturing module",
+    "connections": {
+     "Workstation": {
+      "link_field": "workstation",
+      "purpose": "Link SPC parameters to manufacturing workstations",
+      "data_flow": "SPC Data Point -> Workstation -> Work Order",
+      "integration_points": [
+       "Real-time production monitoring",
+       "Quality gates in manufacturing workflow",
+       "Automatic work order holds on critical alerts"
+      ]
+     },
+     "Work Order": {
+      "link_field": "work_order",
+      "purpose": "Track SPC data per work order/batch",
+      "data_flow": "Work Order -> SPC Batch Record -> SPC Data Point",
+      "integration_points": [
+       "Batch-specific quality tracking",
+       "Work order quality approval gates",
+       "Automatic quality hold on deviations"
+      ]
+     },
+     "Item": {
+      "link_field": "item",
+      "purpose": "Product-specific quality parameters",
+      "data_flow": "Item -> SPC Parameter Master -> SPC Specification",
+      "integration_points": [
+       "Item-specific quality specifications",
+       "Product quality history tracking",
+       "Quality-based item classification"
+      ]
+     },
+     "BOM": {
+      "link_field": "bom",
+      "purpose": "Quality parameters defined in bill of materials",
+      "data_flow": "BOM -> SPC Parameter Master -> Quality Control",
+      "integration_points": [
+       "BOM-driven quality checks",
+       "Component quality requirements",
+       "Recipe compliance monitoring"
+      ]
+     }
+    }
+   },
+   "Quality Management": {
+    "description": "Deep integration with ERPNext Quality Management",
+    "connections": {
+     "Quality Inspection": {
+      "link_field": "quality_inspection",
+      "purpose": "Link SPC data to formal quality inspections",
+      "data_flow": "Quality Inspection -> SPC Data Point -> SPC Alert",
+      "integration_points": [
+       "Automated quality inspection from SPC data",
+       "Inspector workflow integration",
+       "Inspection result validation"
+      ]
+     },
+     "Quality Goal": {
+      "link_field": "quality_goal",
+      "purpose": "Align SPC targets with quality goals",
+      "data_flow": "Quality Goal -> SPC Specification -> Process Capability",
+      "integration_points": [
+       "Goal-driven specification setting",
+       "Capability study alignment",
+       "Performance tracking against goals"
+      ]
+     },
+     "Quality Review": {
+      "link_field": "quality_review",
+      "purpose": "Include SPC analysis in quality reviews",
+      "data_flow": "SPC Report -> Quality Review -> Management Review",
+      "integration_points": [
+       "Statistical analysis in reviews",
+       "Trend analysis reporting",
+       "CAPA effectiveness review"
+      ]
+     }
+    }
+   },
+   "Stock": {
+    "description": "Integration with inventory and warehouse management",
+    "connections": {
+     "Warehouse": {
+      "link_field": "warehouse",
+      "purpose": "Location-based quality tracking",
+      "data_flow": "Warehouse -> Plant Configuration -> SPC Data Point",
+      "integration_points": [
+       "Warehouse-specific quality parameters",
+       "Storage condition monitoring",
+       "Location-based quality holds"
+      ]
+     },
+     "Batch": {
+      "link_field": "batch_no",
+      "purpose": "Batch traceability and quality tracking",
+      "data_flow": "Batch -> SPC Batch Record -> SPC Data Point",
+      "integration_points": [
+       "Batch quality genealogy",
+       "Lot-specific quality analysis",
+       "Batch quality certification"
+      ]
+     },
+     "Serial No": {
+      "link_field": "serial_no",
+      "purpose": "Unit-level quality tracking",
+      "data_flow": "Serial No -> SPC Data Point -> Quality History",
+      "integration_points": [
+       "Individual unit quality records",
+       "Serial number quality correlation",
+       "Unit-specific quality certification"
+      ]
+     }
+    }
+   },
+   "Projects": {
+    "description": "Integration with project management for quality projects",
+    "connections": {
+     "Project": {
+      "link_field": "project",
+      "purpose": "Quality improvement projects tracking",
+      "data_flow": "Project -> Corrective Action -> Process Capability",
+      "integration_points": [
+       "CAPA projects management",
+       "Quality improvement initiatives",
+       "Project-based capability studies"
+      ]
+     },
+     "Task": {
+      "link_field": "task",
+      "purpose": "Quality task management and tracking",
+      "data_flow": "Task -> Corrective Action Item -> Electronic Signature",
+      "integration_points": [
+       "Quality task automation",
+       "CAPA task tracking",
+       "Quality milestone management"
+      ]
+     }
+    }
+   },
+   "HR": {
+    "description": "Human resource integration for quality training and competency",
+    "connections": {
+     "Employee": {
+      "link_field": "employee",
+      "purpose": "Operator competency and training tracking",
+      "data_flow": "Employee -> Training -> Quality Competency -> Data Entry Rights",
+      "integration_points": [
+       "Operator qualification verification",
+       "Training effectiveness correlation",
+       "Competency-based data access"
+      ]
+     },
+     "Training Program": {
+      "link_field": "training_program",
+      "purpose": "Quality training effectiveness tracking",
+      "data_flow": "Training Program -> Employee -> SPC Data Quality",
+      "integration_points": [
+       "Training impact on data quality",
+       "Certification-based access control",
+       "Continuous competency assessment"
+      ]
+     }
+    }
+   },
+   "Accounts": {
+    "description": "Financial impact tracking of quality issues",
+    "connections": {
+     "Cost Center": {
+      "link_field": "cost_center",
+      "purpose": "Quality cost allocation and tracking",
+      "data_flow": "Cost Center -> Plant Configuration -> Quality Costs",
+      "integration_points": [
+       "Cost of quality analysis",
+       "Department-wise quality performance",
+       "Quality investment ROI tracking"
+      ]
+     },
+     "Project": {
+      "link_field": "project",
+      "purpose": "Project-based quality cost tracking",
+      "data_flow": "Project -> Corrective Action -> Cost Impact",
+      "integration_points": [
+       "CAPA project costing",
+       "Quality improvement ROI",
+       "Prevention vs correction costs"
+      ]
+     }
+    }
+   },
+   "CRM": {
+    "description": "Customer quality feedback and complaint management",
+    "connections": {
+     "Issue": {
+      "link_field": "issue",
+      "purpose": "Customer complaint to quality issue tracking",
+      "data_flow": "Issue -> Deviation -> Corrective Action -> Resolution",
+      "integration_points": [
+       "Customer complaint root cause analysis",
+       "Quality issue customer communication",
+       "Proactive customer notification"
+      ]
+     },
+     "Opportunity": {
+      "link_field": "opportunity",
+      "purpose": "Quality capabilities in sales process",
+      "data_flow": "Opportunity -> Process Capability -> Quality Certification",
+      "integration_points": [
+       "Quality capability demonstration",
+       "Customer quality requirement validation",
+       "Quality-based competitive advantage"
+      ]
+     }
+    }
+   }
+  },
+  "custom_dashboard_configurations": {
+   "Quality Manager Dashboard": {
+    "description": "Executive quality performance dashboard",
+    "charts": [
+     {
+      "name": "Critical Alerts Trend",
+      "type": "Line",
+      "source": "SPC Alert",
+      "filters": {
+       "severity": "Critical"
+      },
+      "time_period": "Last 30 Days"
+     },
+     {
+      "name": "Process Capability Summary",
+      "type": "Bar",
+      "source": "Process Capability",
+      "group_by": "workstation",
+      "value_field": "cpk_value"
+     },
+     {
+      "name": "CAPA Status",
+      "type": "Donut",
+      "source": "Corrective Action",
+      "group_by": "status"
+     },
+     {
+      "name": "Quality Cost Trend",
+      "type": "Area",
+      "source": "Deviation",
+      "value_field": "estimated_cost",
+      "time_period": "Last 90 Days"
+     }
+    ],
+    "number_cards": [
+     {
+      "name": "Open Critical Alerts",
+      "source": "SPC Alert",
+      "filters": {
+       "status": "Open",
+       "severity": "Critical"
+      }
+     },
+     {
+      "name": "Overdue CAPAs",
+      "source": "Corrective Action",
+      "filters": {
+       "status": "In Progress",
+       "due_date": "< Today"
+      }
+     },
+     {
+      "name": "Active Deviations",
+      "source": "Deviation",
+      "filters": {
+       "status": [
+        "!=",
+        "Closed"
+       ]
+      }
+     }
+    ]
+   },
+   "Plant Operations Dashboard": {
+    "description": "Real-time plant quality monitoring",
+    "charts": [
+     {
+      "name": "Real-time Parameter Status",
+      "type": "Gauge",
+      "source": "SPC Data Point",
+      "time_period": "Last 1 Hour",
+      "group_by": "parameter"
+     },
+     {
+      "name": "Workstation Performance",
+      "type": "Heatmap",
+      "source": "SPC Data Point",
+      "x_axis": "workstation",
+      "y_axis": "parameter",
+      "value_field": "specification_compliance"
+     },
+     {
+      "name": "Alert Distribution",
+      "type": "Bar",
+      "source": "SPC Alert",
+      "group_by": "workstation",
+      "time_period": "Today"
+     }
+    ]
+   },
+   "Inspector Dashboard": {
+    "description": "Inspector daily tasks and alerts",
+    "charts": [
+     {
+      "name": "My Pending Tasks",
+      "type": "List",
+      "source": "SPC Alert",
+      "filters": {
+       "assigned_to": "session.user",
+       "status": "Open"
+      }
+     },
+     {
+      "name": "Data Entry Progress",
+      "type": "Progress",
+      "source": "SPC Data Point",
+      "filters": {
+       "operator": "session.user"
+      },
+      "time_period": "Today"
+     }
+    ]
+   }
+  },
+  "email_notification_system": {
+   "description": "Automated email notification configuration",
+   "notification_rules": {
+    "critical_alert_immediate": {
+     "trigger": "SPC Alert creation with severity = Critical",
+     "recipients": [
+      "Quality Manager",
+      "Plant Manager",
+      "Shift Supervisor"
+     ],
+     "template": "SPC Alert - New Alert",
+     "delivery_method": "Immediate"
+    },
+    "alert_escalation_24h": {
+     "trigger": "SPC Alert open for 24 hours without acknowledgment",
+     "recipients": [
+      "Quality Director",
+      "Plant Manager"
+     ],
+     "template": "SPC Alert - Escalation",
+     "delivery_method": "Immediate"
+    },
+    "daily_quality_summary": {
+     "trigger": "Daily at 8:00 AM",
+     "recipients": [
+      "Quality Manager",
+      "Production Manager"
+     ],
+     "template": "Daily Quality Summary",
+     "delivery_method": "Scheduled",
+     "content": "Previous day's quality performance summary"
+    },
+    "weekly_spc_report": {
+     "trigger": "Weekly on Monday at 9:00 AM",
+     "recipients": [
+      "Quality Director",
+      "Operations Director"
+     ],
+     "template": "Weekly SPC Report",
+     "delivery_method": "Scheduled",
+     "attachments": [
+      "SPC Report PDF",
+      "Capability Study Summary"
+     ]
+    },
+    "capa_due_reminder": {
+     "trigger": "Corrective Action due in 3 days",
+     "recipients": [
+      "CAPA Owner",
+      "Quality Manager"
+     ],
+     "template": "Corrective Action - Due Reminder",
+     "delivery_method": "Daily Check"
+    }
+   }
+  },
+  "plc_integration_apis": {
+   "description": "APIs for PLC and equipment integration",
+   "endpoints": {
+    "/api/spc/data_collection": {
+     "method": "POST",
+     "purpose": "Receive automated data from PLCs",
+     "authentication": "Bot User API Key",
+     "rate_limit": "120 requests/minute",
+     "payload_example": {
+      "workstation": "LINE_001",
+      "parameter": "Temperature",
+      "measurement_value": 75.2,
+      "timestamp": "2025-09-10T14:30:00Z",
+      "measurement_precision": 0.1,
+      "equipment_id": "TEMP_SENSOR_001"
+     }
+    },
+    "/api/spc/bulk_data_collection": {
+     "method": "POST",
+     "purpose": "Bulk data submission from multiple sensors",
+     "authentication": "Bot User API Key",
+     "rate_limit": "60 requests/minute",
+     "max_records": 100,
+     "payload_example": {
+      "data_points": [
+       {
+        "workstation": "LINE_001",
+        "parameter": "Temperature",
+        "measurement_value": 75.2,
+        "timestamp": "2025-09-10T14:30:00Z"
+       }
+      ]
+     }
+    },
+    "/api/spc/alert_status": {
+     "method": "GET",
+     "purpose": "Get current alert status for equipment",
+     "authentication": "Bot User API Key",
+     "parameters": [
+      "workstation",
+      "parameter",
+      "severity"
+     ]
+    },
+    "/api/spc/specification_limits": {
+     "method": "GET",
+     "purpose": "Get current specification limits for parameters",
+     "authentication": "Bot User API Key",
+     "parameters": [
+      "workstation",
+      "parameter"
+     ]
+    },
+    "/api/spc/equipment_status": {
+     "method": "POST",
+     "purpose": "Update equipment operational status",
+     "authentication": "Bot User API Key",
+     "payload_example": {
+      "equipment_id": "TEMP_SENSOR_001",
+      "status": "Online",
+      "last_calibration": "2025-09-01",
+      "next_maintenance": "2025-10-01"
+     }
+    }
+   },
+   "security_features": [
+    "API key authentication with expiration",
+    "IP address whitelisting",
+    "Rate limiting per bot user",
+    "Request payload validation",
+    "Audit trail for all API requests",
+    "Encrypted data transmission (HTTPS only)"
+   ]
+  },
+  "audit_trail_capture": {
+   "description": "Comprehensive audit trail system for FDA compliance",
+   "captured_events": {
+    "data_entry": {
+     "trigger": "SPC Data Point creation/modification",
+     "captured_fields": [
+      "user",
+      "timestamp",
+      "ip_address",
+      "browser_info",
+      "old_value",
+      "new_value",
+      "field_changed",
+      "reason"
+     ]
+    },
+    "specification_changes": {
+     "trigger": "SPC Specification modification",
+     "captured_fields": [
+      "user",
+      "timestamp",
+      "change_reason",
+      "approval_status",
+      "old_limits",
+      "new_limits",
+      "effective_date"
+     ],
+     "requirements": [
+      "Electronic signature required",
+      "Change control workflow"
+     ]
+    },
+    "alert_actions": {
+     "trigger": "SPC Alert acknowledgment/resolution",
+     "captured_fields": [
+      "user",
+      "timestamp",
+      "action_taken",
+      "notes",
+      "investigation_results",
+      "corrective_actions"
+     ]
+    },
+    "deviation_management": {
+     "trigger": "Deviation lifecycle events",
+     "captured_fields": [
+      "user",
+      "timestamp",
+      "stage",
+      "investigation_findings",
+      "root_cause",
+      "capa_actions",
+      "effectiveness_review"
+     ]
+    },
+    "system_administration": {
+     "trigger": "System configuration changes",
+     "captured_fields": [
+      "admin_user",
+      "timestamp",
+      "configuration_changed",
+      "old_config",
+      "new_config",
+      "business_justification"
+     ]
+    }
+   },
+   "retention_policy": {
+    "data_points": "7 years (FDA requirement)",
+    "audit_trails": "Permanent retention",
+    "electronic_signatures": "Permanent retention",
+    "deviations": "7 years minimum",
+    "change_controls": "Life of system + 1 year"
+   },
+   "compliance_features": [
+    "21 CFR Part 11 compliant electronic records",
+    "Audit trail integrity protection",
+    "Time-stamped and sequence-stamped entries",
+    "User identification and authentication",
+    "Authorized access controls",
+    "Data backup and recovery procedures"
+   ]
+  },
+  "reporting_integration": {
+   "description": "Integration with ERPNext reporting and external systems",
+   "report_types": {
+    "statistical_process_control": {
+     "frequency": "Real-time, Daily, Weekly, Monthly",
+     "format": "PDF, Excel, JSON API",
+     "content": "Control charts, capability studies, trend analysis",
+     "recipients": "Quality managers, Operations managers"
+    },
+    "regulatory_compliance": {
+     "frequency": "Monthly, Quarterly, Annual",
+     "format": "PDF (signed), Excel",
+     "content": "Deviation summary, CAPA effectiveness, audit trail",
+     "recipients": "QA Director, Regulatory Affairs"
+    },
+    "management_review": {
+     "frequency": "Monthly, Quarterly",
+     "format": "Executive dashboard, PDF summary",
+     "content": "KPIs, trends, improvement opportunities",
+     "recipients": "Executive management, Quality council"
+    }
+   },
+   "external_integrations": {
+    "lims_integration": {
+     "purpose": "Laboratory data integration",
+     "data_flow": "LIMS -> SPC Data Point -> Process Capability",
+     "protocol": "REST API, File import"
+    },
+    "mes_integration": {
+     "purpose": "Manufacturing execution system data",
+     "data_flow": "MES -> Workstation -> SPC Data Point",
+     "protocol": "OPC UA, REST API"
+    },
+    "erp_integration": {
+     "purpose": "Enterprise resource planning data",
+     "data_flow": "ERP -> Work Order -> SPC Batch Record",
+     "protocol": "REST API, Database sync"
+    }
+   }
+  }
+ },
+ "module": "system_integration",
+ "app": "amb_w_spc"
+}

@@ -1,0 +1,38 @@
+{
+    "doctype": "Workspace",
+    "name": "SPC Dashboard",
+    "label": "SPC Dashboard",
+    "title": "SPC Dashboard", 
+    "module": "core_spc",
+    "is_standard": 1,
+    "public": 1,
+    "sequence_id": 1,
+    "charts": [],
+    "shortcuts": [
+        {
+            "type": "DocType",
+            "link_to": "SPC Control Chart",
+            "label": "Control Charts",
+            "description": "Create and manage SPC control charts"
+        },
+        {
+            "type": "DocType",
+            "link_to": "SPC Data Point", 
+            "label": "Data Points",
+            "description": "View and manage real-time data points"
+        },
+        {
+            "type": "DocType",
+            "link_to": "SPC Parameter Master",
+            "label": "Parameters",
+            "description": "Configure SPC parameters and specifications"
+        },
+        {
+            "type": "DocType",
+            "link_to": "SPC Alert",
+            "label": "Alerts",
+            "description": "Monitor and manage quality alerts"
+        }
+    ],
+    "cards": []
+}

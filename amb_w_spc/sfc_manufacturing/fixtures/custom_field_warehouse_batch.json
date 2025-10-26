@@ -1,0 +1,211 @@
+[
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "batch_tracking_section",
+        "label": "Batch Tracking Configuration",
+        "fieldtype": "Section Break",
+        "insert_after": "warehouse_type",
+        "collapsible": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "custom_enable_batch_tracking",
+        "label": "Enable Batch Tracking",
+        "fieldtype": "Check",
+        "insert_after": "batch_tracking_section",
+        "default": "1",
+        "description": "Enable advanced batch tracking for this warehouse"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "custom_plant_code",
+        "label": "Plant Code",
+        "fieldtype": "Data",
+        "insert_after": "custom_enable_batch_tracking",
+        "description": "Plant code for batch plant assignments"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "custom_zone_assignment",
+        "label": "Zone Assignment",
+        "fieldtype": "Select",
+        "options": "\nRed Zone\nGreen Zone\nTransit Zone\nQuality Zone",
+        "insert_after": "custom_plant_code",
+        "description": "Zone assignment for batch quality routing"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "column_break_batch_config",
+        "fieldtype": "Column Break",
+        "insert_after": "custom_zone_assignment"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "custom_allow_expired_batches",
+        "label": "Allow Expired Batches",
+        "fieldtype": "Check",
+        "insert_after": "column_break_batch_config",
+        "description": "Allow storage of expired batches (for Rejected warehouses)"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "custom_batch_quality_restrictions",
+        "label": "Batch Quality Restrictions",
+        "fieldtype": "Small Text",
+        "insert_after": "custom_allow_expired_batches",
+        "description": "Quality status restrictions (e.g., 'Hold,Failed' for rejected warehouse)"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "temperature_control_section",
+        "label": "Temperature Control & Batch Storage",
+        "fieldtype": "Section Break",
+        "insert_after": "custom_batch_quality_restrictions",
+        "collapsible": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "custom_temperature_control",
+        "label": "Temperature Controlled",
+        "fieldtype": "Check",
+        "insert_after": "temperature_control_section",
+        "description": "This warehouse has temperature control for batch storage"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "custom_target_temperature",
+        "label": "Target Temperature (°C)",
+        "fieldtype": "Float",
+        "insert_after": "custom_temperature_control",
+        "depends_on": "custom_temperature_control",
+        "precision": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "custom_temperature_tolerance",
+        "label": "Temperature Tolerance (±°C)",
+        "fieldtype": "Float",
+        "insert_after": "custom_target_temperature",
+        "depends_on": "custom_temperature_control",
+        "default": "2.0",
+        "precision": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "column_break_temp_monitoring",
+        "fieldtype": "Column Break",
+        "insert_after": "custom_temperature_tolerance"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "custom_batch_storage_requirements",
+        "label": "Batch Storage Requirements",
+        "fieldtype": "Small Text",
+        "insert_after": "column_break_temp_monitoring",
+        "description": "Special storage requirements for batches in this warehouse"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Warehouse",
+        "fieldname": "custom_max_batch_capacity",
+        "label": "Max Batch Capacity",
+        "fieldtype": "Int",
+        "insert_after": "custom_batch_storage_requirements",
+        "description": "Maximum number of batches that can be stored"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Bin",
+        "fieldname": "batch_information_section",
+        "label": "Batch Information",
+        "fieldtype": "Section Break",
+        "insert_after": "projected_qty",
+        "collapsible": 1,
+        "collapsed": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Bin",
+        "fieldname": "custom_current_batch",
+        "label": "Current Batch",
+        "fieldtype": "Link",
+        "options": "Batch",
+        "insert_after": "batch_information_section",
+        "read_only": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Bin",
+        "fieldname": "custom_batch_amb_reference",
+        "label": "Batch AMB Reference",
+        "fieldtype": "Link",
+        "options": "Batch AMB",
+        "insert_after": "custom_current_batch",
+        "read_only": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Bin",
+        "fieldname": "custom_batch_level",
+        "label": "Batch Level",
+        "fieldtype": "Data",
+        "insert_after": "custom_batch_amb_reference",
+        "read_only": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Bin",
+        "fieldname": "column_break_batch_details",
+        "fieldtype": "Column Break",
+        "insert_after": "custom_batch_level"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Bin",
+        "fieldname": "custom_batch_expiry_date",
+        "label": "Batch Expiry Date",
+        "fieldtype": "Date",
+        "insert_after": "column_break_batch_details",
+        "read_only": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Bin",
+        "fieldname": "custom_batch_quality_status",
+        "label": "Batch Quality Status",
+        "fieldtype": "Data",
+        "insert_after": "custom_batch_expiry_date",
+        "read_only": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Bin",
+        "fieldname": "custom_container_count",
+        "label": "Container Count",
+        "fieldtype": "Int",
+        "insert_after": "custom_batch_quality_status",
+        "read_only": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Bin",
+        "fieldname": "custom_last_batch_movement",
+        "label": "Last Batch Movement",
+        "fieldtype": "Datetime",
+        "insert_after": "custom_container_count",
+        "read_only": 1
+    }
+]

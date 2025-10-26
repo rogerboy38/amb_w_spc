@@ -1,0 +1,31 @@
+{
+    "doctype": "DocType",
+    "name": "spc_corrective_action",
+    "module": "spc_quality_management",
+    "custom": 1,
+    "is_submittable": 0,
+    "istable": 0,
+    "track_changes": 1,
+    "fields": [
+        {
+            "fieldname": "name1",
+            "fieldtype": "Data",
+            "label": "Name",
+            "reqd": 1
+        }
+    ],
+    "permissions": [
+        {
+            "role": "System Manager",
+            "permlevel": 0,
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0
+        }
+    ],
+    "title": "SPC Corrective Action"
+}

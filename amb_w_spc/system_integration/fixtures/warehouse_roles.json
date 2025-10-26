@@ -1,0 +1,47 @@
+[
+ {
+  "doctype": "Role",
+  "name": "Warehouse Manager",
+  "role_name": "Warehouse Manager",
+  "home_page": "warehouse-dashboard",
+  "restrict_to_domain": "Manufacturing",
+  "is_custom": 1,
+  "two_factor_auth": 0
+ },
+ {
+  "doctype": "Role",
+  "name": "Warehouse Operator",
+  "role_name": "Warehouse Operator",
+  "home_page": "pick-tasks",
+  "restrict_to_domain": "Manufacturing",
+  "is_custom": 1,
+  "two_factor_auth": 0
+ },
+ {
+  "doctype": "Role",
+  "name": "Quality Inspector",
+  "role_name": "Quality Inspector",
+  "home_page": "material-assessment",
+  "restrict_to_domain": "Manufacturing",
+  "is_custom": 1,
+  "two_factor_auth": 0
+ },
+ {
+  "doctype": "Role",
+  "name": "Production Manager",
+  "role_name": "Production Manager",
+  "home_page": "warehouse-dashboard",
+  "restrict_to_domain": "Manufacturing",
+  "is_custom": 1,
+  "two_factor_auth": 0
+ },
+ {
+  "doctype": "Role",
+  "name": "Plant Supervisor",
+  "role_name": "Plant Supervisor",
+  "home_page": "warehouse-dashboard",
+  "restrict_to_domain": "Manufacturing",
+  "is_custom": 1,
+  "two_factor_auth": 0
+ }
+]

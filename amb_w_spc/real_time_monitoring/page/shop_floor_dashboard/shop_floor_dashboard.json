@@ -1,0 +1,32 @@
+{
+ "content": null,
+ "creation": "2025-09-18 03:31:01",
+ "doctype": "Page",
+ "icon": "fa fa-dashboard",
+ "idx": 0,
+ "modified": "2025-09-18 03:31:01",
+ "modified_by": "Administrator",
+ "module": "real_time_monitoring",
+ "name": "shop-floor-dashboard",
+ "owner": "Administrator",
+ "page_name": "Shop Floor Dashboard",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Manufacturing Manager"
+  },
+  {
+   "role": "Shop Floor Operator"
+  },
+  {
+   "role": "Quality Manager"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Shop Floor Dashboard"
+}

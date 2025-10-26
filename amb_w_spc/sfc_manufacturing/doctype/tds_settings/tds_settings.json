@@ -1,0 +1,240 @@
+{
+    "name": "tds_settings",
+    "doctype": "DocType",
+    "module": "sfc_manufacturing",
+    "is_submittable": 0,
+    "istable": 0,
+    "issingle": 1,
+    "is_tree": 0,
+    "is_calendar_and_gantt": 0,
+    "quick_entry": 0,
+    "track_changes": 1,
+    "track_seen": 1,
+    "track_views": 1,
+    "custom": 0,
+    "beta": 0,
+    "is_virtual": 0,
+    "queue_in_background": 0,
+    "naming_rule": "By script",
+    "autoname": "field:naming_series",
+    "allow_rename": 0,
+    "description": "TDS Version Control and Settings",
+    "documentation": "",
+    "permissions": [
+        {
+            "role": "System Manager",
+            "permlevel": 0,
+            "select": 1,
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0
+        },
+        {
+            "role": "RND Manager",
+            "permlevel": 0,
+            "select": 1,
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0
+        },
+        {
+            "role": "System RND",
+            "permlevel": 0,
+            "select": 1,
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0
+        },
+        {
+            "role": "Quality Manager",
+            "permlevel": 0,
+            "select": 1,
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 0,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0
+        },
+        {
+            "role": "Administrator",
+            "permlevel": 0,
+            "select": 1,
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1,
+            "submit": 0,
+            "cancel": 0,
+            "amend": 0
+        }
+    ],
+    "restrict_to_domain": "",
+    "read_only": 0,
+    "in_create": 0,
+    "protect_attached_files": 1,
+    "fields": [
+        {
+            "fieldname": "tds_version_control_section",
+            "label": "TDS VERSION CONTROL",
+            "fieldtype": "Section Break",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "naming_series",
+            "label": "Naming Series",
+            "fieldtype": "Select",
+            "options": "TDS-SET-.YYYY.-.#####",
+            "reqd": 1,
+            "default": "TDS-SET-.YYYY.-.#####"
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "last_sequence_used",
+            "label": "Last Sequence Used",
+            "fieldtype": "Int",
+            "default": "0"
+        },
+        {
+            "fieldname": "section_break_2",
+            "fieldtype": "Section Break"
+        },
+        {
+            "fieldname": "prefix",
+            "label": "Prefix",
+            "fieldtype": "Data",
+            "default": "TDS-SET",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_3",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "item_code",
+            "label": "Item Code",
+            "fieldtype": "Link",
+            "options": "Item",
+            "reqd": 1
+        },
+        {
+            "fieldname": "item_configuration_section",
+            "label": "ITEM CONFIGURATION",
+            "fieldtype": "Section Break",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "default_parameters",
+            "label": "Default Parameters",
+            "fieldtype": "Table",
+            "options": "TDS Default Parameter"
+        },
+        {
+            "fieldname": "version_control_section",
+            "label": "VERSION CONTROL SETTINGS",
+            "fieldtype": "Section Break",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "auto_increment_sequence",
+            "label": "Auto Increment Sequence",
+            "fieldtype": "Check",
+            "default": 1
+        },
+        {
+            "fieldname": "column_break_4",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "enable_version_history",
+            "label": "Enable Version History",
+            "fieldtype": "Check",
+            "default": 1
+        },
+        {
+            "fieldname": "workflow_settings_section",
+            "label": "WORKFLOW SETTINGS",
+            "fieldtype": "Section Break",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "default_workflow_state",
+            "label": "Default Workflow State",
+            "fieldtype": "Select",
+            "options": "Draft\nPending Review\nApproved\nRejected",
+            "default": "Draft"
+        },
+        {
+            "fieldname": "column_break_5",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "require_approval",
+            "label": "Require Approval",
+            "fieldtype": "Check",
+            "default": 1
+        },
+        {
+            "fieldname": "compliance_settings_section",
+            "label": "COMPLIANCE SETTINGS",
+            "fieldtype": "Section Break",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "strict_validation",
+            "label": "Strict Validation",
+            "fieldtype": "Check",
+            "default": 1,
+            "description": "Enable strict compliance validation for all parameters"
+        },
+        {
+            "fieldname": "column_break_6",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "auto_validate_on_save",
+            "label": "Auto Validate on Save",
+            "fieldtype": "Check",
+            "default": 0
+        },
+        {
+            "fieldname": "notification_settings_section",
+            "label": "NOTIFICATION SETTINGS",
+            "fieldtype": "Section Break",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "notify_on_version_change",
+            "label": "Notify on Version Change",
+            "fieldtype": "Check",
+            "default": 1
+        },
+        {
+            "fieldname": "column_break_7",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "notify_on_compliance_failure",
+            "label": "Notify on Compliance Failure",
+            "fieldtype": "Check",
+            "default": 1
+        }
+    ],
+    "title": "TDS Settings"
+}

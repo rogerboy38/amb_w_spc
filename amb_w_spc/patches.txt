@@ -1,6 +1,26 @@
-[pre_model_sync]
-# Patches added in this section will be executed before doctypes are migrated
-# Read docs to understand patches: https://frappeframework.com/docs/v14/user/en/database-migrations
+# AMB W SPC Patches
+# Format: execute:path.to.patch.function
 
-[post_model_sync]
-# Patches added in this section will be executed after doctypes are migrated
+# Core installation patches
+execute:amb_w_spc.patches.v15.install_core_modules
+execute:amb_w_spc.patches.v15.install_spc_quality_management
+execute:amb_w_spc.patches.v15.install_sfc_manufacturing
+execute:amb_w_spc.patches.v15.install_operator_management
+execute:amb_w_spc.patches.v15.install_shop_floor_control
+execute:amb_w_spc.patches.v15.install_plant_equipment
+execute:amb_w_spc.patches.v15.install_real_time_monitoring
+execute:amb_w_spc.patches.v15.install_sensor_management
+execute:amb_w_spc.patches.v15.install_system_integration
+execute:amb_w_spc.patches.v15.install_fda_compliance
+
+# Warehouse management patches
+execute:amb_w_spc.patches.v15.install_warehouse_management
+
+# Warehouse-Batch Integration patches (NEW)
+execute:amb_w_spc.patches.v15.install_warehouse_batch_integration
+
+# Fix and update patches
+execute:amb_w_spc.patches.v15.fix_module_definitions
+execute:amb_w_spc.patches.v15.update_workspace_charts
+execute:amb_w_spc.patches.v15.setup_default_settings
+execute:amb_w_spc.patches.v15.create_sample_data

@@ -1,0 +1,84 @@
+{
+    "creation": "2024-01-01 00:00:00",
+    "doctype": "DocType",
+    "document_type": "Document",
+    "engine": "InnoDB",
+    "field_order": [
+        "barrel_serial_number",
+        "packaging_type",
+        "barcode_scan_input",
+        "scan_timestamp",
+        "weight_section",
+        "gross_weight",
+        "tara_weight",
+        "net_weight",
+        "weight_validated"
+    ],
+    "fields": [
+        {
+            "fieldname": "barrel_serial_number",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Barrel Serial Number",
+            "reqd": 1
+        },
+        {
+            "fieldname": "packaging_type",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Packaging Type",
+            "options": "Item"
+        },
+        {
+            "fieldname": "barcode_scan_input",
+            "fieldtype": "Data",
+            "label": "Barcode Scan Input"
+        },
+        {
+            "fieldname": "scan_timestamp",
+            "fieldtype": "Datetime",
+            "label": "Scan Timestamp",
+            "read_only": 1
+        },
+        {
+            "fieldname": "weight_section",
+            "fieldtype": "Section Break",
+            "label": "Weight Information"
+        },
+        {
+            "fieldname": "gross_weight",
+            "fieldtype": "Float",
+            "in_list_view": 1,
+            "label": "Gross Weight (kg)"
+        },
+        {
+            "fieldname": "tara_weight",
+            "fieldtype": "Float",
+            "in_list_view": 1,
+            "label": "Tara Weight (kg)"
+        },
+        {
+            "fieldname": "net_weight",
+            "fieldtype": "Float",
+            "in_list_view": 1,
+            "label": "Net Weight (kg)",
+            "read_only": 1
+        },
+        {
+            "default": "0",
+            "fieldname": "weight_validated",
+            "fieldtype": "Check",
+            "label": "Weight Validated",
+            "read_only": 1
+        }
+    ],
+    "istable": 1,
+    "modified": "2024-01-01 00:00:00",
+    "modified_by": "Administrator",
+    "module": "sfc_manufacturing",
+    "name": "container_barrels",
+    "owner": "Administrator",
+    "permissions": [],
+    "quick_entry": 0,
+    "title": "Container Barrels"
+}

@@ -1,0 +1,29 @@
+[
+    {
+        "doctype": "Workspace",
+        "name": "SPC Dashboard",
+        "label": "SPC Dashboard",
+        "title": "SPC Dashboard",
+        "module": "core_spc",
+        "is_standard": 1,
+        "public": 1
+    },
+    {
+        "doctype": "Workspace", 
+        "name": "SPC Quality Management",
+        "label": "SPC Quality", 
+        "title": "SPC Quality Management",
+        "module": "spc_quality_management",
+        "is_standard": 1,
+        "public": 1
+    },
+    {
+        "doctype": "Workspace",
+        "name": "Manufacturing Control",
+        "label": "Manufacturing",
+        "title": "Manufacturing Control",
+        "module": "sfc_manufacturing", 
+        "is_standard": 1,
+        "public": 1
+    }
+]

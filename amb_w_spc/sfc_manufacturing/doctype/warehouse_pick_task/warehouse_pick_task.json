@@ -1,0 +1,303 @@
+{
+    "actions": [],
+    "allow_rename": 1,
+    "autoname": "field:naming_series",
+    "creation": "2025-01-15 09:00:00.000000",
+    "default_view": "List",
+    "doctype": "DocType",
+    "document_type": "Document",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "naming_series",
+        "sales_order_fulfillment",
+        "sales_order",
+        "column_break_4",
+        "pick_task_status",
+        "priority",
+        "assignment_section",
+        "assigned_to",
+        "assigned_date",
+        "zone_assignment",
+        "column_break_10",
+        "pick_route",
+        "estimated_time",
+        "actual_time",
+        "items_section",
+        "pick_task_items",
+        "batch_section",
+        "batch_selection_criteria",
+        "specific_batch_required",
+        "expiry_date_priority",
+        "column_break_18",
+        "temperature_zone",
+        "quality_requirements",
+        "sap_movement_section",
+        "sap_movement_type",
+        "movement_reason",
+        "plant_code",
+        "column_break_24",
+        "cost_center",
+        "posting_date",
+        "tracking_section",
+        "start_time",
+        "completion_time",
+        "picked_by",
+        "column_break_30",
+        "verification_required",
+        "verified_by",
+        "verification_time"
+    ],
+    "fields": [
+        {
+            "fieldname": "naming_series",
+            "fieldtype": "Select",
+            "label": "Series",
+            "options": "WPT-.YY.-.####",
+            "reqd": 1
+        },
+        {
+            "fieldname": "sales_order_fulfillment",
+            "fieldtype": "Link",
+            "label": "Sales Order Fulfillment",
+            "options": "Sales Order Fulfillment"
+        },
+        {
+            "fieldname": "sales_order",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Sales Order",
+            "options": "Sales Order"
+        },
+        {
+            "fieldname": "column_break_4",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "Open",
+            "fieldname": "pick_task_status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Status",
+            "options": "Open\nAssigned\nIn Progress\nPicked\nVerified\nCompleted\nCancelled",
+            "reqd": 1
+        },
+        {
+            "default": "Medium",
+            "fieldname": "priority",
+            "fieldtype": "Select",
+            "label": "Priority",
+            "options": "High\nMedium\nLow"
+        },
+        {
+            "fieldname": "assignment_section",
+            "fieldtype": "Section Break",
+            "label": "Assignment"
+        },
+        {
+            "fieldname": "assigned_to",
+            "fieldtype": "Link",
+            "label": "Assigned To",
+            "options": "User"
+        },
+        {
+            "fieldname": "assigned_date",
+            "fieldtype": "Datetime",
+            "label": "Assigned Date"
+        },
+        {
+            "fieldname": "zone_assignment",
+            "fieldtype": "Link",
+            "label": "Warehouse Zone",
+            "options": "Warehouse"
+        },
+        {
+            "fieldname": "column_break_10",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "pick_route",
+            "fieldtype": "Small Text",
+            "label": "Pick Route"
+        },
+        {
+            "fieldname": "estimated_time",
+            "fieldtype": "Float",
+            "label": "Estimated Time (hours)"
+        },
+        {
+            "fieldname": "actual_time",
+            "fieldtype": "Float",
+            "label": "Actual Time (hours)",
+            "read_only": 1
+        },
+        {
+            "fieldname": "items_section",
+            "fieldtype": "Section Break",
+            "label": "Items to Pick"
+        },
+        {
+            "fieldname": "pick_task_items",
+            "fieldtype": "Table",
+            "label": "Items",
+            "options": "Warehouse Pick Task Item",
+            "reqd": 1
+        },
+        {
+            "fieldname": "batch_section",
+            "fieldtype": "Section Break",
+            "label": "Batch & Quality Requirements"
+        },
+        {
+            "fieldname": "batch_selection_criteria",
+            "fieldtype": "Select",
+            "label": "Batch Selection Criteria",
+            "options": "FEFO\nFIFO\nSpecific Batch\nCustomer Requirement"
+        },
+        {
+            "fieldname": "specific_batch_required",
+            "fieldtype": "Link",
+            "label": "Specific Batch Required",
+            "options": "Batch"
+        },
+        {
+            "fieldname": "expiry_date_priority",
+            "fieldtype": "Check",
+            "label": "Expiry Date Priority"
+        },
+        {
+            "fieldname": "column_break_18",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "temperature_zone",
+            "fieldtype": "Select",
+            "label": "Temperature Zone",
+            "options": "Ambient\nRefrigerated\nFrozen\nControlled"
+        },
+        {
+            "fieldname": "quality_requirements",
+            "fieldtype": "Small Text",
+            "label": "Quality Requirements"
+        },
+        {
+            "fieldname": "sap_movement_section",
+            "fieldtype": "Section Break",
+            "label": "SAP Movement Integration"
+        },
+        {
+            "default": "601",
+            "fieldname": "sap_movement_type",
+            "fieldtype": "Select",
+            "label": "SAP Movement Type",
+            "options": "601\n602\n701\n702"
+        },
+        {
+            "fieldname": "movement_reason",
+            "fieldtype": "Data",
+            "label": "Movement Reason"
+        },
+        {
+            "fieldname": "plant_code",
+            "fieldtype": "Data",
+            "label": "Plant Code"
+        },
+        {
+            "fieldname": "column_break_24",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "cost_center",
+            "fieldtype": "Link",
+            "label": "Cost Center",
+            "options": "Cost Center"
+        },
+        {
+            "default": "Today",
+            "fieldname": "posting_date",
+            "fieldtype": "Date",
+            "label": "Posting Date"
+        },
+        {
+            "fieldname": "tracking_section",
+            "fieldtype": "Section Break",
+            "label": "Tracking & Verification"
+        },
+        {
+            "fieldname": "start_time",
+            "fieldtype": "Datetime",
+            "label": "Start Time"
+        },
+        {
+            "fieldname": "completion_time",
+            "fieldtype": "Datetime",
+            "label": "Completion Time"
+        },
+        {
+            "fieldname": "picked_by",
+            "fieldtype": "Link",
+            "label": "Picked By",
+            "options": "User"
+        },
+        {
+            "fieldname": "column_break_30",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "verification_required",
+            "fieldtype": "Check",
+            "label": "Verification Required"
+        },
+        {
+            "fieldname": "verified_by",
+            "fieldtype": "Link",
+            "label": "Verified By",
+            "options": "User"
+        },
+        {
+            "fieldname": "verification_time",
+            "fieldtype": "Datetime",
+            "label": "Verification Time"
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "is_submittable": 1,
+    "istable": 1,
+    "links": [],
+    "modified": "2025-01-15 09:00:00.000000",
+    "modified_by": "Administrator",
+    "module": "SFC Manufacturing",
+    "name": "warehouse_pick_task",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Warehouse Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Warehouse User",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1,
+    "title": "Warehouse Pick Task"
+}

@@ -1,0 +1,29 @@
+{
+    "doctype": "DocType",
+    "module": "System Integration",
+    "name": "integration_points",
+    "is_single": 1,
+    "issingle": 1,
+    "autoname": "Integration Points",
+    "fields": [
+        {
+            "fieldname": "integration_section",
+            "fieldtype": "Section Break",
+            "label": "Integration Points Configuration"
+        },
+        {
+            "fieldname": "integration_data",
+            "fieldtype": "Code",
+            "label": "Integration Data",
+            "options": "JSON"
+        }
+    ],
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1
+        }
+    ],
+    "title": "Integration Points"
+}

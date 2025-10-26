@@ -1,0 +1,250 @@
+{
+  "master_installation": {
+    "description": "Master installation package for complete SPC ERPNext system",
+    "version": "1.0.0",
+    "erpnext_version": ">=14.0.0",
+    "frappe_version": ">=14.0.0",
+    "installation_sequence": [
+      "install_doctypes",
+      "setup_roles_permissions",
+      "install_workflows",
+      "setup_fixtures",
+      "install_validations",
+      "configure_automation",
+      "verify_installation"
+    ],
+    "doctypes_installation_order": [
+      "Plant Configuration",
+      "Workstation", 
+      "SPC Environment",
+      "SPC Equipment",
+      "SPC Raw Material",
+      "Bot User Configuration",
+      "PLC Integration",
+      "PLC Parameter Mapping",
+      "SPC Parameter Master",
+      "SPC Parameter Control Limit",
+      "SPC Parameter Specification", 
+      "SPC Parameter Target Value",
+      "SPC Specification",
+      "SPC Data Point",
+      "SPC Control Chart",
+      "SPC Alert",
+      "SPC Alert Recipient",
+      "Process Capability",
+      "SPC Process Capability Measurement",
+      "SPC Report",
+      "SPC Report Parameter",
+      "SPC Report Cpk Value",
+      "SPC Report Violation",
+      "SPC Report Recipient",
+      "SPC Corrective Action",
+      "Corrective Action Item",
+      "Corrective Action Factor",
+      "Deviation",
+      "Deviation Team Member",
+      "Deviation Timeline",
+      "Deviation CAPA Action",
+      "Electronic Signature",
+      "SPC Audit Trail",
+      "SPC Batch Record",
+      "SPC Batch Parameter",
+      "SPC Batch Deviation",
+      "SPC Change Control"
+    ],
+    "fixtures": {
+      "roles": [
+        {
+          "doctype": "Role",
+          "name": "Quality User",
+          "role_name": "Quality User",
+          "desk_access": 1,
+          "is_custom": 1
+        },
+        {
+          "doctype": "Role",
+          "name": "Inspector User",
+          "role_name": "Inspector User", 
+          "desk_access": 1,
+          "is_custom": 1
+        },
+        {
+          "doctype": "Role",
+          "name": "Manufacturing User",
+          "role_name": "Manufacturing User",
+          "desk_access": 1,
+          "is_custom": 1
+        },
+        {
+          "doctype": "Role",
+          "name": "Warehouse Bot User",
+          "role_name": "Warehouse Bot User",
+          "desk_access": 0,
+          "is_custom": 1
+        },
+        {
+          "doctype": "Role",
+          "name": "Workstation Bot User",
+          "role_name": "Workstation Bot User",
+          "desk_access": 0,
+          "is_custom": 1
+        },
+        {
+          "doctype": "Role",
+          "name": "Weight Bot User",
+          "role_name": "Weight Bot User",
+          "desk_access": 0,
+          "is_custom": 1
+        }
+      ],
+      "parameter_types": [
+        {
+          "doctype": "SPC Parameter Master",
+          "parameter_name": "Temperature",
+          "parameter_type": "Process",
+          "data_type": "Numeric",
+          "uom": "°C",
+          "decimal_precision": 2,
+          "is_critical": 1,
+          "measurement_frequency": "Continuous",
+          "statistical_method": "X-bar R Chart"
+        },
+        {
+          "doctype": "SPC Parameter Master",
+          "parameter_name": "Pressure",
+          "parameter_type": "Process",
+          "data_type": "Numeric",
+          "uom": "PSI",
+          "decimal_precision": 1,
+          "is_critical": 1,
+          "measurement_frequency": "Hourly",
+          "statistical_method": "Individual Moving Range"
+        },
+        {
+          "doctype": "SPC Parameter Master",
+          "parameter_name": "Weight",
+          "parameter_type": "Product",
+          "data_type": "Numeric",
+          "uom": "kg",
+          "decimal_precision": 3,
+          "is_critical": 1,
+          "measurement_frequency": "Per Unit",
+          "statistical_method": "X-bar R Chart"
+        },
+        {
+          "doctype": "SPC Parameter Master",
+          "parameter_name": "pH Level",
+          "parameter_type": "Chemical",
+          "data_type": "Numeric",
+          "uom": "pH",
+          "decimal_precision": 2,
+          "is_critical": 1,
+          "measurement_frequency": "Every 2 Hours",
+          "statistical_method": "Individual Moving Range"
+        },
+        {
+          "doctype": "SPC Parameter Master",
+          "parameter_name": "Moisture Content",
+          "parameter_type": "Chemical",
+          "data_type": "Numeric",
+          "uom": "%",
+          "decimal_precision": 2,
+          "is_critical": 0,
+          "measurement_frequency": "Daily",
+          "statistical_method": "Individual Moving Range"
+        }
+      ],
+      "alert_severities": [
+        "Critical",
+        "Warning", 
+        "Information"
+      ],
+      "alert_types": [
+        "Critical High",
+        "Critical Low",
+        "Warning High",
+        "Warning Low",
+        "Trend Alert",
+        "Statistical Alert"
+      ],
+      "workflow_states": {
+        "SPC Alert": ["Open", "Acknowledged", "Under Investigation", "Resolved", "Closed", "Escalated"],
+        "Process Capability": ["Draft", "In Progress", "Completed", "Approved", "On Hold"],
+        "SPC Corrective Action": ["Open", "In Progress", "Completed", "Verified", "Closed", "On Hold"],
+        "Deviation": ["Open", "Under Investigation", "Investigation Complete", "CAPA Required", "No CAPA Required", "CAPA Complete", "Closed"]
+      },
+      "uoms": [
+        {
+          "doctype": "UOM",
+          "uom_name": "°C",
+          "must_be_whole_number": 0
+        },
+        {
+          "doctype": "UOM", 
+          "uom_name": "°F",
+          "must_be_whole_number": 0
+        },
+        {
+          "doctype": "UOM",
+          "uom_name": "PSI",
+          "must_be_whole_number": 0
+        },
+        {
+          "doctype": "UOM",
+          "uom_name": "Bar",
+          "must_be_whole_number": 0
+        },
+        {
+          "doctype": "UOM",
+          "uom_name": "pH",
+          "must_be_whole_number": 0
+        },
+        {
+          "doctype": "UOM",
+          "uom_name": "ppm",
+          "must_be_whole_number": 0
+        }
+      ]
+    },
+    "installation_scripts": {
+      "pre_install": "verify_erpnext_version_and_dependencies",
+      "post_install": "configure_default_settings_and_permissions",
+      "validation": "run_installation_validation_tests"
+    },
+    "dependencies": {
+      "required_apps": ["frappe", "erpnext"],
+      "optional_apps": ["hrms"],
+      "python_packages": ["statistics", "dateutil", "numpy"],
+      "system_requirements": {
+        "min_ram": "4GB",
+        "min_disk": "10GB",
+        "database": "MariaDB 10.3+ or PostgreSQL 12+"
+      }
+    },
+    "configuration": {
+      "default_settings": {
+        "auto_create_alerts": 1,
+        "electronic_signature_required": 1,
+        "audit_trail_enabled": 1,
+        "auto_calculate_statistics": 1,
+        "alert_escalation_hours": 24,
+        "data_retention_days": 2555, 
+        "backup_frequency": "Daily",
+        "report_generation_time": "06:00"
+      },
+      "email_settings": {
+        "alert_email_template": "SPC Alert - New Alert",
+        "escalation_email_template": "SPC Alert - Escalation",
+        "report_email_template": "SPC Report - Auto Generated"
+      },
+      "statistical_settings": {
+        "control_chart_type": "X-bar R",
+        "capability_confidence_level": 0.95,
+        "minimum_sample_size": 30,
+        "control_limit_sigma": 3,
+        "capability_threshold_cp": 1.33,
+        "capability_threshold_cpk": 1.33
+      }
+    }
+  }
+}

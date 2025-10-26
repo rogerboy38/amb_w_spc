@@ -1,0 +1,128 @@
+[
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_warehouse_type-options",
+  "property": "options",
+  "property_type": "Text",
+  "doc_type": "Warehouse",
+  "field_name": "amb_warehouse_type",
+  "value": "Raw Material\nWork in Process\nFinished Goods\nQuarantine\nRejects\nMaintenance\nTemporary"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_warehouse_type-default",
+  "property": "default",
+  "property_type": "Data",
+  "doc_type": "Warehouse",
+  "field_name": "amb_warehouse_type",
+  "value": "Raw Material"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_temperature_controlled-default",
+  "property": "default",
+  "property_type": "Check",
+  "doc_type": "Warehouse",
+  "field_name": "amb_temperature_controlled",
+  "value": "0"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_min_temperature-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Warehouse",
+  "field_name": "amb_min_temperature",
+  "value": "eval:doc.amb_temperature_controlled"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_max_temperature-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Warehouse",
+  "field_name": "amb_max_temperature",
+  "value": "eval:doc.amb_temperature_controlled"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_current_temperature-depends_on",
+  "property": "depends_on",
+  "property_type": "Code",
+  "doc_type": "Warehouse",
+  "field_name": "amb_current_temperature",
+  "value": "eval:doc.amb_temperature_controlled"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_current_temperature-read_only",
+  "property": "read_only",
+  "property_type": "Check",
+  "doc_type": "Warehouse",
+  "field_name": "amb_current_temperature",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_warehouse_capacity-precision",
+  "property": "precision",
+  "property_type": "Data",
+  "doc_type": "Warehouse",
+  "field_name": "amb_warehouse_capacity",
+  "value": "2"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_current_utilization-read_only",
+  "property": "read_only",
+  "property_type": "Check",
+  "doc_type": "Warehouse",
+  "field_name": "amb_current_utilization",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_utilization_percentage-read_only",
+  "property": "read_only",
+  "property_type": "Check",
+  "doc_type": "Warehouse",
+  "field_name": "amb_utilization_percentage",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_zone_code-mandatory_depends_on",
+  "property": "mandatory_depends_on",
+  "property_type": "Code",
+  "doc_type": "Warehouse",
+  "field_name": "amb_zone_code",
+  "value": "eval:!doc.is_group"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_plant_code-mandatory_depends_on",
+  "property": "mandatory_depends_on",
+  "property_type": "Code",
+  "doc_type": "Warehouse",
+  "field_name": "amb_plant_code",
+  "value": "eval:!doc.is_group"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_pick_sequence-default",
+  "property": "default",
+  "property_type": "Data",
+  "doc_type": "Warehouse",
+  "field_name": "amb_pick_sequence",
+  "value": "1"
+ },
+ {
+  "doctype": "Property Setter",
+  "name": "Warehouse-amb_quality_check_required-default",
+  "property": "default",
+  "property_type": "Check",
+  "doc_type": "Warehouse",
+  "field_name": "amb_quality_check_required",
+  "value": "1"
+ }
+]

@@ -1,0 +1,67 @@
+[
+    {
+        "doctype": "Custom Field",
+        "dt": "Work Order",
+        "fieldname": "batch_integration_section",
+        "label": "Batch Integration",
+        "fieldtype": "Section Break",
+        "insert_after": "custom_last_zone_update",
+        "collapsible": 1,
+        "collapsed": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Work Order",
+        "fieldname": "custom_batch_context",
+        "label": "Batch Context",
+        "fieldtype": "Long Text",
+        "insert_after": "batch_integration_section",
+        "read_only": 1,
+        "description": "JSON data containing batch information related to this work order"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Work Order",
+        "fieldname": "custom_batch_quality_impact",
+        "label": "Batch Quality Impact",
+        "fieldtype": "Data",
+        "insert_after": "custom_batch_context",
+        "read_only": 1,
+        "description": "Impact of batch quality status on work order zone status"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Work Order",
+        "fieldname": "column_break_batch_tracking",
+        "fieldtype": "Column Break",
+        "insert_after": "custom_batch_quality_impact"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Work Order",
+        "fieldname": "custom_warehouse_batch_sync",
+        "label": "Warehouse-Batch Sync",
+        "fieldtype": "Check",
+        "insert_after": "column_break_batch_tracking",
+        "default": "1",
+        "description": "Enable automatic sync between warehouse operations and batch tracking"
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Work Order",
+        "fieldname": "custom_last_batch_sync",
+        "label": "Last Batch Sync",
+        "fieldtype": "Datetime",
+        "insert_after": "custom_warehouse_batch_sync",
+        "read_only": 1
+    },
+    {
+        "doctype": "Custom Field",
+        "dt": "Work Order",
+        "fieldname": "custom_batch_container_tracking",
+        "label": "Container Tracking",
+        "fieldtype": "Check",
+        "insert_after": "custom_last_batch_sync",
+        "description": "Track container/barrel information for this work order"
+    }
+]

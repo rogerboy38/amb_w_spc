@@ -1,0 +1,391 @@
+{
+    "actions": [],
+    "allow_copy": 0,
+    "allow_events_in_timeline": 0,
+    "allow_guest_to_view": 0,
+    "allow_import": 1,
+    "allow_rename": 1,
+    "autoname": "field:study_name",
+    "beta": 0,
+    "creation": "2025-09-10 22:37:36.000000",
+    "custom": 0,
+    "docstatus": 0,
+    "doctype": "DocType",
+    "document_type": "Document",
+    "engine": "InnoDB",
+    "fields": [
+        {
+            "fieldname": "study_details_section",
+            "fieldtype": "Section Break",
+            "label": "Study Details"
+        },
+        {
+            "fieldname": "study_name",
+            "fieldtype": "Data",
+            "label": "Study Name",
+            "reqd": 1,
+            "unique": 1
+        },
+        {
+            "fieldname": "parameter",
+            "fieldtype": "Data",
+            "label": "Parameter",
+            "reqd": 1
+        },
+        {
+            "fieldname": "plant",
+            "fieldtype": "Link",
+            "label": "Plant",
+            "options": "Company",
+            "reqd": 1
+        },
+        {
+            "fieldname": "product_code",
+            "fieldtype": "Link",
+            "label": "Product Code",
+            "options": "Item"
+        },
+        {
+            "fieldname": "study_period",
+            "fieldtype": "Date Range",
+            "label": "Study Period",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_6",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "workstation",
+            "fieldtype": "Link",
+            "label": "Workstation",
+            "options": "SPC Workstation"
+        },
+        {
+            "fieldname": "operator",
+            "fieldtype": "Link",
+            "label": "Operator",
+            "options": "Employee"
+        },
+        {
+            "fieldname": "study_type",
+            "fieldtype": "Select",
+            "label": "Study Type",
+            "options": "Initial Study\nOngoing Monitoring\nRevalidation\nImprovement Verification"
+        },
+        {
+            "default": "Draft",
+            "fieldname": "study_status",
+            "fieldtype": "Select",
+            "label": "Study Status",
+            "options": "Draft\nIn Progress\nCompleted\nApproved\nRejected"
+        },
+        {
+            "fieldname": "sample_data_section",
+            "fieldtype": "Section Break",
+            "label": "Sample Data"
+        },
+        {
+            "fieldname": "sample_size",
+            "fieldtype": "Int",
+            "label": "Sample Size",
+            "reqd": 1
+        },
+        {
+            "fieldname": "subgroup_size",
+            "fieldtype": "Int",
+            "label": "Subgroup Size"
+        },
+        {
+            "fieldname": "measurement_method",
+            "fieldtype": "Data",
+            "label": "Measurement Method"
+        },
+        {
+            "fieldname": "measurement_unit",
+            "fieldtype": "Data",
+            "label": "Measurement Unit"
+        },
+        {
+            "fieldname": "column_break_16",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "target_value",
+            "fieldtype": "Float",
+            "label": "Target Value",
+            "precision": 6
+        },
+        {
+            "fieldname": "lower_specification_limit",
+            "fieldtype": "Float",
+            "label": "Lower Specification Limit (LSL)",
+            "precision": 6
+        },
+        {
+            "fieldname": "upper_specification_limit",
+            "fieldtype": "Float",
+            "label": "Upper Specification Limit (USL)",
+            "precision": 6
+        },
+        {
+            "fieldname": "tolerance",
+            "fieldtype": "Float",
+            "label": "Tolerance",
+            "precision": 6
+        },
+        {
+            "fieldname": "statistical_results_section",
+            "fieldtype": "Section Break",
+            "label": "Statistical Results"
+        },
+        {
+            "fieldname": "process_mean",
+            "fieldtype": "Float",
+            "label": "Process Mean",
+            "precision": 6,
+            "read_only": 1
+        },
+        {
+            "fieldname": "process_std_dev",
+            "fieldtype": "Float",
+            "label": "Process Standard Deviation",
+            "precision": 6,
+            "read_only": 1
+        },
+        {
+            "fieldname": "cp",
+            "fieldtype": "Float",
+            "label": "Cp (Potential Capability)",
+            "precision": 3,
+            "read_only": 1
+        },
+        {
+            "fieldname": "cpk",
+            "fieldtype": "Float",
+            "label": "Cpk (Actual Capability)",
+            "precision": 3,
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_25",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "pp",
+            "fieldtype": "Float",
+            "label": "Pp (Potential Performance)",
+            "precision": 3,
+            "read_only": 1
+        },
+        {
+            "fieldname": "ppk",
+            "fieldtype": "Float",
+            "label": "Ppk (Actual Performance)",
+            "precision": 3,
+            "read_only": 1
+        },
+        {
+            "fieldname": "sigma_level",
+            "fieldtype": "Float",
+            "label": "Sigma Level",
+            "precision": 2,
+            "read_only": 1
+        },
+        {
+            "fieldname": "process_performance_index",
+            "fieldtype": "Float",
+            "label": "Process Performance Index",
+            "precision": 3,
+            "read_only": 1
+        },
+        {
+            "fieldname": "capability_assessment_section",
+            "fieldtype": "Section Break",
+            "label": "Capability Assessment"
+        },
+        {
+            "fieldname": "capability_rating",
+            "fieldtype": "Select",
+            "label": "Capability Rating",
+            "options": "Excellent (Cpk > 2.0)\nAdequate (1.33 < Cpk \u2264 2.0)\nMarginal (1.0 < Cpk \u2264 1.33)\nInadequate (Cpk \u2264 1.0)",
+            "read_only": 1
+        },
+        {
+            "default": "0",
+            "fieldname": "improvement_required",
+            "fieldtype": "Check",
+            "label": "Improvement Required"
+        },
+        {
+            "fieldname": "target_capability",
+            "fieldtype": "Float",
+            "label": "Target Capability (Cpk)",
+            "precision": 3
+        },
+        {
+            "fieldname": "column_break_32",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "defect_rate_ppm",
+            "fieldtype": "Float",
+            "label": "Defect Rate (PPM)",
+            "precision": 2,
+            "read_only": 1
+        },
+        {
+            "fieldname": "yield_percentage",
+            "fieldtype": "Percent",
+            "label": "Yield Percentage",
+            "precision": 4,
+            "read_only": 1
+        },
+        {
+            "fieldname": "capability_conclusions",
+            "fieldtype": "Text",
+            "label": "Capability Conclusions"
+        },
+        {
+            "fieldname": "analysis_section",
+            "fieldtype": "Section Break",
+            "label": "Analysis"
+        },
+        {
+            "fieldname": "histogram_data",
+            "fieldtype": "JSON",
+            "label": "Histogram Data",
+            "read_only": 1
+        },
+        {
+            "fieldname": "normality_test",
+            "fieldtype": "Select",
+            "label": "Normality Test Result",
+            "options": "Normal\nNon-Normal\nNot Tested",
+            "read_only": 1
+        },
+        {
+            "fieldname": "control_chart_stability",
+            "fieldtype": "Select",
+            "label": "Control Chart Stability",
+            "options": "Stable\nUnstable\nNot Assessed",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_39",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "measurement_data",
+            "fieldtype": "Table",
+            "label": "Measurement Data",
+            "options": "SPC Process Capability Measurement"
+        },
+        {
+            "fieldname": "approval_section",
+            "fieldtype": "Section Break",
+            "label": "Approval"
+        },
+        {
+            "fieldname": "reviewed_by",
+            "fieldtype": "Link",
+            "label": "Reviewed By",
+            "options": "User"
+        },
+        {
+            "fieldname": "review_date",
+            "fieldtype": "Date",
+            "label": "Review Date"
+        },
+        {
+            "fieldname": "approved_by",
+            "fieldtype": "Link",
+            "label": "Approved By",
+            "options": "User"
+        },
+        {
+            "fieldname": "approval_date",
+            "fieldtype": "Date",
+            "label": "Approval Date"
+        },
+        {
+            "fieldname": "column_break_45",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "review_comments",
+            "fieldtype": "Text",
+            "label": "Review Comments"
+        },
+        {
+            "fieldname": "next_review_date",
+            "fieldtype": "Date",
+            "label": "Next Review Date"
+        }
+    ],
+    "has_web_view": 0,
+    "hide_heading": 0,
+    "hide_toolbar": 0,
+    "idx": 0,
+    "image_view": 0,
+    "in_create": 0,
+    "is_submittable": 1,
+    "issingle": 0,
+    "istable": 0,
+    "max_attachments": 0,
+    "modified": "2025-09-10 22:37:36.000000",
+    "modified_by": "Administrator",
+    "module": "spc_quality_management",
+    "name": "spc_process_capability",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Quality Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Production Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Quality Engineer",
+            "share": 1,
+            "write": 1
+        }
+    ],
+    "quick_entry": 0,
+    "read_only": 0,
+    "read_only_onload": 0,
+    "show_name_in_global_search": 0,
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "track_changes": 1,
+    "track_seen": 0,
+    "track_views": 0,
+    "app": "amb_w_spc",
+    "title": "SPC Process Capability"
+}

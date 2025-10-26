@@ -1,0 +1,209 @@
+{
+    "doctype": "DocType",
+    "name": "spc_audit_trail",
+    "module": "fda_compliance",
+    "custom": 1,
+    "is_submittable": 0,
+    "track_changes": 1,
+    "track_seen": 1,
+    "max_attachments": 5,
+    "description": "FDA 21 CFR Part 11 compliant audit trail for SPC data integrity and traceability",
+    "fields": [
+        {
+            "fieldname": "basic_info_section",
+            "fieldtype": "Section Break",
+            "label": "Basic Information",
+            "collapsible": 0
+        },
+        {
+            "fieldname": "record_id",
+            "fieldtype": "Data",
+            "label": "Record ID",
+            "reqd": 1,
+            "unique": 1,
+            "description": "Unique identifier for the audit record"
+        },
+        {
+            "fieldname": "timestamp",
+            "fieldtype": "Datetime",
+            "label": "Timestamp",
+            "reqd": 1,
+            "default": "now",
+            "read_only": 1,
+            "description": "Exact date and time of the action"
+        },
+        {
+            "fieldname": "user_id",
+            "fieldtype": "Link",
+            "label": "User ID",
+            "options": "User",
+            "reqd": 1,
+            "default": "user",
+            "description": "User who performed the action"
+        },
+        {
+            "fieldname": "action_type",
+            "fieldtype": "Select",
+            "label": "Action Type",
+            "options": "Create\nRead\nUpdate\nDelete\nPrint\nExport\nSign\nApprove\nReject",
+            "reqd": 1,
+            "description": "Type of action performed on the record"
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "table_name",
+            "fieldtype": "Data",
+            "label": "Table Name",
+            "reqd": 1,
+            "description": "Name of the database table/document type affected"
+        },
+        {
+            "fieldname": "record_name",
+            "fieldtype": "Data",
+            "label": "Record Name",
+            "reqd": 1,
+            "description": "Name/ID of the specific record affected"
+        },
+        {
+            "fieldname": "field_changed",
+            "fieldtype": "Data",
+            "label": "Field Changed",
+            "description": "Name of the field that was modified (if applicable)"
+        },
+        {
+            "fieldname": "old_value",
+            "fieldtype": "Long Text",
+            "label": "Old Value",
+            "description": "Previous value before change"
+        },
+        {
+            "fieldname": "new_value",
+            "fieldtype": "Long Text",
+            "label": "New Value",
+            "description": "New value after change"
+        },
+        {
+            "fieldname": "session_info_section",
+            "fieldtype": "Section Break",
+            "label": "Session Information",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "ip_address",
+            "fieldtype": "Data",
+            "label": "IP Address",
+            "reqd": 1,
+            "description": "IP address of the user's computer"
+        },
+        {
+            "fieldname": "computer_name",
+            "fieldtype": "Data",
+            "label": "Computer Name",
+            "description": "Name or identifier of the computer used"
+        },
+        {
+            "fieldname": "browser_info",
+            "fieldtype": "Data",
+            "label": "Browser Information",
+            "description": "Browser type and version information"
+        },
+        {
+            "fieldname": "session_id",
+            "fieldtype": "Data",
+            "label": "Session ID",
+            "reqd": 1,
+            "description": "Unique session identifier"
+        },
+        {
+            "fieldname": "regulatory_section",
+            "fieldtype": "Section Break",
+            "label": "Regulatory Compliance",
+            "collapsible": 1
+        },
+        {
+            "fieldname": "electronic_signature",
+            "fieldtype": "Data",
+            "label": "Electronic Signature",
+            "description": "Electronic signature hash if action was signed"
+        },
+        {
+            "fieldname": "signature_meaning",
+            "fieldtype": "Data",
+            "label": "Signature Meaning",
+            "description": "Meaning or purpose of the electronic signature"
+        },
+        {
+            "fieldname": "date_time_stamp",
+            "fieldtype": "Datetime",
+            "label": "Date Time Stamp",
+            "description": "Regulatory timestamp for signature"
+        },
+        {
+            "fieldname": "column_break_2",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "checksum",
+            "fieldtype": "Data",
+            "label": "Checksum",
+            "description": "Data integrity checksum"
+        },
+        {
+            "fieldname": "hash_value",
+            "fieldtype": "Data",
+            "label": "Hash Value",
+            "description": "Cryptographic hash for tamper detection"
+        },
+        {
+            "fieldname": "tamper_evidence",
+            "fieldtype": "Check",
+            "label": "Tamper Evidence",
+            "default": 0,
+            "description": "Flag indicating if tampering is detected"
+        },
+        {
+            "fieldname": "backup_status",
+            "fieldtype": "Select",
+            "label": "Backup Status",
+            "options": "Pending\nCompleted\nFailed",
+            "default": "Pending",
+            "description": "Status of record backup for compliance"
+        }
+    ],
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 0,
+            "create": 0,
+            "delete": 0,
+            "report": 1,
+            "export": 1
+        },
+        {
+            "role": "Quality Manager",
+            "read": 1,
+            "write": 0,
+            "create": 0,
+            "delete": 0,
+            "report": 1,
+            "export": 1
+        },
+        {
+            "role": "Auditor",
+            "read": 1,
+            "write": 0,
+            "create": 0,
+            "delete": 0,
+            "report": 1,
+            "export": 1
+        }
+    ],
+    "sort_field": "timestamp",
+    "sort_order": "DESC",
+    "app": "amb_w_spc",
+    "title": "SPC Audit Trail"
+}

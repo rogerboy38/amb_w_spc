@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch AMB Migration Dashboard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-bottom: 1rem;
+        }
+        .status-card {
+            border-left: 4px solid #007bff;
+        }
+        .success-card {
+            border-left: 4px solid #28a745;
+        }
+        .warning-card {
+            border-left: 4px solid #ffc107;
+        }
+        .danger-card {
+            border-left: 4px solid #dc3545;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .progress {
+            height: 8px;
+        }
+        .batch-item {
+            border-bottom: 1px solid #eee;
+            padding: 8px 0;
+        }
+        .batch-item:last-child {
+            border-bottom: none;
+        }
+        .btn-action:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .permission-denied {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .alert-warning {
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-database text-primary me-2"></i>
+                        Batch AMB Migration Dashboard
+                    </h1>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-secondary" onclick="refreshDashboard()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <p class="text-muted">Manage and monitor the migration of Batch AMB data to the new integration system</p>
+            </div>
+        </div>
+
+        <!-- Migration Status Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card status-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-muted">Total Batches</h6>
+                                <h2 class="stat-number text-primary" id="total-batches">0</h2>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-boxes fa-2x text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card success-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-muted">Migrated</h6>
+                                <h2 class="stat-number text-success" id="migrated-batches">0</h2>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-check-circle fa-2x text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card warning-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-muted">Pending</h6>
+                                <h2 class="stat-number text-warning" id="pending-batches">0</h2>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card danger-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="card-title text-muted">Errors</h6>
+                                <h2 class="stat-number text-danger" id="error-batches">0</h2>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Migration Progress</h6>
+                        <div class="progress mb-2">
+                            <div id="migration-progress" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted" id="progress-text">Migration not started</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Migration Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <button class="btn btn-primary w-100 btn-action" onclick="runFullMigration()" id="run-migration-btn">
+                                    <i class="fas fa-play me-2"></i>Run Full Migration
+                                </button>
+                                <small class="text-muted d-block mt-1">Migrate all batches and create integration records</small>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-warning w-100 btn-action" onclick="fixMigrationErrors()" id="fix-errors-btn">
+                                    <i class="fas fa-wrench me-2"></i>Fix Migration Errors
+                                </button>
+                                <small class="text-muted d-block mt-1">Attempt to fix batches with migration errors</small>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-info w-100 btn-action" onclick="showBatchSelector()" id="select-batches-btn">
+                                    <i class="fas fa-list me-2"></i>Select Batches to Migrate
+                                </button>
+                                <small class="text-muted d-block mt-1">Migrate specific batches only</small>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-success w-100 btn-action" onclick="migrateAllPending()" id="migrate-all-btn">
+                                    <i class="fas fa-forward me-2"></i>Migrate All Pending
+                                </button>
+                                <small class="text-muted d-block mt-1">Migrate only pending batches</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Integration Status -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Integration Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <small class="text-muted">Level 1 Batches</small>
+                                <h5 id="level1-batches">0</h5>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">With ERPNext</small>
+                                <h5><span id="level1-erpnext">0</span>/<span id="level1-total">0</span></h5>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <small class="text-muted">With SPC Records</small>
+                                <h5><span id="level1-spc">0</span>/<span id="level1-total2">0</span></h5>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">With History</small>
+                                <h5><span id="level1-history">0</span>/<span id="level1-total3">0</span></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Recent Activity</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="recent-activity">
+                            <div class="text-center text-muted py-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                No recent activity
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Batch List (Collapsible) -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Batch List</h5>
+                        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#batchListCollapse">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="collapse" id="batchListCollapse">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover" id="batch-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Batch Name</th>
+                                            <th>Level</th>
+                                            <th>Status</th>
+                                            <th>Integration</th>
+                                            <th>ERPNext</th>
+                                            <th>SPC</th>
+                                            <th>History</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="batch-table-body">
+                                        <!-- Batch data will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Batch Selector Modal -->
+    <div class="modal fade" id="batchSelectorModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select Batches to Migrate</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" id="batch-search" placeholder="Search batches...">
+                    </div>
+                    <div id="batch-selector-list" style="max-height: 400px; overflow-y: auto;">
+                        <!-- Batch list will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="migrateSelectedBatches()">Migrate Selected</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Global variables
+        let migrationInProgress = false;
+        let allBatches = [];
+
+        // =============================================
+        // STEP 1: Permission Error Handler
+        // =============================================
+        function handlePermissionError(error) {
+            console.error('Permission error detected:', error);
+            
+            if (error && error.message && error.message.includes('permission')) {
+                showError('Permission Denied: ' + error.message);
+                
+                // Disable all action buttons
+                $('.btn-action').prop('disabled', true);
+                
+                // Show permission warning message
+                $('#migration-progress').parent().html(
+                    '<div class="alert alert-warning">' +
+                    '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                    'You do not have permission to run migrations. ' +
+                    'Please contact your System Administrator.' +
+                    '</div>'
+                );
+                
+            } else if (error && error.exc_type && error.exc_type.includes('PermissionError')) {
+                // Handle Frappe-style permission errors
+                showError('Permission Denied: You do not have sufficient permissions to perform this action.');
+                
+                $('.btn-action').prop('disabled', true);
+                
+                $('#migration-progress').parent().html(
+                    '<div class="alert alert-warning">' +
+                    '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                    'You do not have permission to run migrations. ' +
+                    'Please contact your System Administrator.' +
+                    '</div>'
+                );
+                
+            } else {
+                // Handle other types of errors
+                const errorMessage = error.message || error.exc || 'An unexpected error occurred';
+                showError(errorMessage);
+            }
+        }
+
+        // Enhanced error display function
+        function showError(message, title = 'Error') {
+            frappe.show_alert({
+                message: message,
+                indicator: 'red'
+            }, 10);
+            
+            // Also log to console for debugging
+            console.error(`${title}:`, message);
+        }
+
+        // Success handler for consistency
+        function showSuccess(message) {
+            frappe.show_alert({
+                message: message,
+                indicator: 'green'
+            }, 5);
+        }
+
+        function showWarning(message) {
+            frappe.show_alert({ message: message, indicator: 'orange' });
+        }
+
+        function showInfo(message) {
+            frappe.show_alert({ message: message, indicator: 'blue' });
+        }
+
+        // =============================================
+        // STEP 2: Updated Frappe Call Handlers
+        // =============================================
+
+        // Initialize dashboard
+        $(document).ready(function() {
+            // Add disabled state to buttons initially until we confirm permissions
+            $('.btn-action').prop('disabled', true);
+            
+            loadDashboard();
+            
+            // Enable buttons only after successful status check
+            setTimeout(function() {
+                // If we haven't encountered permission errors, enable buttons
+                if (!$('#migration-progress').parent().find('.alert-warning').length) {
+                    $('.btn-action').prop('disabled', false);
+                }
+            }, 1000);
+            
+            // Auto-refresh every 30 seconds
+            setInterval(loadDashboard, 30000);
+        });
+
+        function loadDashboard() {
+            if (migrationInProgress) return;
+            
+            frappe.call({
+                method: 'amb_w_spc.sfc_manufacturing.migration.batch_migration_controller.BatchMigrationController.get_migration_status',
+                callback: function(response) {
+                    if (response.message) {
+                        if (response.message.error) {
+                            handlePermissionError(response.message);
+                        } else {
+                            updateDashboard(response.message);
+                            loadBatchList();
+                        }
+                    }
+                },
+                error: function(error) {
+                    handlePermissionError(error);
+                }
+            });
+        }
+
+        function updateDashboard(status) {
+            // Update cards
+            $('#total-batches').text(status.total_batches || 0);
+            $('#migrated-batches').text(status.migrated_batches || 0);
+            $('#pending-batches').text(status.pending_batches || 0);
+            $('#error-batches').text(status.error_batches || 0);
+            
+            // Update progress bar
+            const total = status.total_batches || 1;
+            const migrated = status.migrated_batches || 0;
+            const progress = Math.round((migrated / total) * 100);
+            
+            $('#migration-progress').css('width', progress + '%');
+            $('#progress-text').text(`${migrated} of ${total} batches migrated (${progress}%)`);
+            
+            // Update integration status
+            $('#level1-batches').text(status.level1_batches || 0);
+            $('#level1-erpnext').text(status.level1_with_erpnext || 0);
+            $('#level1-spc').text(status.level1_with_spc || 0);
+            $('#level1-history').text(status.migrated_batches || 0); // Using migrated as history count
+            $('#level1-total, #level1-total2, #level1-total3').text(status.level1_batches || 0);
+            
+            // Update recent activity
+            updateRecentActivity();
+        }
+
+        function loadBatchList() {
+            frappe.call({
+                method: 'frappe.client.get_list',
+                args: {
+                    doctype: 'Batch AMB',
+                    fields: ['name', 'custom_batch_level', 'workflow_state', 'integration_status', 
+                            'erpnext_batch_reference', 'spc_batch_record', 'batch_processing_history'],
+                    limit: 50,
+                    order_by: 'creation desc'
+                },
+                callback: function(response) {
+                    if (response.message) {
+                        allBatches = response.message;
+                        updateBatchTable(response.message);
+                    }
+                },
+                error: function(error) {
+                    handlePermissionError(error);
+                }
+            });
+        }
+
+        function updateBatchTable(batches) {
+            const tbody = $('#batch-table-body');
+            tbody.empty();
+            
+            batches.forEach(batch => {
+                const integrationStatus = batch.integration_status || 'Pending';
+                const statusClass = getStatusClass(integrationStatus);
+                
+                const row = `
+                    <tr>
+                        <td>${batch.name}</td>
+                        <td>${batch.custom_batch_level || 'N/A'}</td>
+                        <td><span class="badge bg-secondary">${batch.workflow_state || 'Draft'}</span></td>
+                        <td><span class="badge ${statusClass}">${integrationStatus}</span></td>
+                        <td>${batch.erpnext_batch_reference ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>'}</td>
+                        <td>${batch.spc_batch_record ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>'}</td>
+                        <td>${batch.batch_processing_history ? '<i class="fas fa-check text-success"></i>' : '<i class="fas fa-times text-danger"></i>'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="migrateSingleBatch('${batch.name}')" title="Migrate this batch">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Completed': return 'bg-success';
+                case 'In Progress': return 'bg-primary';
+                case 'Error': return 'bg-danger';
+                default: return 'bg-warning';
+            }
+        }
+
+        function updateRecentActivity() {
+            // This would typically load from server, but for now we'll show static info
+            const now = new Date().toLocaleTimeString();
+            $('#recent-activity').html(`
+                <div class="batch-item">
+                    <small class="text-muted">${now}</small>
+                    <div>Dashboard refreshed</div>
+                </div>
+            `);
+        }
+
+        function runFullMigration() {
+            if (migrationInProgress) {
+                showWarning('Migration is already in progress');
+                return;
+            }
+            
+            if (!confirm('This will migrate all batches. This may take several minutes. Continue?')) {
+                return;
+            }
+            
+            setMigrationInProgress(true);
+            
+            frappe.call({
+                method: 'amb_w_spc.sfc_manufacturing.migration.batch_amb_migration.execute_batch_amb_migration',
+                callback: function(response) {
+                    setMigrationInProgress(false);
+                    
+                    if (response.message && response.message.success) {
+                        showSuccess('Migration completed successfully!');
+                        loadDashboard();
+                    } else {
+                        handlePermissionError(response.message);
+                    }
+                },
+                error: function(error) {
+                    setMigrationInProgress(false);
+                    handlePermissionError(error);
+                }
+            });
+        }
+
+        function fixMigrationErrors() {
+            setMigrationInProgress(true);
+            
+            frappe.call({
+                method: 'amb_w_spc.sfc_manufacturing.migration.batch_migration_controller.BatchMigrationController.fix_migration_errors',
+                callback: function(response) {
+                    setMigrationInProgress(false);
+                    
+                    if (response.message && response.message.success) {
+                        showSuccess(`Fixed ${response.message.fixed_count} batches with errors`);
+                        loadDashboard();
+                    } else {
+                        handlePermissionError(response.message);
+                    }
+                },
+                error: function(error) {
+                    setMigrationInProgress(false);
+                    handlePermissionError(error);
+                }
+            });
+        }
+
+        function migrateAllPending() {
+            setMigrationInProgress(true);
+            
+            frappe.call({
+                method: 'amb_w_spc.sfc_manufacturing.migration.batch_migration_controller.BatchMigrationController.migrate_all_pending',
+                callback: function(response) {
+                    setMigrationInProgress(false);
+                    
+                    if (response.message && response.message.success) {
+                        showSuccess(response.message.message);
+                        loadDashboard();
+                    } else {
+                        handlePermissionError(response.message);
+                    }
+                },
+                error: function(error) {
+                    setMigrationInProgress(false);
+                    handlePermissionError(error);
+                }
+            });
+        }
+
+        function showBatchSelector() {
+            // Populate batch selector
+            const batchList = $('#batch-selector-list');
+            batchList.empty();
+            
+            allBatches.forEach(batch => {
+                const integrationStatus = batch.integration_status || 'Pending';
+                const isMigrated = integrationStatus === 'Completed';
+                
+                const item = `
+                    <div class="form-check mb-2">
+                        <input class="form-check-input batch-checkbox" type="checkbox" 
+                               value="${batch.name}" id="batch-${batch.name}" 
+                               ${isMigrated ? 'disabled' : 'checked'}>
+                        <label class="form-check-label w-100" for="batch-${batch.name}">
+                            <div class="d-flex justify-content-between">
+                                <span>${batch.name}</span>
+                                <span class="badge ${getStatusClass(integrationStatus)}">${integrationStatus}</span>
+                            </div>
+                            <small class="text-muted">Level: ${batch.custom_batch_level || 'N/A'} | Status: ${batch.workflow_state || 'Draft'}</small>
+                        </label>
+                    </div>
+                `;
+                batchList.append(item);
+            });
+            
+            // Show search functionality
+            $('#batch-search').on('keyup', function() {
+                const searchText = $(this).val().toLowerCase();
+                $('.form-check').each(function() {
+                    const label = $(this).find('label').text().toLowerCase();
+                    $(this).toggle(label.includes(searchText));
+                });
+            });
+            
+            $('#batchSelectorModal').modal('show');
+        }
+
+        function migrateSelectedBatches() {
+            const selectedBatches = [];
+            $('.batch-checkbox:checked:not(:disabled)').each(function() {
+                selectedBatches.push($(this).val());
+            });
+            
+            if (selectedBatches.length === 0) {
+                showWarning('Please select at least one batch to migrate');
+                return;
+            }
+            
+            $('#batchSelectorModal').modal('hide');
+            setMigrationInProgress(true);
+            
+            frappe.call({
+                method: 'amb_w_spc.sfc_manufacturing.migration.batch_migration_controller.BatchMigrationController.run_targeted_migration',
+                args: {
+                    batch_names: selectedBatches
+                },
+                callback: function(response) {
+                    setMigrationInProgress(false);
+                    
+                    if (response.message && response.message.success) {
+                        const results = response.message.results || [];
+                        const successCount = results.filter(r => r.status === 'Success').length;
+                        const failCount = results.filter(r => r.status === 'Failed').length;
+                        
+                        showSuccess(`Migration completed: ${successCount} successful, ${failCount} failed`);
+                        loadDashboard();
+                    } else {
+                        handlePermissionError(response.message);
+                    }
+                },
+                error: function(error) {
+                    setMigrationInProgress(false);
+                    handlePermissionError(error);
+                }
+            });
+        }
+
+        function migrateSingleBatch(batchName) {
+            setMigrationInProgress(true);
+            
+            frappe.call({
+                method: 'amb_w_spc.sfc_manufacturing.migration.batch_migration_controller.BatchMigrationController.run_targeted_migration',
+                args: {
+                    batch_names: [batchName]
+                },
+                callback: function(response) {
+                    setMigrationInProgress(false);
+                    
+                    if (response.message && response.message.success) {
+                        showSuccess(`Batch ${batchName} migrated successfully`);
+                        loadDashboard();
+                    } else {
+                        handlePermissionError(response.message);
+                    }
+                },
+                error: function(error) {
+                    setMigrationInProgress(false);
+                    handlePermissionError(error);
+                }
+            });
+        }
+
+        function refreshDashboard() {
+            loadDashboard();
+            showInfo('Dashboard refreshed');
+        }
+
+        function setMigrationInProgress(inProgress) {
+            migrationInProgress = inProgress;
+            const btn = $('#run-migration-btn');
+            
+            if (inProgress) {
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>Migration in Progress...');
+                $('.btn-action').prop('disabled', true);
+            } else {
+                btn.prop('disabled', false).html('<i class="fas fa-play me-2"></i>Run Full Migration');
+                // Only re-enable if no permission errors
+                if (!$('#migration-progress').parent().find('.alert-warning').length) {
+                    $('.btn-action').prop('disabled', false);
+                }
+            }
+        }
+
+        // =============================================
+        // STEP 3: Real-time Event Listeners
+        // =============================================
+        
+        // Listen for real-time events from background jobs
+        frappe.realtime.on('batch_migration_complete', function(data) {
+            showSuccess(data.message);
+            refreshMigrationStatus();
+            
+            // Show detailed results if available
+            if (data.results) {
+                const failed = data.results.filter(r => r.status === 'Failed');
+                if (failed.length > 0) {
+                    showError(`${failed.length} batches failed to migrate. Check logs for details.`);
+                }
+            }
+        });
+
+        frappe.realtime.on('batch_migration_fix_complete', function(data) {
+            showSuccess(data.message);
+            refreshMigrationStatus();
+        });
+
+        frappe.realtime.on('batch_migration_progress', function(data) {
+            showProgress(`${data.message} - ${data.percent}% complete`);
+        });
+
+        function showProgress(message) {
+            // Update progress display
+            const progressHtml = `
+                <div class="alert alert-info">
+                    <i class="fas fa-sync-alt fa-spin me-2"></i>
+                    ${message}
+                </div>
+            `;
+            $('#migration-progress').html(progressHtml);
+        }
+
+        function refreshMigrationStatus() {
+            loadDashboard();
+        }
+    </script>
+</body>
+</html>

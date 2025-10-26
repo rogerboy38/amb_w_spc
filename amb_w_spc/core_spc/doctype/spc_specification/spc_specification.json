@@ -1,0 +1,519 @@
+{
+    "creation": "2025-09-14 00:00:00",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "specification_details_section",
+        "specification_name",
+        "parameter",
+        "company",
+        "plant",
+        "product_code",
+        "revision",
+        "version",
+        "is_active",
+        "effective_date",
+        "valid_from",
+        "valid_to",
+        "quality_limits_section",
+        "upper_spec_limit",
+        "lower_spec_limit",
+        "target_value",
+        "nominal_value",
+        "tolerance",
+        "tolerance_plus",
+        "tolerance_minus",
+        "unit_of_measurement",
+        "measurement_type",
+        "statistical_targets_section",
+        "cpk_target",
+        "cp_target",
+        "ppk_target",
+        "pp_target",
+        "sigma_level",
+        "defect_rate_target",
+        "process_sigma_target",
+        "capability_requirements_section",
+        "minimum_cpk",
+        "minimum_cp",
+        "capability_study_required",
+        "approval_workflow_section",
+        "approval_status",
+        "status",
+        "approved_by",
+        "approved_date",
+        "reviewed_by",
+        "reviewed_date",
+        "next_review_date",
+        "specification_source",
+        "reference_document",
+        "quality_characteristic",
+        "criticality_level",
+        "additional_requirements_section",
+        "measurement_uncertainty",
+        "sampling_plan",
+        "inspection_frequency",
+        "test_method",
+        "gauge_rr_required",
+        "calibration_requirements",
+        "attachments_section",
+        "specification_document",
+        "supporting_documents",
+        "regulatory_requirements",
+        "customer_requirements",
+        "audit_section",
+        "created_by",
+        "creation_date",
+        "modified_by",
+        "modified_date",
+        "change_reason",
+        "revision_notes",
+        "comments"
+    ],
+    "fields": [
+        {
+            "fieldname": "specification_details_section",
+            "fieldtype": "Section Break",
+            "label": "Specification Details / Detalles de Especificaci\u00f3n"
+        },
+        {
+            "fieldname": "specification_name",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Specification Name / Nombre de Especificaci\u00f3n",
+            "reqd": 1,
+            "unique": 1,
+            "length": 140
+        },
+        {
+            "fieldname": "parameter",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Parameter / Par\u00e1metro",
+            "options": "SPC Parameter Master",
+            "reqd": 1
+        },
+        {
+            "fieldname": "company",
+            "fieldtype": "Link",
+            "label": "Company / Empresa",
+            "options": "Company"
+        },
+        {
+            "fieldname": "plant",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Plant / Planta",
+            "options": "Warehouse"
+        },
+        {
+            "fieldname": "product_code",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "label": "Product Code / C\u00f3digo de Producto",
+            "options": "Item"
+        },
+        {
+            "fieldname": "revision",
+            "fieldtype": "Data",
+            "label": "Revision / Revisi\u00f3n",
+            "default": "A",
+            "reqd": 1,
+            "length": 10
+        },
+        {
+            "fieldname": "version",
+            "fieldtype": "Float",
+            "label": "Version / Versi\u00f3n",
+            "precision": "2"
+        },
+        {
+            "fieldname": "is_active",
+            "fieldtype": "Check",
+            "default": "1",
+            "label": "Is Active / Activo"
+        },
+        {
+            "fieldname": "effective_date",
+            "fieldtype": "Date",
+            "label": "Effective Date / Fecha de Vigencia"
+        },
+        {
+            "fieldname": "valid_from",
+            "fieldtype": "Date",
+            "label": "Valid From / V\u00e1lido Desde"
+        },
+        {
+            "fieldname": "valid_to",
+            "fieldtype": "Date",
+            "label": "Valid To / V\u00e1lido Hasta"
+        },
+        {
+            "fieldname": "quality_limits_section",
+            "fieldtype": "Section Break",
+            "label": "Quality Limits / L\u00edmites de Calidad"
+        },
+        {
+            "fieldname": "upper_spec_limit",
+            "fieldtype": "Float",
+            "label": "Upper Spec Limit / L\u00edmite Superior de Especificaci\u00f3n",
+            "precision": "6"
+        },
+        {
+            "fieldname": "lower_spec_limit",
+            "fieldtype": "Float",
+            "label": "Lower Spec Limit / L\u00edmite Inferior de Especificaci\u00f3n",
+            "precision": "6"
+        },
+        {
+            "fieldname": "target_value",
+            "fieldtype": "Float",
+            "label": "Target Value / Valor Objetivo",
+            "precision": "6"
+        },
+        {
+            "fieldname": "nominal_value",
+            "fieldtype": "Float",
+            "label": "Nominal Value / Valor Nominal",
+            "precision": "6"
+        },
+        {
+            "fieldname": "tolerance",
+            "fieldtype": "Float",
+            "label": "Tolerance (+/-) / Tolerancia (+/-)",
+            "precision": "6"
+        },
+        {
+            "fieldname": "tolerance_plus",
+            "fieldtype": "Float",
+            "label": "Tolerance Plus / Tolerancia Positiva",
+            "precision": "6"
+        },
+        {
+            "fieldname": "tolerance_minus",
+            "fieldtype": "Float",
+            "label": "Tolerance Minus / Tolerancia Negativa",
+            "precision": "6"
+        },
+        {
+            "fieldname": "unit_of_measurement",
+            "fieldtype": "Link",
+            "label": "Unit of Measurement / Unidad de Medida",
+            "options": "UOM"
+        },
+        {
+            "fieldname": "measurement_type",
+            "fieldtype": "Select",
+            "label": "Measurement Type / Tipo de Medici\u00f3n",
+            "options": "Variable\nAttribute",
+            "default": "Variable"
+        },
+        {
+            "fieldname": "statistical_targets_section",
+            "fieldtype": "Section Break",
+            "label": "Statistical Targets / Objetivos Estad\u00edsticos"
+        },
+        {
+            "fieldname": "cpk_target",
+            "fieldtype": "Float",
+            "label": "Cpk Target / Objetivo Cpk",
+            "precision": "4",
+            "default": "1.33"
+        },
+        {
+            "fieldname": "cp_target",
+            "fieldtype": "Float",
+            "label": "Cp Target / Objetivo Cp",
+            "precision": "4",
+            "default": "1.33"
+        },
+        {
+            "fieldname": "ppk_target",
+            "fieldtype": "Float",
+            "label": "Ppk Target / Objetivo Ppk",
+            "precision": "4",
+            "default": "1.33"
+        },
+        {
+            "fieldname": "pp_target",
+            "fieldtype": "Float",
+            "label": "Pp Target / Objetivo Pp",
+            "precision": "4"
+        },
+        {
+            "fieldname": "sigma_level",
+            "fieldtype": "Float",
+            "label": "Sigma Level / Nivel Sigma",
+            "precision": "2",
+            "default": "4.0"
+        },
+        {
+            "fieldname": "defect_rate_target",
+            "fieldtype": "Float",
+            "label": "Defect Rate Target (PPM) / Objetivo de Tasa de Defectos (PPM)",
+            "precision": "2"
+        },
+        {
+            "fieldname": "process_sigma_target",
+            "fieldtype": "Float",
+            "label": "Process Sigma Target / Objetivo Sigma del Proceso",
+            "precision": "2",
+            "default": "6.0"
+        },
+        {
+            "fieldname": "capability_requirements_section",
+            "fieldtype": "Section Break",
+            "label": "Capability Requirements / Requisitos de Capacidad"
+        },
+        {
+            "fieldname": "minimum_cpk",
+            "fieldtype": "Float",
+            "label": "Minimum Cpk / Cpk M\u00ednimo",
+            "precision": "3",
+            "default": "1.0"
+        },
+        {
+            "fieldname": "minimum_cp",
+            "fieldtype": "Float",
+            "label": "Minimum Cp / Cp M\u00ednimo",
+            "precision": "3",
+            "default": "1.0"
+        },
+        {
+            "fieldname": "capability_study_required",
+            "fieldtype": "Check",
+            "label": "Capability Study Required / Estudio de Capacidad Requerido",
+            "default": "1"
+        },
+        {
+            "fieldname": "approval_workflow_section",
+            "fieldtype": "Section Break",
+            "label": "Approval Workflow / Flujo de Aprobaci\u00f3n"
+        },
+        {
+            "fieldname": "approval_status",
+            "fieldtype": "Select",
+            "label": "Approval Status / Estado de Aprobaci\u00f3n",
+            "options": "Draft\nPending Review\nReviewed\nApproved\nRejected\nObsolete\nPending Approval",
+            "default": "Draft"
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "label": "Status / Estado",
+            "options": "Draft\nActive\nInactive\nObsolete",
+            "default": "Draft"
+        },
+        {
+            "fieldname": "approved_by",
+            "fieldtype": "Link",
+            "label": "Approved By / Aprobado Por",
+            "options": "User"
+        },
+        {
+            "fieldname": "approved_date",
+            "fieldtype": "Date",
+            "label": "Approved Date / Fecha de Aprobaci\u00f3n"
+        },
+        {
+            "fieldname": "reviewed_by",
+            "fieldtype": "Link",
+            "label": "Reviewed By / Revisado Por",
+            "options": "User"
+        },
+        {
+            "fieldname": "reviewed_date",
+            "fieldtype": "Date",
+            "label": "Reviewed Date / Fecha de Revisi\u00f3n"
+        },
+        {
+            "fieldname": "next_review_date",
+            "fieldtype": "Date",
+            "label": "Next Review Date / Pr\u00f3xima Revisi\u00f3n"
+        },
+        {
+            "fieldname": "specification_source",
+            "fieldtype": "Select",
+            "label": "Specification Source / Fuente de Especificaci\u00f3n",
+            "options": "Customer Requirement\nIndustry Standard\nInternal Standard\nRegulatory Requirement",
+            "default": "Customer Requirement"
+        },
+        {
+            "fieldname": "reference_document",
+            "fieldtype": "Data",
+            "label": "Reference Document / Documento de Referencia",
+            "length": 200
+        },
+        {
+            "fieldname": "quality_characteristic",
+            "fieldtype": "Select",
+            "label": "Quality Characteristic / Caracter\u00edstica de Calidad",
+            "options": "Critical\nMajor\nMinor",
+            "default": "Major"
+        },
+        {
+            "fieldname": "criticality_level",
+            "fieldtype": "Select",
+            "label": "Criticality Level / Nivel de Criticidad",
+            "options": "High\nMedium\nLow",
+            "default": "Medium"
+        },
+        {
+            "fieldname": "additional_requirements_section",
+            "fieldtype": "Section Break",
+            "label": "Additional Requirements / Requisitos Adicionales"
+        },
+        {
+            "fieldname": "measurement_uncertainty",
+            "fieldtype": "Float",
+            "label": "Measurement Uncertainty (%) / Incertidumbre de Medici\u00f3n (%)",
+            "precision": "3"
+        },
+        {
+            "fieldname": "sampling_plan",
+            "fieldtype": "Select",
+            "label": "Sampling Plan / Plan de Muestreo",
+            "options": "100% Inspection\nStatistical Sampling\nSkip Lot\nReduced Inspection",
+            "default": "Statistical Sampling"
+        },
+        {
+            "fieldname": "inspection_frequency",
+            "fieldtype": "Select",
+            "label": "Inspection Frequency / Frecuencia de Inspecci\u00f3n",
+            "options": "Every Unit\nEvery Hour\nEvery Shift\nDaily\nWeekly\nBatch Based",
+            "default": "Every Hour"
+        },
+        {
+            "fieldname": "test_method",
+            "fieldtype": "Text",
+            "label": "Test Method / M\u00e9todo de Prueba"
+        },
+        {
+            "fieldname": "gauge_rr_required",
+            "fieldtype": "Check",
+            "label": "Gauge R&R Required / Gauge R&R Requerido",
+            "default": "0"
+        },
+        {
+            "fieldname": "calibration_requirements",
+            "fieldtype": "Text",
+            "label": "Calibration Requirements / Requisitos de Calibraci\u00f3n"
+        },
+        {
+            "fieldname": "attachments_section",
+            "fieldtype": "Section Break",
+            "label": "Attachments / Adjuntos"
+        },
+        {
+            "fieldname": "specification_document",
+            "fieldtype": "Attach",
+            "label": "Specification Document / Documento de Especificaci\u00f3n"
+        },
+        {
+            "fieldname": "supporting_documents",
+            "fieldtype": "Table MultiSelect",
+            "label": "Supporting Documents / Documentos de Soporte",
+            "options": "File"
+        },
+        {
+            "fieldname": "regulatory_requirements",
+            "fieldtype": "Text",
+            "label": "Regulatory Requirements / Requisitos Regulatorios"
+        },
+        {
+            "fieldname": "customer_requirements",
+            "fieldtype": "Text",
+            "label": "Customer Requirements / Requisitos del Cliente"
+        },
+        {
+            "fieldname": "audit_section",
+            "fieldtype": "Section Break",
+            "label": "Audit Trail / Rastro de Auditor\u00eda"
+        },
+        {
+            "fieldname": "created_by",
+            "fieldtype": "Link",
+            "label": "Created By / Creado Por",
+            "options": "User"
+        },
+        {
+            "fieldname": "creation_date",
+            "fieldtype": "Date",
+            "label": "Creation Date / Fecha de Creaci\u00f3n",
+            "default": "Today"
+        },
+        {
+            "fieldname": "modified_by",
+            "fieldtype": "Link",
+            "label": "Modified By / Modificado Por",
+            "options": "User"
+        },
+        {
+            "fieldname": "modified_date",
+            "fieldtype": "Date",
+            "label": "Modified Date / Fecha de Modificaci\u00f3n"
+        },
+        {
+            "fieldname": "change_reason",
+            "fieldtype": "Text",
+            "label": "Change Reason / Motivo del Cambio"
+        },
+        {
+            "fieldname": "revision_notes",
+            "fieldtype": "Text",
+            "label": "Revision Notes / Notas de Revisi\u00f3n"
+        },
+        {
+            "fieldname": "comments",
+            "fieldtype": "Text",
+            "label": "Comments / Comentarios"
+        }
+    ],
+    "index_web_pages_for_search": 1,
+    "links": [],
+    "modified": "2025-09-14 00:00:00",
+    "modified_by": "Administrator",
+    "module": "core_spc",
+    "name": "spc_specification",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Manufacturing Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Quality Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "read": 1,
+            "role": "Manufacturing User"
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1,
+    "track_seen": 1,
+    "track_views": 1,
+    "quick_entry": 0,
+    "app": "amb_w_spc",
+    "title": "SPC Specification"
+}
