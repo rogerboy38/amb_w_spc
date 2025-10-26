@@ -1,0 +1,32 @@
+[
+ {
+  "_assign": null,
+  "_comments": null,
+  "_liked_by": null,
+  "_user_tags": null,
+  "app_name": "frappe",
+  "custom": 1,
+  "docstatus": 0,
+  "doctype": "Module Def",
+  "modified": "2025-07-04 12:55:20.210141",
+  "module_name": "RND Nutrition",
+  "name": "RND Nutrition",
+  "package": "RND Nutrition",
+  "restrict_to_domain": "rnd_nutrition"
+ },
+ {
+  "_assign": null,
+  "_comments": null,
+  "_liked_by": null,
+  "_user_tags": null,
+  "app_name": "amb_w_tds",
+  "custom": 0,
+  "docstatus": 0,
+  "doctype": "Module Def",
+  "modified": "2025-10-19 11:19:49.157492",
+  "module_name": "amb_w_tds",
+  "name": "amb_w_tds",
+  "package": null,
+  "restrict_to_domain": null
+ }
+]
