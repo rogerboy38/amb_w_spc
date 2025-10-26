@@ -1,0 +1,400 @@
+{
+    "actions": [],
+    "allow_copy": 0,
+    "allow_events_in_timeline": 0,
+    "allow_guest_to_view": 0,
+    "allow_import": 1,
+    "allow_rename": 1,
+    "autoname": "field:bot_name",
+    "beta": 0,
+    "creation": "2025-09-10 22:32:03.000000",
+    "custom": 0,
+    "docstatus": 0,
+    "doctype": "DocType",
+    "document_type": "Master",
+    "engine": "InnoDB",
+    "field_order": [
+        "bot_information_section",
+        "bot_name",
+        "bot_type",
+        "plant",
+        "workstation",
+        "column_break_1",
+        "user_account",
+        "bot_status",
+        "purpose",
+        "priority",
+        "collection_settings_section",
+        "collection_frequency",
+        "parameters_collected",
+        "data_source",
+        "column_break_2",
+        "collection_method",
+        "batch_size",
+        "buffer_size",
+        "authentication_section",
+        "api_key",
+        "permissions",
+        "access_level",
+        "column_break_3",
+        "token_expiry",
+        "refresh_token",
+        "security_group",
+        "monitoring_section",
+        "last_collection_time",
+        "next_collection_time",
+        "collection_count",
+        "column_break_4",
+        "error_count",
+        "success_rate",
+        "average_response_time",
+        "configuration_section",
+        "error_log",
+        "collection_rules",
+        "column_break_5",
+        "notification_settings",
+        "retry_configuration",
+        "timestamps_section",
+        "created_date",
+        "column_break_6",
+        "last_updated"
+    ],
+    "fields": [
+        {
+            "fieldname": "bot_information_section",
+            "fieldtype": "Section Break",
+            "label": "Bot Information"
+        },
+        {
+            "fieldname": "bot_name",
+            "fieldtype": "Data",
+            "label": "Bot Name",
+            "reqd": 1,
+            "unique": 1,
+            "description": "Unique identifier for the bot user"
+        },
+        {
+            "fieldname": "bot_type",
+            "fieldtype": "Select",
+            "label": "Bot Type",
+            "options": "\nData Collection Bot\nMonitoring Bot\nAnalysis Bot\nAlert Bot\nMaintenance Bot\nQuality Control Bot\nReporting Bot\nIntegration Bot",
+            "reqd": 1
+        },
+        {
+            "fieldname": "plant",
+            "fieldtype": "Link",
+            "label": "Plant",
+            "options": "Plant Configuration",
+            "reqd": 1
+        },
+        {
+            "fieldname": "workstation",
+            "fieldtype": "Link",
+            "label": "Workstation",
+            "options": "SPC Workstation",
+            "description": "Specific workstation for focused data collection"
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "user_account",
+            "fieldtype": "Link",
+            "label": "User Account",
+            "options": "User",
+            "reqd": 1,
+            "description": "Associated user account for the bot"
+        },
+        {
+            "fieldname": "bot_status",
+            "fieldtype": "Select",
+            "label": "Bot Status",
+            "options": "\nActive\nInactive\nPaused\nError\nMaintenance",
+            "default": "Active",
+            "reqd": 1
+        },
+        {
+            "fieldname": "purpose",
+            "fieldtype": "Text",
+            "label": "Purpose",
+            "description": "Description of bot's purpose and functionality"
+        },
+        {
+            "fieldname": "priority",
+            "fieldtype": "Select",
+            "label": "Priority",
+            "options": "\nLow\nMedium\nHigh\nCritical",
+            "default": "Medium"
+        },
+        {
+            "fieldname": "collection_settings_section",
+            "fieldtype": "Section Break",
+            "label": "Collection Settings"
+        },
+        {
+            "fieldname": "collection_frequency",
+            "fieldtype": "Select",
+            "label": "Collection Frequency",
+            "options": "\nReal-time\nEvery 5 Seconds\nEvery 10 Seconds\nEvery 30 Seconds\nEvery Minute\nEvery 5 Minutes\nEvery 15 Minutes\nEvery 30 Minutes\nHourly\nDaily",
+            "default": "Every Minute"
+        },
+        {
+            "fieldname": "parameters_collected",
+            "fieldtype": "Long Text",
+            "label": "Parameters Collected",
+            "description": "JSON list of parameters and measurements collected by the bot"
+        },
+        {
+            "fieldname": "data_source",
+            "fieldtype": "Select",
+            "label": "Data Source",
+            "options": "\nPLC\nSCADA\nAPI\nDatabase\nFile System\nSensor Network\nWeb Service\nManual Entry",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_2",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "collection_method",
+            "fieldtype": "Select",
+            "label": "Collection Method",
+            "options": "\nPull\nPush\nSubscription\nPolling\nEvent-Driven",
+            "default": "Polling"
+        },
+        {
+            "fieldname": "batch_size",
+            "fieldtype": "Int",
+            "label": "Batch Size",
+            "default": 100,
+            "description": "Number of records to process in each batch"
+        },
+        {
+            "fieldname": "buffer_size",
+            "fieldtype": "Int",
+            "label": "Buffer Size",
+            "default": 1000,
+            "description": "Maximum number of records to buffer"
+        },
+        {
+            "fieldname": "authentication_section",
+            "fieldtype": "Section Break",
+            "label": "Authentication"
+        },
+        {
+            "fieldname": "api_key",
+            "fieldtype": "Password",
+            "label": "API Key",
+            "description": "API key for authentication"
+        },
+        {
+            "fieldname": "permissions",
+            "fieldtype": "Text",
+            "label": "Permissions",
+            "description": "JSON list of permissions granted to the bot"
+        },
+        {
+            "fieldname": "access_level",
+            "fieldtype": "Select",
+            "label": "Access Level",
+            "options": "\nRead Only\nRead/Write\nAdmin\nRestricted\nFull Access",
+            "default": "Read Only"
+        },
+        {
+            "fieldname": "column_break_3",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "token_expiry",
+            "fieldtype": "Datetime",
+            "label": "Token Expiry",
+            "description": "Expiry date/time for authentication token"
+        },
+        {
+            "fieldname": "refresh_token",
+            "fieldtype": "Password",
+            "label": "Refresh Token",
+            "description": "Token for refreshing authentication"
+        },
+        {
+            "fieldname": "security_group",
+            "fieldtype": "Data",
+            "label": "Security Group",
+            "description": "Security group assignment for access control"
+        },
+        {
+            "fieldname": "monitoring_section",
+            "fieldtype": "Section Break",
+            "label": "Monitoring"
+        },
+        {
+            "fieldname": "last_collection_time",
+            "fieldtype": "Datetime",
+            "label": "Last Collection Time",
+            "read_only": 1,
+            "description": "Timestamp of last successful data collection"
+        },
+        {
+            "fieldname": "next_collection_time",
+            "fieldtype": "Datetime",
+            "label": "Next Collection Time",
+            "read_only": 1,
+            "description": "Scheduled time for next data collection"
+        },
+        {
+            "fieldname": "collection_count",
+            "fieldtype": "Int",
+            "label": "Collection Count",
+            "default": 0,
+            "read_only": 1,
+            "description": "Total number of successful collections"
+        },
+        {
+            "fieldname": "column_break_4",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "error_count",
+            "fieldtype": "Int",
+            "label": "Error Count",
+            "default": 0,
+            "read_only": 1,
+            "description": "Total number of collection errors"
+        },
+        {
+            "fieldname": "success_rate",
+            "fieldtype": "Percent",
+            "label": "Success Rate",
+            "read_only": 1,
+            "description": "Percentage of successful collections"
+        },
+        {
+            "fieldname": "average_response_time",
+            "fieldtype": "Float",
+            "label": "Average Response Time (ms)",
+            "read_only": 1,
+            "precision": 2,
+            "description": "Average response time for data collection"
+        },
+        {
+            "fieldname": "configuration_section",
+            "fieldtype": "Section Break",
+            "label": "Configuration"
+        },
+        {
+            "fieldname": "error_log",
+            "fieldtype": "Long Text",
+            "label": "Error Log",
+            "read_only": 1,
+            "description": "Log of recent errors and issues"
+        },
+        {
+            "fieldname": "collection_rules",
+            "fieldtype": "Long Text",
+            "label": "Collection Rules",
+            "description": "JSON configuration for data collection rules and filters"
+        },
+        {
+            "fieldname": "column_break_5",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "notification_settings",
+            "fieldtype": "Text",
+            "label": "Notification Settings",
+            "description": "JSON configuration for notifications and alerts"
+        },
+        {
+            "fieldname": "retry_configuration",
+            "fieldtype": "Text",
+            "label": "Retry Configuration",
+            "description": "JSON configuration for retry logic and error handling"
+        },
+        {
+            "fieldname": "timestamps_section",
+            "fieldtype": "Section Break",
+            "label": "Timestamps"
+        },
+        {
+            "fieldname": "created_date",
+            "fieldtype": "Date",
+            "label": "Created Date",
+            "default": "Today",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_6",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "last_updated",
+            "fieldtype": "Datetime",
+            "label": "Last Updated",
+            "read_only": 1
+        }
+    ],
+    "has_web_view": 0,
+    "hide_heading": 0,
+    "hide_toolbar": 0,
+    "idx": 0,
+    "image_view": 0,
+    "in_create": 0,
+    "is_submittable": 0,
+    "issingle": 0,
+    "istable": 0,
+    "max_attachments": 0,
+    "modified": "2025-09-10 22:32:03.000000",
+    "modified_by": "Administrator",
+    "module": "plant_equipment",
+    "name": "bot_user_configuration",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "System Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Quality Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Manufacturing User",
+            "share": 1
+        }
+    ],
+    "quick_entry": 0,
+    "read_only": 0,
+    "read_only_onload": 0,
+    "search_fields": "bot_name,bot_type,plant,data_source",
+    "show_name_in_global_search": 1,
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "track_changes": 1,
+    "track_seen": 1,
+    "track_views": 0,
+    "app": "amb_w_spc",
+    "title": "Bot User Configuration"
+}

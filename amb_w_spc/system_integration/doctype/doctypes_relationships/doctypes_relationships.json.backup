@@ -1,0 +1,29 @@
+{
+    "doctype": "DocType",
+    "module": "System Integration",
+    "name": "doctypes_relationships",
+    "is_single": 1,
+    "issingle": 1,
+    "autoname": "Doctypes Relationships",
+    "fields": [
+        {
+            "fieldname": "relationships_section",
+            "fieldtype": "Section Break",
+            "label": "Doctype Relationships"
+        },
+        {
+            "fieldname": "relationships_data",
+            "fieldtype": "Code",
+            "label": "Relationships Data",
+            "options": "JSON"
+        }
+    ],
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1
+        }
+    ],
+    "title": "Doctypes Relationships"
+}

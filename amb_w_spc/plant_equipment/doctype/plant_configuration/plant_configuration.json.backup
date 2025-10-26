@@ -1,0 +1,272 @@
+{
+    "actions": [],
+    "allow_copy": 0,
+    "allow_events_in_timeline": 0,
+    "allow_guest_to_view": 0,
+    "allow_import": 1,
+    "allow_rename": 1,
+    "autoname": "field:plant_code",
+    "beta": 0,
+    "creation": "2025-09-10 22:32:03.000000",
+    "custom": 0,
+    "docstatus": 0,
+    "doctype": "DocType",
+    "document_type": "Master",
+    "engine": "InnoDB",
+    "field_order": [
+        "plant_information_section",
+        "plant_code",
+        "plant_name",
+        "plant_type",
+        "location",
+        "company",
+        "column_break_1",
+        "time_zone",
+        "shift_schedule",
+        "quality_manager",
+        "plant_status",
+        "integration_settings_section",
+        "database_connection",
+        "api_endpoints",
+        "data_retention_policy",
+        "column_break_2",
+        "backup_frequency",
+        "sync_frequency",
+        "audit_trail_enabled",
+        "operational_details_section",
+        "operating_hours_start",
+        "operating_hours_end",
+        "column_break_3",
+        "contact_person",
+        "emergency_contact",
+        "created_date",
+        "last_updated"
+    ],
+    "fields": [
+        {
+            "fieldname": "plant_information_section",
+            "fieldtype": "Section Break",
+            "label": "Plant Information"
+        },
+        {
+            "fieldname": "plant_code",
+            "fieldtype": "Data",
+            "label": "Plant Code",
+            "reqd": 1,
+            "unique": 1,
+            "description": "Unique identifier for the plant"
+        },
+        {
+            "fieldname": "plant_name",
+            "fieldtype": "Select",
+            "label": "Plant Name",
+            "options": "\nMix\nDry\nJuice\nLaboratory\nFormulated",
+            "reqd": 1
+        },
+        {
+            "fieldname": "plant_type",
+            "fieldtype": "Select",
+            "label": "Plant Type",
+            "options": "\nProduction\nQuality Control\nResearch\nPackaging\nStorage",
+            "reqd": 1
+        },
+        {
+            "fieldname": "location",
+            "fieldtype": "Data",
+            "label": "Location",
+            "reqd": 1
+        },
+        {
+            "fieldname": "company",
+            "fieldtype": "Link",
+            "label": "Company",
+            "options": "Company",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "time_zone",
+            "fieldtype": "Select",
+            "label": "Time Zone",
+            "options": "\nUTC\nEST\nCST\nMST\nPST\nGMT\nCET\nIST\nJST\nAEST",
+            "default": "UTC"
+        },
+        {
+            "fieldname": "shift_schedule",
+            "fieldtype": "Select",
+            "label": "Shift Schedule",
+            "options": "\nSingle Shift\nDouble Shift\nTriple Shift\n24/7 Operations",
+            "default": "Single Shift"
+        },
+        {
+            "fieldname": "quality_manager",
+            "fieldtype": "Link",
+            "label": "Quality Manager",
+            "options": "User"
+        },
+        {
+            "fieldname": "plant_status",
+            "fieldtype": "Select",
+            "label": "Plant Status",
+            "options": "\nActive\nInactive\nMaintenance\nShutdown",
+            "default": "Active",
+            "reqd": 1
+        },
+        {
+            "fieldname": "integration_settings_section",
+            "fieldtype": "Section Break",
+            "label": "Integration Settings"
+        },
+        {
+            "fieldname": "database_connection",
+            "fieldtype": "Data",
+            "label": "Database Connection String",
+            "description": "Connection string for plant database"
+        },
+        {
+            "fieldname": "api_endpoints",
+            "fieldtype": "Text",
+            "label": "API Endpoints",
+            "description": "JSON configuration for API endpoints"
+        },
+        {
+            "fieldname": "data_retention_policy",
+            "fieldtype": "Select",
+            "label": "Data Retention Policy",
+            "options": "\n30 Days\n90 Days\n6 Months\n1 Year\n2 Years\n5 Years\nPermanent",
+            "default": "1 Year"
+        },
+        {
+            "fieldname": "column_break_2",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "backup_frequency",
+            "fieldtype": "Select",
+            "label": "Backup Frequency",
+            "options": "\nHourly\nDaily\nWeekly\nMonthly",
+            "default": "Daily"
+        },
+        {
+            "fieldname": "sync_frequency",
+            "fieldtype": "Select",
+            "label": "Sync Frequency",
+            "options": "\nReal-time\nEvery 5 Minutes\nEvery 15 Minutes\nHourly\nDaily",
+            "default": "Every 15 Minutes"
+        },
+        {
+            "fieldname": "audit_trail_enabled",
+            "fieldtype": "Check",
+            "label": "Audit Trail Enabled",
+            "default": 1
+        },
+        {
+            "fieldname": "operational_details_section",
+            "fieldtype": "Section Break",
+            "label": "Operational Details"
+        },
+        {
+            "fieldname": "operating_hours_start",
+            "fieldtype": "Time",
+            "label": "Operating Hours Start"
+        },
+        {
+            "fieldname": "operating_hours_end",
+            "fieldtype": "Time",
+            "label": "Operating Hours End"
+        },
+        {
+            "fieldname": "column_break_3",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "contact_person",
+            "fieldtype": "Data",
+            "label": "Contact Person"
+        },
+        {
+            "fieldname": "emergency_contact",
+            "fieldtype": "Data",
+            "label": "Emergency Contact"
+        },
+        {
+            "fieldname": "created_date",
+            "fieldtype": "Date",
+            "label": "Created Date",
+            "default": "Today",
+            "read_only": 1
+        },
+        {
+            "fieldname": "last_updated",
+            "fieldtype": "Datetime",
+            "label": "Last Updated",
+            "read_only": 1
+        }
+    ],
+    "has_web_view": 0,
+    "hide_heading": 0,
+    "hide_toolbar": 0,
+    "idx": 0,
+    "image_view": 0,
+    "in_create": 0,
+    "is_submittable": 0,
+    "issingle": 0,
+    "istable": 0,
+    "max_attachments": 0,
+    "modified": "2025-09-10 22:32:03.000000",
+    "modified_by": "Administrator",
+    "module": "plant_equipment",
+    "name": "plant_configuration",
+    "naming_rule": "By fieldname",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Quality Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Manufacturing Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Manufacturing User",
+            "share": 1
+        }
+    ],
+    "quick_entry": 1,
+    "read_only": 0,
+    "read_only_onload": 0,
+    "search_fields": "plant_code,plant_name,location,company",
+    "show_name_in_global_search": 1,
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "track_changes": 1,
+    "track_seen": 1,
+    "track_views": 0,
+    "app": "amb_w_spc",
+    "title": "Plant Configuration"
+}
