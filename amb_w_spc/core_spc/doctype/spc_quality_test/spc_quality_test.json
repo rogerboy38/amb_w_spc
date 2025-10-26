@@ -1,0 +1,45 @@
+{
+  "name": "SPC Quality Test",
+  "module": "Core SPC",
+  "istable": 1,
+  "fields": [
+    {
+      "fieldname": "test_name",
+      "fieldtype": "Data",
+      "label": "Test Name",
+      "reqd": 1
+    },
+    {
+      "fieldname": "test_method",
+      "fieldtype": "Data",
+      "label": "Test Method"
+    },
+    {
+      "fieldname": "specification",
+      "fieldtype": "Data",
+      "label": "Specification"
+    },
+    {
+      "fieldname": "result",
+      "fieldtype": "Float",
+      "label": "Result"
+    },
+    {
+      "fieldname": "min_limit",
+      "fieldtype": "Float",
+      "label": "Min Limit"
+    },
+    {
+      "fieldname": "max_limit",
+      "fieldtype": "Float",
+      "label": "Max Limit"
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Pass\nFail\nPending"
+    }
+  ],
+  "doctype": "DocType"
+}

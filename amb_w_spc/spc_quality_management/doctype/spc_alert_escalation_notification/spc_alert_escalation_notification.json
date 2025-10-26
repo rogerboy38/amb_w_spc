@@ -1,31 +1,31 @@
 {
-    "attach_print": 0,
-    "channel": "Email",
-    "condition": "doc.alert_status == 'Investigating' and doc.severity_level in ['High', 'Critical']",
-    "creation": "2025-09-10 22:37:36.000000",
-    "doctype": "Notification",
-    "document_type": "SPC Alert",
-    "enabled": 1,
-    "event": "Value Change",
-    "is_standard": 1,
-    "message": "SPC Alert escalation:\n\n**Alert ID:** {{ doc.alert_id }}\n**Parameter:** {{ doc.parameter }}\n**Plant:** {{ doc.plant }}\n**Severity:** {{ doc.severity_level }}\n**Status:** Investigation in progress\n\nThis high/critical severity alert requires management attention.",
-    "modified": "2025-09-10 22:37:36.000000",
-    "modified_by": "Administrator",
-    "name": "spc_alert_escalation_notification",
-    "owner": "Administrator",
-    "recipients": [
-        {
-            "receiver_by_role": "Quality Manager"
-        },
-        {
-            "receiver_by_role": "Production Manager"
-        }
-    ],
-    "send_system_notification": 1,
-    "sender_email": "quality@company.com",
-    "subject": "\u26a0\ufe0f SPC Alert Escalation: {{ doc.parameter }} - {{ doc.severity_level }} Priority",
-    "value_changed": "alert_status",
-    "module": "spc_quality_management",
-    "app": "amb_w_spc",
-    "title": "SPC Alert - Escalation"
+  "attach_print": 0,
+  "channel": "Email",
+  "condition": "doc.alert_status == 'Investigating' and doc.severity_level in ['High', 'Critical']",
+  "creation": "2025-09-10 22:37:36.000000",
+  "doctype": "Notification",
+  "document_type": "SPC Alert",
+  "enabled": 1,
+  "event": "Value Change",
+  "is_standard": 1,
+  "message": "SPC Alert escalation:\n\n**Alert ID:** {{ doc.alert_id }}\n**Parameter:** {{ doc.parameter }}\n**Plant:** {{ doc.plant }}\n**Severity:** {{ doc.severity_level }}\n**Status:** Investigation in progress\n\nThis high/critical severity alert requires management attention.",
+  "modified": "2025-09-10 22:37:36.000000",
+  "modified_by": "Administrator",
+  "name": "SPC Alert Escalation Notification",
+  "owner": "Administrator",
+  "recipients": [
+    {
+      "receiver_by_role": "Quality Manager"
+    },
+    {
+      "receiver_by_role": "Production Manager"
+    }
+  ],
+  "send_system_notification": 1,
+  "sender_email": "quality@company.com",
+  "subject": "\u26a0\ufe0f SPC Alert Escalation: {{ doc.parameter }} - {{ doc.severity_level }} Priority",
+  "value_changed": "alert_status",
+  "module": "SPC Quality Management",
+  "app": "amb_w_spc",
+  "title": "SPC Alert - Escalation"
 }

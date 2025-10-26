@@ -1,32 +1,32 @@
 {
-    "attach_print": 0,
-    "channel": "Email",
-    "condition": "doc.target_completion_date and getdate(doc.target_completion_date) <= add_days(today(), 3) and doc.ca_status not in ['Closed', 'Cancelled']",
-    "creation": "2025-09-10 22:37:36.000000",
-    "doctype": "Notification",
-    "document_type": "SPC Corrective Action",
-    "enabled": 1,
-    "event": "Days Before",
-    "days_in_advance": 3,
-    "date_changed": "target_completion_date",
-    "is_standard": 1,
-    "message": "Corrective Action Due Date Reminder:\n\n**CA Number:** {{ doc.ca_number }}\n**Title:** {{ doc.title }}\n**Priority:** {{ doc.priority }}\n**Target Date:** {{ doc.target_completion_date }}\n**Current Status:** {{ doc.ca_status }}\n**Responsible Person:** {{ doc.overall_responsible_person }}\n\nThis corrective action is due in 3 days. Please ensure timely completion.",
-    "modified": "2025-09-10 22:37:36.000000",
-    "modified_by": "Administrator",
-    "name": "spc_corrective_action_due_reminder_notification",
-    "owner": "Administrator",
-    "recipients": [
-        {
-            "receiver_by_document_field": "overall_responsible_person"
-        },
-        {
-            "receiver_by_role": "Quality Manager"
-        }
-    ],
-    "send_system_notification": 1,
-    "sender_email": "quality@company.com",
-    "subject": "\u23f0 Corrective Action Due Soon: {{ doc.title }}",
-    "module": "spc_quality_management",
-    "app": "amb_w_spc",
-    "title": "SPC Corrective Action - Due Date Reminder"
+  "attach_print": 0,
+  "channel": "Email",
+  "condition": "doc.target_completion_date and getdate(doc.target_completion_date) <= add_days(today(), 3) and doc.ca_status not in ['Closed', 'Cancelled']",
+  "creation": "2025-09-10 22:37:36.000000",
+  "doctype": "Notification",
+  "document_type": "SPC Corrective Action",
+  "enabled": 1,
+  "event": "Days Before",
+  "days_in_advance": 3,
+  "date_changed": "target_completion_date",
+  "is_standard": 1,
+  "message": "Corrective Action Due Date Reminder:\n\n**CA Number:** {{ doc.ca_number }}\n**Title:** {{ doc.title }}\n**Priority:** {{ doc.priority }}\n**Target Date:** {{ doc.target_completion_date }}\n**Current Status:** {{ doc.ca_status }}\n**Responsible Person:** {{ doc.overall_responsible_person }}\n\nThis corrective action is due in 3 days. Please ensure timely completion.",
+  "modified": "2025-09-10 22:37:36.000000",
+  "modified_by": "Administrator",
+  "name": "SPC Corrective Action Due Reminder Notification",
+  "owner": "Administrator",
+  "recipients": [
+    {
+      "receiver_by_document_field": "overall_responsible_person"
+    },
+    {
+      "receiver_by_role": "Quality Manager"
+    }
+  ],
+  "send_system_notification": 1,
+  "sender_email": "quality@company.com",
+  "subject": "\u23f0 Corrective Action Due Soon: {{ doc.title }}",
+  "module": "SPC Quality Management",
+  "app": "amb_w_spc",
+  "title": "SPC Corrective Action - Due Date Reminder"
 }

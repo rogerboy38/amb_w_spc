@@ -2,4 +2,6 @@ import frappe
 from frappe.model.document import Document
 
 class SPCProcessCapabilityCompletedNotification(Document):
-	pass
+    """SPC Process Capability Completed Notification Doctype"""
+    
+    pass

@@ -1,0 +1,17 @@
+{
+  "doctype": "DocType",
+  "module": "Warehouse Management/Doctype",
+  "name": "Uom",
+  "is_child": 0,
+  "istable": 0,
+  "custom": 0,
+  "beta": 0,
+  "fields": [
+    {
+      "fieldname": "title",
+      "label": "Title",
+      "fieldtype": "Data",
+      "reqd": 1
+    }
+  ]
+}

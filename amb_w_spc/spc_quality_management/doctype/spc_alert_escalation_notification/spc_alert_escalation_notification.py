@@ -1,5 +1,7 @@
 import frappe
 from frappe.model.document import Document
 
-class SpcAlertEscalationNotification(Document):
-	pass
+class SPCAlertEscalationNotification(Document):
+    """SPC Alert Escalation Notification Doctype"""
+    
+    pass

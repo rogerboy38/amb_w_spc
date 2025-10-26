@@ -1,28 +1,28 @@
 {
-    "attach_print": 0,
-    "channel": "Email",
-    "condition": "doc.study_status == 'Completed'",
-    "creation": "2025-09-10 22:37:36.000000",
-    "doctype": "Notification",
-    "document_type": "SPC Process Capability",
-    "enabled": 1,
-    "event": "Value Change",
-    "is_standard": 1,
-    "message": "Process Capability Study completed:\n\n**Study Name:** {{ doc.study_name }}\n**Parameter:** {{ doc.parameter }}\n**Plant:** {{ doc.plant }}\n**Study Period:** {{ doc.study_period }}\n\n**Results:**\n- Cp: {{ doc.cp }}\n- Cpk: {{ doc.cpk }}\n- Capability Rating: {{ doc.capability_rating }}\n- Sigma Level: {{ doc.sigma_level }}\n\nPlease review for approval.",
-    "modified": "2025-09-10 22:37:36.000000",
-    "modified_by": "Administrator",
-    "name": "spc_process_capability_completed_notification",
-    "owner": "Administrator",
-    "recipients": [
-        {
-            "receiver_by_role": "Quality Manager"
-        }
-    ],
-    "send_system_notification": 1,
-    "sender_email": "quality@company.com",
-    "subject": "\ud83d\udcca Process Capability Study Completed: {{ doc.parameter }}",
-    "value_changed": "study_status",
-    "module": "spc_quality_management",
-    "app": "amb_w_spc",
-    "title": "SPC Process Capability - Study Completed"
+  "attach_print": 0,
+  "channel": "Email",
+  "condition": "doc.study_status == 'Completed'",
+  "creation": "2025-09-10 22:37:36.000000",
+  "doctype": "Notification",
+  "document_type": "SPC Process Capability",
+  "enabled": 1,
+  "event": "Value Change",
+  "is_standard": 1,
+  "message": "Process Capability Study completed:\n\n**Study Name:** {{ doc.study_name }}\n**Parameter:** {{ doc.parameter }}\n**Plant:** {{ doc.plant }}\n**Study Period:** {{ doc.study_period }}\n\n**Results:**\n- Cp: {{ doc.cp }}\n- Cpk: {{ doc.cpk }}\n- Capability Rating: {{ doc.capability_rating }}\n- Sigma Level: {{ doc.sigma_level }}\n\nPlease review for approval.",
+  "modified": "2025-09-10 22:37:36.000000",
+  "modified_by": "Administrator",
+  "name": "SPC Process Capability Completed Notification",
+  "owner": "Administrator",
+  "recipients": [
+    {
+      "receiver_by_role": "Quality Manager"
+    }
+  ],
+  "send_system_notification": 1,
+  "sender_email": "quality@company.com",
+  "subject": "\ud83d\udcca Process Capability Study Completed: {{ doc.parameter }}",
+  "value_changed": "study_status",
+  "module": "SPC Quality Management",
+  "app": "amb_w_spc",
+  "title": "SPC Process Capability - Study Completed"
 }

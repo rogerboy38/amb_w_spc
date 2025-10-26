@@ -1,0 +1,37 @@
+{
+  "doctype": "DocType",
+  "name": "Third Party API",
+  "module": "System Integration",
+  "is_single": 0,
+  "istable": 0,
+  "custom": 1,
+  "fields": [
+    {
+      "fieldname": "api_name",
+      "fieldtype": "Data",
+      "label": "API Name",
+      "reqd": 1
+    },
+    {
+      "fieldname": "endpoint_url",
+      "fieldtype": "Data",
+      "label": "Endpoint URL"
+    },
+    {
+      "fieldname": "authentication",
+      "fieldtype": "Select",
+      "label": "Authentication",
+      "options": "None\nAPI Key\nOAuth\nBasic Auth"
+    },
+    {
+      "fieldname": "spc_integration",
+      "fieldtype": "Section Break",
+      "label": "SPC Data Integration"
+    },
+    {
+      "fieldname": "spc_data_sync",
+      "fieldtype": "Check",
+      "label": "SPC Data Synchronization"
+    }
+  ]
+}

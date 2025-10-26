@@ -1,13 +1,42 @@
+from . import __version__ as app_version
+
 app_name = "amb_w_spc"
 app_title = "AMB W SPC"
-app_publisher = "AMB-Wellness"
-app_description = "Advanced Manufacturing, Warehouse Management & Statistical Process Control for ERPNext Pharma"
-app_email = "fcrm@amb-wellness.com"
-app_license = "mit"
+app_publisher = "Your Company"
+app_description = "Advanced Manufacturing with SPC"
+app_email = "your-email@example.com"
+app_license = "MIT"
 
-# Fixtures Configuration - REMOVED to avoid conflicts
-# ------------------
-fixtures = []
+# Includes in <base>/apps/amb_w_spc/amb_w_spc
+app_include_js = "/assets/amb_w_spc/js/amb_w_spc.js"
 
-# Rest of your original hooks.py content...
-# [Include all the other sections from your original hooks.py]
+# Apps to include in the site
+app_include = [
+  "Core SPC",
+  "SPC Quality Management",
+  "System Integration",
+  "Operator Management",
+  "Sensor Management",
+  "Shop Floor Control",
+  "SFC Manufacturing",
+  "FDA Compliance",
+  "Plant Equipment"
+]
+
+# Fixtures - using ACTUAL module names from doctypes
+fixtures = [
+    {"dt": "DocType", "filters": [["module", "in", [
+        "Core SPC",
+        "SPC Quality Management",
+        "System Integration",
+        "Operator Management",
+        "Sensor Management",
+        "Shop Floor Control",
+        "SFC Manufacturing",
+        "FDA Compliance",
+        "Plant Equipment"
+]]]}
+]
+
+# After install hook
+after_install = "amb_w_spc.install.after_install"

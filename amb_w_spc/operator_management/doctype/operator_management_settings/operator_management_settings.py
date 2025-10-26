@@ -1,5 +1,7 @@
 import frappe
 from frappe.model.document import Document
 
-class Operator_managementSettings(Document):
+class OperatorManagementSettings(Document):
+    """Operator Management Settings Doctype"""
+    
     pass

@@ -1,27 +1,27 @@
 {
-    "attach_print": 0,
-    "channel": "Email",
-    "condition": "doc.alert_status == 'Open'",
-    "creation": "2025-09-10 22:37:36.000000",
-    "doctype": "Notification",
-    "document_type": "SPC Alert",
-    "enabled": 1,
-    "event": "New",
-    "is_standard": 1,
-    "message": "A new SPC Alert has been raised:\n\n**Alert ID:** {{ doc.alert_id }}\n**Parameter:** {{ doc.parameter }}\n**Plant:** {{ doc.plant }}\n**Workstation:** {{ doc.workstation }}\n**Alert Type:** {{ doc.alert_type }}\n**Severity:** {{ doc.severity_level }}\n**Rule Violated:** {{ doc.rule_violated }}\n\nImmediate attention required.",
-    "modified": "2025-09-10 22:37:36.000000",
-    "modified_by": "Administrator",
-    "name": "spc_alert_new_notification",
-    "owner": "Administrator",
-    "recipients": [
-        {
-            "receiver_by_document_field": "acknowledged_by"
-        }
-    ],
-    "send_system_notification": 1,
-    "sender_email": "quality@company.com",
-    "subject": "\ud83d\udea8 SPC Alert: {{ doc.alert_type }} - {{ doc.parameter }} ({{ doc.plant }})",
-    "module": "spc_quality_management",
-    "app": "amb_w_spc",
-    "title": "SPC Alert - New Alert"
+  "attach_print": 0,
+  "channel": "Email",
+  "condition": "doc.alert_status == 'Open'",
+  "creation": "2025-09-10 22:37:36.000000",
+  "doctype": "Notification",
+  "document_type": "SPC Alert",
+  "enabled": 1,
+  "event": "New",
+  "is_standard": 1,
+  "message": "A new SPC Alert has been raised:\n\n**Alert ID:** {{ doc.alert_id }}\n**Parameter:** {{ doc.parameter }}\n**Plant:** {{ doc.plant }}\n**Workstation:** {{ doc.workstation }}\n**Alert Type:** {{ doc.alert_type }}\n**Severity:** {{ doc.severity_level }}\n**Rule Violated:** {{ doc.rule_violated }}\n\nImmediate attention required.",
+  "modified": "2025-09-10 22:37:36.000000",
+  "modified_by": "Administrator",
+  "name": "SPC Alert New Notification",
+  "owner": "Administrator",
+  "recipients": [
+    {
+      "receiver_by_document_field": "acknowledged_by"
+    }
+  ],
+  "send_system_notification": 1,
+  "sender_email": "quality@company.com",
+  "subject": "\ud83d\udea8 SPC Alert: {{ doc.alert_type }} - {{ doc.parameter }} ({{ doc.plant }})",
+  "module": "SPC Quality Management",
+  "app": "amb_w_spc",
+  "title": "SPC Alert - New Alert"
 }

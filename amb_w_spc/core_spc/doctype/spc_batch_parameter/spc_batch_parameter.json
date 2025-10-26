@@ -1,0 +1,36 @@
+{
+  "doctype": "DocType",
+  "module": "Core SPC",
+  "name": "SPC Batch Parameter",
+  "is_child": 0,
+  "istable": 1,
+  "custom": 0,
+  "beta": 0,
+  "fields": [
+    {
+      "fieldname": "parameter_name",
+      "label": "Parameter Name",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "target_value",
+      "label": "Target Value",
+      "fieldtype": "Float",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "upper_limit",
+      "label": "Upper Limit",
+      "fieldtype": "Float",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "lower_limit",
+      "label": "Lower Limit",
+      "fieldtype": "Float",
+      "in_list_view": 1
+    }
+  ]
+}
