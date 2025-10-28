@@ -65,7 +65,7 @@
  ],
  "modified": "2024-01-01 00:00:00",
  "modified_by": "Administrator",
- "module": "spc_quality_management",
+ "module": "SPC Quality Management",
  "name": "SPC Process Capability",
  "owner": "Administrator",
  "permissions": [

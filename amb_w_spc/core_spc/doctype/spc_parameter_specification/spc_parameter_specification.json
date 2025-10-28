@@ -1,14 +1,14 @@
 {
  "actions": [],
  "creation": "2024-01-01 00:00:00",
- "doctype": "DocType", 
+ "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "parameter",
   "parameter_name",
   "target_value",
-  "upper_spec_limit", 
+  "upper_spec_limit",
   "lower_spec_limit"
  ],
  "fields": [
@@ -21,7 +21,7 @@
    "reqd": 1
   },
   {
-   "fieldname": "parameter_name", 
+   "fieldname": "parameter_name",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Parameter Name",
@@ -29,7 +29,7 @@
   },
   {
    "fieldname": "target_value",
-   "fieldtype": "Float", 
+   "fieldtype": "Float",
    "label": "Target Value"
   },
   {
@@ -39,14 +39,14 @@
   },
   {
    "fieldname": "lower_spec_limit",
-   "fieldtype": "Float", 
+   "fieldtype": "Float",
    "label": "Lower Spec Limit"
   }
  ],
  "istable": 1,
- "modified": "2024-01-01 00:00:00", 
+ "modified": "2024-01-01 00:00:00",
  "modified_by": "Administrator",
- "module": "core_spc",
+ "module": "Core SPC",
  "name": "SPC Parameter Specification",
  "owner": "Administrator",
  "permissions": [],

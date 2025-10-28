@@ -1,10 +1,11 @@
-core_spc
-spc_quality_management
-sfc_manufacturing
-operator_management
-shop_floor_control
-plant_equipment
-real_time_monitoring
-sensor_management
-system_integration
-fda_compliance
+Core SPC
+FDA Compliance
+Operator Management
+Plant Equipment
+Real Time Monitoring
+SFC Manufacturing
+SPC Quality Management
+Sensor Management
+Shop Floor Control
+System Integration
+Warehouse Management

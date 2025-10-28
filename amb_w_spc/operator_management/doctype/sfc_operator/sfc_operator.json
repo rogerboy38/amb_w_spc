@@ -63,7 +63,7 @@
  ],
  "modified": "2024-01-01 00:00:00",
  "modified_by": "Administrator",
- "module": "operator_management",
+ "module": "Operator Management",
  "name": "SFC Operator",
  "owner": "Administrator",
  "permissions": [
