@@ -1,15 +1,9 @@
 {
   "name": "amb_w_spc",
   "version": "2.0.0",
-  "description": "Advanced Manufacturing Business with Statistical Process Control",
+  "description": "AMB W SPC - Manufacturing & Quality Control",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rogerboy38/amb_w_spc.git"
-  },
+  "scripts": {},
   "author": "Roger Roy",
   "license": "MIT"
 }

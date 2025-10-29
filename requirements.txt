@@ -1,1 +1,1 @@
-frappe
+frappe>=15.0.0
