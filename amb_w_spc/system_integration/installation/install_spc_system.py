@@ -23,14 +23,14 @@ class SPCInstaller:
     def __init__(self, site_name, base_path='/workspace/erpnext_doctypes'):
         self.site_name = site_name
         self.base_path = Path(base_path)
-        self.log_file = f"spc_installation_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        self.log_file = "spc_installation_{0}.log".format(datetime.now().strftime('%Y%m%d_%H%M%S'))
         self.errors = []
         self.warnings = []
         
     def log(self, message, level='INFO'):
         """Log installation progress"""
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        log_message = f"[{timestamp}] [{level}] {message}"
+        log_message = "[{0}] [{1}] {2}".format(timestamp, level, message)
         print(log_message)
         
         with open(self.log_file, 'a') as f:
@@ -39,7 +39,7 @@ class SPCInstaller:
     def run_command(self, command, check_output=True):
         """Execute a command and handle errors"""
         try:
-            self.log(f"Executing: {command}")
+            self.log("Executing: {0}".format(command))
             result = subprocess.run(
                 command, 
                 shell=True, 
@@ -49,17 +49,17 @@ class SPCInstaller:
             )
             
             if result.stdout:
-                self.log(f"Output: {result.stdout.strip()}")
+                self.log("Output: {0}".format(result.stdout.strip()))
             if result.stderr and check_output:
-                self.log(f"Error: {result.stderr.strip()}", 'ERROR')
-                self.errors.append(fr"Command failed: {command}\nError: {result.stderr}")
+                self.log("Error: {0}".format(result.stderr.strip()), 'ERROR')
+                self.errors.append("Command failed: {0}\nError: {1}".format(command, result.stderr))
                 
             return result
             
         except subprocess.CalledProcessError as e:
-            self.log(f"Command failed: {command}", 'ERROR')
-            self.log(f"Error: {e.stderr}", 'ERROR')
-            self.errors.append(fr"Command failed: {command}\nError: {e.stderr}")
+            self.log("Command failed: {0}".format(command), 'ERROR')
+            self.log("Error: {0}".format(e.stderr), 'ERROR')
+            self.errors.append("Command failed: {0}\nError: {1}".format(command, e.stderr))
             return None
     
     def verify_prerequisites(self):
@@ -67,25 +67,25 @@ class SPCInstaller:
         self.log("Verifying prerequisites...")
         
         # Check if site exists
-        result = self.run_command(f"bench --site {self.site_name} version")
+        result = self.run_command("bench --site {0} version".format(self.site_name))
         if not result or result.returncode != 0:
-            self.errors.append(f"Site {self.site_name} not found or not accessible")
+            self.errors.append("Site {0} not found or not accessible".format(self.site_name))
             return False
             
         # Check ERPNext version
-        result = self.run_command(f"bench --site {self.site_name} execute 'import erpnext; print(erpnext.__version__)'")
+        result = self.run_command("bench --site {0} execute 'import erpnext; print(erpnext.__version__)'".format(self.site_name))
         if result and result.returncode == 0:
             erpnext_version = result.stdout.strip().split('\n')[-1]
-            self.log(f"ERPNext version: {erpnext_version}")
+            self.log("ERPNext version: {0}".format(erpnext_version))
         else:
             self.warnings.append("Could not determine ERPNext version")
             
         # Check required Python packages
         required_packages = ['statistics', 'dateutil']
         for package in required_packages:
-            result = self.run_command(f"python -c 'import {package}'")
+            result = self.run_command("python -c 'import {0}'".format(package))
             if result and result.returncode != 0:
-                self.warnings.append(f"Python package {package} not found")
+                self.warnings.append("Python package {0} not found".format(package))
                 
         return len(self.errors) == 0
     
@@ -108,7 +108,7 @@ class SPCInstaller:
                 file_path = doctype_files[doctype_name]
                 self.install_single_doctype(doctype_name, file_path)
             else:
-                self.warnings.append(f"DocType file not found: {doctype_name}")
+                self.warnings.append("DocType file not found: {0}".format(doctype_name))
     
     def find_doctype_files(self):
         """Find all DocType JSON files"""
@@ -132,30 +132,30 @@ class SPCInstaller:
     
     def install_single_doctype(self, doctype_name, file_path):
         """Install a single DocType"""
-        self.log(f"Installing DocType: {doctype_name}")
+        self.log("Installing DocType: {0}".format(doctype_name))
         
         # Copy file to site directory for import
-        temp_file = f"/tmp/{doctype_name.lower().replace(' ', '_')}.json"
+        temp_file = "/tmp/{0}.json".format(doctype_name.lower().replace(' ', '_'))
         
         try:
             # Copy file
-            subprocess.run(f"cp '{file_path}' '{temp_file}'", shell=True, check=True)
+            subprocess.run("cp '{0}' '{1}'".format(file_path, temp_file), shell=True, check=True)
             
             # Import DocType
             result = self.run_command(
-                f"bench --site {self.site_name} data-import --type 'DocType' --file '{temp_file}'"
+                "bench --site {0} data-import --type 'DocType' --file '{1}'".format(self.site_name, temp_file)
             )
             
             if result and result.returncode == 0:
-                self.log(f"Successfully installed: {doctype_name}")
+                self.log("Successfully installed: {0}".format(doctype_name))
             else:
-                self.errors.append(f"Failed to install DocType: {doctype_name}")
+                self.errors.append("Failed to install DocType: {0}".format(doctype_name))
                 
             # Clean up temp file
             os.remove(temp_file)
             
         except Exception as e:
-            self.errors.append(f"Error installing {doctype_name}: {str(e)}")
+            self.errors.append("Error installing {0}: {1}".format(doctype_name, str(e)))
     
     def setup_roles_and_permissions(self):
         """Set up roles and permissions"""
@@ -178,35 +178,35 @@ class SPCInstaller:
     
     def create_role(self, role_name, role_config):
         """Create a role"""
-        self.log(f"Creating role: {role_name}")
+        self.log("Creating role: {0}".format(role_name))
         
         # Check if role exists
         result = self.run_command(
-            fr"bench --site {self.site_name} execute 'import frappe; print(frappe.db.exists(\"Role\", \"{role_name}\"))'"
+            "bench --site {0} execute 'import frappe; print(frappe.db.exists(\"Role\", \"{1}\"))'".format(self.site_name, role_name)
         )
         
         if result and 'True' not in result.stdout:
             # Create role
-            script = f"""
+            script = """
 import frappe
 role = frappe.get_doc({{
     'doctype': 'Role',
-    'role_name': '{role_name}',
-    'desk_access': {1 if role_config.get('user_type') == 'System User' else 0},
+    'role_name': '{0}',
+    'desk_access': {1},
     'is_custom': 1
 }})
 role.insert()
 frappe.db.commit()
-print(f'Created role: {role_name}')
-"""
+print("Created role: {0}")
+""".format(role_name, 1 if role_config.get('user_type') == 'System User' else 0)
             
             result = self.run_command(
-                f"bench --site {self.site_name} execute '{script}'"
+                "bench --site {0} execute '{1}'".format(self.site_name, script)
             )
     
     def apply_permissions(self, role_name, doctype, permissions):
         """Apply permissions for a role and doctype"""
-        self.log(f"Applying permissions: {role_name} -> {doctype}")
+        self.log("Applying permissions: {0} -> {1}".format(role_name, doctype))
         
         # Convert permissions to script
         perm_dict = {
@@ -215,30 +215,39 @@ print(f'Created role: {role_name}')
             **permissions
         }
         
-        script = f"""
+        script = """
 import frappe
 from frappe.permissions import add_permission
 
 # Remove existing permissions
 existing = frappe.get_all('Custom DocPerm', filters={{
-    'role': '{role_name}',
-    'parent': '{doctype}'
+    'role': '{0}',
+    'parent': '{1}'
 }})
 for perm in existing:
     frappe.delete_doc('Custom DocPerm', perm.name)
 
 # Add new permissions
-add_permission('{doctype}', '{role_name}', {perm_dict.get('read', 0)}, 
-               write={perm_dict.get('write', 0)}, create={perm_dict.get('create', 0)},
-               delete={perm_dict.get('delete', 0)}, submit={perm_dict.get('submit', 0)},
-               cancel={perm_dict.get('cancel', 0)}, amend={perm_dict.get('amend', 0)})
+add_permission('{1}', '{0}', {2}, 
+               write={3}, create={4},
+               delete={5}, submit={6},
+               cancel={7}, amend={8})
                
 frappe.db.commit()
-print(f'Applied permissions for {role_name} on {doctype}')
-"""
+print("Applied permissions for {0} on {1}")
+""".format(
+    role_name, doctype,
+    perm_dict.get('read', 0),
+    perm_dict.get('write', 0),
+    perm_dict.get('create', 0),
+    perm_dict.get('delete', 0),
+    perm_dict.get('submit', 0),
+    perm_dict.get('cancel', 0),
+    perm_dict.get('amend', 0)
+)
         
         result = self.run_command(
-            f"bench --site {self.site_name} execute '{script}'"
+            "bench --site {0} execute '{1}'".format(self.site_name, script)
         )
     
     def install_workflows(self):
@@ -254,21 +263,21 @@ print(f'Applied permissions for {role_name} on {doctype}')
     
     def install_single_workflow(self, workflow_name, workflow_config):
         """Install a single workflow"""
-        self.log(f"Installing workflow: {workflow_name}")
+        self.log("Installing workflow: {0}".format(workflow_name))
         
-        script = f"""
+        script = """
 import frappe
 import json
 
 # Create workflow document
-workflow_config = {json.dumps(workflow_config)}
+workflow_config = {0}
 
 # Check if workflow exists
-if frappe.db.exists('Workflow', '{workflow_name}'):
-    workflow = frappe.get_doc('Workflow', '{workflow_name}')
+if frappe.db.exists('Workflow', '{1}'):
+    workflow = frappe.get_doc('Workflow', '{1}')
 else:
     workflow = frappe.new_doc('Workflow')
-    workflow.workflow_name = '{workflow_name}'
+    workflow.workflow_name = '{1}'
 
 workflow.document_type = workflow_config['document_type']
 workflow.is_active = workflow_config.get('is_active', 1)
@@ -287,11 +296,11 @@ for transition in workflow_config.get('transitions', []):
 
 workflow.save()
 frappe.db.commit()
-print(f'Installed workflow: {workflow_name}')
-"""
+print("Installed workflow: {1}")
+""".format(json.dumps(workflow_config), workflow_name)
         
         result = self.run_command(
-            f"bench --site {self.site_name} execute '{script}'"
+            "bench --site {0} execute '{1}'".format(self.site_name, script)
         )
     
     def setup_fixtures(self):
@@ -318,55 +327,55 @@ print(f'Installed workflow: {workflow_name}')
     
     def install_fixture_role(self, role_data):
         """Install role fixture"""
-        script = f"""
+        script = """
 import frappe
-role_data = {json.dumps(role_data)}
+role_data = {0}
 
 if not frappe.db.exists('Role', role_data['name']):
     role = frappe.get_doc(role_data)
     role.insert()
     frappe.db.commit()
-    print(f'Created fixture role: {{role_data["name"]}}')
+    print("Created fixture role: {1}")
 else:
-    print(f'Role already exists: {{role_data["name"]}}')
-"""
+    print("Role already exists: {1}")
+""".format(json.dumps(role_data), role_data["name"])
         
-        self.run_command(f"bench --site {self.site_name} execute '{script}'")
+        self.run_command("bench --site {0} execute '{1}'".format(self.site_name, script))
     
     def install_fixture_uom(self, uom_data):
         """Install UOM fixture"""
-        script = f"""
+        script = """
 import frappe
-uom_data = {json.dumps(uom_data)}
+uom_data = {0}
 
 if not frappe.db.exists('UOM', uom_data['uom_name']):
     uom = frappe.get_doc(uom_data)
     uom.insert()
     frappe.db.commit()
-    print(f'Created UOM: {{uom_data["uom_name"]}}')
+    print("Created UOM: {1}")
 else:
-    print(f'UOM already exists: {{uom_data["uom_name"]}}')
-"""
+    print("UOM already exists: {1}")
+""".format(json.dumps(uom_data), uom_data["uom_name"])
         
-        self.run_command(f"bench --site {self.site_name} execute '{script}'")
+        self.run_command("bench --site {0} execute '{1}'".format(self.site_name, script))
     
     def install_fixture_parameter(self, param_data):
         """Install parameter fixture"""
-        script = f"""
+        script = """
 import frappe
-param_data = {json.dumps(param_data)}
+param_data = {0}
 
 # Create parameter if it doesn't exist
 if not frappe.db.exists('SPC Parameter Master', param_data['parameter_name']):
     param = frappe.get_doc(param_data)
     param.insert()
     frappe.db.commit()
-    print(f'Created parameter: {{param_data["parameter_name"]}}')
+    print("Created parameter: {1}")
 else:
-    print(f'Parameter already exists: {{param_data["parameter_name"]}}')
-"""
+    print("Parameter already exists: {1}")
+""".format(json.dumps(param_data), param_data["parameter_name"])
         
-        self.run_command(f"bench --site {self.site_name} execute '{script}'")
+        self.run_command("bench --site {0} execute '{1}'".format(self.site_name, script))
     
     def install_validations(self):
         """Install validation scripts"""
@@ -376,26 +385,45 @@ else:
         
         if validation_file.exists():
             # Copy validation file to site hooks
-            target_path = f"sites/{self.site_name}/hooks/spc_validation_rules.py"
+            target_path = "sites/{0}/hooks/spc_validation_rules.py".format(self.site_name)
             
-            script = f"""
+            script = """
 import frappe
 from frappe.utils import cstr
 import shutil
 
 # Copy validation file
-shutil.copy('{validation_file}', '{target_path}')
+shutil.copy('{0}', '{1}')
 
 # Add hooks for validations
-hooks_content = '''\n# SPC Validation Hooks\ndoc_events = {{\n    "SPC Data Point": {{\n        "validate": "spc_validation_rules.validate_spc_data_point"\n    }},\n    "SPC Specification": {{\n        "validate": "spc_validation_rules.validate_spc_specification"\n    }},\n    "SPC Alert": {{\n        "validate": "spc_validation_rules.validate_spc_alert"\n    }},\n    "SPC Electronic Signature": {{\n        "validate": "spc_validation_rules.validate_electronic_signature"\n    }},\n    "SPC Deviation": {{\n        "validate": "spc_validation_rules.validate_deviation"\n    }}\n}}\n'''
+hooks_content = '''
+# SPC Validation Hooks
+doc_events = {{
+    "SPC Data Point": {{
+        "validate": "spc_validation_rules.validate_spc_data_point"
+    }},
+    "SPC Specification": {{
+        "validate": "spc_validation_rules.validate_spc_specification"
+    }},
+    "SPC Alert": {{
+        "validate": "spc_validation_rules.validate_spc_alert"
+    }},
+    "SPC Electronic Signature": {{
+        "validate": "spc_validation_rules.validate_electronic_signature"
+    }},
+    "SPC Deviation": {{
+        "validate": "spc_validation_rules.validate_deviation"
+    }}
+}}
+'''
 
-with open(f'sites/{self.site_name}/hooks.py', 'a') as f:
+with open("sites/{2}/hooks.py", 'a') as f:
     f.write(hooks_content)
 
 print('Installed validation scripts')
-"""
+""".format(str(validation_file), target_path, self.site_name)
             
-            self.run_command(f"bench --site {self.site_name} execute '{script}'")
+            self.run_command("bench --site {0} execute '{1}'".format(self.site_name, script))
     
     def configure_automation(self):
         """Configure automation scripts and scheduled jobs"""
@@ -405,11 +433,11 @@ print('Installed validation scripts')
         
         if automation_file.exists():
             # Copy automation scripts
-            target_path = f"sites/{self.site_name}/hooks/automation_scripts.py"
+            target_path = "sites/{0}/hooks/automation_scripts.py".format(self.site_name)
             
-            script = f"""
+            script = """
 import shutil
-shutil.copy('{automation_file}', '{target_path}')
+shutil.copy('{0}', '{1}')
 
 # Set up scheduled tasks
 from frappe import get_doc
@@ -436,15 +464,15 @@ if not frappe.db.exists('Scheduled Job Type', 'hourly_spc_checks'):
 
 frappe.db.commit()
 print('Configured automation scripts')
-"""
+""".format(str(automation_file), target_path)
             
-            self.run_command(f"bench --site {self.site_name} execute '{script}'")
+            self.run_command("bench --site {0} execute '{1}'".format(self.site_name, script))
     
     def verify_installation(self):
         """Verify installation was successful"""
         self.log("Verifying installation...")
         
-        verification_script = fr"""
+        verification_script = """
 import frappe
 
 # Check key DocTypes
@@ -461,7 +489,7 @@ for doctype in key_doctypes:
         missing_doctypes.append(doctype)
 
 if missing_doctypes:
-    print(f'Missing DocTypes: {{missing_doctypes}}')
+    print("Missing DocTypes: {0}".format(missing_doctypes))
 else:
     print('All key DocTypes installed successfully')
 
@@ -473,7 +501,7 @@ for role in key_roles:
         missing_roles.append(role)
 
 if missing_roles:
-    print(f'Missing Roles: {{missing_roles}}')
+    print("Missing Roles: {0}".format(missing_roles))
 else:
     print('All key Roles created successfully')
 
@@ -485,38 +513,38 @@ for workflow in key_workflows:
         missing_workflows.append(workflow)
 
 if missing_workflows:
-    print(f'Missing Workflows: {{missing_workflows}}')
+    print("Missing Workflows: {0}".format(missing_workflows))
 else:
     print('All key Workflows installed successfully')
 
-print('\nInstallation verification complete')
+print('\\nInstallation verification complete')
 """
         
-        result = self.run_command(f"bench --site {self.site_name} execute '{verification_script}'")
+        result = self.run_command("bench --site {0} execute '{1}'".format(self.site_name, verification_script))
         return result and result.returncode == 0
     
     def generate_installation_report(self):
         """Generate installation report"""
-        report = fr"""
+        report = """
 # SPC ERPNext Installation Report
 
-**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-**Site:** {self.site_name}
+**Date:** {0}
+**Site:** {1}
 
 ## Installation Summary
 
-**Status:** {'SUCCESS' if len(self.errors) == 0 else 'FAILED'}
-**Errors:** {len(self.errors)}
-**Warnings:** {len(self.warnings)}
+**Status:** {2}
+**Errors:** {3}
+**Warnings:** {4}
 
 ## Errors
-{'\n'.join([f'- {error}' for error in self.errors]) if self.errors else 'None'}
+{5}
 
 ## Warnings
-{'\n'.join([f'- {warning}' for warning in self.warnings]) if self.warnings else 'None'}
+{6}
 
 ## Installation Log
-Full log available in: {self.log_file}
+Full log available in: {7}
 
 ## Next Steps
 
@@ -548,13 +576,22 @@ Full log available in: {self.log_file}
 ## Support
 
 For support and customization, refer to the documentation in each module directory.
-"""
+""".format(
+    datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+    self.site_name,
+    'SUCCESS' if len(self.errors) == 0 else 'FAILED',
+    len(self.errors),
+    len(self.warnings),
+    '\n'.join(["- {0}".format(error) for error in self.errors]) if self.errors else 'None',
+    '\n'.join(["- {0}".format(warning) for warning in self.warnings]) if self.warnings else 'None',
+    self.log_file
+)
         
-        report_file = f"spc_installation_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+        report_file = "spc_installation_report_{0}.md".format(datetime.now().strftime('%Y%m%d_%H%M%S'))
         with open(report_file, 'w') as f:
             f.write(report)
         
-        self.log(f"Installation report generated: {report_file}")
+        self.log("Installation report generated: {0}".format(report_file))
         return report_file
     
     def run_full_installation(self):
@@ -593,15 +630,15 @@ For support and customization, refer to the documentation in each module directo
             
             if len(self.errors) == 0:
                 self.log("SPC ERPNext Installation completed successfully!")
-                self.log(f"Installation report: {report_file}")
+                self.log("Installation report: {0}".format(report_file))
                 return True
             else:
-                self.log(f"Installation completed with {len(self.errors)} errors", 'ERROR')
+                self.log("Installation completed with {0} errors".format(len(self.errors)), 'ERROR')
                 return False
                 
         except Exception as e:
-            self.log(f"Installation failed with exception: {str(e)}", 'ERROR')
-            self.errors.append(f"Installation exception: {str(e)}")
+            self.log("Installation failed with exception: {0}".format(str(e)), 'ERROR')
+            self.errors.append("Installation exception: {0}".format(str(e)))
             self.generate_installation_report()
             return False
 
