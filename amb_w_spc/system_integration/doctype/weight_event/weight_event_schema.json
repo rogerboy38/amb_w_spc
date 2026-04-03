@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Weight Event Contract",
+  "description": "JSON Schema for IoT Scale Weight Events integrated with ERPNext Manufacturing",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["barrel_serial", "gross_weight", "device_id"],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "Unique event identifier (auto-generated if not provided)",
+      "example": "WE-2026.04.04-00001"
+    },
+    "event_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of the event",
+      "example": "2026-04-04T05:30:00Z"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": ["Weight Capture", "Tare Reset", "Calibration", "Zero Reset"],
+      "default": "Weight Capture",
+      "description": "Type of weight event"
+    },
+    "device_id": {
+      "type": "string",
+      "description": "Scale device identifier (must be in Sensor Configuration)",
+      "example": "SCALE-L01",
+      "pattern": "^[A-Z0-9-]+$"
+    },
+    "station": {
+      "type": "string",
+      "description": "Manufacturing station reference",
+      "example": "WS-001"
+    },
+    "location": {
+      "type": "string",
+      "description": "Physical location of the device",
+      "example": "AMB Manufacturing Floor"
+    },
+    "barrel_serial": {
+      "type": "string",
+      "description": "Barrel/container serial number",
+      "pattern": "^[A-Z]{3}[0-9]+-[0-9]+-C[0-9]+-[0-9]+$",
+      "example": "JAR0001261-1-C1-001"
+    },
+    "gross_weight": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 500,
+      "description": "Gross weight in kilograms",
+      "example": 25.456
+    },
+    "tara_weight": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "description": "Tara (container) weight in kilograms",
+      "example": 0.500
+    },
+    "net_weight": {
+      "type": "number",
+      "description": "Calculated net weight (gross - tara)",
+      "readOnly": true,
+      "example": 24.956
+    },
+    "weight_unit": {
+      "type": "string",
+      "default": "kg",
+      "description": "Unit of measurement",
+      "enum": ["kg", "g", "lb", "oz"]
+    },
+    "weight_stability": {
+      "type": "string",
+      "enum": ["Stable", "Unstable", "Pending"],
+      "default": "Stable",
+      "description": "Stability indicator from scale"
+    },
+    "weight_range_status": {
+      "type": "string",
+      "enum": ["Normal", "Warning", "Alarm"],
+      "description": "Status based on device weight limits"
+    },
+    "work_order": {
+      "type": ["string", "null"],
+      "description": "ERPNext Work Order reference",
+      "example": "MFG-WO-2026-00001"
+    },
+    "production_item": {
+      "type": ["string", "null"],
+      "description": "ERPNext Item code",
+      "example": "JAR-HONEY-001"
+    },
+    "batch_no": {
+      "type": ["string", "null"],
+      "description": "Batch/lot number",
+      "example": "BATCH-2026-04-001"
+    },
+    "operation": {
+      "type": ["string", "null"],
+      "description": "Manufacturing operation name",
+      "example": "Filling"
+    },
+    "bom": {
+      "type": ["string", "null"],
+      "description": "Bill of Materials reference",
+      "example": "BOM-JAR-HONEY-001"
+    },
+    "target_qty": {
+      "type": ["number", "null"],
+      "description": "Target quantity from work order"
+    },
+    "within_spec": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether weight is within specification limits"
+    },
+    "upper_limit": {
+      "type": ["number", "null"],
+      "description": "Upper specification limit in kg",
+      "example": 26.0
+    },
+    "lower_limit": {
+      "type": ["number", "null"],
+      "description": "Lower specification limit in kg",
+      "example": 24.0
+    },
+    "deviation_percentage": {
+      "type": ["number", "null"],
+      "description": "Percentage deviation from target",
+      "minimum": -100,
+      "maximum": 100
+    },
+    "quality_status": {
+      "type": "string",
+      "enum": ["Pass", "Fail", "Pending Review"],
+      "default": "Pass"
+    },
+    "sync_status": {
+      "type": "string",
+      "enum": ["Pending", "Synced", "Failed", "Skipped"],
+      "default": "Pending",
+      "description": "Sync status with ERPNext"
+    },
+    "synced_to": {
+      "type": ["string", "null"],
+      "description": "Target system synced to",
+      "example": "amb_w_tds"
+    },
+    "sync_error": {
+      "type": ["string", "null"],
+      "description": "Error message if sync failed"
+    },
+    "source_ip": {
+      "type": ["string", "null"],
+      "description": "Source IP address of the request"
+    },
+    "raw_payload": {
+      "type": ["string", "null"],
+      "description": "Original JSON payload received"
+    }
+  },
+  "example": {
+    "barrel_serial": "JAR0001261-1-C1-001",
+    "gross_weight": 25.456,
+    "device_id": "SCALE-L01",
+    "tara_weight": 0.500,
+    "work_order": "MFG-WO-2026-00001",
+    "batch_no": "BATCH-2026-04-001",
+    "operation": "Filling",
+    "station": "WS-001",
+    "event_timestamp": "2026-04-04T05:30:00Z"
+  }
+}
