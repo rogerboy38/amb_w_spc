@@ -7,6 +7,13 @@
   "editable_grid": 1,
   "track_changes": 1,
   "engine": "InnoDB",
+  "search_fields": "",
+  "autoname": "naming_series:",
+  "naming_rule": "By Naming Series",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "document_type": "Document",
+  "read_only": 0,
   "fields": [
     {
       "doctype": "DocField",
@@ -14,7 +21,8 @@
       "fieldtype": "Select",
       "label": "Naming Series",
       "options": "WE-.YYYY.-.MM.-.DD.-.#####",
-      "reqd": 1
+      "reqd": 1,
+      "hidden": 1
     },
     {
       "doctype": "DocField",
@@ -23,7 +31,8 @@
       "label": "Event Timestamp",
       "reqd": 1,
       "default": "now",
-      "in_list_view": 1
+      "in_list_view": 1,
+      "in_global_search": 1
     },
     {
       "doctype": "DocField",
@@ -41,7 +50,8 @@
       "label": "Device ID",
       "options": "Sensor Configuration",
       "reqd": 1,
-      "in_list_view": 1
+      "in_list_view": 1,
+      "in_global_search": 1
     },
     {
       "doctype": "DocField",
@@ -49,7 +59,8 @@
       "fieldtype": "Data",
       "label": "Barrel Serial",
       "reqd": 1,
-      "in_list_view": 1
+      "in_list_view": 1,
+      "in_global_search": 1
     },
     {
       "doctype": "DocField",
@@ -57,15 +68,13 @@
       "fieldtype": "Float",
       "label": "Gross Weight (kg)",
       "reqd": 1,
-      "in_list_view": 1,
-      "precision": 3
+      "in_list_view": 1
     },
     {
       "doctype": "DocField",
       "name": "tara_weight",
       "fieldtype": "Float",
-      "label": "Tara Weight (kg)",
-      "precision": 3
+      "label": "Tara Weight (kg)"
     },
     {
       "doctype": "DocField",
@@ -73,8 +82,7 @@
       "fieldtype": "Float",
       "label": "Net Weight (kg)",
       "read_only": 1,
-      "in_list_view": 1,
-      "precision": 3
+      "in_list_view": 1
     },
     {
       "doctype": "DocField",
@@ -89,7 +97,8 @@
       "name": "batch_no",
       "fieldtype": "Data",
       "label": "Batch Number",
-      "in_list_view": 1
+      "in_list_view": 1,
+      "in_global_search": 1
     },
     {
       "doctype": "DocField",
@@ -128,6 +137,5 @@
       "delete": 1
     }
   ],
-  "autoname": "naming_series:",
   "description": "Weight Event Contract for IoT scale integration"
 }
