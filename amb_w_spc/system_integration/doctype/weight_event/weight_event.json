@@ -1,23 +1,20 @@
 {
   "doctype": "DocType",
   "name": "Weight Event",
-  "module": "System Integration",
+  "module": "amb_w_spc.system_integration",
   "custom": 1,
   "istable": 0,
-  "editable_grid": 1,
-  "track_changes": 1,
   "engine": "InnoDB",
-  "search_fields": "",
-  "autoname": "naming_series:",
+  "autoname": "naming_series:WE-.YYYY.-.MM.-.DD.-.#####",
   "naming_rule": "By Naming Series",
   "sort_field": "modified",
   "sort_order": "DESC",
   "document_type": "Document",
-  "read_only": 0,
+  "search_fields": "",
   "fields": [
     {
       "doctype": "DocField",
-      "name": "naming_series",
+      "fieldname": "naming_series",
       "fieldtype": "Select",
       "label": "Naming Series",
       "options": "WE-.YYYY.-.MM.-.DD.-.#####",
@@ -26,17 +23,16 @@
     },
     {
       "doctype": "DocField",
-      "name": "event_timestamp",
+      "fieldname": "event_timestamp",
       "fieldtype": "Datetime",
       "label": "Event Timestamp",
       "reqd": 1,
       "default": "now",
-      "in_list_view": 1,
-      "in_global_search": 1
+      "in_list_view": 1
     },
     {
       "doctype": "DocField",
-      "name": "event_type",
+      "fieldname": "event_type",
       "fieldtype": "Select",
       "label": "Event Type",
       "options": "Weight Capture\nTare Reset\nCalibration\nZero Reset",
@@ -45,26 +41,23 @@
     },
     {
       "doctype": "DocField",
-      "name": "device_id",
-      "fieldtype": "Link",
+      "fieldname": "device_id",
+      "fieldtype": "Data",
       "label": "Device ID",
-      "options": "Sensor Configuration",
       "reqd": 1,
-      "in_list_view": 1,
-      "in_global_search": 1
+      "in_list_view": 1
     },
     {
       "doctype": "DocField",
-      "name": "barrel_serial",
+      "fieldname": "barrel_serial",
       "fieldtype": "Data",
       "label": "Barrel Serial",
       "reqd": 1,
-      "in_list_view": 1,
-      "in_global_search": 1
+      "in_list_view": 1
     },
     {
       "doctype": "DocField",
-      "name": "gross_weight",
+      "fieldname": "gross_weight",
       "fieldtype": "Float",
       "label": "Gross Weight (kg)",
       "reqd": 1,
@@ -72,13 +65,13 @@
     },
     {
       "doctype": "DocField",
-      "name": "tara_weight",
+      "fieldname": "tara_weight",
       "fieldtype": "Float",
       "label": "Tara Weight (kg)"
     },
     {
       "doctype": "DocField",
-      "name": "net_weight",
+      "fieldname": "net_weight",
       "fieldtype": "Float",
       "label": "Net Weight (kg)",
       "read_only": 1,
@@ -86,23 +79,21 @@
     },
     {
       "doctype": "DocField",
-      "name": "work_order",
-      "fieldtype": "Link",
+      "fieldname": "work_order",
+      "fieldtype": "Data",
       "label": "Work Order",
-      "options": "Work Order",
       "in_list_view": 1
     },
     {
       "doctype": "DocField",
-      "name": "batch_no",
+      "fieldname": "batch_no",
       "fieldtype": "Data",
       "label": "Batch Number",
-      "in_list_view": 1,
-      "in_global_search": 1
+      "in_list_view": 1
     },
     {
       "doctype": "DocField",
-      "name": "quality_status",
+      "fieldname": "quality_status",
       "fieldtype": "Select",
       "label": "Quality Status",
       "options": "Pass\nFail\nPending Review",
@@ -111,7 +102,7 @@
     },
     {
       "doctype": "DocField",
-      "name": "sync_status",
+      "fieldname": "sync_status",
       "fieldtype": "Select",
       "label": "Sync Status",
       "options": "Pending\nSynced\nFailed\nSkipped",
@@ -120,7 +111,7 @@
     },
     {
       "doctype": "DocField",
-      "name": "raw_payload",
+      "fieldname": "raw_payload",
       "fieldtype": "Code",
       "label": "Raw Payload",
       "options": "JSON",
@@ -136,6 +127,5 @@
       "create": 1,
       "delete": 1
     }
-  ],
-  "description": "Weight Event Contract for IoT scale integration"
+  ]
 }
