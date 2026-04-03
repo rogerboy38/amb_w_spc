@@ -186,8 +186,11 @@ def receive_weight_event(**kwargs):
     Returns:
         dict: Status with event details
     """
-    # Get data from kwargs or request
-    data = frappe.request.data if hasattr(frappe, 'request') else kwargs
+    # Get data from kwargs or request - handle console vs HTTP context
+    try:
+        data = frappe.request.data if hasattr(frappe, 'request') and hasattr(frappe.request, 'data') else kwargs
+    except (RuntimeError, AttributeError):
+        data = kwargs
 
     if isinstance(data, (bytes, str)):
         try:
@@ -195,16 +198,20 @@ def receive_weight_event(**kwargs):
         except:
             data = kwargs
 
+    # Use provided kwargs as fallback for direct console calls
+    if not data or data == {}:
+        data = kwargs
+
     # Extract fields
-    barrel_serial = data.get('barrel_serial', '')
-    gross_weight = data.get('gross_weight', 0)
-    device_id = data.get('device_id', 'UNKNOWN')
-    tara_weight = data.get('tara_weight')
-    work_order = data.get('work_order')
-    batch_no = data.get('batch_no')
-    operation = data.get('operation')
-    station = data.get('station')
-    event_timestamp = data.get('event_timestamp')
+    barrel_serial = data.get('barrel_serial', '') or kwargs.get('barrel_serial', '')
+    gross_weight = data.get('gross_weight', 0) or kwargs.get('gross_weight', 0)
+    device_id = data.get('device_id', 'UNKNOWN') or kwargs.get('device_id', 'UNKNOWN')
+    tara_weight = data.get('tara_weight') or kwargs.get('tara_weight')
+    work_order = data.get('work_order') or kwargs.get('work_order')
+    batch_no = data.get('batch_no') or kwargs.get('batch_no')
+    operation = data.get('operation') or kwargs.get('operation')
+    station = data.get('station') or kwargs.get('station')
+    event_timestamp = data.get('event_timestamp') or kwargs.get('event_timestamp')
 
     # Validate required fields
     if not barrel_serial:
