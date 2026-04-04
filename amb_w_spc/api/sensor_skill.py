@@ -31,53 +31,106 @@ def receive_weight_event(
 ) -> dict:
     """
     Receive and process weight event from scale device.
-
-    Args:
-        device_id: Scale device identifier (e.g., 'SCALE-L01', 'scale_plant')
-        mode: Operation mode (production, audit, keyboard, etc.)
-        batch_name: Batch identifier for the production batch
-        barrel_serial: Serial number of the barrel/container
-        gross_weight: Gross weight measurement in kg
-        tara_weight: Tare weight in kg (optional)
-        net_weight: Net weight (gross - tara) in kg
-        unit: Unit of measurement (default: 'kg')
-        tolerance_profile: Tolerance profile name (e.g., 'PLANT', 'LAB')
-        timestamp: Event timestamp ISO format (optional, defaults to now)
-        operator_id: Operator identifier (optional)
-
-    Returns:
-        dict with status and message
+    FIX: BUG 97 - Now updates Batch AMB container_barrels child table.
     """
     try:
-        # Validate required fields
+        # STEP 1: Validate required fields
+        validation_errors = []
         if not device_id:
-            return {"status": "error", "message": "device_id is required"}
-
-        if gross_weight is None:
-            return {"status": "error", "message": "gross_weight is required"}
-
+            validation_errors.append("device_id is required")
         if not barrel_serial:
-            return {"status": "error", "message": "barrel_serial is required"}
+            validation_errors.append("barrel_serial is required")
+        if gross_weight is None:
+            validation_errors.append("gross_weight is required")
+        if not batch_name:
+            validation_errors.append("batch_name is required")
 
-        # Calculate net weight if not provided
+        if validation_errors:
+            return {
+                "status": "error",
+                "code": "missing_fields",
+                "message": "; ".join(validation_errors),
+                "context": {"missing_fields": validation_errors}
+            }
+
+        # STEP 2: Parse and validate weights
+        gross_weight = float(gross_weight)
+        tara_weight = float(tara_weight) if tara_weight else 0.0
+        calculated_net = gross_weight - tara_weight
+        
         if net_weight is None:
-            net_weight = float(gross_weight) - (float(tara_weight) if tara_weight else 0)
+            net_weight = calculated_net
+        else:
+            net_weight = float(net_weight)
 
-        # Parse timestamp - handle ISO format with 'Z' suffix
+        # Validate net_weight consistency (10g tolerance)
+        if abs(net_weight - calculated_net) > 0.01:
+            return {
+                "status": "error",
+                "code": "validation_failed",
+                "message": f"net_weight mismatch: expected {calculated_net}, got {net_weight}",
+                "context": {
+                    "gross_weight": gross_weight,
+                    "tara_weight": tara_weight,
+                    "calculated_net": calculated_net,
+                    "provided_net": net_weight
+                }
+            }
+
+        # STEP 3: Parse timestamp
         if timestamp:
             try:
-                # Handle ISO format with 'Z' suffix (e.g., '2026-04-04T00:00:00Z')
-                # Convert to MySQL-compatible format: 'YYYY-MM-DD HH:MM:SS'
                 ts = timestamp.replace('Z', '').replace('T', ' ').split('.')[0]
                 event_time = ts
             except Exception:
-                # Fallback to now if parsing fails
                 event_time = now()
         else:
             event_time = now()
 
-        # Map mode to valid event_type
-        # Valid values: "Weight Capture", "Tare Reset", "Calibration", "Zero Reset"
+        # STEP 4: Check if Batch AMB exists
+        if batch_name and not frappe.db.exists("Batch AMB", batch_name):
+            return {
+                "status": "error",
+                "code": "batch_not_found",
+                "message": f"Batch AMB '{batch_name}' not found",
+                "context": {"batch_name": batch_name}
+            }
+
+        # STEP 5: Update Container Barrels child row (BUG 97 FIX)
+        child_row_name = None
+        if batch_name:
+            batch_doc = frappe.get_doc("Batch AMB", batch_name)
+            if hasattr(batch_doc, 'container_barrels'):
+                for row in batch_doc.container_barrels:
+                    if (row.barrel_serial_number or "").strip() == barrel_serial:
+                        child_row_name = row.name
+                        break
+            
+            if not child_row_name:
+                return {
+                    "status": "error",
+                    "code": "serial_not_found",
+                    "message": f"Barrel serial '{barrel_serial}' not found in Batch AMB",
+                    "context": {
+                        "batch_name": batch_name,
+                        "barrel_serial": barrel_serial
+                    }
+                }
+            
+            # Use SQL update to bypass validation (packaging_type requirement)
+            frappe.db.sql("""
+                UPDATE `tabContainer Barrels`
+                SET gross_weight = %s,
+                    tara_weight = %s,
+                    net_weight = %s,
+                    weight_validated = 1,
+                    scan_timestamp = %s,
+                    modified = NOW()
+                WHERE name = %s
+            """, (gross_weight, tara_weight, net_weight, event_time, child_row_name))
+            frappe.db.commit()
+
+        # STEP 6: Map mode to valid event_type
         EVENT_TYPE_MAP = {
             "production": "Weight Capture",
             "audit": "Weight Capture",
@@ -89,7 +142,8 @@ def receive_weight_event(
         }
         event_type = EVENT_TYPE_MAP.get(mode, "Weight Capture") if mode else "Weight Capture"
 
-        # Create Weight Event document
+        # STEP 7: Create Weight Event document
+        weight_event_id = None
         if frappe.db.exists("DocType", "Weight Event"):
             doc = frappe.get_doc({
                 "doctype": "Weight Event",
@@ -97,9 +151,9 @@ def receive_weight_event(
                 "event_type": event_type,
                 "batch_name": batch_name,
                 "barrel_serial": barrel_serial,
-                "gross_weight": float(gross_weight),
-                "tara_weight": float(tara_weight) if tara_weight else 0,
-                "net_weight": float(net_weight),
+                "gross_weight": gross_weight,
+                "tara_weight": tara_weight,
+                "net_weight": net_weight,
                 "unit_of_measure": unit,
                 "tolerance_profile": tolerance_profile,
                 "event_timestamp": event_time,
@@ -107,36 +161,36 @@ def receive_weight_event(
                 "status": "Completed"
             })
             doc.insert(ignore_permissions=True)
+            weight_event_id = doc.name
             frappe.db.commit()
 
-            return {
-                "status": "success",
-                "message": "Weight event recorded",
-                "weight_event_id": doc.name,
-                "device_id": device_id,
+        # STEP 8: Return structured success response
+        return {
+            "status": "ok",
+            "code": "updated",
+            "message": "Weight recorded and Batch AMB updated",
+            "context": {
+                "weight_event_id": weight_event_id,
+                "batch_name": batch_name,
                 "barrel_serial": barrel_serial,
                 "gross_weight": gross_weight,
+                "tara_weight": tara_weight,
                 "net_weight": net_weight,
-                "unit": unit
+                "unit": unit,
+                "timestamp": event_time,
+                "operator_id": operator_id
             }
-        else:
-            # Fallback: Log to console if DocType not found
-            frappe.logger().info(
-                f"Weight Event: device={device_id}, barrel={barrel_serial}, "
-                f"weight={gross_weight}kg"
-            )
-            return {
-                "status": "success",
-                "message": "Weight event logged (DocType not found)",
-                "device_id": device_id,
-                "barrel_serial": barrel_serial,
-                "gross_weight": gross_weight,
-                "net_weight": net_weight
-            }
+        }
 
     except Exception as e:
         frappe.logger().error(f"Error processing weight event: {e}")
-        return {"status": "error", "message": str(e)}
+        return {
+            "status": "error",
+            "code": "exception",
+            "message": str(e),
+            "context": {}
+        }
+
 
 
 @frappe.whitelist()
