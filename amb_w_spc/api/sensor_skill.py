@@ -65,12 +65,25 @@ def receive_weight_event(
         # Get timestamp
         event_time = timestamp if timestamp else now()
 
+        # Map mode to valid event_type
+        # Valid values: "Weight Capture", "Tare Reset", "Calibration", "Zero Reset"
+        EVENT_TYPE_MAP = {
+            "production": "Weight Capture",
+            "audit": "Weight Capture",
+            "keyboard": "Weight Capture",
+            "sensor_skill": "Weight Capture",
+            "tare": "Tare Reset",
+            "calibration": "Calibration",
+            "zero": "Zero Reset",
+        }
+        event_type = EVENT_TYPE_MAP.get(mode, "Weight Capture") if mode else "Weight Capture"
+
         # Create Weight Event document
         if frappe.db.exists("DocType", "Weight Event"):
             doc = frappe.get_doc({
                 "doctype": "Weight Event",
                 "device_id": device_id,
-                "event_type": mode or "production",
+                "event_type": event_type,
                 "batch_name": batch_name,
                 "barrel_serial": barrel_serial,
                 "gross_weight": float(gross_weight),
