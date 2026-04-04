@@ -10,8 +10,9 @@ This module provides:
 """
 import frappe
 from frappe import _
-from frappe.utils import now_datetime, now
+from frappe.utils import now_datetime, now, get_datetime
 import json
+from datetime import datetime
 
 
 @frappe.whitelist()
@@ -62,8 +63,17 @@ def receive_weight_event(
         if net_weight is None:
             net_weight = float(gross_weight) - (float(tara_weight) if tara_weight else 0)
 
-        # Get timestamp
-        event_time = timestamp if timestamp else now()
+        # Parse timestamp - handle ISO format with 'Z' suffix
+        if timestamp:
+            try:
+                # Handle ISO format with 'Z' suffix (e.g., '2026-04-04T00:00:00Z')
+                ts = timestamp.replace('Z', '+00:00') if timestamp.endswith('Z') else timestamp
+                event_time = get_datetime(ts)
+            except Exception:
+                # Fallback to now if parsing fails
+                event_time = now()
+        else:
+            event_time = now()
 
         # Map mode to valid event_type
         # Valid values: "Weight Capture", "Tare Reset", "Calibration", "Zero Reset"
