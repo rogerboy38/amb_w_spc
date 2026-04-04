@@ -67,8 +67,9 @@ def receive_weight_event(
         if timestamp:
             try:
                 # Handle ISO format with 'Z' suffix (e.g., '2026-04-04T00:00:00Z')
-                ts = timestamp.replace('Z', '+00:00') if timestamp.endswith('Z') else timestamp
-                event_time = get_datetime(ts)
+                # Convert to MySQL-compatible format: 'YYYY-MM-DD HH:MM:SS'
+                ts = timestamp.replace('Z', '').replace('T', ' ').split('.')[0]
+                event_time = ts
             except Exception:
                 # Fallback to now if parsing fails
                 event_time = now()
