@@ -1,0 +1,121 @@
+{
+  "doctype": "DocType",
+  "name": "Sensor Skill",
+  "module": "System Integration",
+  "custom": 1,
+  "istable": 0,
+  "engine": "InnoDB",
+  "search_fields": "",
+  "autoname": "field:skill_id",
+  "naming_rule": "By fieldname",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "document_type": "Setup",
+  "fields": [
+    {
+      "doctype": "DocField",
+      "fieldname": "skill_id",
+      "fieldtype": "Data",
+      "label": "Skill ID",
+      "reqd": 1,
+      "unique": 1,
+      "in_list_view": 1
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "skill_name",
+      "fieldtype": "Data",
+      "label": "Skill Name",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "sensor_type",
+      "fieldtype": "Select",
+      "label": "Sensor Type",
+      "options": "Scale\nTemperature\nPressure\nHumidity\nFlow\nCounter\nGeneric",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "version",
+      "fieldtype": "Data",
+      "label": "Version",
+      "default": "1.0.0",
+      "in_list_view": 1
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "min_value",
+      "fieldtype": "Float",
+      "label": "Min Value"
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "max_value",
+      "fieldtype": "Float",
+      "label": "Max Value"
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "unit_of_measure",
+      "fieldtype": "Data",
+      "label": "Unit of Measure",
+      "default": "kg"
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "port",
+      "fieldtype": "Data",
+      "label": "Serial Port",
+      "default": "/dev/ttyUSB0"
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "baud_rate",
+      "fieldtype": "Int",
+      "label": "Baud Rate",
+      "default": "9600"
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "python_config",
+      "fieldtype": "Code",
+      "label": "Python Config",
+      "options": "JSON"
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "wiring_instructions",
+      "fieldtype": "Text",
+      "label": "Wiring Instructions"
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "calibration_procedure",
+      "fieldtype": "Text",
+      "label": "Calibration Procedure"
+    },
+    {
+      "doctype": "DocField",
+      "fieldname": "enabled",
+      "fieldtype": "Check",
+      "label": "Enabled",
+      "default": "1",
+      "in_list_view": 1
+    }
+  ],
+  "permissions": [
+    {
+      "doctype": "DocPerm",
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    }
+  ],
+  "description": "Sensor Skill configuration for IoT device runtime"
+}
