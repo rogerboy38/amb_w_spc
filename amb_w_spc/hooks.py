@@ -23,7 +23,9 @@ app_include = [
   "Plant Equipment"
 ]
 
-# Fixtures - using ACTUAL module names from doctypes
+# Fixtures - EXCLUDE Sensor Skill to prevent install-app freeze at 82%
+# Sensor Skill records are created via patch 03_create_sensor_skill_records.py
+# by running: bench --site v2.sysmayal.cloud execute amb_w_spc.patches.v15.create_sensor_skill_records.execute
 fixtures = [
     {"dt": "DocType", "filters": [["module", "in", [
         "Core SPC",
@@ -35,7 +37,7 @@ fixtures = [
         "SFC Manufacturing",
         "FDA Compliance",
         "Plant Equipment"
-]]]}
+    ]]]}
 ]
 
 # After install hook
