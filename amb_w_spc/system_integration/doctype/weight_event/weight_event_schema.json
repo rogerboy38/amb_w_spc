@@ -145,7 +145,7 @@
     "synced_to": {
       "type": ["string", "null"],
       "description": "Target system synced to",
-      "example": "amb_w_tds"
+      "example": "amb_w_spc"
     },
     "sync_error": {
       "type": ["string", "null"],

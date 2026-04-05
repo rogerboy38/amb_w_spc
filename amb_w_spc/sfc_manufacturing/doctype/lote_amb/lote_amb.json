@@ -1,37 +1,67 @@
 {
-  "doctype": "DocType",
-  "name": "Lote AMB",
-  "module": "SFC Manufacturing",
-  "is_single": 0,
-  "istable": 0,
-  "custom": 1,
-  "fields": [
-    {
-      "fieldname": "naming_series",
-      "fieldtype": "Select",
-      "label": "Series"
-    },
-    {
-      "fieldname": "batch_name",
-      "fieldtype": "Data",
-      "label": "Batch Name",
-      "reqd": 1
-    },
-    {
-      "fieldname": "item_code",
-      "fieldtype": "Link",
-      "label": "Item Code",
-      "options": "Item"
-    },
-    {
-      "fieldname": "spc_integration",
-      "fieldtype": "Section Break",
-      "label": "SPC Integration"
-    },
-    {
-      "fieldname": "spc_enabled",
-      "fieldtype": "Check",
-      "label": "SPC Monitoring"
-    }
-  ]
+ "doctype": "DocType",
+ "name": "Lote AMB",
+ "module": "SFC Manufacturing",
+ "is_single": 0,
+ "istable": 0,
+ "custom": 1,
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series"
+  },
+  {
+   "fieldname": "batch_name",
+   "fieldtype": "Data",
+   "label": "Batch Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "spc_integration",
+   "fieldtype": "Section Break",
+   "label": "SPC Integration"
+  },
+  {
+   "fieldname": "spc_enabled",
+   "fieldtype": "Check",
+   "label": "SPC Monitoring"
+  },
+  {
+   "fieldname": "work_order_section",
+   "fieldtype": "Section Break",
+   "label": "Work Order Integration",
+   "insert_after": "spc_enabled"
+  },
+  {
+   "fieldname": "work_order",
+   "fieldtype": "Link",
+   "label": "Work Order",
+   "options": "Work Order",
+   "description": "Linked Work Order for production",
+   "insert_after": "work_order_section"
+  },
+  {
+   "fieldname": "routing",
+   "fieldtype": "Link",
+   "label": "Routing",
+   "options": "Work Order Routing",
+   "description": "Production routing template",
+   "insert_after": "work_order"
+  },
+  {
+   "fieldname": "production_status",
+   "fieldtype": "Select",
+   "label": "Production Status",
+   "options": "Not Started\nIn Progress\nComplete",
+   "default": "Not Started",
+   "insert_after": "routing"
+  }
+ ]
 }

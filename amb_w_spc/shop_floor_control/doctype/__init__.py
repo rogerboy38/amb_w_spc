@@ -1,1 +1,1 @@
-# shop_floor_control doctypes
+# Shop Floor Control doctypes

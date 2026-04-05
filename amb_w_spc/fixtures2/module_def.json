@@ -19,13 +19,13 @@
   "_comments": null,
   "_liked_by": null,
   "_user_tags": null,
-  "app_name": "amb_w_tds",
+  "app_name": "amb_w_spc",
   "custom": 0,
   "docstatus": 0,
   "doctype": "Module Def",
   "modified": "2025-10-19 11:19:49.157492",
-  "module_name": "amb_w_tds",
-  "name": "amb_w_tds",
+  "module_name": "amb_w_spc",
+  "name": "amb_w_spc",
   "package": null,
   "restrict_to_domain": null
  }

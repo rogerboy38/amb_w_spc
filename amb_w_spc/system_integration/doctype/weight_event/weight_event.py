@@ -132,23 +132,24 @@ class WeightEvent(Document):
             frappe.log_error(f"Failed to create RTD record: {e}", "Weight Event RTD")
 
     def sync_to_erpnext(self):
-        """Sync weight event to ERPNext batch/container."""
+        """Sync weight event to ERPNext batch/container via amb_w_spc."""
         try:
             if self.sync_status == "Synced":
                 return
 
-            # Try to sync to Container Barrels via amb_w_tds
+            # Try to sync to Container Barrels via amb_w_spc sensor_skill
             if self.barrel_serial:
                 try:
-                    result = frappe.call(
-                        'amb_w_tds.api.batch_api.receive_weight',
+                    # Use the sensor_skill API from amb_w_spc
+                    from amb_w_spc.api.sensor_skill import update_batch_container
+                    result = update_batch_container(
+                        batch_name=self.batch_no,
                         barrel_serial=self.barrel_serial,
-                        gross_weight=self.gross_weight,
-                        device_id=self.device_id,
-                        tara_weight=self.tara_weight
+                        net_weight=self.net_weight or self.gross_weight,
+                        unit=self.weight_unit or "kg"
                     )
                     self.sync_status = "Synced"
-                    self.synced_to = "amb_w_tds"
+                    self.synced_to = "amb_w_spc"
                     self.save(ignore_permissions=True)
                     frappe.db.commit()
                 except Exception as e:
