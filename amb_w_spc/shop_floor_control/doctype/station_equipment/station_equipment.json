@@ -1,0 +1,32 @@
+{
+  "actions": [],
+  "allow_rename": 1,
+  "creation": "2026-04-05 00:00:00.000000",
+  "doctype": "DocType",
+  "editable_grid": 1,
+  "engine": "InnoDB",
+  "field_order": ["equipment", "equipment_name", "status", "notes"],
+  "fields": [
+    {"fieldname": "equipment", "fieldtype": "Link", "in_list_view": 1, "label": "Equipment", "options": "Equipment", "reqd": 1},
+    {"fieldname": "equipment_name", "fieldtype": "Data", "fetch_from": "equipment.equipment_name", "in_list_view": 1, "label": "Equipment Name", "read_only": 1},
+    {"fieldname": "status", "fieldtype": "Select", "in_list_view": 1, "label": "Status", "options": "\nActive\nInactive\nMaintenance"},
+    {"fieldname": "notes", "fieldtype": "Small Text", "label": "Notes"}
+  ],
+  "grid_page_length": 50,
+  "index_web_pages_for_search": 1,
+  "istable": 1,
+  "links": [],
+  "modified": "2026-04-05 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Shop Floor Control",
+  "name": "Station Equipment",
+  "owner": "Administrator",
+  "permissions": [],
+  "row_format": "Dynamic",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
+}
+
+
