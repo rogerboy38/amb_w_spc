@@ -15,7 +15,7 @@ import json
 from datetime import datetime
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def receive_weight_event(
     device_id: str = None,
     mode: str = None,
