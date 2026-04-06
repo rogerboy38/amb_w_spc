@@ -11,7 +11,7 @@
  "allow_guest_to_view": 0,
  "allow_import": 0,
  "allow_rename": 1,
- "app": null,
+ "app": "amb_w_spc",
  "autoname": "naming_series:",
  "beta": 0,
  "color": null,
@@ -1631,47 +1631,47 @@
   },
   {
    "fieldname": "spc_quality_section",
-   "label": "SPC Quality Data",
    "fieldtype": "Section Break",
-   "insert_after": "amended_from"
+   "insert_after": "amended_from",
+   "label": "SPC Quality Data"
   },
   {
    "fieldname": "spc_parameters",
-   "label": "SPC Quality Parameters",
    "fieldtype": "Table",
-   "options": "SPC Batch Parameter",
-   "insert_after": "spc_quality_section"
+   "insert_after": "spc_quality_section",
+   "label": "SPC Quality Parameters",
+   "options": "SPC Batch Parameter"
   },
   {
    "fieldname": "quality_tests",
-   "label": "Quality Test Results",
    "fieldtype": "Table",
-   "options": "SPC Quality Test",
-   "insert_after": "spc_parameters"
+   "insert_after": "spc_parameters",
+   "label": "Quality Test Results",
+   "options": "SPC Quality Test"
   },
   {
    "fieldname": "spc_compliance_score",
-   "label": "SPC Compliance Score",
    "fieldtype": "Percent",
-   "insert_after": "quality_tests"
+   "insert_after": "quality_tests",
+   "label": "SPC Compliance Score"
   },
   {
    "fieldname": "statistical_analysis",
-   "label": "Statistical Analysis",
    "fieldtype": "Section Break",
-   "insert_after": "spc_compliance_score"
+   "insert_after": "spc_compliance_score",
+   "label": "Statistical Analysis"
   },
   {
    "fieldname": "cpk_value",
-   "label": "Cpk Value",
    "fieldtype": "Float",
-   "insert_after": "statistical_analysis"
+   "insert_after": "statistical_analysis",
+   "label": "Cpk Value"
   },
   {
    "fieldname": "ppk_value",
-   "label": "Ppk Value",
    "fieldtype": "Float",
-   "insert_after": "cpk_value"
+   "insert_after": "cpk_value",
+   "label": "Ppk Value"
   },
   {
    "fieldname": "compliance_section",
@@ -1688,8 +1688,8 @@
    "fieldname": "coa_number",
    "fieldtype": "Data",
    "label": "COA Number",
-   "unique": 1,
-   "read_only": 1
+   "read_only": 1,
+   "unique": 1
   },
   {
    "fieldname": "approved_by",
@@ -1702,11 +1702,11 @@
    "fieldtype": "Column Break"
   },
   {
+   "default": "Pending",
    "fieldname": "overall_result",
    "fieldtype": "Select",
    "label": "Overall Result",
-   "options": "Pending\nPass\nFail\nPartial",
-   "default": "Pending"
+   "options": "Pending\nPass\nFail\nPartial"
   },
   {
    "fieldname": "compliance_status",
@@ -1734,8 +1734,8 @@
   {
    "fieldname": "failed_parameters",
    "fieldtype": "Small Text",
-   "label": "Failed Parameters",
-   "hidden": 1
+   "hidden": 1,
+   "label": "Failed Parameters"
   }
  ],
  "force_re_route_to_default_view": 0,

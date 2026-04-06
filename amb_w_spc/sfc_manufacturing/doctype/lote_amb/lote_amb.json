@@ -1,10 +1,7 @@
 {
- "doctype": "DocType",
- "name": "Lote AMB",
- "module": "SFC Manufacturing",
- "is_single": 0,
- "istable": 0,
+ "app": "amb_w_spc",
  "custom": 1,
+ "doctype": "DocType",
  "fields": [
   {
    "fieldname": "naming_series",
@@ -36,32 +33,36 @@
   {
    "fieldname": "work_order_section",
    "fieldtype": "Section Break",
-   "label": "Work Order Integration",
-   "insert_after": "spc_enabled"
+   "insert_after": "spc_enabled",
+   "label": "Work Order Integration"
   },
   {
+   "description": "Linked Work Order for production",
    "fieldname": "work_order",
    "fieldtype": "Link",
+   "insert_after": "work_order_section",
    "label": "Work Order",
-   "options": "Work Order",
-   "description": "Linked Work Order for production",
-   "insert_after": "work_order_section"
+   "options": "Work Order"
   },
   {
+   "description": "Production routing template",
    "fieldname": "routing",
    "fieldtype": "Link",
+   "insert_after": "work_order",
    "label": "Routing",
-   "options": "Work Order Routing",
-   "description": "Production routing template",
-   "insert_after": "work_order"
+   "options": "Work Order Routing"
   },
   {
+   "default": "Not Started",
    "fieldname": "production_status",
    "fieldtype": "Select",
+   "insert_after": "routing",
    "label": "Production Status",
-   "options": "Not Started\nIn Progress\nComplete",
-   "default": "Not Started",
-   "insert_after": "routing"
+   "options": "Not Started\nIn Progress\nComplete"
   }
- ]
+ ],
+ "is_single": 0,
+ "istable": 0,
+ "module": "SFC Manufacturing",
+ "name": "Lote AMB"
 }

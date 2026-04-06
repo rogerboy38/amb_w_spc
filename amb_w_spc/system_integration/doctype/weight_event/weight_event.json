@@ -1,131 +1,132 @@
 {
-  "doctype": "DocType",
-  "name": "Weight Event",
-  "module": "amb_w_spc.system_integration",
-  "custom": 1,
-  "istable": 0,
-  "engine": "InnoDB",
-  "autoname": "naming_series:WE-.YYYY.-.MM.-.DD.-.#####",
-  "naming_rule": "By Naming Series",
-  "sort_field": "modified",
-  "sort_order": "DESC",
-  "document_type": "Document",
-  "search_fields": "",
-  "fields": [
-    {
-      "doctype": "DocField",
-      "fieldname": "naming_series",
-      "fieldtype": "Select",
-      "label": "Naming Series",
-      "options": "WE-.YYYY.-.MM.-.DD.-.#####",
-      "reqd": 1,
-      "hidden": 1
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "event_timestamp",
-      "fieldtype": "Datetime",
-      "label": "Event Timestamp",
-      "reqd": 1,
-      "default": "now",
-      "in_list_view": 1
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "event_type",
-      "fieldtype": "Select",
-      "label": "Event Type",
-      "options": "Weight Capture\nTare Reset\nCalibration\nZero Reset",
-      "default": "Weight Capture",
-      "in_list_view": 1
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "device_id",
-      "fieldtype": "Data",
-      "label": "Device ID",
-      "reqd": 1,
-      "in_list_view": 1
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "barrel_serial",
-      "fieldtype": "Data",
-      "label": "Barrel Serial",
-      "reqd": 1,
-      "in_list_view": 1
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "gross_weight",
-      "fieldtype": "Float",
-      "label": "Gross Weight (kg)",
-      "reqd": 1,
-      "in_list_view": 1
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "tara_weight",
-      "fieldtype": "Float",
-      "label": "Tara Weight (kg)"
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "net_weight",
-      "fieldtype": "Float",
-      "label": "Net Weight (kg)",
-      "read_only": 1,
-      "in_list_view": 1
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "work_order",
-      "fieldtype": "Data",
-      "label": "Work Order",
-      "in_list_view": 1
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "batch_no",
-      "fieldtype": "Data",
-      "label": "Batch Number",
-      "in_list_view": 1
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "quality_status",
-      "fieldtype": "Select",
-      "label": "Quality Status",
-      "options": "Pass\nFail\nPending Review",
-      "default": "Pass",
-      "in_list_view": 1
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "sync_status",
-      "fieldtype": "Select",
-      "label": "Sync Status",
-      "options": "Pending\nSynced\nFailed\nSkipped",
-      "default": "Pending",
-      "in_list_view": 1
-    },
-    {
-      "doctype": "DocField",
-      "fieldname": "raw_payload",
-      "fieldtype": "Code",
-      "label": "Raw Payload",
-      "options": "JSON",
-      "hidden": 1
-    }
-  ],
-  "permissions": [
-    {
-      "doctype": "DocPerm",
-      "role": "System Manager",
-      "read": 1,
-      "write": 1,
-      "create": 1,
-      "delete": 1
-    }
-  ]
+ "app": "amb_w_spc",
+ "autoname": "naming_series:WE-.YYYY.-.MM.-.DD.-.#####",
+ "custom": 1,
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "doctype": "DocField",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "WE-.YYYY.-.MM.-.DD.-.#####",
+   "reqd": 1
+  },
+  {
+   "default": "now",
+   "doctype": "DocField",
+   "fieldname": "event_timestamp",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Event Timestamp",
+   "reqd": 1
+  },
+  {
+   "default": "Weight Capture",
+   "doctype": "DocField",
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Event Type",
+   "options": "Weight Capture\nTare Reset\nCalibration\nZero Reset"
+  },
+  {
+   "doctype": "DocField",
+   "fieldname": "device_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Device ID",
+   "reqd": 1
+  },
+  {
+   "doctype": "DocField",
+   "fieldname": "barrel_serial",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Barrel Serial",
+   "reqd": 1
+  },
+  {
+   "doctype": "DocField",
+   "fieldname": "gross_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Gross Weight (kg)",
+   "reqd": 1
+  },
+  {
+   "doctype": "DocField",
+   "fieldname": "tara_weight",
+   "fieldtype": "Float",
+   "label": "Tara Weight (kg)"
+  },
+  {
+   "doctype": "DocField",
+   "fieldname": "net_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Net Weight (kg)",
+   "read_only": 1
+  },
+  {
+   "doctype": "DocField",
+   "fieldname": "work_order",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Work Order"
+  },
+  {
+   "doctype": "DocField",
+   "fieldname": "batch_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Batch Number"
+  },
+  {
+   "default": "Pass",
+   "doctype": "DocField",
+   "fieldname": "quality_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Quality Status",
+   "options": "Pass\nFail\nPending Review"
+  },
+  {
+   "default": "Pending",
+   "doctype": "DocField",
+   "fieldname": "sync_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Sync Status",
+   "options": "Pending\nSynced\nFailed\nSkipped"
+  },
+  {
+   "doctype": "DocField",
+   "fieldname": "raw_payload",
+   "fieldtype": "Code",
+   "hidden": 1,
+   "label": "Raw Payload",
+   "options": "JSON"
+  }
+ ],
+ "istable": 0,
+ "module": "amb_w_spc.system_integration",
+ "name": "Weight Event",
+ "naming_rule": "By Naming Series",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "doctype": "DocPerm",
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  }
+ ],
+ "search_fields": "",
+ "sort_field": "modified",
+ "sort_order": "DESC"
 }
