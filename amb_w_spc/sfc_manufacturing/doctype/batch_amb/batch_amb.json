@@ -4152,24 +4152,20 @@
       "insert_after": "quality_tests_section"
     },
     {
-      "fieldname": "section_output_products",
-      "label": "Output Products",
-      "fieldtype": "Section Break",
-      "insert_after": "quality_test_results"
-    },
-    {
       "fieldname": "output_products",
       "label": "Output Products",
       "fieldtype": "Table",
       "options": "Batch Output Product",
-      "insert_after": "section_output_products"
+      "insert_after": "quality_test_results",
+      "description": "Output products from this batch (Level 2 transformation)"
     },
     {
       "fieldname": "batch_output_products",
       "label": "Batch Output Products",
       "fieldtype": "Table",
       "options": "Batch Output Product",
-      "insert_after": "output_products"
+      "insert_after": "output_products",
+      "description": "Detailed batch output products with traceability"
     },
     {
       "allow_bulk_edit": 0,
