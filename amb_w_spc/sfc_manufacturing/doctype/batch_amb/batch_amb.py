@@ -28,170 +28,218 @@ from frappe.utils.nestedset import NestedSet
 #  the required logic directly here without relying on class methods.
 # ======================================================================
 
+# -------------------------------------------------------------------------
+# Helper: dual-field compatibility (same pattern as working RPC logic)
+# -------------------------------------------------------------------------
+
+def _get_field(doc, primary, alternate):
+    """Get field value with dual-field compatibility."""
+    val = getattr(doc, primary, None)
+    if val is not None:
+        return val
+    return getattr(doc, alternate, None)
+
+
+def _set_field(doc, field, value):
+    """Safely set a field on doc."""
+    setattr(doc, field, value)
+
+
 def batch_amb_validate(doc, method=None):
     """Validate hook - generate golden number components for Level 1 batches."""
-    level = str(getattr(doc, 'custom_batch_level', None) or "1")
-    if level != "1":
-        return
+    try:
+        # Dual-field: custom_batch_level / custombatchlevel
+        level = str(_get_field(doc, 'custom_batch_level', 'custombatchlevel') or "1")
+        if level != "1":
+            return
 
-    # Only generate golden number if item_to_manufacture exists
-    item_to_manufacture = getattr(doc, 'item_to_manufacture', None)
-    if not item_to_manufacture:
-        return
+        # Dual-field: item_to_manufacture / itemtomanufacture
+        item = _get_field(doc, 'item_to_manufacture', 'itemtomanufacture')
+        if not item:
+            return
 
-    # Extract product_code (first 4 chars of item_to_manufacture)
-    product_code = (item_to_manufacture or "")[:4] or "0000"
+        # Extract product_code (first 4 chars of item)
+        product_code = (item or "")[:4] or "0000"
 
-    # Extract consecutive from work_order_ref (BUG FIX: use [:3] not [-3:])
-    consecutive = "001"
-    work_order_ref = getattr(doc, 'work_order_ref', None)
-    if work_order_ref:
-        try:
-            parts = work_order_ref.split("-")
-            last_part = parts[-1] if parts else ""
-            # FIXED: First 3 digits, not last 3 digits
-            wo_consecutive = last_part[:3] if last_part else "001"
-            consecutive = wo_consecutive.zfill(3)
-        except Exception:
-            consecutive = "001"
+        # Dual-field: work_order_ref / workorderref
+        wo_ref = _get_field(doc, 'work_order_ref', 'workorderref')
 
-    # Extract year from wo_start_date
-    year = "24"
-    wo_start_date = getattr(doc, 'wo_start_date', None)
-    if wo_start_date:
-        try:
-            if isinstance(wo_start_date, str):
-                wo_date = datetime.strptime(wo_start_date, "%Y-%m-%d")
-                year = str(wo_date.year)[-2:]
-            else:
-                year = str(wo_start_date.year)[-2:]
-        except Exception:
-            year = datetime.now().strftime("%y")
-    else:
-        year = datetime.now().strftime("%y")
-
-    # Extract plant_code from production_plant
-    plant_code = "1"
-    production_plant = getattr(doc, 'production_plant', None)
-    if production_plant:
-        plant_mapping = {
-            "Mix": "1", "Dry": "2", "Juice": "3",
-            "Laboratory": "4", "Formulated": "5",
-        }
-        for plant_type, code in plant_mapping.items():
-            if plant_type.lower() in production_plant.lower():
-                plant_code = code
-                break
-        # Try to get production_plant_id from the plant doc
-        if plant_code == "1":
+        # Extract consecutive - FIXED: use [:3] not [-3:]
+        consecutive = "001"
+        if wo_ref:
             try:
-                plant_doc = frappe.get_doc("Production Plant AMB", production_plant)
-                plant_id = getattr(plant_doc, 'production_plant_id', None)
-                if plant_id:
-                    plant_code = str(plant_id)
+                parts = wo_ref.split("-")
+                last_part = parts[-1] if parts else ""
+                if last_part and last_part.isdigit():
+                    consecutive = last_part[:3].zfill(3)
             except Exception:
                 pass
 
-    # Build golden number: product_code(4) + consecutive(3) + year(2) + plant_code(1)
-    base_golden_number = f"{product_code}{consecutive}{year}{plant_code}"
+        # Dual-field: wo_start_date / wostartdate
+        wo_date_val = _get_field(doc, 'wo_start_date', 'wostartdate')
 
-    # Set golden number fields
-    doc.custom_golden_number = base_golden_number
-    doc.custom_generated_batch_name = base_golden_number
+        # Extract year from WO date or Work Order
+        year = "24"
+        if wo_date_val:
+            try:
+                if isinstance(wo_date_val, str):
+                    parsed_date = datetime.strptime(wo_date_val, "%Y-%m-%d")
+                    year = str(parsed_date.year)[-2:]
+                else:
+                    year = str(wo_date_val.year)[-2:]
+            except Exception:
+                pass
 
-    # Decompose into component fields
-    doc.custom_product_family = product_code[:2] or "00"
-    doc.custom_consecutive = consecutive
-    doc.custom_subfamily = product_code[2:4] or "00"
+        # If no WO date, try to get from Work Order doc
+        if wo_ref and year == "24":
+            try:
+                wo_doc = frappe.get_doc("Work Order", wo_ref)
+                if wo_doc.planned_start_date:
+                    year = str(wo_doc.planned_start_date.year)[-2:]
+            except Exception:
+                pass
 
-    # Debug output
-    frappe.publish_realtime(
-        event="eval_js",
-        message={
-            "console": True,
-            "script": f"console.log('✅ Golden Number: {base_golden_number}')"
-        }
-    )
+        if year == "24":
+            year = datetime.now().strftime("%y")
+
+        # Dual-field: production_plant / productionplant
+        production_plant = _get_field(doc, 'production_plant', 'productionplant')
+
+        # Extract plant_code
+        plant_code = "1"
+        if production_plant:
+            plant_mapping = {
+                "mix": "1", "dry": "2", "juice": "3",
+                "laboratory": "4", "formulated": "5",
+            }
+            plant_lower = production_plant.lower()
+            for plant_type, code in plant_mapping.items():
+                if plant_type in plant_lower:
+                    plant_code = code
+                    break
+
+            # Try to get production_plant_id from the plant doc
+            if plant_code == "1":
+                try:
+                    plant_doc = frappe.get_doc("Production Plant AMB", production_plant)
+                    plant_id = getattr(plant_doc, 'production_plant_id', None)
+                    if plant_id:
+                        plant_code = str(plant_id)
+                except Exception:
+                    pass
+
+        # Build golden number: product_code(4) + consecutive(3) + year(2) + plant_code(1)
+        base_golden_number = f"{product_code}{consecutive}{year}{plant_code}"
+
+        # Set golden number fields
+        doc.custom_golden_number = base_golden_number
+        doc.custom_generated_batch_name = base_golden_number
+
+        # Decompose into component fields
+        doc.custom_product_family = product_code[:2] or "00"
+        doc.custom_consecutive = consecutive
+        doc.custom_subfamily = product_code[2:4] or "00"
+
+    except Exception as e:
+        frappe.log_error(
+            title="Batch AMB Validate Error",
+            message=f"Error in batch_amb_validate: {str(e)}"
+        )
 
 
 def batch_amb_before_save(doc, method=None):
     """Before save hook - set title from golden number for Level 1."""
-    level = str(getattr(doc, 'custom_batch_level', None) or "1")
+    try:
+        # Dual-field: custom_batch_level / custombatchlevel
+        level = str(_get_field(doc, 'custom_batch_level', 'custombatchlevel') or "1")
 
-    if level == "1":
-        # Level 1: use Golden Number directly as title
-        golden_number = getattr(doc, 'custom_golden_number', None)
-        if golden_number:
-            doc.title = golden_number
-        else:
-            doc.title = getattr(doc, 'name', None) or "Untitled"
+        # Set title based on level
+        if level == "1":
+            golden_number = getattr(doc, 'custom_golden_number', None)
+            if golden_number:
+                doc.title = golden_number
+            else:
+                doc.title = getattr(doc, 'name', None) or "Untitled"
 
-    elif level == "2":
-        # Level 2: <GoldenNumber>-<sub lot index>
-        parent_batch = getattr(doc, 'parent_batch_amb', None)
-        if parent_batch:
-            try:
-                parent = frappe.get_doc("Batch AMB", parent_batch)
-                parent_gn = getattr(parent, 'custom_golden_number', None) or getattr(parent, 'title', None) or parent.name
-                siblings = frappe.db.count(
-                    "Batch AMB",
-                    {
-                        "parent_batch_amb": parent_batch,
-                        "custom_batch_level": "2",
-                        "name": ["!=", doc.name],
-                    },
-                )
-                doc.title = f"{parent_gn}-{siblings + 1}"
-            except Exception:
+        elif level == "2":
+            parent_batch = _get_field(doc, 'parent_batch_amb', 'parentbatchamb')
+            if parent_batch:
+                try:
+                    parent = frappe.get_doc("Batch AMB", parent_batch)
+                    parent_gn = getattr(parent, 'custom_golden_number', None) or getattr(parent, 'title', None) or parent.name
+                    siblings = frappe.db.count(
+                        "Batch AMB",
+                        {
+                            "parent_batch_amb": parent_batch,
+                            "custom_batch_level": "2",
+                            "name": ["!=", doc.name],
+                        },
+                    )
+                    doc.title = f"{parent_gn}-{siblings + 1}"
+                except Exception:
+                    doc.title = f"{doc.name}-L2"
+            else:
                 doc.title = f"{doc.name}-L2"
-        else:
-            doc.title = f"{doc.name}-L2"
 
-    elif level == "3":
-        # Level 3: <Level2Title>-C<container index>
-        parent_batch = getattr(doc, 'parent_batch_amb', None)
-        if parent_batch:
-            try:
-                parent = frappe.get_doc("Batch AMB", parent_batch)
-                parent_title = getattr(parent, 'title', None) or parent.name
-                siblings = frappe.db.count(
-                    "Batch AMB",
-                    {
-                        "parent_batch_amb": parent_batch,
-                        "custom_batch_level": "3",
-                        "name": ["!=", doc.name],
-                    },
-                )
-                doc.title = f"{parent_title}-C{siblings + 1}"
-            except Exception:
+        elif level == "3":
+            parent_batch = _get_field(doc, 'parent_batch_amb', 'parentbatchamb')
+            if parent_batch:
+                try:
+                    parent = frappe.get_doc("Batch AMB", parent_batch)
+                    parent_title = getattr(parent, 'title', None) or parent.name
+                    siblings = frappe.db.count(
+                        "Batch AMB",
+                        {
+                            "parent_batch_amb": parent_batch,
+                            "custom_batch_level": "3",
+                            "name": ["!=", doc.name],
+                        },
+                    )
+                    doc.title = f"{parent_title}-C{siblings + 1}"
+                except Exception:
+                    doc.title = f"{doc.name}-L3"
+            else:
                 doc.title = f"{doc.name}-L3"
-        else:
-            doc.title = f"{doc.name}-L3"
 
-    elif level == "4":
-        # Level 4: <Level3Title>-<serial 3-digit>
-        parent_batch = getattr(doc, 'parent_batch_amb', None)
-        if parent_batch:
-            try:
-                parent = frappe.get_doc("Batch AMB", parent_batch)
-                parent_title = getattr(parent, 'title', None) or parent.name
-                siblings = frappe.db.count(
-                    "Batch AMB",
-                    {
-                        "parent_batch_amb": parent_batch,
-                        "custom_batch_level": "4",
-                        "name": ["!=", doc.name],
-                    },
-                )
-                doc.title = f"{parent_title}-{siblings + 1:03d}"
-            except Exception:
+        elif level == "4":
+            parent_batch = _get_field(doc, 'parent_batch_amb', 'parentbatchamb')
+            if parent_batch:
+                try:
+                    parent = frappe.get_doc("Batch AMB", parent_batch)
+                    parent_title = getattr(parent, 'title', None) or parent.name
+                    siblings = frappe.db.count(
+                        "Batch AMB",
+                        {
+                            "parent_batch_amb": parent_batch,
+                            "custom_batch_level": "4",
+                            "name": ["!=", doc.name],
+                        },
+                    )
+                    doc.title = f"{parent_title}-{siblings + 1:03d}"
+                except Exception:
+                    doc.title = f"{doc.name}-L4"
+            else:
                 doc.title = f"{doc.name}-L4"
-        else:
-            doc.title = f"{doc.name}-L4"
 
-    # Safety: trim very long titles
-    if getattr(doc, 'title', None) and len(doc.title) > 60:
-        doc.title = doc.title[:60]
+        # Safety: trim very long titles
+        if getattr(doc, 'title', None) and len(doc.title) > 60:
+            doc.title = doc.title[:60]
+
+        # Update planned_qty from Work Order if not set
+        wo_ref = _get_field(doc, 'work_order_ref', 'workorderref')
+        if wo_ref and getattr(doc, 'planned_qty', None) is None:
+            try:
+                qty = frappe.db.get_value("Work Order", wo_ref, "qty")
+                if qty:
+                    doc.planned_qty = qty
+            except Exception:
+                pass
+
+    except Exception as e:
+        frappe.log_error(
+            title="Batch AMB Before Save Error",
+            message=f"Error in batch_amb_before_save: {str(e)}"
+        )
 
 
 class BatchAMB(NestedSet):
