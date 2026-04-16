@@ -1,0 +1,202 @@
+{
+  "doctype": "DocType",
+  "name": "Batch Output Product",
+  "module": "SFC Manufacturing",
+  "app": "amb_w_spc",
+  "istable": 1,
+  "custom": 1,
+  "editable_grid": 1,
+  "track_changes": 1,
+  "fields": [
+    {
+      "fieldname": "item_code",
+      "label": "Item Code",
+      "fieldtype": "Link",
+      "options": "Item",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "item_name",
+      "label": "Item Name",
+      "fieldtype": "Data",
+      "fetch_from": "item_code.item_name",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "quantity_kg",
+      "label": "Quantity (kg)",
+      "fieldtype": "Float",
+      "precision": "2",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "uom",
+      "label": "UOM",
+      "fieldtype": "Link",
+      "options": "UOM",
+      "fetch_from": "item_code.stock_uom"
+    },
+    {
+      "fieldname": "column_break_basic",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "total_solids_kg",
+      "label": "Total Solids (kg)",
+      "fieldtype": "Float",
+      "precision": "2"
+    },
+    {
+      "fieldname": "solids_percentage",
+      "label": "Solids % of Batch",
+      "fieldtype": "Percent",
+      "description": "Percentage of total batch solids"
+    },
+    {
+      "fieldname": "expiry_date",
+      "label": "Expiry Date",
+      "fieldtype": "Date"
+    },
+    {
+      "fieldname": "section_traceability",
+      "label": "Traceability",
+      "fieldtype": "Section Break"
+    },
+    {
+      "fieldname": "golden_number",
+      "label": "Golden Number",
+      "fieldtype": "Data",
+      "read_only": 1,
+      "in_list_view": 1,
+      "description": "Auto-generated from parent batch"
+    },
+    {
+      "fieldname": "output_traceability_code",
+      "label": "Output Trace Code",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "description": "Transformation traceability code for this output"
+    },
+    {
+      "fieldname": "output_golden_number",
+      "label": "Output Golden No.",
+      "fieldtype": "Data",
+      "read_only": 1,
+      "description": "Product-specific golden number"
+    },
+    {
+      "fieldname": "column_break_trace",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "source_golden_number",
+      "label": "Source Golden No.",
+      "fieldtype": "Data",
+      "read_only": 1,
+      "description": "Parent batch golden number for lineage"
+    },
+    {
+      "fieldname": "source_batch_amb",
+      "label": "Source Batch",
+      "fieldtype": "Link",
+      "options": "Batch AMB",
+      "read_only": 1,
+      "description": "Source batch for transformation lineage"
+    },
+    {
+      "fieldname": "warehouse",
+      "label": "Warehouse",
+      "fieldtype": "Link",
+      "options": "Warehouse"
+    },
+    {
+      "fieldname": "batch_no",
+      "label": "Batch No",
+      "fieldtype": "Link",
+      "options": "Batch"
+    },
+    {
+      "fieldname": "section_quality",
+      "label": "Quality",
+      "fieldtype": "Section Break"
+    },
+    {
+      "fieldname": "quality_status",
+      "label": "Quality Status",
+      "fieldtype": "Select",
+      "options": "Pending\nApproved\nRejected\nOn Hold",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "qa_status",
+      "label": "QA Status",
+      "fieldtype": "Select",
+      "options": "Pending\nIn Review\nApproved\nFailed",
+      "in_list_view": 1,
+      "description": "Quality assurance approval status"
+    },
+    {
+      "fieldname": "coa_status",
+      "label": "COA Status",
+      "fieldtype": "Select",
+      "options": "Pending\nGenerated\nApproved",
+      "in_list_view": 1,
+      "description": "Certificate of Analysis status"
+    },
+    {
+      "fieldname": "released_traceability_code",
+      "label": "Released Trace Code",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "description": "Quality-release traceability code (e.g., A0301 for approved 0301)"
+    },
+    {
+      "fieldname": "column_break_quality",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "rate",
+      "label": "Rate",
+      "fieldtype": "Currency",
+      "options": "Company:company:default_currency"
+    },
+    {
+      "fieldname": "amount",
+      "label": "Amount",
+      "fieldtype": "Currency",
+      "options": "Company:company:default_currency",
+      "read_only": 1
+    },
+    {
+      "fieldname": "section_cost",
+      "label": "Cost Allocation",
+      "fieldtype": "Section Break"
+    },
+    {
+      "fieldname": "allocated_cost",
+      "label": "Allocated Cost",
+      "fieldtype": "Currency",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "cost_per_kg",
+      "label": "Cost/Kg",
+      "fieldtype": "Currency",
+      "read_only": 1,
+      "in_list_view": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    }
+  ]
+}
