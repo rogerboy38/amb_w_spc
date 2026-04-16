@@ -2330,3 +2330,135 @@ def make_sample_request_from_source(source_doctype, source_name):
     except Exception as e:
         frappe.log_error(f"Error creating sample request from {source_doctype}: {str(e)}")
         frappe.throw(_("Failed to create sample request: ") + str(e))
+
+
+# ============================================================
+# STANDALONE HOOK FUNCTIONS (Required by hooks.py doc_events)
+# These functions are called by doc_events regardless of the
+# actual controller class resolution (fixes NestedSet issue)
+# ============================================================
+
+def batch_amb_validate(doc, method=None):
+    """Hook for validate event - ensures Golden Number is generated."""
+    _set_batch_naming_on_doc(doc)
+
+
+def batch_amb_before_save(doc, method=None):
+    """Hook for before_save event - ensures Golden Number is generated."""
+    _set_batch_naming_on_doc(doc)
+
+
+def _set_batch_naming_on_doc(doc):
+    """
+    Core standalone function that works both as a hook and with NestedSet.
+    It prefers the rich class method when possible, otherwise runs robust fallback logic.
+    """
+    try:
+        # If we have a full BatchAMB instance, use its rich method
+        if isinstance(doc, BatchAMB):
+            doc.set_batch_naming()
+            return
+
+        # Otherwise, ensure we have a proper document and call the method
+        if not getattr(doc, 'name', None) or not frappe.db.exists("Batch AMB", doc.name):
+            # We only have a partial doc (e.g. from quick entry)
+            _run_golden_number_logic(doc)
+            return
+
+        # Load full document to use the complete logic with logging
+        full_doc = frappe.get_doc("Batch AMB", doc.name)
+        full_doc.set_batch_naming()
+
+        # Sync changes back to the original doc object (important for hooks)
+        for field in [
+            "custom_golden_number", "custom_generated_batch_name", "custom_product_family",
+            "custom_consecutive", "custom_subfamily", "title"
+        ]:
+            if hasattr(full_doc, field):
+                setattr(doc, field, getattr(full_doc, field))
+
+    except Exception as e:
+        frappe.log_error(f"Golden Number Hook Error: {str(e)}", "Batch AMB Golden Number Hook")
+        # Fallback to basic logic if anything fails
+        _run_golden_number_logic(doc)
+
+
+def _run_golden_number_logic(doc):
+    """Pure logic version (used as last resort fallback)."""
+    import re
+    from datetime import datetime
+
+    level = str(
+        getattr(doc, "custom_batch_level", None)
+        or getattr(doc, "custombatchlevel", None)
+        or "1"
+    )
+    if level != "1":
+        return
+
+    item = (
+        getattr(doc, "item_to_manufacture", None)
+        or getattr(doc, "itemtomanufacture", None)
+        or ""
+    ).strip()
+
+    if not item:
+        return
+
+    product_code = (item or "")[:4].zfill(4)
+    wo_ref = (
+        getattr(doc, "work_order_ref", None)
+        or getattr(doc, "workorderref", None)
+        or ""
+    ).strip()
+
+    consecutive = "001"
+    year = datetime.now().strftime("%y")
+
+    if wo_ref:
+        try:
+            parts = wo_ref.split("-")
+            last_part = parts[-1] if parts else ""
+            consecutive = (last_part[:3] if last_part else "001").zfill(3)
+        except Exception:
+            pass
+
+        try:
+            wo_doc = frappe.get_doc("Work Order", wo_ref)
+            if getattr(wo_doc, "planned_start_date", None):
+                year = str(wo_doc.planned_start_date.year)[-2:]
+        except Exception:
+            pass
+
+    # Plant Code Resolution
+    plant_code = "1"
+    direct_plant_id = getattr(doc, "production_plant_id", None)
+    if direct_plant_id:
+        plant_code = str(int(direct_plant_id))
+
+    if plant_code == "1":
+        plant_name = (
+            getattr(doc, "production_plant_name", None)
+            or getattr(doc, "productionplantname", None)
+            or ""
+        )
+        if plant_name:
+            plant_match = re.match(r"(\d+)", str(plant_name))
+            if plant_match:
+                plant_code = plant_match.group(1)
+            else:
+                plant_lower = str(plant_name).lower()
+                mapping = {"mix": "1", "dry": "2", "juice": "3", "laboratory": "4", "formulated": "5"}
+                for key, code in mapping.items():
+                    if key in plant_lower:
+                        plant_code = code
+                        break
+
+    golden_number = f"{product_code}{consecutive}{year}{plant_code}"
+
+    doc.custom_golden_number = golden_number
+    doc.custom_generated_batch_name = golden_number
+    doc.custom_product_family = product_code[:2] or "00"
+    doc.custom_consecutive = consecutive
+    doc.custom_subfamily = product_code[2:4] or "00"
+    doc.title = golden_number
