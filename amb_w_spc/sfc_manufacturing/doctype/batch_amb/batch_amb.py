@@ -195,7 +195,7 @@ def batch_amb_before_save(doc, method=None):
                             "name": ["!=", doc.name],
                         },
                     )
-                    doc.title = f"{parent_title}-C{siblings + 1}"
+                    doc.title = f"{parent_title}-C{siblings + 1:03d}"
                 except Exception:
                     doc.title = f"{doc.name}-L3"
             else:
@@ -435,7 +435,7 @@ class BatchAMB(NestedSet):
                         "name": ["!=", self.name],
                     },
                 )
-                self.title = f"{parent_title}-C{siblings + 1}"
+                self.title = f"{parent_title}-C{siblings + 1:03d}"
             else:
                 self.title = f"{self.name}-L3"
 

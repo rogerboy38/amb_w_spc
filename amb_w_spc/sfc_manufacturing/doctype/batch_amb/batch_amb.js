@@ -19,7 +19,7 @@ frappe.ui.form.on('Batch AMB', {
         if (!frm.is_new()) {
             frm.add_custom_button(__("New Sample Request"), () => {
                 frappe.call({
-                    method: "amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.make_sample_request",
+                    method: "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.make_sample_request",
                     freeze: true,
                     freeze_message: __("Creating Sample Request..."),
                     callback(r) {
@@ -86,7 +86,7 @@ frappe.ui.form.on('Batch AMB', {
     work_order: function(frm) {
         if (frm.doc.work_order) {
             frappe.call({
-                method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.get_work_order_details',
+                method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.get_work_order_details',
                 args: { work_order: frm.doc.work_order },
                 callback: function(r) {
                     if (r.message) {
@@ -458,7 +458,7 @@ function add_serial_tracking_buttons(frm) {
     if (!frm.doc.custom_serial_tracking_integrated) {
         frm.add_custom_button(__('🔗 Integrate Serial Tracking'), function() {
             frappe.call({
-                method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.integrate_serial_tracking',
+                method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.integrate_serial_tracking',
                 args: {batch_name: frm.doc.name},
                 freeze: true,
                 freeze_message: __('Connecting to Serial Tracking...'),
@@ -570,7 +570,7 @@ function generateSerialNumbers(frm) {
             }
 
             frappe.call({
-                method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.generate_serial_numbers',
+                method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.generate_serial_numbers',
                 args: {
                     batch_name: frm.doc.name,
                     quantity: values.quantity,
@@ -621,7 +621,7 @@ function generateSerialNumbers(frm) {
             }
 
             frappe.call({
-                method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.generate_serial_numbers',
+                method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.generate_serial_numbers',
                 args: {
                     batch_name: frm.doc.name,
                     quantity: values.quantity
@@ -663,7 +663,7 @@ function generateSerialNumbers(frm) {
 function add_debug_button(frm) {
     frm.add_custom_button(__('🐛 Debug Test'), function() {
         frappe.call({
-            method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.fixed_generate_serial_numbers',
+            method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.fixed_generate_serial_numbers',
             args: {
                 batch_name: frm.doc.name,
                 quantity: 1
@@ -711,7 +711,7 @@ function setup_custom_buttons(frm) {
     // Calculate Cost button
     frm.add_custom_button(__('Calculate Cost'), function() {
         frappe.call({
-            method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.calculate_batch_cost',
+            method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.calculate_batch_cost',
             args: { batch_name: frm.doc.name },
             callback: function(r) {
                 if (r.message) {
@@ -729,7 +729,7 @@ function setup_custom_buttons(frm) {
     // Duplicate Batch button
     frm.add_custom_button(__('Duplicate Batch'), function() {
         frappe.call({
-            method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.duplicate_batch',
+            method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.duplicate_batch',
             args: { source_name: frm.doc.name },
             callback: function(r) {
                 if (r.message) {
@@ -749,7 +749,7 @@ function setup_custom_buttons(frm) {
     // Generate MRP Button
     frm.add_custom_button(__('Generate MRP'), function() {
         frappe.call({
-            method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.calculate_material_requirements',
+            method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.calculate_material_requirements',
             args: {batch_name: frm.doc.name},
             callback: function(r) {
                 if (r.message && r.message.success) {
@@ -772,7 +772,7 @@ function setup_custom_buttons(frm) {
     // Create Work Order Button
     frm.add_custom_button(__('Create Work Order'), function() {
         frappe.call({
-            method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.create_work_order_from_batch',
+            method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.create_work_order_from_batch',
             args: { batch_name: frm.doc.name },
             callback: function(r) {
                 if (r.message && r.message.success) {
@@ -796,7 +796,7 @@ function setup_custom_buttons(frm) {
     // Assign Golden Number Button
     frm.add_custom_button(__('Assign Golden Number'), function() {
         frappe.call({
-            method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.assign_golden_number_to_batch',
+            method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.assign_golden_number_to_batch',
             args: { batch_name: frm.doc.name },
             callback: function(r) {
                 if (r.message && r.message.success) {
@@ -820,7 +820,7 @@ function setup_custom_buttons(frm) {
     // Update Planned Qty Button
     frm.add_custom_button(__('Update Planned Qty'), function() {
         frappe.call({
-            method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.update_planned_qty_from_work_order',
+            method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.update_planned_qty_from_work_order',
             args: { batch_name: frm.doc.name },
             callback: function(r) {
                 if (r.message && r.message.success) {
@@ -875,7 +875,7 @@ function setup_custom_buttons(frm) {
     // Sample Request button
     frm.add_custom_button(__('Sample Request'), function() {
         frappe.call({
-            method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.create_sample_request',
+            method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.create_sample_request',
             args: { batch_name: frm.doc.name },
             callback: function(r) {
                 if (r.message && r.message.success) {
@@ -911,7 +911,7 @@ function add_bom_button_to_form(frm) {
     }
 
     frappe.call({
-        method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.check_bom_exists',
+        method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.check_bom_exists',
         args: { batch_name: frm.doc.name },
         callback: function(r) {
             console.log('BOM check response:', r.message);
@@ -1020,7 +1020,7 @@ function should_auto_generate(frm) {
 
 function generate_batch_code(frm) {
     frappe.call({
-        method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.generate_batch_code',
+        method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.generate_batch_code',
         args: {
             parent_batch: frm.doc.parent_batch_amb,
             batch_level: frm.doc.custom_batch_level,
@@ -1261,7 +1261,7 @@ function validate_code39_format(barcode) {
 function load_batch_announcements(frm) {
     console.log('📢 Loading batch announcements...');
     frappe.call({
-        method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.get_running_batch_announcements',
+        method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.get_running_batch_announcements',
         args: {},
         callback: function(r) {
             if (r.message && r.message.success) {
@@ -1506,7 +1506,7 @@ function calculate_costs(frm) {
     if (!frm.doc.calculate_cost) return;
 
     frappe.call({
-        method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.calculate_batch_cost',
+        method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.calculate_batch_cost',
         args: { batch_name: frm.doc.name },
         callback: function(r) {
             if (r.message) {
@@ -1521,7 +1521,7 @@ function fetch_work_order_data(frm) {
     // Work order reference functionality for BatchL2
     if (frm.doc.work_order_ref) {
         frappe.call({
-            method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.get_work_order_data',
+            method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.get_work_order_data',
             args: { work_order: frm.doc.work_order_ref },
             callback: function(r) {
                 if (r.message) {
@@ -1549,7 +1549,7 @@ function open_bom_creation_wizard(frm) {
     console.log('🚀 Opening simplified BOM wizard');
 
     frappe.call({
-        method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.get_packaging_from_sales_order',
+        method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.get_packaging_from_sales_order',
         args: { batch_name: frm.doc.name },
         callback: function(r) {
             var pkg = r.message || {};
@@ -1592,7 +1592,7 @@ function open_bom_creation_wizard(frm) {
 
 function create_bom_with_options(frm, options, dialog) {
     frappe.call({
-        method: 'amb_w_tds.amb_w_tds.doctype.batch_amb.batch_amb.create_bom_with_wizard',
+        method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.create_bom_with_wizard',
         args: {
             batch_name: frm.doc.name,
             options: options
