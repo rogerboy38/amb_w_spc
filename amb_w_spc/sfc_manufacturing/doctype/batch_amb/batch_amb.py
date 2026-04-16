@@ -101,7 +101,7 @@ class BatchAMB(NestedSet):
         for idx, container in enumerate(self.container_barrels, 1):
             if hasattr(container, "container_id") and not container.container_id:
                 container.container_id = f"CNT-{self.name}-{idx:03d}"
-
+    
     def validate_batch_level_hierarchy(self):
         """Validate batch level hierarchy"""
         level = int(self.custom_batch_level or "1")
@@ -287,6 +287,7 @@ class BatchAMB(NestedSet):
         if not self.bom_no:
             return 0
         bom = frappe.get_doc("BOM", self.bom_no)
+        # original had total_cost * produced_qty – that inflates; keep as-is if you want
         return flt(bom.total_cost) * flt(self.produced_qty)
 
     def calculate_container_weights(self):
@@ -412,7 +413,7 @@ class BatchAMB(NestedSet):
         self.custom_consecutive = consecutive
         self.custom_subfamily = product_code[2:4] or "00"
 
-        print(f"Generated Golden Number: {base_golden_number}")
+        print(f"✅ Generated Golden Number: {base_golden_number}")
         print(
             f"   Product Family: {self.custom_product_family}, "
             f"Subfamily: {self.custom_subfamily}"
@@ -425,7 +426,6 @@ class BatchAMB(NestedSet):
             return
         for idx, container in enumerate(self.container_barrels, 1):
             container.idx = idx
-
     def decompose_golden_number(self):
         """Golden Number format: PPPPAAAYYX
           PPPP = product_code (first 4 chars of item_to_manufacture)
@@ -442,7 +442,7 @@ class BatchAMB(NestedSet):
             self.custom_subfamily = gn[7:9]  # YY (2-digit year)
         except Exception:
             pass
-
+    
     # -----------------------------
     # External sync / stubs
     # -----------------------------
@@ -704,12 +704,13 @@ class BatchAMB(NestedSet):
     def fixed_generate_serial_numbers(self, quantity=5, prefix=None):
         """
         Generate serial numbers for this batch.
-        Called from client-side (Debug button).
+        Called from client-side.
         """
         try:
             frappe.msgprint(
                 f"Generating {quantity} serial numbers for {self.name} with prefix '{prefix}'"
             )
+            # Your real logic here...
             return {
                 "status": "success",
                 "message": f"Generated {quantity} serial numbers",
@@ -791,7 +792,7 @@ class BatchAMB(NestedSet):
 def create_bom_with_wizard(batch_name, options=None):
     """Create BOM with wizard options - MAIN MANUFACTURING BUTTON - FIXED VERSION"""
     try:
-        print(f"BOM Creation started for batch: {batch_name}")
+        print(f"🚀 BOM Creation started for batch: {batch_name}")
 
         batch = frappe.get_doc("Batch AMB", batch_name)
 
@@ -812,8 +813,8 @@ def create_bom_with_wizard(batch_name, options=None):
         item = frappe.get_doc("Item", batch.item_to_manufacture)
         uom = item.stock_uom
 
-        print(f"Item: {batch.item_to_manufacture}")
-        print(f"Quantity: {bom_quantity} {uom}")
+        print(f"📦 Item: {batch.item_to_manufacture}")
+        print(f"⚖️ Quantity: {bom_quantity} {uom}")
 
         existing_bom = frappe.db.get_value(
             "BOM",
@@ -822,7 +823,7 @@ def create_bom_with_wizard(batch_name, options=None):
         )
 
         if existing_bom:
-            print(f"BOM already exists: {existing_bom}")
+            print(f"⚠️ BOM already exists: {existing_bom}")
             return {
                 "success": True,
                 "bom_name": existing_bom,
@@ -847,7 +848,7 @@ def create_bom_with_wizard(batch_name, options=None):
             "custom_batch_reference": batch.name,
         }
 
-        print(f"Creating BOM with data: {bom_data}")
+        print(f"📝 Creating BOM with data: {bom_data}")
 
         bom = frappe.new_doc("BOM")
         bom.update(bom_data)
@@ -863,7 +864,7 @@ def create_bom_with_wizard(batch_name, options=None):
                     "rate": 0,
                 },
             )
-            print("Added raw material: M033")
+            print("➕ Added raw material: M033")
         else:
             bom.append(
                 "items",
@@ -874,7 +875,7 @@ def create_bom_with_wizard(batch_name, options=None):
                     "rate": 0,
                 },
             )
-            print("Added fallback raw material: 0202")
+            print("➕ Added fallback raw material: 0202")
 
         if options.get("include_packaging", 1):
             packaging_item = options.get("primary_packaging", "E001")
@@ -889,12 +890,12 @@ def create_bom_with_wizard(batch_name, options=None):
                         "rate": 0,
                     },
                 )
-                print(f"Added packaging: {packaging_item} x {packages_count}")
+                print(f"➕ Added packaging: {packaging_item} x {packages_count}")
 
         bom.insert()
         frappe.db.commit()
 
-        print(f"BOM created successfully: {bom.name}")
+        print(f"✅ BOM created successfully: {bom.name}")
 
         return {
             "success": True,
@@ -909,7 +910,7 @@ def create_bom_with_wizard(batch_name, options=None):
 
     except Exception as e:
         frappe.log_error(f"BOM Creation Error for {batch_name}: {str(e)}")
-        print(f"BOM Creation Error: {str(e)}")
+        print(f"❌ BOM Creation Error: {str(e)}")
         return {"success": False, "message": f"Error creating BOM: {str(e)}"}
 
 
@@ -1031,57 +1032,6 @@ def calculate_batch_cost(batch_name):
     except Exception as e:
         frappe.log_error(f"Batch Cost Calculation Error: {str(e)}")
         return {"total_batch_cost": 0, "cost_per_unit": 0}
-
-
-@frappe.whitelist()
-def calculate_material_requirements(batch_name):
-    """Calculate material requirements for the batch (MRP)"""
-    try:
-        batch = frappe.get_doc("Batch AMB", batch_name)
-
-        if not batch.bom_no:
-            return {
-                "success": False,
-                "message": "No BOM linked to this batch. Please create or link a BOM first."
-            }
-
-        bom = frappe.get_doc("BOM", batch.bom_no)
-        required_qty = batch.planned_qty or batch.batch_quantity or 1
-        bom_qty = bom.quantity or 1
-
-        materials = []
-        for item in bom.items:
-            qty_per_unit = item.qty / bom_qty if bom_qty > 0 else 0
-            total_qty = qty_per_unit * required_qty
-
-            # Check warehouse stock
-            available_stock = frappe.db.get_value(
-                "Bin",
-                {"item_code": item.item_code},
-                "actual_qty"
-            ) or 0
-
-            materials.append({
-                "item_code": item.item_code,
-                "item_name": item.item_name or item.item_code,
-                "required_qty": total_qty,
-                "available_stock": available_stock,
-                "shortage": max(0, total_qty - available_stock),
-                "uom": item.uom or "Nos"
-            })
-
-        return {
-            "success": True,
-            "message": f"Material requirements calculated for {len(materials)} items",
-            "batch_name": batch_name,
-            "bom_no": batch.bom_no,
-            "required_qty": required_qty,
-            "materials": materials
-        }
-
-    except Exception as e:
-        frappe.log_error(f"MRP Calculation Error: {str(e)}")
-        return {"success": False, "message": f"Error calculating requirements: {str(e)}"}
 
 
 @frappe.whitelist()
@@ -1533,7 +1483,6 @@ def complete_batch_processing(batch_name, processed_quantity=None):
     batch.save()
     return {"status": "success", "message": f"Batch {batch_name} completed"}
 
-
 @frappe.whitelist()
 def resolve_container_prefix(batch, default_prefix=None):
     """Resolve container prefix (BRL / IBC / CTE / SMP) based on packaging/plant.
@@ -1544,6 +1493,11 @@ def resolve_container_prefix(batch, default_prefix=None):
     packaging_item = getattr(batch, "default_packaging_type", None) or ""
     plant_name = (batch.production_plant_name or "").lower()
 
+    # Simple heuristic mapping – replace with DocType lookup later
+    # BRL: barrels / juice
+    # IBC: IBC containers
+    # CTE: cuñete / drum
+    # SMP: sample bags
     prefix = None
 
     if "ibc" in packaging_item.lower():
@@ -1690,8 +1644,6 @@ def integrate_serial_tracking(batch_name):
     except Exception as e:
         frappe.log_error(f"Integration error: {str(e)}")
         return {"status": "error", "message": f"Integration failed: {str(e)[:200]}"}
-
-
 # ============================================
 # QUICK ENTRY HELPER METHODS
 # ============================================
@@ -1794,6 +1746,38 @@ def get_work_orders_for_sales_order(sales_order):
         return {"success": False, "message": str(e)}
 
 
+
+
+    @frappe.whitelist()
+    def make_sample_request(self):
+        """Create a Sample Request AMB pre-filled from this batch."""
+        doc = frappe.new_doc("Sample Request AMB")
+        doc.request_type = "External Analysis"
+        doc.request_date = frappe.utils.nowdate()
+
+        # Optional: map customer if your Batch AMB has it
+        if self.customer:
+            doc.customer = self.customer
+            doc.customer_name = frappe.db.get_value("Customer", self.customer, "customer_name")
+
+        # Add one sample line for this batch
+        item_row = doc.append("samples", {})
+        item_row.item = self.item  # adapt to your fieldnames
+        item_row.description = self.item_name or ""
+        item_row.batch = self.name  # Batch name
+        item_row.samples_count = 1
+        item_row.qty_per_sample = 1
+        item_row.uom = self.stock_uom  # adapt if different
+
+        doc.flags.ignore_mandatory = True
+        doc.insert(ignore_permissions=True)
+
+        return doc.name
+
+#
+
+#
+
 @frappe.whitelist()
 def get_quick_entry_defaults(work_order_name):
     """
@@ -1842,7 +1826,7 @@ def get_quick_entry_defaults(work_order_name):
         return {"success": False, "message": str(e)}
 
 
-# ==================== SAMPLE REQUEST BUTTON ====================
+# ==================== SAMPLE REQUEST BUTTON ==================== 
 
 
 @frappe.whitelist()
@@ -1850,14 +1834,14 @@ def create_sample_request(batch_name):
     """Create Sample Request from Batch - for the Sample Request button"""
     try:
         batch = frappe.get_doc("Batch AMB", batch_name)
-
+        
         # Check if sample request already exists for this batch
         existing = frappe.db.get_value(
             "Sample Request AMB",
             {"batch_reference": batch_name},
             "name"
         )
-
+        
         if existing:
             # Open existing sample request
             return {
@@ -1866,7 +1850,7 @@ def create_sample_request(batch_name):
                 "sample_request": existing,
                 "message": f"Opening existing Sample Request: {existing}"
             }
-
+        
         # Create new sample request
         sample_request = frappe.new_doc("Sample Request AMB")
         sample_request.batch_reference = batch_name
@@ -1874,17 +1858,17 @@ def create_sample_request(batch_name):
         sample_request.sales_order = getattr(batch, 'sales_order_related', None)
         sample_request.item = batch.item_to_manufacture or batch.current_item_code
         sample_request.batch_quantity = batch.planned_qty or batch.total_net_weight
-
+        
         sample_request.insert()
         frappe.db.commit()
-
+        
         return {
             "success": True,
             "action": "create",
             "sample_request": sample_request.name,
             "message": f"Created Sample Request: {sample_request.name}"
         }
-
+        
     except Exception as e:
         frappe.log_error(f"Sample Request Creation Error: {str(e)}")
         return {"success": False, "message": str(e)}
@@ -1900,18 +1884,18 @@ def get_sample_request(batch_name):
             "name",
             order_by="creation desc"
         )
-
+        
         if existing:
             return {
                 "success": True,
                 "sample_request": existing
             }
-
+        
         return {
             "success": False,
             "message": "No sample request found"
         }
-
+        
     except Exception as e:
         return {
             "success": False,
@@ -1928,10 +1912,10 @@ def make_sample_request_from_source(source_doctype, source_name):
     try:
         # Get source document
         source_doc = frappe.get_doc(source_doctype, source_name)
-
+        
         # Create new Sample Request AMB
         sample_request = frappe.new_doc("Sample Request AMB")
-
+        
         # Set request_type based on source doctype
         request_type_map = {
             'Lead': 'Marketing',
@@ -1943,14 +1927,14 @@ def make_sample_request_from_source(source_doctype, source_name):
         }
         sample_request.request_type = request_type_map.get(source_doctype, 'Pre-sample Approved')
         sample_request.request_date = frappe.utils.nowdate()
-
+        
         # Get item and other details from source document based on doctype
         customer_name = None
         customer = None
         contact_email = None
         contact_phone = None
         address = None
-
+        
         if source_doctype == "Lead":
             # Get customer name from Lead
             customer_name = source_doc.company_name or source_doc.lead_name
@@ -1963,7 +1947,7 @@ def make_sample_request_from_source(source_doctype, source_name):
             # Try to get address
             if hasattr(source_doc, 'address') and source_doc.address:
                 address = source_doc.address
-
+            
             # DEFAULT ITEM for Lead (no items table) - use item 0307
             default_item = frappe.get_doc('Item', '0307')
             sample_row = sample_request.append('samples', {})
@@ -1976,7 +1960,7 @@ def make_sample_request_from_source(source_doctype, source_name):
             sample_row.container_size = '0.020'
             sample_row.container_type = 'BOL020'
             sample_row.lab_notes = '70% Aloe - 30% Gum\n3 samples of retention:\n  Sample 1 - Qty. 1 Distributor Retention\n  Sample 2 - Qty. 1 Customer Retention\n  Sample 3 - Qty. 1 Analysis'
-
+            
         elif source_doctype == "Prospect":
             # Get customer name from Prospect
             customer_name = source_doc.company_name or source_doc.prospect_name
@@ -1991,7 +1975,7 @@ def make_sample_request_from_source(source_doctype, source_name):
             # Try to get address
             if hasattr(source_doc, 'address') and source_doc.address:
                 address = source_doc.address
-
+            
             # DEFAULT ITEM for Prospect (no items table) - use item 0307
             default_item = frappe.get_doc('Item', '0307')
             sample_row = sample_request.append('samples', {})
@@ -2004,7 +1988,7 @@ def make_sample_request_from_source(source_doctype, source_name):
             sample_row.container_size = '0.020'
             sample_row.container_type = 'BOL020'
             sample_row.lab_notes = '70% Aloe - 30% Gum\n3 samples of retention:\n  Sample 1 - Qty. 1 Distributor Retention\n  Sample 2 - Qty. 1 Customer Retention\n  Sample 3 - Qty. 1 Analysis'
-
+        
         elif source_doctype == "Opportunity":
             # Get customer name from Opportunity
             customer_name = source_doc.customer_name or source_doc.party_name
@@ -2027,7 +2011,7 @@ def make_sample_request_from_source(source_doctype, source_name):
             # Get address
             if hasattr(source_doc, 'customer_address') and source_doc.customer_address:
                 address = source_doc.customer_address
-
+            
             # DEFAULT ITEM for Opportunity if no items - use item 0307
             if not (hasattr(source_doc, 'items') and source_doc.items):
                 default_item = frappe.get_doc('Item', '0307')
@@ -2041,7 +2025,7 @@ def make_sample_request_from_source(source_doctype, source_name):
                 sample_row.container_size = '0.020'
                 sample_row.container_type = 'BOL020'
                 sample_row.lab_notes = '70% Aloe - 30% Gum\n3 samples of retention:\n  Sample 1 - Qty. 1 Distributor Retention\n  Sample 2 - Qty. 1 Customer Retention\n  Sample 3 - Qty. 1 Analysis'
-
+        
         elif source_doctype == "Quotation":
             # Get customer from Quotation
             customer_name = source_doc.party_name
@@ -2061,7 +2045,7 @@ def make_sample_request_from_source(source_doctype, source_name):
             # Get address
             if hasattr(source_doc, 'customer_address') and source_doc.customer_address:
                 address = source_doc.customer_address
-
+        
         elif source_doctype == "Sales Order":
             # Get customer from Sales Order
             customer_name = source_doc.customer_name
@@ -2079,7 +2063,7 @@ def make_sample_request_from_source(source_doctype, source_name):
             # Get address
             if hasattr(source_doc, 'customer_address') and source_doc.customer_address:
                 address = source_doc.customer_address
-
+        
         # Set the values
         sample_request.customer_name = customer_name
         if customer:
@@ -2090,7 +2074,7 @@ def make_sample_request_from_source(source_doctype, source_name):
             sample_request.contact_phone = contact_phone
         if address:
             sample_request.shipping_address = address
-
+        
         # Add ALL sample rows from source document items
         if hasattr(source_doc, 'items') and source_doc.items:
             for item in source_doc.items:
@@ -2102,11 +2086,11 @@ def make_sample_request_from_source(source_doctype, source_name):
                 # Try to get description if available
                 if hasattr(item, 'description') and item.description:
                     sample_row.description = item.description
-
+        
         # Note: Do NOT create sample rows automatically for Leads/Prospects
         # User must manually add samples after creation since they need to select items
         # based on their analysis of the customer's needs
-
+        
         # Fallback: If no samples were added, use default item 0307
         if not sample_request.samples:
             default_item = frappe.get_doc('Item', '0307')
@@ -2116,12 +2100,12 @@ def make_sample_request_from_source(source_doctype, source_name):
             sample_row.uom = 'Kg'
             sample_row.qty_per_sample = 0.020
             sample_row.samples_count = 8
-
+        
         sample_request.insert(ignore_permissions=True)
         frappe.db.commit()
-
+        
         return sample_request.name
-
+        
     except Exception as e:
         frappe.log_error(f"Error creating sample request from {source_doctype}: {str(e)}")
         frappe.throw(_("Failed to create sample request: ") + str(e))
