@@ -30,3 +30,19 @@ fixtures = [
 
 # After install hook
 after_install = "amb_w_spc.setup.after_install"
+
+# ========================================
+#  DOCUMENT EVENTS (Batch AMB Golden Number)
+# ========================================
+
+doc_events = {
+    # ---- Batch AMB: Golden number auto-generation via amb_w_spc controller
+    "Batch AMB": {
+        "validate": [
+            "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_validate",
+        ],
+        "before_save": [
+            "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_before_save",
+        ],
+    },
+}
