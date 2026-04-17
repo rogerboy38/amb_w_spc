@@ -561,7 +561,7 @@ class BatchAMB(NestedSet):
             try:
                 parts = self.work_order_ref.split("-")
                 last_part = parts[-1]
-                wo_consecutive = last_part[-3:] if last_part else "001"
+                wo_consecutive = last_part[:3] if last_part else "001"
                 consecutive = wo_consecutive.zfill(3)
             except Exception:
                 consecutive = "001"
