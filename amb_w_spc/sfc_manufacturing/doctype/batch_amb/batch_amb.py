@@ -478,7 +478,7 @@ class BatchAMB(NestedSet):
         """Calculate totals"""
         if self.container_barrels:
             self.total_container_qty = sum(
-                flt(c.quantity or 0) for c in self.container_barrels
+                flt(c.net_weight or 0) for c in self.container_barrels
             )
             self.total_containers = len(self.container_barrels)
             self.calculate_container_weights()
