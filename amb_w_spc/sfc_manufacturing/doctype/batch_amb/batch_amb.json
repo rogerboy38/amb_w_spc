@@ -4192,6 +4192,15 @@
    "options": "Batch Output Product"
   },
   {
+   "fieldname": "batch_output_products",
+   "fieldtype": "Table",
+   "label": "Batch Output Products",
+   "options": "Batch Output Product",
+   "description": "Detailed batch output products with traceability",
+   "insert_after": "output_products",
+   "hidden": 0
+  },
+  {
    "allow_bulk_edit": 0,
    "allow_in_quick_entry": 0,
    "allow_on_submit": 0,

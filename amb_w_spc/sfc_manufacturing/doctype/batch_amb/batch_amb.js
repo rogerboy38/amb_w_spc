@@ -1045,12 +1045,12 @@ function configure_level_settings(frm) {
         case 1:
             // Level 1 - Root level
             frm.set_df_property('parent_batch_amb', 'hidden', 1);
-            frm.set_df_property('container_level_3_section', 'hidden', 1);
+            frm.set_df_property('container_level_3_section', 'hidden', 0);
             break;
         case 2:
             // Level 2 - Intermediate level
             frm.set_df_property('parent_batch_amb', 'hidden', 0);
-            frm.set_df_property('container_level_3_section', 'hidden', 1);
+            frm.set_df_property('container_level_3_section', 'hidden', 0);
             break;
         case 3:
             // Level 3 - Container level
