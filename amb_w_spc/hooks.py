@@ -41,6 +41,11 @@ app_include_js = [
     "/assets/amb_w_spc/js/sample_request_buttons.js"
 ]
 
+
+override_doctype_class = {
+    "Batch AMB": "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.BatchAMB"
+}
+
 doc_events = {
     # ---- Batch AMB: Golden number auto-generation via amb_w_spc controller
     "Batch AMB": {
