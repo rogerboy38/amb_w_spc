@@ -879,6 +879,21 @@
    "unique": 0
   },
   {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "bold": 0,
+   "hidden": 0,
+   "in_list_view": 0,
+   "in_standard_filter": 1,
+   "permlevel": 0,
+   "print_hide": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "unique": 0
+  },
+  {
    "allow_bulk_edit": 0,
    "allow_in_quick_entry": 0,
    "allow_on_submit": 0,
@@ -4439,6 +4454,510 @@
    "trigger": null,
    "unique": 0,
    "width": null
+  },
+  {
+   "fieldname": "actual_completion",
+   "fieldtype": "Datetime",
+   "label": "Actual Completion",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "actual_start",
+   "fieldtype": "Datetime",
+   "label": "Actual Start",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "batch_id",
+   "fieldtype": "Data",
+   "label": "Batch Id",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "batch_id_general_lot",
+   "fieldtype": "Data",
+   "label": "Batch Id General Lot",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "batch_level",
+   "fieldtype": "Data",
+   "label": "Batch Level",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "batch_quantity",
+   "fieldtype": "Data",
+   "label": "Batch Quantity",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "batch_status",
+   "fieldtype": "Select",
+   "label": "Batch Status",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "bom_no",
+   "fieldtype": "Link",
+   "label": "Bom No",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "options": "BOM"
+  },
+  {
+   "fieldname": "bom_reference",
+   "fieldtype": "Link",
+   "label": "Bom Reference",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "options": "BOM"
+  },
+  {
+   "fieldname": "bom_status",
+   "fieldtype": "Select",
+   "label": "Bom Status",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "brix_level",
+   "fieldtype": "Float",
+   "label": "Brix Level",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "calculate_cost",
+   "fieldtype": "Data",
+   "label": "Calculate Cost",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "calculated_total_weight",
+   "fieldtype": "Float",
+   "label": "Calculated Total Weight",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "concentration_type",
+   "fieldtype": "Data",
+   "label": "Concentration Type",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "cost_calculation_method",
+   "fieldtype": "Data",
+   "label": "Cost Calculation Method",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "cost_per_kg",
+   "fieldtype": "Float",
+   "label": "Cost Per Kg",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "cost_per_unit",
+   "fieldtype": "Data",
+   "label": "Cost Per Unit",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "cost_source",
+   "fieldtype": "Data",
+   "label": "Cost Source",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "custom_certificate_code",
+   "fieldtype": "Text",
+   "label": "Custom Certificate Code",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "custom_folio_produccion",
+   "fieldtype": "Int",
+   "label": "Custom Folio Produccion",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "custom_last_api_sync",
+   "fieldtype": "Datetime",
+   "label": "Custom Last Api Sync",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "custom_produced_qty",
+   "fieldtype": "Float",
+   "label": "Custom Produced Qty",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "custom_product_family",
+   "fieldtype": "Data",
+   "label": "Custom Product Family",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "custom_serial_numbers",
+   "fieldtype": "Long Text",
+   "label": "Custom Serial Numbers",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Data",
+   "label": "Item Name",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "item_on_batch",
+   "fieldtype": "Link",
+   "label": "Item On Batch",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "options": "Item"
+  },
+  {
+   "fieldname": "labor_cost",
+   "fieldtype": "Data",
+   "label": "Labor Cost",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "main_item",
+   "fieldtype": "Link",
+   "label": "Main Item",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "options": "Item"
+  },
+  {
+   "fieldname": "manufacturing_plant",
+   "fieldtype": "Link",
+   "label": "Manufacturing Plant",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "material_cost",
+   "fieldtype": "Data",
+   "label": "Material Cost",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "naming_series_amb",
+   "fieldtype": "Select",
+   "label": "Naming Series Amb",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "overhead_cost",
+   "fieldtype": "Data",
+   "label": "Overhead Cost",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "processed_quantity",
+   "fieldtype": "Float",
+   "label": "Processed Quantity",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "processing_notes",
+   "fieldtype": "Text",
+   "label": "Processing Notes",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "processing_status",
+   "fieldtype": "Select",
+   "label": "Processing Status",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "produced_qty",
+   "fieldtype": "Float",
+   "label": "Produced Qty",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "production_end_date",
+   "fieldtype": "Date",
+   "label": "Production End Date",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "production_plant",
+   "fieldtype": "Link",
+   "label": "Production Plant",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "production_plant_id",
+   "fieldtype": "Data",
+   "label": "Production Plant Id",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "production_start_date",
+   "fieldtype": "Date",
+   "label": "Production Start Date",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "production_year",
+   "fieldtype": "Int",
+   "label": "Production Year",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "scheduled_start_date",
+   "fieldtype": "Date",
+   "label": "Scheduled Start Date",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "scheduled_start_time",
+   "fieldtype": "Time",
+   "label": "Scheduled Start Time",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "standard_bom_reference",
+   "fieldtype": "Link",
+   "label": "Standard Bom Reference",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "options": "BOM"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "title_batch_id",
+   "fieldtype": "Data",
+   "label": "Title Batch Id",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "title_field",
+   "fieldtype": "Data",
+   "label": "Title Field",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "total_batch_cost",
+   "fieldtype": "Data",
+   "label": "Total Batch Cost",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "total_container_qty",
+   "fieldtype": "Float",
+   "label": "Total Container Qty",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "total_containers",
+   "fieldtype": "Int",
+   "label": "Total Containers",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "total_production_cost",
+   "fieldtype": "Float",
+   "label": "Total Production Cost",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "Uom",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "options": "UOM"
+  },
+  {
+   "fieldname": "use_containers",
+   "fieldtype": "Check",
+   "label": "Use Containers",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
+  },
+  {
+   "fieldname": "work_order",
+   "fieldtype": "Link",
+   "label": "Work Order",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "options": "Work Order"
+  },
+  {
+   "fieldname": "yield_percentage",
+   "fieldtype": "Float",
+   "label": "Yield Percentage",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0
   }
  ],
  "force_re_route_to_default_view": 0,
