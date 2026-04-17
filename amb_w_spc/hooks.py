@@ -32,8 +32,12 @@ fixtures = [
 after_install = "amb_w_spc.setup.after_install"
 
 # ========================================
-#  DOCUMENT EVENTS (Batch AMB Golden Number)
+#  FRONTEND JS INJECTIONS
 # ========================================
+
+app_include_js = [
+    "/assets/amb_w_spc/js/batch_widget.js"
+]
 
 doc_events = {
     # ---- Batch AMB: Golden number auto-generation via amb_w_spc controller
