@@ -307,7 +307,7 @@ class BatchAMB(NestedSet):
         if self.produced_qty and flt(self.produced_qty) <= 0:
             frappe.throw(_("Produced quantity must be greater than 0"))
 
-        if self.planned_qty is not None and flt(self.planned_qty) <= 0:
+        if self.planned_qty is not None and flt(self.planned_qty) < 0:
             frappe.throw(_("Planned quantity must be greater than 0"))
 
     def validate_work_order(self):

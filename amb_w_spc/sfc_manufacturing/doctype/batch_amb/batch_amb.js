@@ -1045,22 +1045,22 @@ function configure_level_settings(frm) {
         case 1:
             // Level 1 - Root level
             frm.set_df_property('parent_batch_amb', 'hidden', 1);
-            frm.set_df_property('container_barrels_section', 'hidden', 1);
+            frm.set_df_property('container_level_3_section', 'hidden', 1);
             break;
         case 2:
             // Level 2 - Intermediate level
             frm.set_df_property('parent_batch_amb', 'hidden', 0);
-            frm.set_df_property('container_barrels_section', 'hidden', 1);
+            frm.set_df_property('container_level_3_section', 'hidden', 1);
             break;
         case 3:
             // Level 3 - Container level
             frm.set_df_property('parent_batch_amb', 'hidden', 0);
-            frm.set_df_property('container_barrels_section', 'hidden', 0);
+            frm.set_df_property('container_level_3_section', 'hidden', 0);
             break;
         case 4:
             // Level 4 - Final product level
             frm.set_df_property('parent_batch_amb', 'hidden', 0);
-            frm.set_df_property('container_barrels_section', 'hidden', 0);
+            frm.set_df_property('container_level_3_section', 'hidden', 0);
             break;
     }
 }
@@ -1843,7 +1843,43 @@ function generate_bulk_barrel_serials(frm) {
     dialog.show();
 }
 
-// Generate serials (placeholder)
+// Generate barrel serials - calls backend API
 function generate_serials_l2(frm, count, prefix) {
-    frappe.msgprint(__('Generate {0} serials with prefix {1} - Feature coming soon', [count, prefix]));
+    if (count <= 0) {
+        frappe.msgprint(__('Number of barrels must be greater than 0'));
+        return;
+    }
+    frappe.call({
+        method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.generate_serial_numbers',
+        args: {
+            batch_name: frm.doc.name,
+            quantity: count,
+            prefix: prefix
+        },
+        freeze: true,
+        freeze_message: __('Generating Barrel Serials...'),
+        callback: function(r) {
+            if (r.message && r.message.status === 'success') {
+                frappe.show_alert({
+                    message: __('Successfully generated ') + r.message.count + __(' barrel serial numbers.'),
+                    indicator: 'green'
+                }, 5);
+                frm.reload_doc();
+            } else {
+                frappe.msgprint({
+                    title: __('Error'),
+                    message: r.message ? r.message.message : __('Failed to generate barrel serials'),
+                    indicator: 'red'
+                });
+            }
+        },
+        error: function(r) {
+            frappe.msgprint({
+                title: __('Error'),
+                message: __('Failed to generate barrel serial numbers: ') + (r.message || r),
+                indicator: 'red'
+            });
+        }
+    });
+} serials with prefix {1} - Feature coming soon', [count, prefix]));
 }
