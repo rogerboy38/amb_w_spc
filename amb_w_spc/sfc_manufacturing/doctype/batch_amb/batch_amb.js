@@ -1777,14 +1777,11 @@ function add_global_buttons(frm) {
     }
 }
 
-// Show batch hierarchy tree view
+// Show batch hierarchy (placeholder)
 function show_batch_hierarchy(frm) {
-    // Find the root parent of the current batch to focus the tree
     if (frm.doc.parent_batch_amb) {
-        // Navigate to tree view focused on the parent
         frappe.set_route('Tree', 'Batch AMB', {'batch_amb': frm.doc.parent_batch_amb});
     } else {
-        // This batch is a root node, open tree view focused on it
         frappe.set_route('Tree', 'Batch AMB', {'batch_amb': frm.doc.name});
     }
 }
@@ -1881,5 +1878,4 @@ function generate_serials_l2(frm, count, prefix) {
             });
         }
     });
-} serials with prefix {1} - Feature coming soon', [count, prefix]));
 }
