@@ -2629,6 +2629,12 @@
    "idx": 51
   },
   {
+   "fieldname": "batch_output_products_end_section",
+   "fieldtype": "Section Break",
+   "insert_after": "batch_output_products",
+   "hidden": 0
+  },
+  {
    "allow_bulk_edit": 0,
    "allow_in_quick_entry": 0,
    "allow_on_submit": 0,
@@ -2691,7 +2697,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 53
+   "idx": 52
   },
   {
    "allow_bulk_edit": 0,
@@ -2756,7 +2762,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 54
+   "idx": 53
   },
   {
    "allow_bulk_edit": 0,
@@ -2821,7 +2827,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 55
+   "idx": 54
   },
   {
    "allow_bulk_edit": 0,
@@ -2886,7 +2892,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 56
+   "idx": 55
   },
   {
    "allow_bulk_edit": 0,
@@ -2951,7 +2957,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 57
+   "idx": 56
   },
   {
    "allow_bulk_edit": 0,
@@ -3016,7 +3022,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 58
+   "idx": 57
   },
   {
    "allow_bulk_edit": 0,
@@ -3081,7 +3087,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 59
+   "idx": 58
   },
   {
    "allow_bulk_edit": 0,
@@ -3146,7 +3152,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 60
+   "idx": 59
   },
   {
    "allow_bulk_edit": 0,
@@ -3211,7 +3217,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 61
+   "idx": 60
   },
   {
    "allow_bulk_edit": 0,
@@ -3276,7 +3282,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 62
+   "idx": 61
   },
   {
    "allow_bulk_edit": 0,
@@ -3341,7 +3347,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 63
+   "idx": 62
   },
   {
    "allow_bulk_edit": 0,
@@ -3406,7 +3412,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 64
+   "idx": 63
   },
   {
    "allow_bulk_edit": 0,
@@ -3471,7 +3477,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 65
+   "idx": 64
   },
   {
    "allow_bulk_edit": 0,
@@ -3536,7 +3542,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 66
+   "idx": 65
   },
   {
    "allow_bulk_edit": 0,
@@ -3601,7 +3607,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 67
+   "idx": 66
   },
   {
    "allow_bulk_edit": 0,
@@ -3666,24 +3672,20 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 68
+   "idx": 67
   },
   {
    "fieldname": "container_settings_section",
    "fieldtype": "Section Break",
    "label": "Container Settings",
    "collapsible": 0,
-   "idx": 69
+   "idx": 68
   },
   {
-   "fieldname": "use_containers",
-   "fieldtype": "Check",
-   "label": "Use Containers",
-   "hidden": 0,
-   "permlevel": 0,
-   "read_only": 0,
-   "reqd": 0,
-   "idx": 70
+   "fieldname": "barrel_settings_section",
+   "fieldtype": "Section Break",
+   "label": "",
+   "insert_after": "batch_output_products_end_section"
   },
   {
    "allow_bulk_edit": 0,
@@ -3748,12 +3750,25 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 52
+   "idx": 69,
+   "insert_after": "barrel_settings_section"
+  },
+  {
+   "fieldname": "use_containers",
+   "fieldtype": "Check",
+   "label": "Use Containers",
+   "hidden": 0,
+   "permlevel": 0,
+   "read_only": 0,
+   "reqd": 0,
+   "idx": 70,
+   "insert_after": "barrel_count"
   },
   {
    "fieldname": "container_settings_col_break",
    "fieldtype": "Column Break",
-   "idx": 71
+   "idx": 71,
+   "insert_after": "use_containers"
   },
   {
    "fieldname": "total_container_qty",
