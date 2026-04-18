@@ -1842,8 +1842,7 @@ function generate_bulk_barrel_serials(frm) {
                                 'FG Packaging Materials',
                                 'SFG Packaging Materials',
                                 'Sample Packaging Materials',
-                                'Consumables',
-                            'Raw Materials'
+                                'Consumables'
                             ]],
                             disabled: 0
                         }
@@ -1933,7 +1932,7 @@ function generate_bulk_barrel_serials(frm) {
                 tara_weight
             });
 
-        frm.save().then(() => { generate_serials_l2(frm, barrel_count, prefix, packaging_type, tara_weight); });
+            generate_serials_l2(frm, barrel_count, prefix, packaging_type, tara_weight);
             dialog.hide();
         }
     });

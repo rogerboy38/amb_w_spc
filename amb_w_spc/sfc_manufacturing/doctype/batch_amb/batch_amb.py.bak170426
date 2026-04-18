@@ -1780,15 +1780,14 @@ def generate_serial_numbers(batch_name, quantity=1, prefix=None, packaging_type=
 
             new_serials.append(serial)
 
-        # BUG-112R: Use only canonical Container Barrels fields from JSON
             row_data = {
                 "barrel_serial_number": serial,
                 "status": "Empty",
                 "packaging_type": packaging_type or batch.default_packaging_type or "",
-                "tara_weight": flt(tara_weight) if tara_weight else 0,
-                "gross_weight": 0,
-                "net_weight": 0,
-                "weight_validated": 0,
+            "tara_weight": flt(tara_weight) if tara_weight else 0,
+            "gross_weight": 0,
+            "net_weight": 0,
+            "weight_validated": 0,
                 "batch_amb": batch_name,
                 "item_code": batch.item_to_manufacture
                 or getattr(batch, "current_item_code", "")
@@ -1798,6 +1797,7 @@ def generate_serial_numbers(batch_name, quantity=1, prefix=None, packaging_type=
                 "parentfield": "container_barrels",
                 "parenttype": "Batch AMB",
             }
+
             batch.append("container_barrels", row_data)
 
         # Persist a newline list of serials (for non-Level 4 batches)
