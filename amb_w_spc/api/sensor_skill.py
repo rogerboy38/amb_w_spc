@@ -2,17 +2,128 @@
 """
 PH13.2.0 Sensor Skill API
 =========================
-API endpoint for receiving weight events from raven_ai_agent (V12.7.0).
 
-This module provides:
-- receive_weight_event(): Direct Python function for weight event processing
-- Whitelisted REST endpoint for HTTP POST requests
+Authoritative server-side weight ingestion for RPi / scale devices.
+
+Design rules:
+- Device is authoritative only for measured gross_weight, device_id, operator_id, timestamp, mode
+- ERPNext is authoritative for locating the barrel row, resolving tara_weight, calculating net_weight,
+  updating child rows, and recalculating Batch AMB totals
+- batch_name is optional as a narrowing hint, not the primary lookup key
 """
+
+import json
 import frappe
 from frappe import _
-from frappe.utils import now_datetime, now, get_datetime
-import json
-from datetime import datetime
+from frappe.utils import now, flt
+
+
+def _normalize_timestamp(timestamp: str = None) -> str:
+    if not timestamp:
+        return now()
+    try:
+        return timestamp.replace("Z", "").replace("T", " ").split(".")[0]
+    except Exception:
+        return now()
+
+
+def _resolve_event_type(mode: str = None) -> str:
+    event_type_map = {
+        "production": "Weight Capture",
+        "audit": "Weight Capture",
+        "keyboard": "Weight Capture",
+        "sensor_skill": "Weight Capture",
+        "scale": "Weight Capture",
+        "tare": "Tare Reset",
+        "calibration": "Calibration",
+        "zero": "Zero Reset",
+    }
+    return event_type_map.get((mode or "").strip().lower(), "Weight Capture")
+
+
+def _find_container_row(barrel_serial: str, batch_name: str = None) -> dict:
+    rows = frappe.get_all(
+        "Container Barrels",
+        filters={"barrel_serial_number": barrel_serial},
+        fields=[
+            "name",
+            "parent",
+            "parenttype",
+            "parentfield",
+            "barrel_serial_number",
+            "packaging_type",
+            "tara_weight",
+            "gross_weight",
+            "net_weight",
+            "weight_validated",
+            "scan_timestamp",
+        ],
+        limit=20,
+    )
+
+    if batch_name:
+        narrowed = [r for r in rows if r.get("parent") == batch_name]
+        if narrowed:
+            rows = narrowed
+
+    if not rows:
+        return None
+
+    if len(rows) > 1:
+        frappe.throw(
+            _("Barrel serial {0} matched multiple container rows; please disambiguate with batch_name").format(barrel_serial)
+        )
+
+    return rows[0]
+
+
+def _resolve_tara_weight(row: dict, request_tara) -> float:
+    row_tara = flt(row.get("tara_weight"))
+    if row_tara > 0:
+        return row_tara
+
+    packaging_type = row.get("packaging_type")
+    if packaging_type:
+        item_tara = flt(frappe.db.get_value("Item", packaging_type, "weightperunit"))
+        if item_tara > 0:
+            return item_tara
+
+    req_tara = flt(request_tara)
+    if req_tara > 0:
+        return req_tara
+
+    return 0.0
+
+
+def _recalculate_container_totals(batch_name: str):
+    if not batch_name or not frappe.db.exists("Batch AMB", batch_name):
+        return
+
+    batch_doc = frappe.get_doc("Batch AMB", batch_name)
+
+    total_gross = 0.0
+    total_tara = 0.0
+    total_net = 0.0
+    barrel_count = 0
+
+    rows = getattr(batch_doc, "containerbarrels", None) or getattr(batch_doc, "container_barrels", None) or []
+
+    for row in rows:
+        if getattr(row, "gross_weight", None) is not None:
+            total_gross += flt(row.gross_weight)
+        if getattr(row, "tara_weight", None) is not None:
+            total_tara += flt(row.tara_weight)
+        if getattr(row, "net_weight", None) is not None:
+            total_net += flt(row.net_weight)
+        if (getattr(row, "barrel_serial_number", None) or "").strip():
+            barrel_count += 1
+
+    frappe.db.set_value("Batch AMB", batch_name, {
+        "total_gross_weight": total_gross,
+        "total_tara_weight": total_tara,
+        "total_net_weight": total_net,
+        "barrel_count": barrel_count,
+    }, update_modified=True)
 
 
 @frappe.whitelist()
@@ -27,183 +138,172 @@ def receive_weight_event(
     unit: str = "kg",
     tolerance_profile: str = None,
     timestamp: str = None,
-    operator_id: str = None
+    operator_id: str = None,
+    source: str = None,
 ) -> dict:
     """
-    Receive and process weight event from scale device.
-    FIX: BUG 97 - Now updates Batch AMB container_barrels child table.
+    Receive and process weight event from a scale device.
+
+    Contract:
+    - barrel_serial: required
+    - gross_weight: required
+    - device_id: required
+    - batch_name: optional hint
+    - tara_weight: optional hint only; authoritative tara is resolved server-side
+    - net_weight from client is ignored; server always recalculates
     """
     try:
-        # STEP 1: Validate required fields
-        validation_errors = []
+        errors = []
         if not device_id:
-            validation_errors.append("device_id is required")
+            errors.append("device_id is required")
         if not barrel_serial:
-            validation_errors.append("barrel_serial is required")
+            errors.append("barrel_serial is required")
         if gross_weight is None:
-            validation_errors.append("gross_weight is required")
-        if not batch_name:
-            validation_errors.append("batch_name is required")
+            errors.append("gross_weight is required")
 
-        if validation_errors:
+        if errors:
             return {
-                "status": "error",
-                "code": "missing_fields",
-                "message": "; ".join(validation_errors),
-                "context": {"missing_fields": validation_errors}
-            }
-
-        # STEP 2: Parse and validate weights
-        gross_weight = float(gross_weight)
-        tara_weight = float(tara_weight) if tara_weight else 0.0
-        calculated_net = gross_weight - tara_weight
-        
-        if net_weight is None:
-            net_weight = calculated_net
-        else:
-            net_weight = float(net_weight)
-
-        # Validate net_weight consistency (10g tolerance)
-        if abs(net_weight - calculated_net) > 0.01:
-            return {
-                "status": "error",
-                "code": "validation_failed",
-                "message": f"net_weight mismatch: expected {calculated_net}, got {net_weight}",
-                "context": {
-                    "gross_weight": gross_weight,
-                    "tara_weight": tara_weight,
-                    "calculated_net": calculated_net,
-                    "provided_net": net_weight
+                "message": {
+                    "status": "error",
+                    "code": "missing_fields",
+                    "message": "; ".join(errors),
+                    "context": {"missing_fields": errors},
                 }
             }
 
-        # STEP 3: Parse timestamp
-        if timestamp:
-            try:
-                ts = timestamp.replace('Z', '').replace('T', ' ').split('.')[0]
-                event_time = ts
-            except Exception:
-                event_time = now()
-        else:
-            event_time = now()
+        barrel_serial = (barrel_serial or "").strip().upper()
+        gross_weight = flt(gross_weight)
+        event_time = _normalize_timestamp(timestamp)
+        event_type = _resolve_event_type(mode)
 
-        # STEP 4: Check if Batch AMB exists
-        if batch_name and not frappe.db.exists("Batch AMB", batch_name):
+        if gross_weight <= 0:
             return {
-                "status": "error",
-                "code": "batch_not_found",
-                "message": f"Batch AMB '{batch_name}' not found",
-                "context": {"batch_name": batch_name}
+                "message": {
+                    "status": "error",
+                    "code": "invalid_weight",
+                    "message": "gross_weight must be greater than zero",
+                    "context": {"gross_weight": gross_weight},
+                }
             }
 
-        # STEP 5: Update Container Barrels child row (BUG 97 FIX)
-        child_row_name = None
-        if batch_name:
-            batch_doc = frappe.get_doc("Batch AMB", batch_name)
-            if hasattr(batch_doc, 'container_barrels'):
-                for row in batch_doc.container_barrels:
-                    if (row.barrel_serial_number or "").strip() == barrel_serial:
-                        child_row_name = row.name
-                        break
-            
-            if not child_row_name:
-                return {
+        row = _find_container_row(barrel_serial, batch_name=batch_name)
+        if not row:
+            return {
+                "message": {
                     "status": "error",
                     "code": "serial_not_found",
-                    "message": f"Barrel serial '{barrel_serial}' not found in Batch AMB",
+                    "message": f"Barrel serial '{barrel_serial}' not found in container rows",
                     "context": {
                         "batch_name": batch_name,
-                        "barrel_serial": barrel_serial
-                    }
+                        "barrel_serial": barrel_serial,
+                    },
                 }
-            
-            # Use SQL update to bypass validation (packaging_type requirement)
-            frappe.db.sql("""
-                UPDATE `tabContainer Barrels`
-                SET gross_weight = %s,
-                    tara_weight = %s,
-                    net_weight = %s,
-                    weight_validated = 1,
-                    scan_timestamp = %s,
-                    modified = NOW()
-                WHERE name = %s
-            """, (gross_weight, tara_weight, net_weight, event_time, child_row_name))
-            frappe.db.commit()
+            }
 
-        # STEP 6: Map mode to valid event_type
-        EVENT_TYPE_MAP = {
-            "production": "Weight Capture",
-            "audit": "Weight Capture",
-            "keyboard": "Weight Capture",
-            "sensor_skill": "Weight Capture",
-            "tare": "Tare Reset",
-            "calibration": "Calibration",
-            "zero": "Zero Reset",
-        }
-        event_type = EVENT_TYPE_MAP.get(mode, "Weight Capture") if mode else "Weight Capture"
+        resolved_batch_name = row.get("parent")
+        resolved_tara = _resolve_tara_weight(row, tara_weight)
 
-        # STEP 7: Create Weight Event document
+        if resolved_tara <= 0:
+            return {
+                "message": {
+                    "status": "error",
+                    "code": "tara_not_resolved",
+                    "message": f"No valid tara weight resolved for barrel '{barrel_serial}'",
+                    "context": {
+                        "batch_name": resolved_batch_name,
+                        "barrel_serial": barrel_serial,
+                        "packaging_type": row.get("packaging_type"),
+                        "request_tara": tara_weight,
+                    },
+                }
+            }
+
+        resolved_net = flt(gross_weight) - flt(resolved_tara)
+        if resolved_net <= 0:
+            return {
+                "message": {
+                    "status": "error",
+                    "code": "invalid_net_weight",
+                    "message": f"Net weight must be positive for barrel '{barrel_serial}'",
+                    "context": {
+                        "gross_weight": gross_weight,
+                        "tara_weight": resolved_tara,
+                        "net_weight": resolved_net,
+                    },
+                }
+            }
+
+        frappe.db.sql("""
+            UPDATE `tabContainer Barrels`
+            SET gross_weight = %s,
+                tara_weight = %s,
+                net_weight = %s,
+                weight_validated = 1,
+                scan_timestamp = %s,
+                modified = NOW()
+            WHERE name = %s
+        """, (gross_weight, resolved_tara, resolved_net, event_time, row["name"]))
+
         weight_event_id = None
         if frappe.db.exists("DocType", "Weight Event"):
-            doc = frappe.get_doc({
+            evt = frappe.get_doc({
                 "doctype": "Weight Event",
                 "device_id": device_id,
                 "event_type": event_type,
-                "batch_name": batch_name,
+                "batch_name": resolved_batch_name,
                 "barrel_serial": barrel_serial,
                 "gross_weight": gross_weight,
-                "tara_weight": tara_weight,
-                "net_weight": net_weight,
-                "unit_of_measure": unit,
+                "tara_weight": resolved_tara,
+                "net_weight": resolved_net,
+                "unit_of_measure": unit or "kg",
                 "tolerance_profile": tolerance_profile,
                 "event_timestamp": event_time,
                 "operator_id": operator_id,
-                "status": "Completed"
+                "status": "Completed",
             })
-            doc.insert(ignore_permissions=True)
-            weight_event_id = doc.name
-            frappe.db.commit()
+            evt.insert(ignore_permissions=True)
+            weight_event_id = evt.name
 
-        # STEP 8: Return structured success response
+        _recalculate_container_totals(resolved_batch_name)
+        frappe.db.commit()
+
         return {
-            "status": "ok",
-            "code": "updated",
-            "message": "Weight recorded and Batch AMB updated",
-            "context": {
+            "message": {
+                "status": "success",
+                "code": "updated",
+                "message": "Weight recorded and Batch AMB updated",
                 "weight_event_id": weight_event_id,
-                "batch_name": batch_name,
+                "batch_name": resolved_batch_name,
+                "container_name": resolved_batch_name,
+                "row_name": row["name"],
                 "barrel_serial": barrel_serial,
                 "gross_weight": gross_weight,
-                "tara_weight": tara_weight,
-                "net_weight": net_weight,
-                "unit": unit,
+                "tara_weight": resolved_tara,
+                "net_weight": resolved_net,
+                "unit": unit or "kg",
                 "timestamp": event_time,
-                "operator_id": operator_id
+                "operator_id": operator_id,
+                "device_id": device_id,
+                "mode": mode,
+                "source": source,
+                "weight_validated": 1,
             }
         }
 
     except Exception as e:
-        frappe.logger().error(f"Error processing weight event: {e}")
+        frappe.log_error(frappe.get_traceback(), "receive_weight_event failed")
         return {
-            "status": "error",
-            "code": "exception",
-            "message": str(e),
-            "context": {}
+            "message": {
+                "status": "error",
+                "code": "exception",
+                "message": str(e),
+                "context": {},
+            }
         }
-
 
 
 @frappe.whitelist()
 def get_sensor_skill_config(skill_id: str = "scale_plant") -> dict:
-    """
-    Get Sensor Skill configuration for a given skill ID.
-
-    Args:
-        skill_id: The Sensor Skill identifier (e.g., 'scale_plant', 'scale_lab')
-
-    Returns:
-        dict with skill configuration or error
-    """
     try:
         if not frappe.db.exists("DocType", "Sensor Skill"):
             return {"status": "error", "message": "Sensor Skill DocType not found"}
