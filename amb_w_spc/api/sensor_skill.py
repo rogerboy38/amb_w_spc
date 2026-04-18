@@ -163,12 +163,10 @@ def receive_weight_event(
 
         if errors:
             return {
-                "message": {
-                    "status": "error",
-                    "code": "missing_fields",
-                    "message": "; ".join(errors),
-                    "context": {"missing_fields": errors},
-                }
+                "status": "error",
+                "code": "missing_fields",
+                "message": "; ".join(errors),
+                "context": {"missing_fields": errors},
             }
 
         barrel_serial = (barrel_serial or "").strip().upper()
@@ -178,26 +176,22 @@ def receive_weight_event(
 
         if gross_weight <= 0:
             return {
-                "message": {
-                    "status": "error",
-                    "code": "invalid_weight",
-                    "message": "gross_weight must be greater than zero",
-                    "context": {"gross_weight": gross_weight},
-                }
+                "status": "error",
+                "code": "invalid_weight",
+                "message": "gross_weight must be greater than zero",
+                "context": {"gross_weight": gross_weight},
             }
 
         row = _find_container_row(barrel_serial, batch_name=batch_name)
         if not row:
             return {
-                "message": {
-                    "status": "error",
-                    "code": "serial_not_found",
-                    "message": f"Barrel serial '{barrel_serial}' not found in container rows",
-                    "context": {
-                        "batch_name": batch_name,
-                        "barrel_serial": barrel_serial,
-                    },
-                }
+                "status": "error",
+                "code": "serial_not_found",
+                "message": f"Barrel serial '{barrel_serial}' not found in container rows",
+                "context": {
+                    "batch_name": batch_name,
+                    "barrel_serial": barrel_serial,
+                },
             }
 
         resolved_batch_name = row.get("parent")
@@ -205,32 +199,28 @@ def receive_weight_event(
 
         if resolved_tara <= 0:
             return {
-                "message": {
-                    "status": "error",
-                    "code": "tara_not_resolved",
-                    "message": f"No valid tara weight resolved for barrel '{barrel_serial}'",
-                    "context": {
-                        "batch_name": resolved_batch_name,
-                        "barrel_serial": barrel_serial,
-                        "packaging_type": row.get("packaging_type"),
-                        "request_tara": tara_weight,
-                    },
-                }
+                "status": "error",
+                "code": "tara_not_resolved",
+                "message": f"No valid tara weight resolved for barrel '{barrel_serial}'",
+                "context": {
+                    "batch_name": resolved_batch_name,
+                    "barrel_serial": barrel_serial,
+                    "packaging_type": row.get("packaging_type"),
+                    "request_tara": tara_weight,
+                },
             }
 
         resolved_net = flt(gross_weight) - flt(resolved_tara)
         if resolved_net <= 0:
             return {
-                "message": {
-                    "status": "error",
-                    "code": "invalid_net_weight",
-                    "message": f"Net weight must be positive for barrel '{barrel_serial}'",
-                    "context": {
-                        "gross_weight": gross_weight,
-                        "tara_weight": resolved_tara,
-                        "net_weight": resolved_net,
-                    },
-                }
+                "status": "error",
+                "code": "invalid_net_weight",
+                "message": f"Net weight must be positive for barrel '{barrel_serial}'",
+                "context": {
+                    "gross_weight": gross_weight,
+                    "tara_weight": resolved_tara,
+                    "net_weight": resolved_net,
+                },
             }
 
         frappe.db.sql("""
@@ -268,7 +258,6 @@ def receive_weight_event(
         frappe.db.commit()
 
         return {
-            "message": {
                 "status": "success",
                 "code": "updated",
                 "message": "Weight recorded and Batch AMB updated",
@@ -287,18 +276,15 @@ def receive_weight_event(
                 "mode": mode,
                 "source": source,
                 "weight_validated": 1,
-            }
         }
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "receive_weight_event failed")
         return {
-            "message": {
                 "status": "error",
                 "code": "exception",
                 "message": str(e),
                 "context": {},
-            }
         }
 
 
