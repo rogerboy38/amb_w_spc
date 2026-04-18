@@ -1764,9 +1764,9 @@ def generate_serial_numbers(batch_name, quantity=1, prefix=None, packaging_type=
 
         existing_count = len(existing_serials)
         new_serials = []
-    # BUG-112V: Auto-fetch tara_weight from packaging_type Item if not provided
-    resolved_tara = flt(tara_weight) if tara_weight else 0
-    if not resolved_tara and packaging_type:
+        # BUG-112V: Auto-fetch tara_weight from packaging_type Item if not provided
+        resolved_tara = flt(tara_weight) if tara_weight else 0
+        if not resolved_tara and packaging_type:
         resolved_tara = flt(frappe.db.get_value("Item", packaging_type, "weight_per_unit"))
 
         for i in range(quantity):
