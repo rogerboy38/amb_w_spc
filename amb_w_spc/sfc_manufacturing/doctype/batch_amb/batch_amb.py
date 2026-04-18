@@ -2466,3 +2466,9 @@ def _run_golden_number_logic(doc):
     doc.custom_consecutive = consecutive
     doc.custom_subfamily = product_code[2:4] or "00"
     doc.title = golden_number
+
+
+@frappe.whitelist()
+def fixed_generate_serial_numbers(batch_name, quantity=5, prefix=None, packaging_type=None, tara_weight=None):
+    """BUG-112S: Whitelisted wrapper for generate_serial_numbers (called by Debug Test button)"""
+    return generate_serial_numbers(batch_name, quantity=int(quantity), prefix=prefix, packaging_type=packaging_type, tara_weight=tara_weight)
