@@ -2164,7 +2164,7 @@ def make_sample_request_from_source(source_doctype, source_name):
         contact_phone = None
         address = None
         
-        elif source_doctype == "Lead":
+        if source_doctype == "Lead":
             # Customer name from Lead flat fields
             customer_name = source_doc.company_name or source_doc.lead_name
 
@@ -2183,8 +2183,8 @@ def make_sample_request_from_source(source_doctype, source_name):
             if getattr(source_doc, 'country', None):
                 sample_request.country = source_doc.country
             if getattr(source_doc, 'pincode', None):
-                if hasattr(sample_request, 'pincode'):
-                    sample_request.pincode = source_doc.pincode
+                if hasattr(sample_request, 'postal_code'):
+                    sample_request.postal_code = source_doc.pincode
 
             # Tier 2: linked Contact via Dynamic Link
             link_contacts = frappe.get_all(
@@ -2214,12 +2214,20 @@ def make_sample_request_from_source(source_doctype, source_name):
                 },
                 pluck="parent"
             )
+            ###
             if link_addresses:
                 try:
                     a = frappe.get_doc("Address", link_addresses[0])
-                    parts = [p for p in (a.address_line1, a.address_line2) if p]
-                    if parts:
-                        address = ", ".join(parts)
+                    # BUG-114D: 'address' is a Link to Address DocType.
+                    # Must store the Address docname, not a free-text string.
+                    address = a.name
+                    address_display = ", ".join(
+                        [p for p in (a.address_line1, a.address_line2) if p]
+                    )
+                    # If SR has a free-text display field, populate it too
+                    if address_display and hasattr(sample_request, 'address_display'):
+                        sample_request.address_display = address_display
+
                     # Only fill city/state/country from Address if Lead didn't have them
                     if not getattr(source_doc, 'city', None) and a.city:
                         sample_request.city = a.city
@@ -2228,10 +2236,46 @@ def make_sample_request_from_source(source_doctype, source_name):
                     if not getattr(source_doc, 'country', None) and a.country:
                         sample_request.country = a.country
                     if not getattr(source_doc, 'pincode', None) and a.pincode:
-                        if hasattr(sample_request, 'pincode'):
-                            sample_request.pincode = a.pincode
+                        if hasattr(sample_request, 'postal_code'):
+                            sample_request.postal_code = a.pincode
                 except Exception as e:
-                    frappe.log_error(f"BUG-114A Address fetch: {e}", "make_sample_request_from_source")
+                    frappe.log_error(
+                        f"BUG-114D Address fetch: {e}",
+                        "make_sample_request_from_source"
+                    )
+
+            # BUG-114E: synthesize Address record if Lead has flat address fields
+            # but no linked Address via Dynamic Link
+            if not address and (
+                getattr(source_doc, 'address_line1', None)
+                or getattr(source_doc, 'city', None)
+            ):
+                try:
+                    new_addr = frappe.new_doc("Address")
+                    new_addr.address_title = (
+                        source_doc.lead_name or source_doc.company_name or source_name
+                    )
+                    new_addr.address_type = "Billing"
+                    new_addr.address_line1 = (
+                        getattr(source_doc, 'address_line1', None) or "(see Lead)"
+                    )
+                    new_addr.address_line2 = getattr(source_doc, 'address_line2', None) or ""
+                    new_addr.city = getattr(source_doc, 'city', None) or ""
+                    new_addr.state = getattr(source_doc, 'state', None) or ""
+                    new_addr.country = getattr(source_doc, 'country', None) or "Mexico"
+                    new_addr.pincode = getattr(source_doc, 'pincode', None) or ""
+                    new_addr.append("links", {
+                        "link_doctype": "Lead",
+                        "link_name": source_name,
+                    })
+                    new_addr.insert(ignore_permissions=True)
+                    address = new_addr.name
+                except Exception as e:
+                    frappe.log_error(
+                        f"BUG-114E synth address: {e}",
+                        "make_sample_request_from_source"
+                    )
+
 
             # DEFAULT ITEM for Lead (no items table) - use item 0307
             default_item = frappe.get_doc('Item', '0307')
