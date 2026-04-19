@@ -2071,7 +2071,8 @@ def create_sample_request(batch_name):
         sample_request.sales_order = getattr(batch, 'sales_order_related', None)
         sample_request.item = batch.item_to_manufacture or batch.current_item_code
         sample_request.batch_quantity = batch.planned_qty or batch.total_net_weight
-        
+        sample_request.coa_amb = getattr(batch, 'coa_amb', None)
+
         sample_request.insert()
         frappe.db.commit()
         
