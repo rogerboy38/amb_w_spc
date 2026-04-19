@@ -1,0 +1,160 @@
+Here's the verification checklist to append to your MiniMax prompt — paste everything below at the end.
+
+Verification checklist
+Run each step in order on sandbox.sysmayal.cloud. All must pass before closing BUG-114.
+
+1. Git state
+bash
+cd ~/frappe-bench/apps/amb_w_spc
+git log --oneline -n 5
+Expected: top 3 commits are exactly:
+
+text
+BUG-114C: Add data-repair patch for existing SRs missing party contact fields
+BUG-114B: Always assign email/phone/address with '' fallback instead of skipping on None
+BUG-114A: Enrich Lead branch in make_sample_request_from_source with Contact+Address via Dynamic Link
+2. Syntax & files present
+bash
+python3 -m py_compile ~/frappe-bench/apps/amb_w_spc/amb_w_spc/sfc_manufacturing/doctype/batch_amb/batch_amb.py && echo "batch_amb.py OK"
+python3 -m py_compile ~/frappe-bench/apps/amb_w_spc/amb_w_spc/patches/v13/fix_bug114_sr_contact_fields.py && echo "patch OK"
+grep -q "fix_bug114_sr_contact_fields" ~/frappe-bench/apps/amb_w_spc/amb_w_spc/patches.txt && echo "patches.txt OK"
+Expected: three OK lines, no tracebacks.
+
+3. Other branches untouched
+bash
+cd ~/frappe-bench/apps/amb_w_spc
+git diff a9f12ab..HEAD -- amb_w_spc/sfc_manufacturing/doctype/batch_amb/batch_amb.py | \
+  grep -E "elif source_doctype ==" | sort -u
+Expected: only the Lead elif shows as modified context — Prospect / Opportunity / Quotation / Sales Order appear identically (no +/- in their bodies).
+
+4. Migration runs clean
+bash
+cd ~/frappe-bench
+bench --site sandbox.sysmayal.cloud migrate
+Expected: patch runs, prints BUG-114C: repaired N Sample Request AMB docs where N ≥ 0, no tracebacks.
+
+5. Existing broken SR now has data
+bash
+bench --site sandbox.sysmayal.cloud console
+python
+sr = frappe.get_doc("Sample Request AMB", "SR-2026-00019")
+print({k: getattr(sr, k, None) for k in
+       ("party_type","party","email","phone","city","state","country","address")})
+Expected: all fields populated; no None or "" where Lead has data.
+
+6. Fresh SR from Lead enriches correctly
+Same console:
+
+python
+name = frappe.call(
+    "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.make_sample_request_from_source",
+    source_doctype="Lead",
+    source_name="CRM-LEAD-2025-02006"
+)
+sr = frappe.get_doc("Sample Request AMB", name)
+print({
+    "email":   sr.email,
+    "phone":   sr.phone,
+    "address": sr.address,
+    "city":    sr.city,
+    "state":   sr.state,
+    "country": sr.country,
+    "party":   sr.party,
+})
+Expected exact values:
+
+text
+email:   'Uriel.amaro@ajemex.consultores.mx'
+phone:   '+522272759000'
+address: 'Guanacevi 245,, Parque Ind. Gómez Palacio'
+city:    'PUEBLA'
+state:   'PUEBLA'
+country: 'Mexico'
+party:   'CRM-LEAD-2025-02006'
+Note: city/state come from the Lead flat fields (PUEBLA), not the Address (Gomez Palacio) — per BUG-114A tier precedence rules.
+
+7. Assets rebuilt & stack restarted
+bash
+bench clear-cache
+bench build --app amb_w_spc
+~/frappe-bench/bench_socketio_doctor.sh --fix --restart-all
+sudo supervisorctl status 2>/dev/null | grep -v pkg_resources
+Expected: 5 members all RUNNING, single listener on socketio port.
+
+8. Browser check — the real acceptance test
+Hard-reload https://sandbox.sysmayal.cloud/desk/sample-request-amb/SR-2026-00019 with Ctrl+Shift+R.
+
+Scroll to Contact & Address section.
+
+Confirm these fields are visibly filled:
+
+Email: Uriel.amaro@ajemex.consultores.mx
+
+Phone: +522272759000
+
+City: PUEBLA
+
+State: PUEBLA
+
+Country: Mexico
+
+Address: Guanacevi 245,, Parque Ind. Gómez Palacio
+
+Open a Batch AMB, click the "Sample Request" button, confirm new SR loads with the same fields populated (when Batch is linked to a Lead via customer/sales_order_related).
+
+DevTools console: frappe.realtime.socket.connected → true.
+
+9. Regression guard — no Prospect/Opportunity breakage
+python
+# bench console
+for dt, name in [
+    ("Prospect",  frappe.db.get_value("Prospect", {}, "name")),
+    ("Opportunity", frappe.db.get_value("Opportunity", {"opportunity_from": "Lead"}, "name")),
+]:
+    if not name: continue
+    try:
+        sr = frappe.call(
+            "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.make_sample_request_from_source",
+            source_doctype=dt, source_name=name)
+        print(dt, "->", sr, "OK")
+    except Exception as e:
+        print(dt, "FAIL:", e)
+Expected: both print OK, no AttributeError or KeyError.
+
+10. No .bak* leaked back in
+bash
+cd ~/frappe-bench/apps/amb_w_spc
+find . -maxdepth 6 -type f \( -name "*.bak*" -o -name "*.orig" \) | head
+git status --short | grep -E "\.bak|\.orig" && echo "DIRTY" || echo "CLEAN"
+Expected: CLEAN, no .bak* files either on disk or tracked.
+
+Pass criteria — all ten must be green
+#	Check	Pass?
+1	3 BUG-114 commits present on V13.4.0	☐
+2	Python files compile; patch registered	☐
+3	Only Lead branch diffed	☐
+4	bench migrate runs clean with repair count printed	☐
+5	SR-2026-00019 now has full data	☐
+6	Fresh SR from Lead has exact expected values	☐
+7	5 supervisor members RUNNING	☐
+8	Browser shows all fields populated	☐
+9	Prospect + Opportunity still work	☐
+10	No .bak* files present	☐
+Rollback plan
+If any check 1-9 fails:
+
+bash
+cd ~/frappe-bench/apps/amb_w_spc
+git reset --hard a9f12ab
+cd ~/frappe-bench
+bench --site sandbox.sysmayal.cloud clear-cache
+bench build --app amb_w_spc
+~/frappe-bench/bench_socketio_doctor.sh --fix --restart-all
+Report back to MiniMax with the failing check number and the exact error output for iteration.
+
+Done signal
+Only when all 10 checks pass, push to origin:
+
+bash
+cd ~/frappe-bench/apps/amb_w_spc
+git push origin V13.4.0
