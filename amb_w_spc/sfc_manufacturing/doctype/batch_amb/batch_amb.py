@@ -2170,20 +2170,57 @@ def make_sample_request_from_source(source_doctype, source_name):
             # Set party type and party for Lead
             sample_request.party_type = 'Lead'
             sample_request.party = source_name
-            # Get contact info from Lead
+
+            # BUG-114A: Enrich Lead with Contact+Address via Dynamic Link
+            # First try flat fields, then fallback to Dynamic Link lookup
             contact_email = source_doc.email_id
             contact_phone = source_doc.mobile_no
-            # Try to get address
-            if hasattr(source_doc, 'address') and source_doc.address:
-                address = source_doc.address
+            address = source_doc.address
 
-            # Map city/state/country from Lead
+            # If flat fields are empty, try Dynamic Link to Contact
+            if not contact_email or not contact_phone:
+                contact_links = frappe.db.get_values(
+                    "Dynamic Link",
+                    {"link_doctype": "Lead", "link_name": source_name, "parenttype": "Contact"},
+                    "parent",
+                    as_dict=True
+                )
+                if contact_links:
+                    contact_doc = frappe.get_doc("Contact", contact_links[0].parent)
+                    if not contact_email and contact_doc.email_id:
+                        contact_email = contact_doc.email_id
+                    if not contact_phone:
+                        # Try phone numbers
+                        for ph in contact_doc.phone_nos:
+                            if ph.phone:
+                                contact_phone = ph.phone
+                                break
+
+            # If address is empty, try Dynamic Link to Address
+            if not address:
+                address_links = frappe.db.get_values(
+                    "Dynamic Link",
+                    {"link_doctype": "Lead", "link_name": source_name, "parenttype": "Address"},
+                    "parent",
+                    as_dict=True
+                )
+                if address_links:
+                    address_doc = frappe.get_doc("Address", address_links[0].parent)
+                    address = address_doc.name
+
+            # Map city/state/country from Lead or Address
             if hasattr(source_doc, 'city') and source_doc.city:
                 sample_request.city = source_doc.city
+            elif address:
+                sample_request.city = address_doc.city if hasattr(address_doc, 'city') else None
             if hasattr(source_doc, 'state') and source_doc.state:
                 sample_request.state = source_doc.state
+            elif address:
+                sample_request.state = address_doc.state if hasattr(address_doc, 'state') else None
             if hasattr(source_doc, 'country') and source_doc.country:
                 sample_request.country = source_doc.country
+            elif address:
+                sample_request.country = address_doc.country if hasattr(address_doc, 'country') else None
 
             # DEFAULT ITEM for Lead (no items table) - use item 0307
             default_item = frappe.get_doc('Item', '0307')
@@ -2301,16 +2338,13 @@ def make_sample_request_from_source(source_doctype, source_name):
             if hasattr(source_doc, 'customer_address') and source_doc.customer_address:
                 address = source_doc.customer_address
         
-        # Set the values
-        sample_request.customer_name = customer_name
+        # BUG-114B: Always assign email/phone/address with '' fallback
+        sample_request.customer_name = customer_name or ''
         if customer:
             sample_request.customer = customer
-        if contact_email:
-            sample_request.email = contact_email
-        if contact_phone:
-            sample_request.phone = contact_phone
-        if address:
-            sample_request.address = address
+        sample_request.email = contact_email or ''
+        sample_request.phone = contact_phone or ''
+        sample_request.address = address or ''
         
         # Add ALL sample rows from source document items
         if hasattr(source_doc, 'items') and source_doc.items:
