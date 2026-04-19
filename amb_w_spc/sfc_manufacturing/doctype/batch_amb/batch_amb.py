@@ -2164,63 +2164,74 @@ def make_sample_request_from_source(source_doctype, source_name):
         contact_phone = None
         address = None
         
-        if source_doctype == "Lead":
-            # Get customer name from Lead
+        elif source_doctype == "Lead":
+            # Customer name from Lead flat fields
             customer_name = source_doc.company_name or source_doc.lead_name
-            # Set party type and party for Lead
+
+            # Party
             sample_request.party_type = 'Lead'
             sample_request.party = source_name
 
-            # BUG-114A: Enrich Lead with Contact+Address via Dynamic Link
-            # First try flat fields, then fallback to Dynamic Link lookup
-            contact_email = source_doc.email_id
-            contact_phone = source_doc.mobile_no
-            address = source_doc.address
+            # Tier 1: Lead's own flat fields
+            contact_email = source_doc.email_id or None
+            contact_phone = source_doc.mobile_no or getattr(source_doc, 'phone', None) or None
 
-            # If flat fields are empty, try Dynamic Link to Contact
-            if not contact_email or not contact_phone:
-                contact_links = frappe.db.get_values(
-                    "Dynamic Link",
-                    {"link_doctype": "Lead", "link_name": source_name, "parenttype": "Contact"},
-                    "parent",
-                    as_dict=True
-                )
-                if contact_links:
-                    contact_doc = frappe.get_doc("Contact", contact_links[0].parent)
-                    if not contact_email and contact_doc.email_id:
-                        contact_email = contact_doc.email_id
-                    if not contact_phone:
-                        # Try phone numbers
-                        for ph in contact_doc.phone_nos:
-                            if ph.phone:
-                                contact_phone = ph.phone
-                                break
-
-            # If address is empty, try Dynamic Link to Address
-            if not address:
-                address_links = frappe.db.get_values(
-                    "Dynamic Link",
-                    {"link_doctype": "Lead", "link_name": source_name, "parenttype": "Address"},
-                    "parent",
-                    as_dict=True
-                )
-                if address_links:
-                    address_doc = frappe.get_doc("Address", address_links[0].parent)
-                    address = address_doc.name
-
-            # Map city/state/country from Lead or Address
-            if hasattr(source_doc, 'city') and source_doc.city:
+            if getattr(source_doc, 'city', None):
                 sample_request.city = source_doc.city
-            elif address:
-                sample_request.city = address_doc.city if hasattr(address_doc, 'city') else None
-            if hasattr(source_doc, 'state') and source_doc.state:
+            if getattr(source_doc, 'state', None):
                 sample_request.state = source_doc.state
-            elif address:
-                sample_request.state = address_doc.state if hasattr(address_doc, 'state') else None
-            if hasattr(source_doc, 'country') and source_doc.country:
+            if getattr(source_doc, 'country', None):
                 sample_request.country = source_doc.country
-            elif address:
-                sample_request.country = address_doc.country if hasattr(address_doc, 'country') else None
+            if getattr(source_doc, 'pincode', None):
+                if hasattr(sample_request, 'pincode'):
+                    sample_request.pincode = source_doc.pincode
+
+            # Tier 2: linked Contact via Dynamic Link
+            link_contacts = frappe.get_all(
+                "Dynamic Link",
+                filters={
+                    "link_doctype": "Lead",
+                    "link_name": source_name,
+                    "parenttype": "Contact"
+                },
+                pluck="parent"
+            )
+            if link_contacts:
+                try:
+                    c = frappe.get_doc("Contact", link_contacts[0])
+                    contact_email = contact_email or c.email_id
+                    contact_phone = contact_phone or c.mobile_no or c.phone
+                except Exception as e:
+                    frappe.log_error(f"BUG-114A Contact fetch: {e}", "make_sample_request_from_source")
+
+            # Tier 3: linked Address via Dynamic Link
+            link_addresses = frappe.get_all(
+                "Dynamic Link",
+                filters={
+                    "link_doctype": "Lead",
+                    "link_name": source_name,
+                    "parenttype": "Address"
+                },
+                pluck="parent"
+            )
+            if link_addresses:
+                try:
+                    a = frappe.get_doc("Address", link_addresses[0])
+                    parts = [p for p in (a.address_line1, a.address_line2) if p]
+                    if parts:
+                        address = ", ".join(parts)
+                    # Only fill city/state/country from Address if Lead didn't have them
+                    if not getattr(source_doc, 'city', None) and a.city:
+                        sample_request.city = a.city
+                    if not getattr(source_doc, 'state', None) and a.state:
+                        sample_request.state = a.state
+                    if not getattr(source_doc, 'country', None) and a.country:
+                        sample_request.country = a.country
+                    if not getattr(source_doc, 'pincode', None) and a.pincode:
+                        if hasattr(sample_request, 'pincode'):
+                            sample_request.pincode = a.pincode
+                except Exception as e:
+                    frappe.log_error(f"BUG-114A Address fetch: {e}", "make_sample_request_from_source")
 
             # DEFAULT ITEM for Lead (no items table) - use item 0307
             default_item = frappe.get_doc('Item', '0307')
@@ -2234,7 +2245,7 @@ def make_sample_request_from_source(source_doctype, source_name):
             sample_row.container_size = '0.020'
             sample_row.container_type = 'BOL020'
             sample_row.lab_notes = '70% Aloe - 30% Gum\n3 samples of retention:\n  Sample 1 - Qty. 1 Distributor Retention\n  Sample 2 - Qty. 1 Customer Retention\n  Sample 3 - Qty. 1 Analysis'
-            
+
         elif source_doctype == "Prospect":
             # Get customer name from Prospect
             customer_name = source_doc.company_name or source_doc.prospect_name
