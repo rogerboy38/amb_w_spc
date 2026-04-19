@@ -2059,6 +2059,12 @@ def get_quick_entry_defaults(work_order_name):
 
 
 @frappe.whitelist()
+def make_sample_request(batch_name):
+    """Create Sample Request from Batch - wrapper for backward compatibility"""
+    return create_sample_request(batch_name)
+
+
+@frappe.whitelist()
 def create_sample_request(batch_name):
     """Create Sample Request from Batch - for the Sample Request button"""
     try:
