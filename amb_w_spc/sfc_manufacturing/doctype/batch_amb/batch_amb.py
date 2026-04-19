@@ -2246,10 +2246,15 @@ def make_sample_request_from_source(source_doctype, source_name):
 
             # BUG-114E: synthesize Address record if Lead has flat address fields
             # but no linked Address via Dynamic Link
+            print(f"DEBUG BUG-114E: START - source_name={source_name}, address={address}")
+            print(f"DEBUG BUG-114E: Lead fields - address_line1={getattr(source_doc, 'address_line1', None)}, city={getattr(source_doc, 'city', None)}, state={getattr(source_doc, 'state', None)}, country={getattr(source_doc, 'country', None)}")
+            print(f"DEBUG BUG-114E: link_addresses={link_addresses}")
+
             if not address and (
                 getattr(source_doc, 'address_line1', None)
                 or getattr(source_doc, 'city', None)
             ):
+                print(f"DEBUG BUG-114E: CONDITION MET - creating synthetic Address")
                 try:
                     new_addr = frappe.new_doc("Address")
                     new_addr.address_title = (
@@ -2268,13 +2273,20 @@ def make_sample_request_from_source(source_doctype, source_name):
                         "link_doctype": "Lead",
                         "link_name": source_name,
                     })
+                    print(f"DEBUG BUG-114E: About to INSERT Address with title={new_addr.address_title}")
                     new_addr.insert(ignore_permissions=True)
                     address = new_addr.name
+                    print(f"DEBUG BUG-114E: SUCCESS - Address created with name={address}")
                 except Exception as e:
+                    print(f"DEBUG BUG-114E: EXCEPTION - {type(e).__name__}: {e}")
+                    import traceback
+                    print(traceback.format_exc())
                     frappe.log_error(
                         f"BUG-114E synth address: {e}",
                         "make_sample_request_from_source"
                     )
+            else:
+                print(f"DEBUG BUG-114E: CONDITION NOT MET - address={address}, address_line1={getattr(source_doc, 'address_line1', None)}, city={getattr(source_doc, 'city', None)}")
 
 
             # DEFAULT ITEM for Lead (no items table) - use item 0307
@@ -2394,12 +2406,14 @@ def make_sample_request_from_source(source_doctype, source_name):
                 address = source_doc.customer_address
         
         # BUG-114B: Always assign email/phone/address with '' fallback
+        print(f"DEBUG FINAL: About to set sample_request fields - address={address}")
         sample_request.customer_name = customer_name or ''
         if customer:
             sample_request.customer = customer
         sample_request.email = contact_email or ''
         sample_request.phone = contact_phone or ''
         sample_request.address = address or ''
+        print(f"DEBUG FINAL: sample_request.address set to = {sample_request.address}")
         
         # Add ALL sample rows from source document items
         if hasattr(source_doc, 'items') and source_doc.items:
