@@ -2176,7 +2176,15 @@ def make_sample_request_from_source(source_doctype, source_name):
             # Try to get address
             if hasattr(source_doc, 'address') and source_doc.address:
                 address = source_doc.address
-            
+
+            # Map city/state/country from Lead
+            if hasattr(source_doc, 'city') and source_doc.city:
+                sample_request.city = source_doc.city
+            if hasattr(source_doc, 'state') and source_doc.state:
+                sample_request.state = source_doc.state
+            if hasattr(source_doc, 'country') and source_doc.country:
+                sample_request.country = source_doc.country
+
             # DEFAULT ITEM for Lead (no items table) - use item 0307
             default_item = frappe.get_doc('Item', '0307')
             sample_row = sample_request.append('samples', {})
