@@ -2065,6 +2065,7 @@ def create_sample_request(batch_name):
         
         # Create new sample request
         sample_request = frappe.new_doc("Sample Request AMB")
+        sample_request.request_date = frappe.utils.nowdate()
         sample_request.batch_reference = batch_name
         sample_request.customer = getattr(batch, 'customer', None)
         sample_request.sales_order = getattr(batch, 'sales_order_related', None)
