@@ -19,12 +19,17 @@ frappe.ui.form.on('Batch AMB', {
         if (!frm.is_new()) {
             frm.add_custom_button(__("New Sample Request"), () => {
                 frappe.call({
-                    method: "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.make_sample_request",
+                    method: "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.create_sample_request",
+                    args: { batch_name: frm.doc.name },
                     freeze: true,
                     freeze_message: __("Creating Sample Request..."),
                     callback(r) {
                         if (!r.exc && r.message) {
-                            frappe.set_route("Form", "Sample Request AMB", r.message);
+                            if (r.message.success) {
+                                frappe.set_route("Form", "Sample Request AMB", r.message.sample_request);
+                            }
+                        } else if (r._server_messages) {
+                            frappe.msgprint(r._server_messages);
                         }
                     }
                 });
