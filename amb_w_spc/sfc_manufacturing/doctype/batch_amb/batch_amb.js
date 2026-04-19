@@ -71,8 +71,20 @@ frappe.ui.form.on('Batch AMB', {
 
         // BatchL2 enhancements
         if (frm.is_new()) {
-            frm.set_value('custom_batch_level', '1');
-            frm.set_value('is_group', 1);
+            const hasPresetLevel = !!(frm.doc.custom_batch_level || (frappe.route_options && frappe.route_options.custom_batch_level));
+            const hasPresetParent = !!(frm.doc.parent_batch_amb || (frappe.route_options && frappe.route_options.parent_batch_amb));
+        
+            if (!hasPresetLevel) {
+                frm.set_value('custom_batch_level', '1');
+            }
+        
+            if (!hasPresetParent) {
+                frm.set_value('is_group', 1);
+            } else {
+                frm.set_value('is_group', 0);
+            }
+        
+            configure_level_settings(frm);
         }
 
         // Initialize barrel management for level 3
@@ -139,23 +151,64 @@ frappe.ui.form.on('Batch AMB', {
             generate_batch_code(frm);
         }
     },
-
+    
     parent_batch_amb: function(frm) {
         if (frm.doc.parent_batch_amb === frm.doc.name) {
-            frappe.msgprint('A batch cannot be its own parent');
+            frappe.msgprint(__('A batch cannot be its own parent'));
             frm.set_value('parent_batch_amb', '');
             return;
         }
-        if (frm.doc.parent_batch_amb && should_auto_generate(frm)) {
-            generate_batch_code(frm);
+    
+        if (frm.doc.parent_batch_amb) {
+            frappe.db.get_value('Batch AMB', frm.doc.parent_batch_amb, 'custom_batch_level')
+                .then(r => {
+                    const parent_level = cint((r.message && r.message.custom_batch_level) || 1);
+                    const child_level = String(parent_level + 1);
+                    
+                    if (frm.is_new()) {
+                        const has_preset_level = !!(
+                            frm.doc.custom_batch_level ||
+                            (frappe.route_options && frappe.route_options.custom_batch_level)
+                        );
+                    
+                        const has_preset_parent = !!(
+                            frm.doc.parent_batch_amb ||
+                            (frappe.route_options && frappe.route_options.parent_batch_amb)
+                        );
+                    
+                        if (!has_preset_level) {
+                            frm.set_value('custom_batch_level', '1');
+                        }
+                    
+                        frm.set_value('is_group', has_preset_parent ? 0 : 1);
+                        configure_level_settings(frm);
+                    }
+                    if (frm.is_new()) {
+                        frm.set_value('custom_batch_level', child_level);
+                        frm.set_value('is_group', child_level === '4' ? 0 : 1);
+                    }
+    
+                    configure_level_settings(frm);
+    
+                    if (should_auto_generate(frm)) {
+                        generate_batch_code(frm);
+                    }
+                });
+            return;
+        }
+    
+        if (frm.is_new()) {
+            frm.set_value('custom_batch_level', '1');
+            frm.set_value('is_group', 1);
+            configure_level_settings(frm);
+    
+            if (should_auto_generate(frm)) {
+                generate_batch_code(frm);
+            }
         }
     },
+        
 
-    quick_barcode_scan: function(frm) {
-        if (frm.doc.quick_barcode_scan && frm.doc.custom_batch_level == '3') {
-            process_quick_barcode_scan(frm);
-        }
-    },
 
     default_packaging_type: function(frm) {
         if (frm.doc.default_packaging_type) {
@@ -1738,22 +1791,48 @@ function calculate_net_weight_fixed(frm, cdt, cdn) {
 
 // Create Sublot Batch (Level 2) from parent
 function create_sublot_batch(frm) {
-    // Child level = parent level + 1
-    var parent_level = parseInt(frm.doc.custom_batch_level || '1', 10);
-    var child_level = String(parent_level + 1);
+    const parentLevel = cint(frm.doc.custom_batch_level || 1);
+    const childLevel = String(parentLevel + 1);
+
+    if (parentLevel >= 4) {
+        frappe.msgprint(__('Cannot create a sublot from Level 4 batch.'));
+        return;
+    }
 
     frappe.new_doc('Batch AMB', {
-        'custom_batch_level': child_level,
-        'parent_batch_amb': frm.doc.name,
-        'work_order_ref': frm.doc.work_order_ref,
-        'sales_order_related': frm.doc.sales_order_related,
-        'item_to_manufacture': frm.doc.item_to_manufacture,
-        'production_plant_name': frm.doc.production_plant_name,
-        'production_plant': frm.doc.production_plant,
-        'original_item_code': frm.doc.original_item_code || frm.doc.item_code
+        parent_batch_amb: frm.doc.name,
+        custom_batch_level: childLevel,
+        item_to_manufacture: frm.doc.item_to_manufacture || '',
+        work_order_ref: frm.doc.work_order_ref || '',
+        company: frm.doc.company || '',
+        production_plant: frm.doc.production_plant || '',
+        is_group: childLevel === '4' ? 0 : 1
     });
 }
 
+function create_container_batch(frm) {
+    const parentLevel = cint(frm.doc.custom_batch_level || 1);
+    let childLevel = null;
+
+    if (parentLevel === 2) {
+        childLevel = '3';
+    } else if (parentLevel === 3) {
+        childLevel = '4';
+    } else {
+        frappe.msgprint(__('Create Container is only valid from Level 2 or Level 3.'));
+        return;
+    }
+
+    frappe.new_doc('Batch AMB', {
+        parent_batch_amb: frm.doc.name,
+        custom_batch_level: childLevel,
+        item_to_manufacture: frm.doc.item_to_manufacture || '',
+        work_order_ref: frm.doc.work_order_ref || '',
+        company: frm.doc.company || '',
+        production_plant: frm.doc.production_plant || '',
+        is_group: childLevel === '4' ? 0 : 1
+    });
+}
 // Create Container Batch (Level 3) from parent
 function create_container_batch(frm) {
     var parent_level = parseInt(frm.doc.custom_batch_level || '1', 10);

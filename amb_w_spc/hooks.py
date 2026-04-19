@@ -37,7 +37,6 @@ after_install = "amb_w_spc.setup.after_install"
 
 app_include_js = [
     "/assets/amb_w_spc/js/batch_widget.js",
-    "/assets/amb_w_spc/js/sample_request_utils.js",
     "/assets/amb_w_spc/js/sample_request_buttons.js"
 ]
 
