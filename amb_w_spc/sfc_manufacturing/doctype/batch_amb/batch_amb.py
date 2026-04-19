@@ -2298,11 +2298,11 @@ def make_sample_request_from_source(source_doctype, source_name):
         if customer:
             sample_request.customer = customer
         if contact_email:
-            sample_request.contact_email = contact_email
+            sample_request.email = contact_email
         if contact_phone:
-            sample_request.contact_phone = contact_phone
+            sample_request.phone = contact_phone
         if address:
-            sample_request.shipping_address = address
+            sample_request.address = address
         
         # Add ALL sample rows from source document items
         if hasattr(source_doc, 'items') and source_doc.items:
