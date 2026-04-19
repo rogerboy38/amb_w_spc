@@ -1,0 +1,110 @@
+
+  pincode: '35078'
+  phone: None
+
+In [2]: exit
+
+frappe@sysmayal:~/frappe-bench$ cd ~/frappe-bench/apps/amb_w_spc && git pull origin V13.4.0 && cd ~/frappe-bench && bench --site sandbox.sysmayal.cloud migrate && bench clear-cache && bench build --app amb_w_spc
+remote: Enumerating objects: 60, done.
+remote: Counting objects: 100% (60/60), done.
+remote: Compressing objects: 100% (25/25), done.
+remote: Total 51 (delta 21), reused 51 (delta 21), pack-reused 0 (from 0)
+Unpacking objects: 100% (51/51), 35.07 KiB | 652.00 KiB/s, done.
+From https://github.com/rogerboy38/amb_w_spc
+ * branch            V13.4.0    -> FETCH_HEAD
+   0948746..e3485d5  V13.4.0    -> origin/V13.4.0
+Updating 0948746..e3485d5
+Fast-forward
+ .gitignore                                                                         |  917 ++++++++++++++++++++++++++++++++++-
+ amb_w_spc/patches.txt                                                              |    3 +
+ amb_w_spc/patches/v13/__init__.py                                                  |    0
+ amb_w_spc/patches/v13/fix_bug114_sr_contact_fields.py                              |   86 ++++
+ amb_w_spc/sfc_manufacturing/doctype/batch_amb/batch_amb.py                         |   89 +++-
+ .../amb_w_tds/amb_w_tds/doctype/batch_amb/batch_amb.js.backup_20251118_115054      |  933 +++++++++++++++++++++++++++++++++++
+ .../amb_w_tds/amb_w_tds/doctype/batch_amb/batch_amb.js.backup_20251118_115814      |  988 ++++++++++++++++++++++++++++++++++++++
+ amb_w_tds/amb_w_tds/amb_w_tds/doctype/batch_amb/batch_amb.js.backup_manufacturing  | 1014 +++++++++++++++++++++++++++++++++++++++
+ .../amb_w_tds/amb_w_tds/doctype/batch_amb/batch_amb.py.backup_20251118_193239      |  784 ++++++++++++++++++++++++++++++
+ .../amb_w_tds/amb_w_tds/doctype/batch_amb/batch_amb.py.backup_20251118_201423      |  784 ++++++++++++++++++++++++++++++
+ .../amb_w_tds/amb_w_tds/doctype/container_barrels/container_barrels.py.backup2     |  322 +++++++++++++
+ browser/browser_extension/error_capture/background.js                              |  255 ++++++++++
+ browser/browser_extension/error_capture/content.js                                 |  193 ++++++++
+ browser/browser_extension/error_capture/injector.js                                |   17 +
+ browser/browser_extension/error_capture/manifest.json                              |   40 ++
+ browser/global_browser.py                                                          |  265 ++++++++++
+ tmp                                                                                |    1 +
+ user_input_files/pasted-text-2026-04-19T06-02-54.txt                               |  160 ++++++
+ workspace.json                                                                     |    6 +
+ 19 files changed, 6828 insertions(+), 29 deletions(-)
+ create mode 100644 amb_w_spc/patches/v13/__init__.py
+ create mode 100644 amb_w_spc/patches/v13/fix_bug114_sr_contact_fields.py
+ create mode 100644 amb_w_tds/amb_w_tds/amb_w_tds/doctype/batch_amb/batch_amb.js.backup_20251118_115054
+ create mode 100644 amb_w_tds/amb_w_tds/amb_w_tds/doctype/batch_amb/batch_amb.js.backup_20251118_115814
+ create mode 100644 amb_w_tds/amb_w_tds/amb_w_tds/doctype/batch_amb/batch_amb.js.backup_manufacturing
+ create mode 100644 amb_w_tds/amb_w_tds/amb_w_tds/doctype/batch_amb/batch_amb.py.backup_20251118_193239
+ create mode 100644 amb_w_tds/amb_w_tds/amb_w_tds/doctype/batch_amb/batch_amb.py.backup_20251118_201423
+ create mode 100755 amb_w_tds/amb_w_tds/amb_w_tds/doctype/container_barrels/container_barrels.py.backup2
+ create mode 100644 browser/browser_extension/error_capture/background.js
+ create mode 100644 browser/browser_extension/error_capture/content.js
+ create mode 100644 browser/browser_extension/error_capture/injector.js
+ create mode 100644 browser/browser_extension/error_capture/manifest.json
+ create mode 100644 browser/global_browser.py
+ create mode 120000 tmp
+ create mode 100644 user_input_files/pasted-text-2026-04-19T06-02-54.txt
+ create mode 100644 workspace.json
+Migrating sandbox.sysmayal.cloud
+Applied workspace orphan fix to /home/frappe/frappe-bench/apps/frappe/frappe/model/sync.py
+The controller for Employee is overridden by multiple apps: hrms, and erpnext_mexico_compliance.
+The controller for Payment Entry is overridden by multiple apps: hrms, and erpnext_mexico_compliance.
+Executing execute:amb_w_spc.patches.v13.fix_bug114_sr_contact_fields in sandbox.sysmayal.cloud (_6ac584dab63160de)
+
+Queued rebuilding of search index for sandbox.sysmayal.cloud
+
+Traceback (most recent call last):
+  File "/home/frappe/frappe-bench/apps/frappe/frappe/utils/bench_helper.py", line 48, in invoke
+    return super().invoke(ctx)
+           ~~~~~~~~~~~~~~^^^^^
+  File "/home/frappe/frappe-bench/env/lib/python3.14/site-packages/click/core.py", line 1873, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/frappe/frappe-bench/env/lib/python3.14/site-packages/click/core.py", line 1269, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/frappe/frappe-bench/env/lib/python3.14/site-packages/click/core.py", line 824, in invoke
+    return callback(*args, **kwargs)
+  File "/home/frappe/frappe-bench/env/lib/python3.14/site-packages/click/decorators.py", line 34, in new_func
+    return f(get_current_context(), *args, **kwargs)
+  File "/home/frappe/frappe-bench/apps/frappe/frappe/commands/__init__.py", line 28, in _func
+    ret = f(ctx.obj, *args, **kwargs)
+  File "/home/frappe/frappe-bench/apps/frappe/frappe/commands/site.py", line 722, in migrate
+    ).run(site=site)
+      ~~~^^^^^^^^^^^
+  File "/home/frappe/frappe-bench/apps/frappe/frappe/migrate.py", line 273, in run
+    self.run_schema_updates()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/frappe/frappe-bench/apps/frappe/frappe/migrate.py", line 58, in wrapper
+    raise e
+  File "/home/frappe/frappe-bench/apps/frappe/frappe/migrate.py", line 50, in wrapper
+    ret = method(*args, **kwargs)
+  File "/home/frappe/frappe-bench/apps/frappe/frappe/migrate.py", line 139, in run_schema_updates
+    frappe.modules.patch_handler.run_all(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        skip_failing=self.skip_failing, patch_type=PatchType.pre_model_sync
+     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/frappe/frappe-bench/apps/frappe/frappe/modules/patch_handler.py", line 76, in run_all
+    run_patch(patch)
+    ~~~~~~~~~^^^^^^^
+  File "/home/frappe/frappe-bench/apps/frappe/frappe/modules/patch_handler.py", line 62, in run_patch
+    if not run_single(patchmodule=patch):
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/home/frappe/frappe-bench/apps/frappe/frappe/modules/patch_handler.py", line 152, in run_single
+    return execute_patch(patchmodule, method, methodargs)
+  File "/home/frappe/frappe-bench/apps/frappe/frappe/modules/patch_handler.py", line 190, in execute_patch
+    exec(patch, globals())
+    ~~~~^^^^^^^^^^^^^^^^^^
+  File "<string>", line 1, in <module>
+NameError: name 'amb_w_spc' is not defined
+
+name 'amb_w_spc' is not defined
+frappe@sysmayal:~/frappe-bench$ 
