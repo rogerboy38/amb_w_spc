@@ -26,4 +26,4 @@ execute:amb_w_spc.patches.v15.setup_default_settings
 execute:amb_w_spc.patches.v15.create_sample_data
 
 # BUG-114C: Backfill contact fields on existing Sample Request AMB
-execute:amb_w_spc.patches.v13.fix_bug114_sr_contact_fields
+#execute:amb_w_spc.patches.v13.fix_bug114_sr_contact_fields

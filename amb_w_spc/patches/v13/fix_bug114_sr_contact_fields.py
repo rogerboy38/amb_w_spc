@@ -1,4 +1,7 @@
+# Add at the very beginning of the file
 import frappe
+from frappe import _
+
 
 def execute():
     """BUG-114C: Backfill empty contact fields on existing Sample Request AMB docs."""

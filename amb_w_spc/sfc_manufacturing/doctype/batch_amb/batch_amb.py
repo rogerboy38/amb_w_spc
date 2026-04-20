@@ -2164,7 +2164,7 @@ def make_sample_request_from_source(source_doctype, source_name):
         contact_phone = None
         address = None
         
-        elif source_doctype == "Lead":
+        if source_doctype == "Lead":
             # Customer name from Lead flat fields
             customer_name = source_doc.company_name or source_doc.lead_name
 
