@@ -1,7 +1,7 @@
 {
   "doctype": "DocType",
   "name": "Weight Event",
-  "module": "amb_w_spc.system_integration",
+  "module": "System Integration",
   "custom": 1,
   "istable": 0,
   "engine": "InnoDB",
