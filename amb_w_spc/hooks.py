@@ -22,10 +22,9 @@ app_include = [
 
 # Fixtures - auto-synced on bench migrate / Frappe Cloud deploy
 fixtures = [
-    {
-        "dt": "Notification",
-        "filters": [["module", "=", "SPC Quality Management"]]
-    }
+    {"doctype": "Custom Field",          "filters": [["module", "=", "SPC Quality Management"]]},
+    {"doctype": "Property Setter",        "filters": [["module", "=", "SPC Quality Management"]]},
+    {"doctype": "Notification",           "filters": [["module", "=", "SPC Quality Management"], ["is_standard", "=", 0]]},
 ]
 
 # After install hook
