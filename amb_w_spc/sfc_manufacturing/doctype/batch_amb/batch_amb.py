@@ -244,19 +244,6 @@ def batch_amb_before_save(doc, method=None):
         p3_complex_workflow(doc)
         p3_validate_code39(doc)
 
-        # ============================================================
-        # V13.6.0 P3 MIGRATED SERVER SCRIPTS
-        # ============================================================
-        p3_history_tracking(doc)
-        p3_complex_workflow(doc)
-        p3_validate_code39(doc)
-
-    except Exception as e:
-        frappe.log_error(
-            title="Batch AMB Before Save Error",
-            message=f"Error in batch_amb_before_save: {str(e)}"
-        )
-
 
 class BatchAMB(NestedSet):
     """
