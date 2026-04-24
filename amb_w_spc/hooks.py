@@ -52,4 +52,7 @@ doc_events = {
         "before_save": ["amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_before_save"],
         "before_insert": ["amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.p3_before_insert"],
     },
+    "Animal Trial": {
+        "before_insert": ["amb_w_spc.doctype_events.animal_trial.animal_trial_before_insert"],
+    },
     }
