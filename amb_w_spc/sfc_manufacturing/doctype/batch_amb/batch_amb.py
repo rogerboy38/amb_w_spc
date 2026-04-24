@@ -243,6 +243,12 @@ def batch_amb_before_save(doc, method=None):
         p3_history_tracking(doc)
         p3_complex_workflow(doc)
         p3_validate_code39(doc)
+    except Exception:
+        frappe.log_error(
+            title="batch_amb_before_save error",
+            message=frappe.get_traceback()
+        )
+
 
 
 class BatchAMB(NestedSet):
