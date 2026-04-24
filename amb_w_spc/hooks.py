@@ -48,11 +48,8 @@ override_doctype_class = {
 doc_events = {
     # ---- Batch AMB: Golden number auto-generation via amb_w_spc controller
     "Batch AMB": {
-        "validate": [
-            "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_validate",
-        ],
-        "before_save": [
-            "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_before_save",
-        ],
+        "validate": ["amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_validate"],
+        "before_save": ["amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_before_save"],
+        "before_insert": ["amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.p3_before_insert"],
     },
-}
+    }

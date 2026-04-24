@@ -235,6 +235,22 @@ def batch_amb_before_save(doc, method=None):
             except Exception:
                 pass
 
+        # V13.6.0 P3: validate_var_code39_ok
+
+        # ============================================================
+        # V13.6.0 P3 MIGRATED SERVER SCRIPTS
+        # ============================================================
+        p3_history_tracking(doc)
+        p3_complex_workflow(doc)
+        p3_validate_code39(doc)
+
+        # ============================================================
+        # V13.6.0 P3 MIGRATED SERVER SCRIPTS
+        # ============================================================
+        p3_history_tracking(doc)
+        p3_complex_workflow(doc)
+        p3_validate_code39(doc)
+
     except Exception as e:
         frappe.log_error(
             title="Batch AMB Before Save Error",
@@ -2529,3 +2545,637 @@ def _run_golden_number_logic(doc):
 def fixed_generate_serial_numbers(batch_name, quantity=5, prefix=None, packaging_type=None, tara_weight=None):
     """BUG-112S: Whitelisted wrapper for generate_serial_numbers (called by Debug Test button)"""
     return generate_serial_numbers(batch_name, quantity=int(quantity), prefix=prefix, packaging_type=packaging_type, tara_weight=tara_weight)
+
+# ============================================================
+# V13.6.0 P3 MIGRATED: validate_var_code39_ok
+# Original Server Script: validate_var_code39_ok
+# Event: Before Save
+# ============================================================
+
+def p3_before_insert(doc, method=None):
+    """Manual History Entries - faithful port from Server Script"""
+    if doc.is_new():
+        doc.original_item_code = doc.item_to_manufacture
+        doc.current_item_code = doc.item_to_manufacture
+        doc.quality_status = "Pending"
+
+
+# ============================================================
+# V13.6.0 P3 MIGRATED: History Tracking
+# Original Server Script: History Tracking
+# Event: Before Save
+# ============================================================
+
+def p3_history_tracking(doc, method=None):
+    """History Tracking - faithful port from Server Script"""
+    #import frappe
+    #from frappe import _
+    #from frappe.utils import now, get_fullname
+
+    def validate_batch_transition(doc, method):
+        """
+        Validate batch transitions between plants and quality states
+        """
+        if doc.is_new():
+            # New batch - set initial values and add first history entry
+            doc.original_item_code = doc.item_to_manufacture
+            doc.current_item_code = doc.item_to_manufacture
+            doc.quality_status = "Pending"
+            add_processing_history(doc, "System", "Batch Created", 
+                                  f"Initial creation with item {doc.item_to_manufacture}")
+            return
+
+        # Get the document before save for comparison
+        doc_before_save = doc.get_doc_before_save()
+        if not doc_before_save:
+            return
+
+        # Track changes for history
+        changes = {}
+
+        # Check if plant is changing
+        if doc_before_save.get('current_plant') != doc.current_plant:
+            validate_plant_transition(doc, doc_before_save.get('current_plant'))
+            changes['plant'] = (doc_before_save.get('current_plant'), doc.current_plant)
+
+        # Check if item code is changing
+        if doc_before_save.get('current_item_code') != doc.current_item_code:
+            validate_item_code_change(doc, doc_before_save.get('current_item_code'))
+            changes['item_code'] = (doc_before_save.get('current_item_code'), doc.current_item_code)
+
+        # Check if quality status is changing
+        if doc_before_save.get('quality_status') != doc.quality_status:
+            changes['quality_status'] = (doc_before_save.get('quality_status'), doc.quality_status)
+
+        # Add history entry for changes
+        if changes:
+            action = "Batch Updated"
+            comments = "Changes: " + ", ".join([f"{k}: {v[0]}→{v[1]}" for k, v in changes.items()])
+            add_processing_history(doc, get_fullname(frappe.session.user), action, comments)
+
+    def validate_plant_transition(doc, previous_plant):
+        """
+        Validate transitions between specific plants
+        """
+        current_plant = doc.current_plant
+
+        # Define allowed transitions
+        allowed_transitions = {
+            '3': ['2', '4'],  # Juice Plant can go to Dry Plant or Laboratory
+            '2': ['1', '4'],  # Dry Plant can go to Mix Plant or Laboratory
+            '4': ['1', '5'],  # Laboratory can go to Mix Plant or Formulated
+            '1': ['4'],       # Mix Plant goes back to Laboratory for testing
+            '5': ['4']        # Formulated goes to Laboratory for testing
+        }
+
+        if previous_plant and current_plant not in allowed_transitions.get(previous_plant, []):
+            frappe.throw(_("Cannot move batch from Plant {0} to Plant {1}").format(previous_plant, current_plant))
+
+    def validate_item_code_change(doc, previous_item_code):
+        """
+        Validate item code changes based on quality status and plant
+        """
+        if doc.quality_status != "Passed" and doc.current_plant != "4":
+            frappe.throw(_("Item code can only be changed after quality approval from Laboratory"))
+
+        # Add specific validation rules for item code transitions
+        # Example: 0301 can become 0334 only after mixing
+        allowed_transitions = {
+            '0301': ['0334', '0302', '0303', '0304'],
+            '0302': ['0334', '0303', '0304'],
+            '0303': ['0334', '0304'],
+            '0304': ['0334']
+        }
+
+        current_code = doc.current_item_code
+
+        if previous_item_code and current_code not in allowed_transitions.get(previous_item_code, []):
+            frappe.throw(_("Cannot change item code from {0} to {1}").format(previous_item_code, current_code))
+
+    def add_processing_history(doc, changed_by, action, comments=None, system_generated=False):
+        """
+        Add an entry to the processing history table
+        """
+        history_entry = {
+            "date": now(),
+            "plant": doc.current_plant,
+            "item_code": doc.current_item_code,
+            "quality_status": doc.quality_status,
+            "processing_action": action,
+            "changed_by": changed_by,
+            "comments": comments,
+            "system_generated": 1 if system_generated else 0
+        }
+
+        # Add COA reference if available
+        if doc.coa_reference:
+            history_entry["coa_reference"] = doc.coa_reference
+
+        # Initialize history table if empty
+        if not doc.processing_history:
+            doc.processing_history = []
+
+        # Add new history entry
+        doc.append("processing_history", history_entry)
+
+    def after_save_workflow(doc, method):
+        """
+        Handle post-save workflow actions with history tracking
+        """
+        # Auto-create next work order if needed
+        if should_create_next_wo(doc):
+            wo = create_next_work_order(doc)
+            if wo:
+                # Add history entry for work order creation
+                add_processing_history(doc, "System", "Work Order Created", 
+                                      f"Created work order {wo.name} for next processing", 
+                                      system_generated=True)
+
+        # Update COA relationship if quality passed
+        if doc.quality_status == "Passed" and doc.coa_reference:
+            link_coa_to_batch(doc)
+            add_processing_history(doc, "System", "COA Linked", 
+                                  f"Linked COA {doc.coa_reference} to batch", 
+                                  system_generated=True)
+
+    def on_quality_status_change(doc, method):
+        """
+        Handle quality status changes with detailed history
+        """
+        doc_before_save = doc.get_doc_before_save()
+        if not doc_before_save:
+            return
+
+        if doc_before_save.get('quality_status') != doc.quality_status:
+            old_status = doc_before_save.get('quality_status')
+            new_status = doc.quality_status
+
+            action = "Quality Status Changed"
+            comments = f"Quality changed from {old_status} to {new_status}"
+
+            if doc.coa_reference:
+                comments += f" based on COA {doc.coa_reference}"
+
+            add_processing_history(doc, get_fullname(frappe.session.user), action, comments)
+
+    def on_plant_transfer(doc, method):
+        """
+        Handle plant transfers with detailed history
+        """
+        doc_before_save = doc.get_doc_before_save()
+        if not doc_before_save:
+            return
+
+        if doc_before_save.get('current_plant') != doc.current_plant:
+            old_plant = doc_before_save.get('current_plant')
+            new_plant = doc.current_plant
+
+            plant_names = {
+                "1": "Mix Plant",
+                "2": "Dry Plant", 
+                "3": "Juice Plant",
+                "4": "Laboratory",
+                "5": "Formulated Plant"
+            }
+
+            action = "Plant Transfer"
+            comments = f"Transferred from {plant_names.get(old_plant, old_plant)} to {plant_names.get(new_plant, new_plant)}"
+
+            add_processing_history(doc, get_fullname(frappe.session.user), action, comments)
+
+    def should_create_next_wo(doc):
+        """
+        Determine if next work order should be created
+        """
+        conditions = [
+            doc.quality_status == "Passed",
+            doc.current_plant in ["2", "4"],  # After drying or quality check
+            not doc.next_processing_wo  # No next WO already created
+        ]
+
+        return all(conditions)
+
+    def create_next_work_order(doc):
+        """
+        Automatically create next work order based on current state
+        """
+        target_plant = get_next_plant(doc.current_plant, doc.current_item_code)
+
+        wo = frappe.new_doc("Work Order")
+        wo.production_item = doc.current_item_code
+        wo.company = get_company_for_plant(target_plant)
+        wo.planned_start_date = frappe.utils.add_days(now(), 1)
+        wo.custom_plant_code = target_plant
+        wo.qty = calculate_next_quantity(doc)
+
+        # Set custom fields based on your requirements
+        wo.insert()
+
+        doc.next_processing_wo = wo.name
+        doc.target_plant = target_plant
+
+        frappe.msgprint(_("Created next work order: {0}").format(wo.name))
+        return wo
+
+    def get_next_plant(current_plant, item_code):
+        """
+        Determine the next plant based on current state and item code
+        """
+        plant_rules = {
+            '3': '2',  # Juice → Dry
+            '2': '4',  # Dry → Laboratory
+            '4': get_mixing_plant_for_item(item_code),  # Lab → Mix/Formulated
+            '1': '4',  # Mix → Laboratory
+            '5': '4'   # Formulated → Laboratory
+        }
+
+        return plant_rules.get(current_plant, '4')  # Default to laboratory
+
+    def get_mixing_plant_for_item(item_code):
+        """
+        Determine if item goes to Mix Plant (1) or Formulated Plant (5)
+        """
+        # Your business rules here - example:
+        if item_code.startswith('03'):
+            return '1'  # Mix Plant
+        elif item_code.startswith('05'):
+            return '5'  # Formulated Plant
+        else:
+            return '1'  # Default to Mix Plant
+
+    def get_company_for_plant(plant_code):
+        """
+        Map plant codes to companies
+        """
+        plant_company_map = {
+            '1': 'AMB-Wellness',
+            '2': 'Dry Plant Company',  # Adjust as needed
+            '3': 'Juice',
+            '4': 'AMB-Wellness',  # Laboratory typically same as main company
+            '5': 'AMB-Wellness'   # Formulated typically same as main company
+        }
+        return plant_company_map.get(plant_code, 'AMB-Wellness')
+
+    def calculate_next_quantity(doc):
+        """
+        Calculate quantity for next work order with potential losses
+        """
+        # Get current quantity from somewhere - you might need to track this
+        current_qty = 1000  # Example - replace with actual logic
+
+        # Apply processing losses based on plant
+        loss_factors = {
+            '2': 0.9,  # 10% loss in drying
+            '1': 0.95, # 5% loss in mixing
+            '5': 0.98  # 2% loss in formulation
+        }
+
+        return current_qty * loss_factors.get(doc.target_plant, 1)
+
+    def link_coa_to_batch(doc):
+        """
+        Link COA to batch and update related fields
+        """
+        coa = frappe.get_doc("COA AMB", doc.coa_reference)
+
+        # Update batch with COA results
+        doc.db_set({
+            "quality_status": "Passed",
+            "current_item_code": coa.final_item_code or doc.current_item_code
+        })
+
+        # Also update the related work order if exists
+        if doc.work_order_ref:
+            frappe.db.set_value("Work Order", doc.work_order_ref, {
+                "quality_status": "Completed",
+                "custom_final_item_code": coa.final_item_code
+            })
+
+    # Add these hooks to your existing server script
+    def setup_batch_history_handlers():
+        """
+        Set up all history tracking handlers
+        """
+        # These would be set up in your Server Script doctype, not directly in code
+        pass
+
+    #@frappe.whitelist()
+    def add_manual_history_entry(batch_name, action, comments, user):
+        """
+        Add a manual history entry to a batch
+        """
+        batch = frappe.get_doc("Batch AMB", batch_name)
+
+        add_processing_history(
+            batch, 
+            user, 
+            action, 
+            comments,
+            system_generated=False
+        )
+
+        batch.save()
+        return True
+
+
+# ============================================================
+# V13.6.0 P3 MIGRATED: Complex Workflow Management
+# Original Server Script: Complex Workflow Management
+# Event: Before Save
+# ============================================================
+
+def p3_complex_workflow(doc, method=None):
+    """Complex Workflow Management - faithful port from Server Script"""
+    #import frappe
+    #from frappe import _
+    #from frappe.utils import getdate, nowdate
+    #from datetime import datetime
+
+    def validate_batch_transition(doc, method):
+        """
+        Validate batch transitions between plants and quality states
+        """
+        if doc.is_new():
+            # New batch - set initial values
+            doc.original_item_code = doc.item_to_manufacture
+            doc.current_item_code = doc.item_to_manufacture
+            doc.quality_status = "Pending"
+            return
+
+        # Get previous values from doc_before_save
+        doc_before_save = doc.get_doc_before_save()
+        if not doc_before_save:
+            return
+
+        # Check if plant is changing
+        if doc_before_save.get('current_plant') != doc.current_plant:
+            validate_plant_transition(doc, doc_before_save.get('current_plant'))
+
+        # Check if item code is changing
+        if doc_before_save.get('current_item_code') != doc.current_item_code:
+            validate_item_code_change(doc, doc_before_save.get('current_item_code'))
+
+    def validate_plant_transition(doc, previous_plant):
+        """
+        Validate transitions between specific plants
+        """
+        current_plant = doc.current_plant
+
+        # Define allowed transitions
+        allowed_transitions = {
+            '3': ['2', '4'],  # Juice Plant can go to Dry Plant or Laboratory
+            '2': ['1', '4'],  # Dry Plant can go to Mix Plant or Laboratory
+            '4': ['1', '5'],  # Laboratory can go to Mix Plant or Formulated
+            '1': ['4'],       # Mix Plant goes back to Laboratory for testing
+            '5': ['4']        # Formulated goes to Laboratory for testing
+        }
+
+        if previous_plant and current_plant not in allowed_transitions.get(previous_plant, []):
+            frappe.throw(_("Cannot move batch from Plant {0} to Plant {1}").format(previous_plant, current_plant))
+
+    def validate_item_code_change(doc, previous_item_code):
+        """
+        Validate item code changes based on quality status and plant
+        """
+        if doc.quality_status != "Passed" and doc.current_plant != "4":
+            frappe.throw(_("Item code can only be changed after quality approval from Laboratory"))
+
+        # Add specific validation rules for item code transitions
+        # Example: 0301 can become 0334 only after mixing
+        allowed_transitions = {
+            '0301': ['0334', '0302', '0303', '0304'],
+            '0302': ['0334', '0303', '0304'],
+            '0303': ['0334', '0304'],
+            '0304': ['0334']
+        }
+
+        current_code = doc.current_item_code
+
+        if previous_item_code and current_code not in allowed_transitions.get(previous_item_code, []):
+            frappe.throw(_("Cannot change item code from {0} to {1}").format(previous_item_code, current_code))
+
+    def after_save_workflow(doc, method):
+        """
+        Handle post-save workflow actions
+        """
+        # Add to processing history
+        add_processing_history(doc)
+
+        # Auto-create next work order if needed
+        if should_create_next_wo(doc):
+            create_next_work_order(doc)
+
+        # Update COA relationship if quality passed
+        if doc.quality_status == "Passed" and doc.coa_reference:
+            link_coa_to_batch(doc)
+
+    def add_processing_history(doc):
+        """
+        Record processing history for audit trail
+        """
+        # Get previous values from doc_before_save
+        doc_before_save = doc.get_doc_before_save()
+
+        history = {
+            "date": nowdate(),
+            "plant": doc.current_plant,
+            "item_code": doc.current_item_code,
+            "quality_status": doc.quality_status,
+            "action": "Batch updated"
+        }
+
+        # Add previous values if available
+        if doc_before_save:
+            if doc_before_save.get('current_plant') != doc.current_plant:
+                history["previous_value"] = f"Plant: {doc_before_save.get('current_plant')}"
+                history["new_value"] = f"Plant: {doc.current_plant}"
+
+            if doc_before_save.get('current_item_code') != doc.current_item_code:
+                history["previous_value"] = f"Item: {doc_before_save.get('current_item_code')}"
+                history["new_value"] = f"Item: {doc.current_item_code}"
+
+        # Initialize history table if empty
+        if not doc.processing_history:
+            doc.processing_history = []
+
+        # Add new history entry
+        doc.append("processing_history", history)
+
+    def should_create_next_wo(doc):
+        """
+        Determine if next work order should be created
+        """
+        conditions = [
+            doc.quality_status == "Passed",
+            doc.current_plant in ["2", "4"],  # After drying or quality check
+            not doc.next_processing_wo  # No next WO already created
+        ]
+
+        return all(conditions)
+
+    def create_next_work_order(doc):
+        """
+        Automatically create next work order based on current state
+        """
+        target_plant = get_next_plant(doc.current_plant, doc.current_item_code)
+
+        wo = frappe.new_doc("Work Order")
+        wo.production_item = doc.current_item_code
+        wo.company = get_company_for_plant(target_plant)
+        wo.planned_start_date = frappe.utils.add_days(nowdate(), 1)
+        wo.custom_plant_code = target_plant
+        wo.qty = calculate_next_quantity(doc)
+
+        # Set custom fields based on your requirements
+        wo.insert()
+
+        doc.next_processing_wo = wo.name
+        doc.target_plant = target_plant
+
+        frappe.msgprint(_("Created next work order: {0}").format(wo.name))
+
+    def get_next_plant(current_plant, item_code):
+        """
+        Determine the next plant based on current state and item code
+        """
+        plant_rules = {
+            '3': '2',  # Juice → Dry
+            '2': '4',  # Dry → Laboratory
+            '4': get_mixing_plant_for_item(item_code),  # Lab → Mix/Formulated
+            '1': '4',  # Mix → Laboratory
+            '5': '4'   # Formulated → Laboratory
+        }
+
+        return plant_rules.get(current_plant, '4')  # Default to laboratory
+
+    def get_mixing_plant_for_item(item_code):
+        """
+        Determine if item goes to Mix Plant (1) or Formulated Plant (5)
+        """
+        # Your business rules here - example:
+        if item_code.startswith('03'):
+            return '1'  # Mix Plant
+        elif item_code.startswith('05'):
+            return '5'  # Formulated Plant
+        else:
+            return '1'  # Default to Mix Plant
+
+    def get_company_for_plant(plant_code):
+        """
+        Map plant codes to companies
+        """
+        plant_company_map = {
+            '1': 'AMB-Wellness',
+            '2': 'Dry Plant Company',  # Adjust as needed
+            '3': 'Juice',
+            '4': 'AMB-Wellness',  # Laboratory typically same as main company
+            '5': 'AMB-Wellness'   # Formulated typically same as main company
+        }
+        return plant_company_map.get(plant_code, 'AMB-Wellness')
+
+    def calculate_next_quantity(doc):
+        """
+        Calculate quantity for next work order with potential losses
+        """
+        # Get current quantity from somewhere - you might need to track this
+        current_qty = 1000  # Example - replace with actual logic
+
+        # Apply processing losses based on plant
+        loss_factors = {
+            '2': 0.9,  # 10% loss in drying
+            '1': 0.95, # 5% loss in mixing
+            '5': 0.98  # 2% loss in formulation
+        }
+
+        return current_qty * loss_factors.get(doc.target_plant, 1)
+
+    def link_coa_to_batch(doc):
+        """
+        Link COA to batch and update related fields
+        """
+        coa = frappe.get_doc("COA AMB", doc.coa_reference)
+
+        # Update batch with COA results
+        doc.db_set({
+            "quality_status": "Passed",
+            "current_item_code": coa.final_item_code or doc.current_item_code
+        })
+
+        # Also update the related work order if exists
+        if doc.work_order_ref:
+            frappe.db.set_value("Work Order", doc.work_order_ref, {
+                "quality_status": "Completed",
+                "custom_final_item_code": coa.final_item_code
+            })
+
+
+# ============================================================
+# V13.6.0 P3 MIGRATED: validate_var_code39_ok
+# Original Server Script: validate_var_code39_ok
+# Event: Before Save
+# ============================================================
+
+def p3_validate_code39(doc, method=None):
+    """validate_var_code39_ok - faithful port from Server Script"""
+
+    def var_to_int(v, d=0):
+        try:
+            return int(v)
+        except Exception:
+            return d
+
+    def var_code39_ok(txt):
+        if not txt:
+            return False
+        s = (txt or '').upper()
+        allowed = set('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-.$/+%* ')
+        for ch in s:
+            if ch not in allowed:
+                return False
+        return True
+
+    # Validate parent relationship
+    level = var_to_int(doc.custom_batch_level, 0)
+    if level > 1 and not doc.parent_batch_amb:
+        frappe.throw(f"Parent Batch AMB is required for level {doc.custom_batch_level}")
+
+    # Coerce numeric fields if possible
+    if doc.get('custom_plant_code'):
+        try:
+            doc.custom_plant_code = int(doc.custom_plant_code)
+        except Exception:
+            pass
+
+    if doc.get('custom_sublot_consecutive'):
+        try:
+            doc.custom_sublot_consecutive = int(doc.custom_sublot_consecutive)
+        except Exception:
+            pass
+
+    # Level 3: validate container barrels
+    rows = doc.get('container_barrels') or []
+    if str(doc.custom_batch_level) == '3' and rows:
+        for i, row in enumerate(rows, start=1):
+            serial = (row.get('barrel_serial_number') or '').strip()
+            gross = row.get('gross_weight')
+            tara = row.get('tara_weight')
+            net = row.get('net_weight')
+            pkg = row.get('packaging_type')
+
+            if serial and not gross:
+                frappe.throw(f"Row {i}: Gross weight is required for barrel {serial}")
+
+            if gross and not pkg:
+                frappe.throw(f"Row {i}: Packaging type is required when gross weight is entered")
+
+            if gross is not None and tara is not None:
+                calc_net = float(gross) - float(tara)
+                if calc_net <= 0:
+                    frappe.throw(f"Row {i}: Net weight cannot be zero or negative for barrel {serial}")
+                if not net or abs(float(net) - calc_net) > 0.001:
+                    row['net_weight'] = calc_net
+
+            if serial and not var_code39_ok(serial):
+                frappe.throw(f"Row {i}: Invalid CODE-39 barcode format for barrel {serial}")
+
+
