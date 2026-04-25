@@ -18,7 +18,7 @@
  "colour": null,
  "custom": 0,
  "default_email_template": null,
- "default_print_format": null,
+ "default_print_format": "Label Small 8 Batch",
  "default_view": "List",
  "description": null,
  "docstatus": 0,
