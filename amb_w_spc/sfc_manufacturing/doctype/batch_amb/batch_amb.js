@@ -1996,3 +1996,25 @@ function generate_serials_l2(frm, count, prefix, packaging_type, tara_weight) {
         }
     });
 }
+
+// BUG-118: Add Print Label button with COA validation
+frappe.ui.form.on('Batch AMB', {
+    refresh: function(frm) {
+        // Add Print Label button under Print menu
+        frm.add_custom_button(__('\ud83c\udff7\ufe0f Print Label'), function() {
+            if (!frm.doc.coa_amb) {
+                frappe.msgprint(__('Please select COA / Cert. Analisis para TDS before printing the label'));
+                return;
+            }
+
+            frappe.route_options = {};
+            frappe.utils.print(
+                frm.doctype,
+                frm.docname,
+                'Label Small 8 Batch',
+                frm.doc.letter_head || null,
+                frm.doc.language || frappe.boot.lang
+            );
+        }, __('Print'));
+    }
+});
