@@ -420,6 +420,24 @@
    "idx": 6
   },
   {
+   "fieldname": "sample_request_ref",
+   "fieldtype": "Link",
+   "label": "Sample Request AMB",
+   "options": "Sample Request AMB"
+  },
+  {
+   "fieldname": "lote_amb_reference",
+   "fieldtype": "Link",
+   "label": "Lote AMB Reference",
+   "options": "Lote AMB"
+  },
+  {
+   "fieldname": "stock_entry_reference",
+   "fieldtype": "Link",
+   "label": "Stock Entry Reference",
+   "options": "Stock Entry"
+  },
+  {
    "allow_bulk_edit": 0,
    "allow_in_quick_entry": 0,
    "allow_on_submit": 0,

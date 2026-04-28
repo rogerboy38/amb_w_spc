@@ -17,6 +17,7 @@ from frappe.utils import (
     get_datetime,
     getdate,
     cstr,
+    get_url,
 )
 from frappe.utils.nestedset import NestedSet
 
@@ -251,6 +252,7 @@ class BatchAMB(NestedSet):
         """Validation before saving"""
         self.set_batch_naming()
         self.validate_production_dates()
+        self.update_planned_qty_from_work_order()  
         self.validate_quantities()
         self.validate_work_order()
         self.validate_containers()
@@ -259,6 +261,16 @@ class BatchAMB(NestedSet):
         self.set_item_details()
         self.validate_processing_dates()
         self.calculate_yield_percentage()
+        # Check if quality status changed
+        doc_before = self.get_doc_before_save()
+        if doc_before and hasattr(doc_before, 'quality_status'):
+            if doc_before.quality_status != self.quality_status:
+                self.log_batch_history(
+                    action="Quality Status Changed",
+                    comments=f"Quality changed from {doc_before.quality_status} to {self.quality_status}",
+                    system_generated=True
+                )
+                self.notify_stakeholders()
 
     def before_save(self):
         """Before save hook"""
@@ -282,12 +294,16 @@ class BatchAMB(NestedSet):
         self.create_stock_entry()
         self.create_lote_amb_if_needed()
         self.update_batch_status("Completed")
+        self.update_work_order_on_completion()
+        self.notify_manager_on_quantity_variance()
         self.notify_stakeholders()
 
     def on_cancel(self):
         """On cancel"""
         self.cancel_stock_entries()
         self.update_batch_status("Cancelled")
+        self.notify_stakeholders() 
+   
 
     # -----------------------------
     # Core validations
@@ -301,15 +317,85 @@ class BatchAMB(NestedSet):
 
             if end < start:
                 frappe.throw(_("Production end date cannot be before start date"))
+    def get_plant_code_for_batch(self):
+        """Get plant code from Production Plant AMB"""
+        # 1. Check sample request first
+        if hasattr(self, 'sample_request_ref') and self.sample_request_ref:
+            try:
+                sr = frappe.get_doc("Sample Request AMB", self.sample_request_ref)
+                if hasattr(sr, 'production_plant_amb') and sr.production_plant_amb:
+                    plant = frappe.get_doc("Production Plant AMB", sr.production_plant_amb)
+                    if hasattr(plant, 'production_plant_id') and plant.production_plant_id:
+                        return str(plant.production_plant_id)
+            except Exception as e:
+                frappe.log_error(f"Error getting plant from sample request: {str(e)}", "Plant Code")
+        
+        # 2. Check work order
+        wo_ref = getattr(self, 'work_order_ref', None) or getattr(self, 'work_order', None)
+        if wo_ref:
+            try:
+                wo = frappe.get_doc("Work Order", wo_ref)
+                if hasattr(wo, 'production_plant_amb') and wo.production_plant_amb:
+                    plant = frappe.get_doc("Production Plant AMB", wo.production_plant_amb)
+                    if hasattr(plant, 'production_plant_id') and plant.production_plant_id:
+                        return str(plant.production_plant_id)
+                if hasattr(wo, 'custom_plant_code') and wo.custom_plant_code:
+                    return str(wo.custom_plant_code)
+            except Exception as e:
+                frappe.log_error(f"Error getting plant from work order: {str(e)}", "Plant Code")
+        
+        # 3. Check current plant field
+        if hasattr(self, 'current_plant2') and self.current_plant2:
+            try:
+                plant = frappe.get_doc("Production Plant AMB", self.current_plant2)
+                if hasattr(plant, 'production_plant_id') and plant.production_plant_id:
+                    return str(plant.production_plant_id)
+            except Exception:
+                pass
+        
+        # 4. Fallback to custom_plant_code
+        if hasattr(self, 'custom_plant_code') and self.custom_plant_code:
+            return str(self.custom_plant_code)
+        
+        # 5. Default to Mix (1)
+        return "1"
 
     def validate_quantities(self):
-        """Validate quantities"""
+        """Validate quantities - including comparison with container barrels"""
+        # Basic validations
         if self.produced_qty and flt(self.produced_qty) <= 0:
             frappe.throw(_("Produced quantity must be greater than 0"))
 
         if self.planned_qty is not None and flt(self.planned_qty) < 0:
             frappe.throw(_("Planned quantity must be greater than 0"))
-
+        
+        # For Level 3 batches (containers), validate against container barrels
+        if self.custom_batch_level == "3" and self.container_barrels:
+            total_net = sum(flt(b.net_weight) for b in self.container_barrels)
+            
+            if self.planned_qty and self.planned_qty > 0:
+                variance = total_net - self.planned_qty
+                variance_percent = (variance / self.planned_qty) * 100
+                
+                if variance > 0:
+                    # Exceeded planned quantity
+                    message = f"⚠️ Total net weight ({total_net:.3f} kg) EXCEEDS planned quantity ({self.planned_qty:.3f} kg) by {variance:.3f} kg (+{variance_percent:.1f}%)."
+                    
+                    if variance_percent > 10:
+                        frappe.throw(f"❌ {message} Please adjust barrel weights or increase planned quantity.")
+                    else:
+                        frappe.msgprint(message, indicator="orange", alert=True)
+                        
+                elif variance < 0:
+                    # Under planned quantity
+                    message = f"ℹ️ Total net weight ({total_net:.3f} kg) is UNDER planned quantity ({self.planned_qty:.3f} kg) by {abs(variance):.3f} kg ({variance_percent:.1f}%)."
+                    frappe.msgprint(message, indicator="blue", alert=True)
+                else:
+                    # Perfect match
+                    frappe.msgprint(f"✅ Total net weight ({total_net:.3f} kg) matches planned quantity ({self.planned_qty:.3f} kg).", indicator="green", alert=True)
+            
+            # Update total net weight on the batch
+            self.total_net_weight = total_net
     def validate_work_order(self):
         """Validate work order reference"""
         if self.work_order and not frappe.db.exists("Work Order", self.work_order):
@@ -348,16 +434,22 @@ class BatchAMB(NestedSet):
         """Validate barrel weights"""
         if self.custom_batch_level != "3":
             return
-
+    
         if self.container_barrels:
             for barrel in self.container_barrels:
                 if barrel.gross_weight and barrel.tara_weight:
                     net_weight = barrel.gross_weight - barrel.tara_weight
-                    if net_weight <= 0:
+                    # Allow net_weight >= 0 (not just > 0)
+                    if net_weight < 0:
                         frappe.throw(
-                            f"Invalid net weight for barrel {barrel.barrel_serial_number}"
+                            f"Invalid net weight for barrel {barrel.barrel_serial_number}: "
+                            f"gross={barrel.gross_weight}, tara={barrel.tara_weight} ? net={net_weight}"
                         )
-                    barrel.net_weight = net_weight
+                    elif net_weight == 0:
+                        # Net weight is zero, which is acceptable for empty barrels
+                        barrel.net_weight = 0
+                    else:
+                        barrel.net_weight = net_weight
 
     def calculate_yield_percentage(self):
         """Calculate yield percentage based on planned and processed quantities"""
@@ -579,7 +671,9 @@ class BatchAMB(NestedSet):
         else:
             year = datetime.now().strftime("%y")
 
-        plant_code = "1"
+        # plant_code = "1"
+        # Get plant code using the new method
+        plant_code = self.get_plant_code_for_batch()
         if self.production_plant:
             try:
                 plant_doc = frappe.get_doc("Production Plant AMB", self.production_plant)
@@ -589,6 +683,8 @@ class BatchAMB(NestedSet):
                     and plant_doc.production_plant_id
                 ):
                     plant_code = str(plant_doc.production_plant_id)
+                    # Get plant code using the new method
+                    # plant_code = self.get_plant_code_for_batch()
                 else:
                     plant_mapping = {
                         "Mix": "1",
@@ -667,41 +763,343 @@ class BatchAMB(NestedSet):
     # -----------------------------
     # External sync / stubs
     # -----------------------------
-
     def sync_with_lote_amb(self):
-        """Sync with Lote AMB"""
-        pass
-
+        """Sync with Lote AMB - create or update Lote AMB record"""
+        try:
+            # Check if Lote AMB already exists
+            if not hasattr(self, 'lote_amb_reference') or not self.lote_amb_reference:
+                # Create Lote AMB if needed
+                lote = frappe.new_doc("Lote AMB")
+                lote.batch_reference = self.name
+                lote.item_code = self.item_to_manufacture
+                lote.quantity = self.planned_qty or self.batch_quantity
+                lote.insert()
+                self.lote_amb_reference = lote.name
+                return True
+        except Exception as e:
+            frappe.log_error(f"Error syncing with Lote AMB: {str(e)}", "Batch AMB Sync")
+            return False
+    
     def update_work_order_status(self):
-        """Update work order status"""
-        pass
+        """Update linked Work Order status based on batch status"""
+        try:
+            if self.work_order_ref:
+                wo = frappe.get_doc("Work Order", self.work_order_ref)
+                # Map batch status to work order status
+                status_map = {
+                    "Draft": "Draft",
+                    "In Progress": "In Process",
+                    "Completed": "Completed",
+                    "Cancelled": "Cancelled"
+                }
+                new_status = status_map.get(self.batch_status, wo.status)
+                if wo.status != new_status:
+                    wo.db_set("status", new_status)
+                    frappe.db.commit()
+                    return True
+        except Exception as e:
+            frappe.log_error(f"Error updating work order status: {str(e)}", "Batch AMB Sync")
+            return False
+    
+    def log_batch_history(self, action=None, comments=None, system_generated=False):
+        """Log batch history entry for audit trail"""
+        try:
+            action = action or "Batch Updated"
+            comments = comments or f"Batch {self.name} updated"
+            
+            history_entry = {
+                "date": now_datetime(),
+                "plant": self.current_plant2 if hasattr(self, 'current_plant2') else None,
+                "item_code": self.current_item_code or self.item_to_manufacture,
+                "batch_reference": self.name,  # ? Must match exact field name
+                "quality_status": self.quality_status if hasattr(self, 'quality_status') else "Pending",
+                "processing_action": action,
+                "changed_by": frappe.session.user,
+                "comments": comments,
+                "system_generated": 1 if system_generated else 0
+            }
+            
+            if not hasattr(self, 'processing_history'):
+                self.processing_history = []
+            self.append("processing_history", history_entry)
+            return True
+        except Exception as e:
+            frappe.log_error(f"Error logging batch history: {str(e)}", "Batch AMB History")
+            return False
 
-    def log_batch_history(self):
-        """Log batch history"""
-        pass
-
+    
     def create_stock_entry(self):
-        """Create stock entry"""
-        pass
-
+        """Create stock entry for batch production"""
+        try:
+            # Only create if batch is being submitted/completed
+            if self.docstatus == 1 and self.batch_status == "Completed":
+                se = frappe.new_doc("Stock Entry")
+                se.stock_entry_type = "Manufacture"
+                se.company = self.company
+                se.batch_no = self.name
+                # Add items from BOM or batch items
+                if hasattr(self, 'output_products') and self.output_products:
+                    for product in self.output_products:
+                        se.append("items", {
+                            "item_code": product.item_code,
+                            "qty": product.qty,
+                            "t_warehouse": product.target_warehouse
+                        })
+                se.insert()
+                se.submit()
+                self.stock_entry_reference = se.name
+                return True
+        except Exception as e:
+            frappe.log_error(f"Error creating stock entry: {str(e)}", "Batch AMB Stock Entry")
+            return False
+    
     def create_lote_amb_if_needed(self):
-        """Create Lote AMB"""
-        pass
-
+        """Create Lote AMB record if not exists"""
+        return self.sync_with_lote_amb()
+    
     def cancel_stock_entries(self):
-        """Cancel stock entries"""
-        pass
-
+        """Cancel associated stock entries when batch is cancelled"""
+        try:
+            if hasattr(self, 'stock_entry_reference') and self.stock_entry_reference:
+                se = frappe.get_doc("Stock Entry", self.stock_entry_reference)
+                if se.docstatus == 1:
+                    se.cancel()
+                    frappe.db.commit()
+                    return True
+        except Exception as e:
+            frappe.log_error(f"Error cancelling stock entry: {str(e)}", "Batch AMB Cancel")
+            return False
+    
     def update_batch_status(self, status):
-        """Update status"""
-        self.db_set("batch_status", status)
-
+        """Update batch status and save"""
+        self.batch_status = status
+        self.save()
+    
+    def log_batch_history(self, action=None, comments=None, system_generated=False):
+        """Log batch history entry for audit trail"""
+        try:
+            action = action or "Batch Updated"
+            comments = comments or f"Batch {self.name} updated"
+            
+            # Get previous state if available
+            doc_before = self.get_doc_before_save()
+            if doc_before:
+                changes = []
+                # Track changed fields
+                for field in ["processing_status", "quality_status", "batch_status"]:
+                    if getattr(doc_before, field, None) != getattr(self, field, None):
+                        changes.append(f"{field}: {getattr(doc_before, field)} ? {getattr(self, field)}")
+                if changes:
+                    comments = ", ".join(changes)
+            
+            history_entry = {
+                "date": now_datetime(),
+                "plant": self.current_plant2,
+                "item_code": self.current_item_code,
+                "quality_status": self.quality_status,
+                "processing_action": action,
+                "changed_by": frappe.session.user,
+                "comments": comments,
+                "system_generated": 1 if system_generated else 0
+            }
+            
+            if not hasattr(self, 'processing_history'):
+                self.processing_history = []
+            self.append("processing_history", history_entry)
+            return True
+        except Exception as e:
+            frappe.log_error(f"Error logging batch history: {str(e)}", "Batch AMB History")
+            return False
+    
     def notify_stakeholders(self):
-        """Notify stakeholders"""
-        pass
+        """Notify stakeholders about batch status changes"""
+        try:
+            # Get previous state to detect changes
+            doc_before = self.get_doc_before_save()
+            if not doc_before:
+                return
+            
+            # Detect status changes
+            status_changed = False
+            old_status = None
+            new_status = None
+            
+            # Check batch status change
+            if doc_before.batch_status != self.batch_status:
+                status_changed = True
+                old_status = doc_before.batch_status
+                new_status = self.batch_status
+            
+            # Check quality status change
+            quality_changed = False
+            old_quality = None
+            new_quality = None
+            
+            if hasattr(self, 'quality_status') and hasattr(doc_before, 'quality_status'):
+                if doc_before.quality_status != self.quality_status:
+                    quality_changed = True
+                    old_quality = doc_before.quality_status
+                    new_quality = self.quality_status
+            
+            # If no changes, skip
+            if not status_changed and not quality_changed:
+                return
+            
+            # Build notification message
+            notification_lines = []
+            notification_lines.append(f"**Batch: {self.name}**")
+            notification_lines.append(f"**Title:** {self.title or self.name}")
+            notification_lines.append(f"**Item:** {self.item_to_manufacture} - {self.wo_item_name or ''}")
+            
+            if status_changed:
+                notification_lines.append(f"**Status Change:** {old_status} ? {new_status}")
+            
+            if quality_changed:
+                notification_lines.append(f"**Quality Status:** {old_quality} ? {new_quality}")
+            
+            notification_message = "\n".join(notification_lines)
+            
+            # Determine recipients
+            recipients = set()
+            
+            # Add owner
+            if self.owner:
+                owner_email = frappe.db.get_value("User", self.owner, "email")
+                if owner_email:
+                    recipients.add(owner_email)
+            
+            # Add quality team for quality changes
+            if quality_changed:
+                quality_users = frappe.get_all("Has Role", 
+                    filters={"role": ["in", ["Quality Manager", "Quality Inspector", "Quality Analyst"]]},
+                    fields=["parent"])
+                for user in quality_users:
+                    email = frappe.db.get_value("User", user.parent, "email")
+                    if email:
+                        recipients.add(email)
+            
+            # Add production team for status changes
+            if status_changed and new_status == "Completed":
+                production_users = frappe.get_all("Has Role",
+                    filters={"role": ["in", ["Production Manager", "Production User"]]},
+                    fields=["parent"])
+                for user in production_users:
+                    email = frappe.db.get_value("User", user.parent, "email")
+                    if email:
+                        recipients.add(email)
+            
+            # Add work order owner if linked
+            if self.work_order_ref:
+                wo = frappe.get_doc("Work Order", self.work_order_ref)
+                if wo.owner:
+                    wo_email = frappe.db.get_value("User", wo.owner, "email")
+                    if wo_email:
+                        recipients.add(wo_email)
+            
+            # Send notifications
+            if recipients:
+                frappe.sendmail(
+                    recipients=list(recipients),
+                    subject=f"Batch {self.name} - Status Update",
+                    message=f"""
+                    <h3>Batch Status Update</h3>
+                    <p>{notification_message}</p>
+                    <br>
+                    <p><a href="{get_url()}/app/batch-amb/{self.name}">View Batch</a></p>
+                    <hr>
+                    <p><em>This is an automated notification from the Batch Management System.</em></p>
+                    """,
+                    now=True,
+                    delayed=False
+                )
+                
+                # Log notification in history
+                self.log_batch_history(
+                    action="Notifications Sent",
+                    comments=f"Notified {len(recipients)} stakeholder(s) about status change",
+                    system_generated=True
+                )
+                
+                return True
+                
+        except Exception as e:
+            frappe.log_error(f"Error notifying stakeholders for batch {self.name}: {str(e)}", "Batch AMB Notification")
+            return False
+    def notify_manager_on_quantity_variance(self):
+        """Notify manager if quantity variance exceeds threshold"""
+        if not self.planned_qty or self.planned_qty <= 0:
+            return
+        
+        # Calculate total net weight from containers or batch
+        total_net = 0
+        if self.container_barrels:
+            total_net = sum(flt(b.net_weight) for b in self.container_barrels)
+        else:
+            total_net = self.total_net_weight or 0
+        
+        variance = total_net - self.planned_qty
+        variance_percent = (variance / self.planned_qty) * 100 if self.planned_qty > 0 else 0
+        
+        # Only notify if variance exceeds 5%
+        if abs(variance_percent) <= 5:
+            return
+        
+        # Get manager emails
+        managers = frappe.get_all("Has Role", 
+            filters={"role": ["in", ["Production Manager", "Quality Manager"]]},
+            fields=["parent"])
+        
+        recipients = []
+        for m in managers:
+            email = frappe.db.get_value("User", m.parent, "email")
+            if email:
+                recipients.append(email)
+        
+        # Add batch owner
+        if self.owner:
+            owner_email = frappe.db.get_value("User", self.owner, "email")
+            if owner_email:
+                recipients.append(owner_email)
+        
+        if recipients:
+            status_icon = "⚠️" if variance > 0 else "📉"
+            status_text = "Exceeded" if variance > 0 else "Under" if variance < 0 else "On Target"
+            
+            subject = f"{status_icon} Batch {self.name} Quantity Variance Alert - {status_text} by {abs(variance_percent):.1f}%"
+            
+            message = f"""
+            <h3>Batch Quantity Variance Report</h3>
+            <table border="0" cellpadding="5" style="border-collapse: collapse;">
+                <tr><td><strong>Batch:</strong></td><td>{self.name}</td></tr>
+                <tr><td><strong>Work Order:</strong></td><td>{self.work_order_ref or 'N/A'}</td></tr>
+                <tr><td><strong>Item:</strong></td><td>{self.item_to_manufacture} - {self.wo_item_name or ''}</td></tr>
+                <tr><td><strong>Planned Quantity:</strong></td><td>{self.planned_qty:.3f} kg</td></tr>
+                <tr><td><strong>Actual Net Weight:</strong></td><td>{total_net:.3f} kg</td></tr>
+                <tr><td><strong>Variance:</strong></td><td style="color: {'red' if variance > 0 else 'orange'}">{variance:+.3f} kg ({variance_percent:+.1f}%)</td></tr>
+                <tr><td><strong>Status:</strong></td><td><strong>{status_text}</strong></td></tr>
+            </table>
+            <br>
+            <p><a href="{frappe.utils.get_url()}/app/batch-amb/{self.name}">🔗 View Batch Details</a></p>
+            <hr>
+            <p><em>This is an automated notification from the Batch Management System.</em></p>
+            """
+            
+            frappe.sendmail(
+                recipients=list(set(recipients)),  # Remove duplicates
+                subject=subject,
+                message=message,
+                now=True
+            )
+            
+            # Log notification
+            self.log_batch_history(
+                action="Manager Notification",
+                comments=f"Notified {len(recipients)} manager(s) about quantity variance of {variance:+.3f} kg ({variance_percent:+.1f}%)",
+                system_generated=True
+            )
 
     def update_planned_qty_from_work_order(self):
-        """Update planned_qty from Work Order"""
+        """Update planned_qty from Work Order and check variance"""
         try:
             work_order_name = None
 
@@ -713,13 +1111,67 @@ class BatchAMB(NestedSet):
             if work_order_name:
                 wo_doc = frappe.get_doc("Work Order", work_order_name)
                 if hasattr(wo_doc, "qty") and wo_doc.qty and flt(wo_doc.qty) > 0:
+                    old_planned = self.planned_qty
                     self.planned_qty = flt(wo_doc.qty)
+
+                    # Log if planned quantity changed
+                    if old_planned and old_planned != self.planned_qty:
+                        self.log_batch_history(
+                            action="Planned Quantity Updated",
+                            comments=f"Planned quantity changed from {old_planned} to {self.planned_qty} from Work Order {work_order_name}",
+                            system_generated=True
+                        )
+
+                    # Check if current total net weight exceeds new planned quantity
+                    if self.container_barrels:
+                        total_net = sum(flt(b.net_weight) for b in self.container_barrels)
+                        if total_net > self.planned_qty:
+                            frappe.msgprint(
+                                f"⚠️ Warning: Total net weight ({total_net:.3f} kg) exceeds planned quantity ({self.planned_qty:.3f} kg).\n"
+                                f"Please adjust barrel weights or increase Work Order quantity.",
+                                indicator="orange",
+                                alert=True
+                            )
+
                     return True
         except Exception:
             frappe.log_error(
                 f"Error updating planned_qty from work order: {str(frappe.get_traceback())}"
             )
         return False
+
+    def update_work_order_on_completion(self):
+        """Update linked Work Order when batch is submitted"""
+        if not self.work_order_ref:
+            return
+        
+        try:
+            wo = frappe.get_doc("Work Order", self.work_order_ref)
+            
+            # Calculate total net weight
+            total_net = 0
+            if self.container_barrels:
+                total_net = sum(flt(b.net_weight) for b in self.container_barrels)
+            else:
+                total_net = self.total_net_weight or 0
+            
+            # Update Work Order
+            if wo.status != "Completed":
+                wo.produced_qty = total_net
+                wo.status = "Completed"
+                wo.save()
+                
+                self.log_batch_history(
+                    action="Work Order Completed",
+                    comments=f"Linked Work Order {wo.name} updated to Completed with produced qty {total_net:.3f} kg",
+                    system_generated=True
+                )
+                
+                frappe.msgprint(f"✅ Work Order {wo.name} has been marked as Completed", indicator="green")
+                
+        except Exception as e:
+            frappe.log_error(f"Error updating Work Order: {str(e)}", "Batch AMB Work Order Sync")
+
 
     def update_processing_timestamps(self):
         """Automatically update timestamps based on status changes"""
@@ -1166,6 +1618,62 @@ def create_work_order_from_batch(batch_name):
         frappe.log_error(f"Work Order Creation Error: {str(e)}")
         return {"success": False, "message": str(e)}
 
+@frappe.whitelist()
+def create_sublot(parent_name):
+    """Create a Level 2 sublot from a Level 1 batch"""
+    try:
+        parent = frappe.get_doc("Batch AMB", parent_name)
+        
+        sublot = frappe.new_doc("Batch AMB")
+        sublot.custom_batch_level = "2"
+        sublot.parent_batch_amb = parent.name
+        sublot.work_order_ref = parent.work_order_ref
+        sublot.sales_order_related = parent.sales_order_related
+        sublot.item_to_manufacture = parent.item_to_manufacture
+        sublot.production_plant_name = parent.production_plant_name
+        sublot.production_plant = parent.production_plant
+        sublot.original_item_code = parent.original_item_code or parent.item_code
+        sublot.custom_plant_code = parent.custom_plant_code
+        
+        sublot.insert()
+        
+        # Generate golden number for sublot
+        sublot.set_batch_naming()
+        sublot.save()
+        
+        frappe.db.commit()
+        
+        return {"success": True, "name": sublot.name}
+        
+    except Exception as e:
+        frappe.log_error(f"Error creating sublot: {str(e)}", "Sublot Creation")
+        return {"success": False, "message": str(e)}
+
+@frappe.whitelist()
+def create_container(parent_name):
+    """Create a Level 3 container from a Level 2 batch"""
+    parent = frappe.get_doc("Batch AMB", parent_name)
+    
+    container = frappe.new_doc("Batch AMB")
+    container.custom_batch_level = "3"
+    container.parent_batch_amb = parent.name
+    container.work_order_ref = parent.work_order_ref
+    container.sales_order_related = parent.sales_order_related
+    container.item_to_manufacture = parent.item_to_manufacture
+    container.production_plant_name = parent.production_plant_name
+    container.production_plant = parent.production_plant
+    container.original_item_code = parent.original_item_code or parent.item_code
+    container.custom_plant_code = parent.custom_plant_code
+    
+    container.insert()
+    
+    # Generate golden number for container
+    container.set_batch_naming()
+    container.save()
+    
+    frappe.db.commit()
+    
+    return {"success": True, "name": container.name}
 
 @frappe.whitelist()
 def assign_golden_number_to_batch(batch_name):
@@ -1790,7 +2298,7 @@ def generate_serial_numbers(batch_name, quantity=1, prefix=None, packaging_type=
                 "status": "Empty",
                 "packaging_type": packaging_type or batch.default_packaging_type or "",
                 "tara_weight": resolved_tara,
-                "gross_weight": 0,
+                "gross_weight": resolved_tara,
                 "net_weight": 0,
                 "weight_validated": 0,
                 "batch_amb": batch_name,
@@ -2164,7 +2672,7 @@ def make_sample_request_from_source(source_doctype, source_name):
         contact_phone = None
         address = None
         
-        elif source_doctype == "Lead":
+        if source_doctype == "Lead":
             # Customer name from Lead flat fields
             customer_name = source_doc.company_name or source_doc.lead_name
 

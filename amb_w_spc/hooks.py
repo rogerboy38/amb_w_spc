@@ -29,7 +29,7 @@ fixtures = [
 ]
 
 # After install hook
-after_install = "amb_w_spc.setup.after_install"
+# after_install = "amb_w_spc.setup.after_install"
 
 # ========================================
 #  FRONTEND JS INJECTIONS
@@ -44,6 +44,10 @@ app_include_js = [
 
 override_doctype_class = {
     "Batch AMB": "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.BatchAMB"
+}
+
+override_doctype_dashboards = {
+    "Batch AMB": "amb_w_spc.utils.batch_amb_dashboard.get_data",
 }
 
 doc_events = {
