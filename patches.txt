@@ -1,2 +1,2 @@
-patches/v13_6/fix_batch_amb_migration.py
-patches/v13_6/fix_plant_fields.py
+amb_w_spc.patches.v13_6.fix_batch_amb_migration
+amb_w_spc.patches.v13_6.fix_plant_fields
