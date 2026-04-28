@@ -2298,7 +2298,7 @@ def generate_serial_numbers(batch_name, quantity=1, prefix=None, packaging_type=
                 "status": "Empty",
                 "packaging_type": packaging_type or batch.default_packaging_type or "",
                 "tara_weight": resolved_tara,
-                "gross_weight": resolved_tara,
+                "gross_weight": 0,
                 "net_weight": 0,
                 "weight_validated": 0,
                 "batch_amb": batch_name,
