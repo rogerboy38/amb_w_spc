@@ -1206,14 +1206,10 @@ function fetch_default_tara_weight(frm) {
     });
 }
 
-function calculate_net_weight(frm, cdt, cdn) {
-    const row = locals[cdt][cdn];
-    if (row.gross_weight && row.tara_weight) {
-        const net_weight = row.gross_weight - row.tara_weight;
-        frappe.model.set_value(cdt, cdn, 'net_weight', net_weight);
-        frappe.model.set_value(cdt, cdn, 'weight_validated', net_weight > 0 && net_weight < row.gross_weight ? 1 : 0);
-    }
-}
+// [PATCH V13.7.0] Duplicate calculate_net_weight removed - was overriding the canonical definition at line 408 via JS hoisting.
+// Original duplicate used naive truthy check (row.gross_weight && row.tara_weight) which failed when tara_weight === 0.
+// Canonical version at line 408 uses (!== undefined && !== null) and is restored as the single source of truth.
+// See V13.3.1 baseline archaeology: upstream/V13.3.1:batch_amb.js line 402.
 
 
 // ==================== VALIDATION FUNCTIONS ====================
@@ -1743,20 +1739,15 @@ function fetch_tara_weight_for_row_fixed(frm, cdt, cdn) {
 }
 
 function calculate_net_weight_fixed(frm, cdt, cdn) {
+    // [PATCH V13.7.0] Use frappe.model.set_value to mark dirty and persist on save.
     const row = locals[cdt][cdn];
-
+    if (!row) return;
     const gross = parseFloat(row.gross_weight) || 0;
     const tara = parseFloat(row.tara_weight) || 0;
     const net_weight = gross - tara;
-
-    row.net_weight = net_weight;
-
-    // Only validate if gross weight > 0
-    if (gross > 0) {
-        row.weight_validated = (net_weight > 0 && net_weight < gross) ? 1 : 0;
-    } else {
-        row.weight_validated = 0;
-    }
+    frappe.model.set_value(cdt, cdn, 'net_weight', net_weight);
+    const wv = (gross > 0 && net_weight > 0 && net_weight < gross) ? 1 : 0;
+    frappe.model.set_value(cdt, cdn, 'weight_validated', wv);
 }
 
 // ==================== BATCH L2 MERGED FUNCTIONS ====================
