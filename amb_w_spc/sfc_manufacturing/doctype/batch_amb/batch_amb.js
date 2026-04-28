@@ -229,7 +229,7 @@ frappe.ui.form.on('Container Barrels', {
         row.gross_weight = 0.0001;
         row.tara_weight = 0.0001;
         row.net_weight = 0.0001;
-        row.weight_validated = 0.0001;
+        row.weight_validated = 0;
 
         // Generate serial number - use immediate generation with safety
         if (frm.doc.title || frm.doc.custom_generated_batch_name) {
