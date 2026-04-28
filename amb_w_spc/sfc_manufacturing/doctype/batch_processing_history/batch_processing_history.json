@@ -1,0 +1,66 @@
+{
+ "actions": [],
+ "allow_copy": 0,
+ "creation": "2024-01-01 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "fields": [
+  {
+   "fieldname": "date",
+   "fieldtype": "Datetime",
+   "label": "Date",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "plant",
+   "fieldtype": "Data",
+   "label": "Plant"
+  },
+  {
+   "fieldname": "item_code",
+   "fieldtype": "Link",
+   "label": "Item Code",
+   "options": "Item"
+  },
+  {
+   "fieldname": "batch_reference",
+   "fieldtype": "Link",
+   "label": "Batch Reference",
+   "options": "Batch AMB",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "quality_status",
+   "fieldtype": "Data",
+   "label": "Quality Status"
+  },
+  {
+   "fieldname": "processing_action",
+   "fieldtype": "Data",
+   "label": "Processing Action",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "changed_by",
+   "fieldtype": "Link",
+   "label": "Changed By",
+   "options": "User"
+  },
+  {
+   "fieldname": "comments",
+   "fieldtype": "Text",
+   "label": "Comments"
+  },
+  {
+   "fieldname": "system_generated",
+   "fieldtype": "Check",
+   "label": "System Generated",
+   "default": 0
+  }
+ ],
+ "istable": 1,
+ "module": "SFC Manufacturing",
+ "name": "Batch Processing History",
+ "track_changes": 0
+}
