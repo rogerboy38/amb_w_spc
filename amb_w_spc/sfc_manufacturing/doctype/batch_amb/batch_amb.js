@@ -21,7 +21,10 @@ frappe.ui.form.on('Batch AMB', {
         apply_field_filters(frm);
         setup_field_dependencies(frm);
         show_status_indicators(frm);
-
+        // Always show Save button for draft documents
+        if (frm.doc.docstatus === 0) {
+            frm.page.set_primary_action(__('Save'), () => frm.save(), null, __('Save'));
+        }
         if (!frm.is_new()) {
             frm.add_custom_button(__("New Sample Request"), () => {
                 frappe.call({
@@ -1748,6 +1751,11 @@ function calculate_net_weight_fixed(frm, cdt, cdn) {
     frappe.model.set_value(cdt, cdn, 'net_weight', net_weight);
     const wv = (gross > 0 && net_weight > 0 && net_weight < gross) ? 1 : 0;
     frappe.model.set_value(cdt, cdn, 'weight_validated', wv);
+    if (cur_frm && cur_frm.fields_dict.container_barrels && cur_frm.fields_dict.container_barrels.grid) {
+        var _g = cur_frm.fields_dict.container_barrels.grid;
+        var _r = (_g.grid_rows||[]).find(function(x){return x && x.doc && x.doc.name===cdn;});
+        if (_r && _r.refresh) _r.refresh(); else cur_frm.refresh_field('container_barrels');
+    }
 }
 
 // ==================== BATCH L2 MERGED FUNCTIONS ====================
@@ -1897,7 +1905,15 @@ function generate_bulk_barrel_serials(frm) {
                                 }
 
                                 dialog.set_value('prefix', prefix);
-                                dialog.set_value('tara_weight', r.weight_per_unit || 0);
+                                const _wpu = parseFloat(r.weight_per_unit) || 0;
+                                dialog.set_value('tara_weight', _wpu);
+                                if (_wpu <= 0) {
+                                    frappe.msgprint({
+                                        title: __('Missing Weight Per Unit'),
+                                        indicator: 'orange',
+                                        message: __('Item {0} has no Weight Per Unit configured. Please enter the Tara Weight (kg) manually below before clicking Generate Serials, or update the Item master.', [pkg])
+                                    });
+                                }
                                 dialog.fields_dict.tara_weight.set_description(
                                     __('From Item: {0} ({1} {2})', [
                                         r.item_name,
@@ -1922,7 +1938,7 @@ function generate_bulk_barrel_serials(frm) {
                 fieldname: 'tara_weight',
                 label: __('Tara Weight (kg)'),
                 default: 0,
-                read_only: 1,
+                read_only: 0,
                 description: __('Auto-filled from Item Weight Per Unit')
             }
         ],
@@ -2003,8 +2019,9 @@ function generate_serials_l2(frm, count, prefix, packaging_type, tara_weight) {
                 }, 5);
 
                 frm.reload_doc().then(() => {
-                    frm.doc.__unsaved = 0;
-                    frm.dirty = false;
+                    // if needed change to 0 and false  Do NOT reset dirty flag - keep changes to show Save button
+                    frm.doc.__unsaved = 1;
+                    frm.dirty = true;
                     if (frm.page && frm.page.clear_indicator) frm.page.clear_indicator();
                     frm.refresh();
                 });

@@ -2276,6 +2276,11 @@ def generate_serial_numbers(batch_name, quantity=1, prefix=None, packaging_type=
         resolved_tara = flt(tara_weight) if tara_weight else 0
         if not resolved_tara and packaging_type:
             resolved_tara = flt(frappe.db.get_value("Item", packaging_type, "weight_per_unit"))
+        # BUG-119C: Refuse to silently create zero-tara barrels
+        if not resolved_tara or resolved_tara <= 0:
+            frappe.throw(_("Item {0} has no Weight Per Unit set on the Item master. "
+                           "Please configure a non-zero weight_per_unit (kg) before generating barrel serials, "
+                           "or pass an explicit tara_weight to this method.").format(packaging_type or ""))
 
         for i in range(quantity):
             seq_num = existing_count + i + 1
@@ -2298,7 +2303,7 @@ def generate_serial_numbers(batch_name, quantity=1, prefix=None, packaging_type=
                 "status": "Empty",
                 "packaging_type": packaging_type or batch.default_packaging_type or "",
                 "tara_weight": resolved_tara,
-                "gross_weight": 0,
+                "gross_weight": resolved_tara,
                 "net_weight": 0,
                 "weight_validated": 0,
                 "batch_amb": batch_name,
