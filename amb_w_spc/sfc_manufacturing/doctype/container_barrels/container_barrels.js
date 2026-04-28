@@ -26,5 +26,5 @@ function calculate_and_update(frm, cdt, cdn) {
     frappe.model.set_value(cdt, cdn, 'net_weight', net_weight);
     
     // Trigger parent form update
-    if (typeof update_weight_totals === "function") update_weight_totals(frm);
+    frm.trigger('update_weight_totals');
 }

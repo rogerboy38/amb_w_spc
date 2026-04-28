@@ -7,6 +7,12 @@
 frappe.ui.form.on('Batch AMB', {
     // ==================== FORM EVENTS ====================
 
+    update_weight_totals: function(frm) {
+        // Bridge: child-table frm.trigger('update_weight_totals')
+        // delegates to the in-scope top-level function below.
+        update_weight_totals(frm);
+    },
+
     refresh: function(frm) {
         console.log('🔧 Batch AMB Refresh triggered for:', frm.doc.name);
 
