@@ -22,9 +22,15 @@ function calculate_and_update(frm, cdt, cdn) {
         });
     }
     
-    // Use frappe.model.set_value for proper reactivity
-    frappe.model.set_value(cdt, cdn, 'net_weight', net_weight);
-    
-    // Trigger parent form update
-    frm.trigger('update_weight_totals');
+    // Update net_weight and chain visual refresh + parent totals
+    frappe.model.set_value(cdt, cdn, 'net_weight', net_weight).then(() => {
+        // Force the grid row to repaint so net_weight cell updates visually
+        // without waiting for save (set_value alone does not always repaint
+        // a sibling cell while another cell in the same row is being edited).
+        if (frm.fields_dict.container_barrels && frm.fields_dict.container_barrels.grid) {
+            frm.fields_dict.container_barrels.grid.refresh_row(cdn);
+        }
+        // Recompute parent totals against the now-committed net_weight.
+        frm.trigger('update_weight_totals');
+    });
 }
