@@ -243,6 +243,7 @@ def batch_amb_before_save(doc, method=None):
         )
 
 
+
 class BatchAMB(NestedSet):
     """
     Batch AMB - Production Batch Management
@@ -1619,61 +1620,111 @@ def create_work_order_from_batch(batch_name):
         return {"success": False, "message": str(e)}
 
 @frappe.whitelist()
-def create_sublot(parent_name):
-    """Create a Level 2 sublot from a Level 1 batch"""
+def create_child_batch(parent_name, child_level):
+    """
+    Create a child batch (Level 2 sublot or Level 3 container) from a parent.
+    Copies all necessary fields from the parent to maintain hierarchy.
+    
+    :param parent_name: Name of the parent Batch AMB document
+    :param child_level: '2' for sublot, '3' for container
+    """
     try:
+        if child_level not in ['2', '3']:
+            return {"success": False, "message": "Invalid child level. Must be '2' or '3'"}
+        
         parent = frappe.get_doc("Batch AMB", parent_name)
         
-        sublot = frappe.new_doc("Batch AMB")
-        sublot.custom_batch_level = "2"
-        sublot.parent_batch_amb = parent.name
-        sublot.work_order_ref = parent.work_order_ref
-        sublot.sales_order_related = parent.sales_order_related
-        sublot.item_to_manufacture = parent.item_to_manufacture
-        sublot.production_plant_name = parent.production_plant_name
-        sublot.production_plant = parent.production_plant
-        sublot.original_item_code = parent.original_item_code or parent.item_code
-        sublot.custom_plant_code = parent.custom_plant_code
+        # Create new child batch
+        child = frappe.new_doc("Batch AMB")
         
-        sublot.insert()
+        # ============================================================
+        # 1. HIERARCHY FIELDS
+        # ============================================================
+        child.custom_batch_level = child_level
+        child.parent_batch_amb = parent.name
         
-        # Generate golden number for sublot
-        sublot.set_batch_naming()
-        sublot.save()
+        # ============================================================
+        # 2. WORK ORDER & PRODUCTION FIELDS
+        # ============================================================
+        child.work_order_ref = parent.work_order_ref
+        child.sales_order_related = parent.sales_order_related
+        child.item_to_manufacture = parent.item_to_manufacture
+        child.original_item_code = parent.original_item_code or parent.item_to_manufacture
+        child.current_item_code = parent.current_item_code or parent.item_to_manufacture
+        child.company = parent.company
+        child.planned_qty = parent.planned_qty
+        child.bom_formula = parent.bom_formula
+        child.tds_link = parent.tds_link
+        child.sales_order_related = parent.sales_order_related
+        child.sample_request_ref = parent.sample_request_ref
+        child.lote_amb_reference = parent.lote_amb_reference
+        child.item_to_manufacture = parent.item_to_manufacture
+        child.stock_entry_reference = parent.stock_entry_reference 
+       
+        # ============================================================
+        # 3. GOLDEN NUMBER FIELDS (Critical for hierarchy display)
+        # ============================================================
+        child.custom_golden_number = parent.custom_golden_number
+        child.custom_generated_batch_name = parent.custom_generated_batch_name
+        child.custom_product_family = parent.custom_product_family
+        child.custom_subfamily = parent.custom_subfamily
+        child.custom_consecutive = parent.custom_consecutive
+        child.custom_consecutive_number = parent.custom_consecutive_number
+        child.custom_sublot_consecutive = parent.custom_sublot_consecutive
+        
+        # ============================================================
+        # 4. PLANT & DATE FIELDS
+        # ============================================================
+        child.production_plant_name = parent.production_plant_name
+        child.production_plant = parent.production_plant
+        child.custom_plant_code = parent.custom_plant_code
+        child.current_plant2 = parent.current_plant2
+        child.target_plant = parent.target_plant
+        child.wo_start_date = parent.wo_start_date
+        child.expiry_date = parent.expiry_date
+        
+        # ============================================================
+        # 5. TDS & COA REFERENCE FIELDS (Currently empty in your child)
+        # ============================================================
+        child.tds_link = parent.tds_link
+        child.tds_item_name = parent.tds_item_name
+        child.item_code = parent.item_code
+        child.tds_info = parent.tds_info
+        child.coa_amb = parent.coa_amb
+        child.coa_reference = parent.coa_reference
+        
+        # ============================================================
+        # 6. QUALITY STATUS FIELDS
+        # ============================================================
+        child.quality_status = "Pending"
+        
+        # ============================================================
+        # 7. RESET CHILD-SPECIFIC FIELDS (Start fresh)
+        # ============================================================
+        child.processed_quantity = 0
+        child.processing_history = []
+        child.container_barrels = []
+        child.batch_status = "Draft"
+        
+        # Insert the document
+        # Bug 119J: mark parent as group so Batch AMB Tree shows children
+        if not parent.is_group:
+            parent.db_set("is_group", 1)
+
+        child.insert()
+        
+        # Regenerate naming to ensure correct title based on level
+        child.set_batch_naming()
+        child.save()
         
         frappe.db.commit()
         
-        return {"success": True, "name": sublot.name}
+        return {"success": True, "name": child.name, "message": f"Level {child_level} batch created successfully"}
         
     except Exception as e:
-        frappe.log_error(f"Error creating sublot: {str(e)}", "Sublot Creation")
+        frappe.log_error(f"Error creating child batch: {str(e)}", "Child Batch Creation")
         return {"success": False, "message": str(e)}
 
-@frappe.whitelist()
-def create_container(parent_name):
-    """Create a Level 3 container from a Level 2 batch"""
-    parent = frappe.get_doc("Batch AMB", parent_name)
-    
-    container = frappe.new_doc("Batch AMB")
-    container.custom_batch_level = "3"
-    container.parent_batch_amb = parent.name
-    container.work_order_ref = parent.work_order_ref
-    container.sales_order_related = parent.sales_order_related
-    container.item_to_manufacture = parent.item_to_manufacture
-    container.production_plant_name = parent.production_plant_name
-    container.production_plant = parent.production_plant
-    container.original_item_code = parent.original_item_code or parent.item_code
-    container.custom_plant_code = parent.custom_plant_code
-    
-    container.insert()
-    
-    # Generate golden number for container
-    container.set_batch_naming()
-    container.save()
-    
-    frappe.db.commit()
-    
-    return {"success": True, "name": container.name}
 
 @frappe.whitelist()
 def assign_golden_number_to_batch(batch_name):

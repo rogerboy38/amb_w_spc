@@ -1760,11 +1760,13 @@ function calculate_net_weight_fixed(frm, cdt, cdn) {
 
 // ==================== BATCH L2 MERGED FUNCTIONS ====================
 // Create Sublot Batch (Level 2) from parent
-// Create Sublot Batch (Level 2) from parent
 function create_sublot_batch(frm) {
     frappe.call({
-        method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.create_sublot',
-        args: { parent_name: frm.doc.name },
+        method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.create_child_batch',
+        args: { 
+            parent_name: frm.doc.name,
+            child_level: '2'
+        },
         callback: function(r) {
             if (r.message && r.message.success) {
                 // Show success message with link
@@ -1784,8 +1786,11 @@ function create_sublot_batch(frm) {
 // Create Container Batch (Level 3) from parent
 function create_container_batch(frm) {
     frappe.call({
-        method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.create_container',
-        args: { parent_name: frm.doc.name },
+        method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.create_child_batch',
+        args: { 
+            parent_name: frm.doc.name,
+            child_level: '3'
+        },
         callback: function(r) {
             if (r.message && r.message.success) {
                 frappe.set_route('Form', 'Batch AMB', r.message.name);
@@ -1984,21 +1989,16 @@ function generate_bulk_barrel_serials(frm) {
 
 // Generate barrel serials - calls backend API
 function generate_serials_l2(frm, count, prefix, packaging_type, tara_weight) {
-
     console.log("generate_serials_l2 called with:", {count, prefix, packaging_type, tara_weight});
     
-
     if (count <= 0) {
         frappe.msgprint(__('Number of barrels must be greater than 0'));
         return;
     }
-    // Initialize flags if not exists
-    if (!frm.flags) {
-        frm.flags = {};
-    }
-
-    // Set flag to skip container barrels validation
+    
+    if (!frm.flags) { frm.flags = {}; }
     frm.flags.generating_barrels = true;
+    
     frappe.call({
         method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.generate_serial_numbers',
         args: {
@@ -2012,19 +2012,33 @@ function generate_serials_l2(frm, count, prefix, packaging_type, tara_weight) {
         freeze_message: __('Generating Barrel Serials...'),
         callback: function(r) {
             frm.flags.generating_barrels = false;
+            
             if (r.message && r.message.status === 'success') {
+                // ✅ Refresh just the child table, NOT the whole document
+                frm.refresh_field('container_barrels');
+                
+                // ✅ Mark form as dirty
+                frm.dirty = true;
+                
+                // ✅ Force save button to appear
+                if (frm.save_btn) {
+                    frm.save_btn.enable();
+                }
+                
+                // ✅ Set primary action if save button is missing
+                if (frm.page && frm.page.set_primary_action) {
+                    frm.page.set_primary_action(__('Save'), () => frm.save(), null, __('Save'));
+                }
+                
                 frappe.show_alert({
                     message: __('Successfully generated ') + r.message.count + __(' barrel serial numbers.'),
                     indicator: 'green'
                 }, 5);
-
-                frm.reload_doc().then(() => {
-                    // if needed change to 0 and false  Do NOT reset dirty flag - keep changes to show Save button
-                    frm.doc.__unsaved = 1;
-                    frm.dirty = true;
-                    if (frm.page && frm.page.clear_indicator) frm.page.clear_indicator();
-                    frm.refresh();
-                });
+                
+            // ✅ Reload to fetch server-created barrel rows (server already saved them)
+            frm.reload_doc();
+            // (former frm.save() removed: it submitted stale local state)
+                
             } else {
                 frappe.msgprint({
                     title: __('Error'),
@@ -2034,10 +2048,7 @@ function generate_serials_l2(frm, count, prefix, packaging_type, tara_weight) {
             }
         },
         error: function(r) {
-            // Clear flag on error too
-            if (frm.flags) {
-                frm.flags.generating_barrels = false;
-            }
+            frm.flags.generating_barrels = false;
             frappe.msgprint({
                 title: __('Error'),
                 message: __('Failed to generate barrel serial numbers: ') + (r.message || r),
@@ -2046,6 +2057,7 @@ function generate_serials_l2(frm, count, prefix, packaging_type, tara_weight) {
         }
     });
 }
+
 function calculate_totals(frm) {
     let total_gross = 0;
     let total_tara = 0;
@@ -2084,3 +2096,288 @@ function calculate_totals(frm) {
         }
     }
 }
+
+// ============================================
+// BUG 119J & 119K FIXES - Nested Containers Hierarchy
+// ============================================
+
+// ============================================
+// BUG 119J: Fix container level 3 not appending as child of level 2
+// ============================================
+
+frappe.ui.form.on('Batch AMB Containers', {
+    // When a container is added
+    container_add: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        
+        // If level 3 or higher, automatically set parent
+        if (row.container_level && row.container_level >= 3) {
+            set_parent_container_hierarchy(frm, cdt, cdn);
+        }
+    },
+    
+    // When container level changes
+    container_level: function(frm, cdt, cdn) {
+        let row = frappe.get_doc(cdt, cdn);
+        
+        if (row.container_level >= 3) {
+            // Show parent container field for level 3+
+            frm.fields_dict.containers.grid.get_field("parent_container").df.hidden = 0;
+            frm.fields_dict.containers.grid.get_field("parent_container").df.reqd = 1;
+            
+            // Auto-set parent
+            set_parent_container_hierarchy(frm, cdt, cdn);
+        } else {
+            // Hide parent container field for level 1-2
+            frm.fields_dict.containers.grid.get_field("parent_container").df.hidden = 1;
+            frm.fields_dict.containers.grid.get_field("parent_container").df.reqd = 0;
+            frappe.model.set_value(cdt, cdn, "parent_container", "");
+        }
+        
+        refresh_field("containers");
+    },
+    
+    // BUG 119K: When serial_barrels are added, force immediate refresh
+    serial_barrels_add: function(frm, cdt, cdn) {
+        let container = frappe.get_doc(cdt, cdn);
+        
+        // Force refresh of child table immediately (BUG 119K fix)
+        setTimeout(function() {
+            // Method 1: Refresh the containers grid
+            refresh_field("containers");
+            
+            // Method 2: Refresh specific grid row
+            if (frm.fields_dict.containers && 
+                frm.fields_dict.containers.grid &&
+                frm.fields_dict.containers.grid.grid_rows_by_docname &&
+                frm.fields_dict.containers.grid.grid_rows_by_docname[container.name]) {
+                
+                let row = frm.fields_dict.containers.grid.grid_rows_by_docname[container.name];
+                if (row && row.fields_dict && row.fields_dict.serial_barrels) {
+                    row.fields_dict.serial_barrels.grid.refresh();
+                }
+            }
+            
+            // Method 3: Mark form as dirty to enable save
+            frm.dirty = true;
+            
+            // Show save button if missing
+            if (frm.page && frm.page.set_primary_action) {
+                frm.page.set_primary_action(__('Save'), () => frm.save(), null, __('Save'));
+            }
+        }, 50);
+    },
+    
+    // BUG 119K: When serial_barrels content changes, refresh display
+    serial_barrels: function(frm, cdt, cdn) {
+        let container = frappe.get_doc(cdt, cdn);
+        
+        // Force refresh of the child table
+        if (frm.fields_dict.containers && 
+            frm.fields_dict.containers.grid &&
+            frm.fields_dict.containers.grid.grid_rows_by_docname &&
+            frm.fields_dict.containers.grid.grid_rows_by_docname[container.name]) {
+            
+            let row = frm.fields_dict.containers.grid.grid_rows_by_docname[container.name];
+            if (row && row.fields_dict && row.fields_dict.serial_barrels) {
+                row.fields_dict.serial_barrels.grid.refresh();
+            }
+        }
+        
+        // Update weight totals
+        if (typeof update_weight_totals === 'function') {
+            update_weight_totals(frm);
+        }
+    }
+});
+
+// ============================================
+// Helper: Set parent container hierarchy (Bug 119J fix)
+// ============================================
+function set_parent_container_hierarchy(frm, cdt, cdn) {
+    let row = frappe.get_doc(cdt, cdn);
+    let parent_level = row.container_level - 1;
+    
+    // Find the most recent container of parent level
+    let parent_container = null;
+    
+    if (frm.doc.containers) {
+        // Search backwards to find the last container of parent level
+        for (let i = frm.doc.containers.length - 1; i >= 0; i--) {
+            let container = frm.doc.containers[i];
+            if (container.container_level === parent_level && container.name !== row.name) {
+                parent_container = container;
+                break;
+            }
+        }
+    }
+    
+    if (parent_container) {
+        // Set parent reference
+        frappe.model.set_value(cdt, cdn, "parent_container", parent_container.container_name);
+        frappe.model.set_value(cdt, cdn, "parent_level", parent_level);
+        
+        // Add this container as child to parent's children array
+        if (!parent_container.children) {
+            parent_container.children = [];
+        }
+        
+        // Check if already exists to avoid duplicates
+        let exists = parent_container.children.some(function(child) {
+            return child.container_name === row.container_name;
+        });
+        
+        if (!exists) {
+            parent_container.children.push({
+                container_name: row.container_name,
+                container_level: row.container_level,
+                quantity: row.quantity || 1
+            });
+        }
+        
+        // Refresh the grid
+        refresh_field("containers");
+        
+        // Show confirmation
+        frappe.show_alert({
+            message: __("✓ Container '{0}' added as child of '{1}'", 
+                [row.container_name, parent_container.container_name]),
+            indicator: "green"
+        }, 3);
+    } else if (row.container_level > 1) {
+        frappe.show_alert({
+            message: __("⚠️ No parent container found for level {0}", [parent_level]),
+            indicator: "orange"
+        }, 3);
+    }
+}
+
+// ============================================
+// Function to fix existing batch hierarchy (run from console)
+// ============================================
+function fix_batch_hierarchy_from_console(batch_name) {
+    frappe.call({
+        method: 'frappe.client.get',
+        args: {
+            doctype: 'Batch AMB',
+            name: batch_name
+        },
+        callback: function(r) {
+            if (r.message) {
+                let batch = r.message;
+                let containers = batch.containers || [];
+                
+                // Create container map
+                let container_map = {};
+                containers.forEach(function(c) {
+                    container_map[c.container_name] = c;
+                    c.children = [];
+                });
+                
+                // Build hierarchy
+                containers.forEach(function(c) {
+                    if (c.container_level > 1 && c.parent_container) {
+                        let parent = container_map[c.parent_container];
+                        if (parent) {
+                            if (!parent.children) parent.children = [];
+                            
+                            let exists = parent.children.some(function(child) {
+                                return child.container_name === c.container_name;
+                            });
+                            
+                            if (!exists) {
+                                parent.children.push({
+                                    container_name: c.container_name,
+                                    container_level: c.container_level,
+                                    quantity: c.quantity || 1
+                                });
+                            }
+                        }
+                    }
+                });
+                
+                // Save the batch
+                frappe.call({
+                    method: 'frappe.client.save',
+                    args: { doc: batch },
+                    callback: function(save_r) {
+                        if (save_r.message) {
+                            frappe.show_alert({
+                                message: __('✅ Hierarchy fixed for {0}', [batch_name]),
+                                indicator: 'green'
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    });
+}
+
+// ============================================
+// Force refresh child tables (Bug 119K fix)
+// ============================================
+function force_refresh_child_tables(frm) {
+    if (!frm.doc.containers) return;
+    
+    // Refresh each container's child tables
+    frm.doc.containers.forEach(function(container, idx) {
+        // Force refresh of serial_barrels
+        if (container.serial_barrels) {
+            // Create a dummy change to trigger refresh
+            frappe.model.set_value(container.doctype, container.name, '_dummy', frappe.utils.now());
+        }
+    });
+    
+    // Refresh the main grid
+    refresh_field("containers");
+    
+    console.log("🔄 Child tables refreshed (Bug 119K fix)");
+}
+
+// ============================================
+frappe.ui.form.on('Batch AMB', {
+    before_save: function(frm) {
+        // Recompute hierarchy parent links before save (Bug 119J safety)
+        if (frm.doc.containers && frm.doc.containers.length) {
+            (frm.doc.containers || []).forEach(function(row) {
+                if (row.container_level && row.container_level >= 3 && !row.parent_container) {
+                    if (typeof set_parent_container_hierarchy === 'function') {
+                        try { set_parent_container_hierarchy(frm, row.doctype, row.name); } catch(e) { console.warn('hierarchy fix skipped', e); }
+                    }
+                }
+            });
+        }
+    }
+});
+
+// =====================================================
+// Bug 119J/K enhancement: Parent -> Child field copy
+// Copy header fields to new sublot/container/barrel rows
+// =====================================================
+function _amb_copy_parent_fields_to_row(frm, row) {
+    if (!row) return;
+    var fields = ['planned_qty','item','item_code','item_name','warehouse','batch_no','work_order','customer','project','company','uom'];
+    fields.forEach(function(f) {
+        if ((row[f] === undefined || row[f] === null || row[f] === '') && frm.doc[f] !== undefined && frm.doc[f] !== null && frm.doc[f] !== '') {
+            try { frappe.model.set_value(row.doctype, row.name, f, frm.doc[f]); } catch(e) { row[f] = frm.doc[f]; }
+        }
+    });
+}
+
+frappe.ui.form.on('Batch AMB Containers', {
+    container_add: function(frm, cdt, cdn) {
+        var row = frappe.get_doc(cdt, cdn);
+        // Sublot/container created (level >= 2): inherit parent header fields
+        if (row && (!row.container_level || row.container_level >= 2)) {
+            _amb_copy_parent_fields_to_row(frm, row);
+        }
+    }
+});
+
+frappe.ui.form.on('Container Barrels', {
+    container_barrels_add: function(frm, cdt, cdn) {
+        var row = frappe.get_doc(cdt, cdn);
+        _amb_copy_parent_fields_to_row(frm, row);
+    }
+});
