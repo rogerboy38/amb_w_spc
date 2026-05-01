@@ -2380,4 +2380,5 @@ frappe.ui.form.on('Container Barrels', {
         var row = frappe.get_doc(cdt, cdn);
         _amb_copy_parent_fields_to_row(frm, row);
     }
+
 });

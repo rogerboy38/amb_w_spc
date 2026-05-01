@@ -67,11 +67,3 @@ doc_events = {
         ],
     },
 }
-
-# Whitelist methods for dashboard
-#__version__ = "5.2.0"
-
-# Additional dashboard configuration
-website_route_rules = [
-    {"from_route": "/batch-dashboard/<path:path>", "to_route": "batch_dashboard"}
-]
