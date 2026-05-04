@@ -77,29 +77,38 @@ def _format_dmy(d) -> str:
 @frappe.whitelist()
 def generate_label_cells_for_batch(batch_name: str) -> dict:
     """
-    Walks Batch AMB.container_barrels and fills in label_* fields where they
-    are currently empty. Existing non-empty values are preserved (per user
-    decision: 'fill only when empty').
+    Walks Batch AMB's Container Barrels rows and fills label_* fields where they
+    are currently empty. Existing non-empty values are preserved.
 
-    Returns:
-        {"updated": <int>, "skipped_existing": <int>,
-         "no_item": bool, "warning": str|None}
+    Uses frappe.db.set_value with update_modified=False so we do NOT:
+      - trigger Batch AMB's validate() (which recomputes weights)
+      - publish a doc_update realtime event (which can hide the Save button)
+      - bump the parent's modified timestamp
+
+    Returns: {"updated": int, "skipped_existing": int, "no_item": bool, "warning": str|None}
     """
     if not batch_name:
         frappe.throw(_("Batch AMB name is required"))
 
-    batch = frappe.get_doc("Batch AMB", batch_name)
+    # Fetch only the parent-level fields we need (avoid loading child tables)
+    batch_top = frappe.db.get_value(
+        "Batch AMB",
+        batch_name,
+        ["name", "item_on_batch", "current_item_code", "original_item_code",
+         "expiry_date", "creation"],
+        as_dict=True,
+    )
+    if not batch_top:
+        frappe.throw(_("Batch AMB {0} not found").format(batch_name))
 
-    if not batch.container_barrels:
-        return {
-            "updated": 0,
-            "skipped_existing": 0,
-            "no_item": False,
-            "warning": _("Batch has no container barrels to label."),
-        }
+    # Item resolution (item_on_batch -> current_item_code -> original_item_code)
+    item_code = ""
+    for fld in ("item_on_batch", "current_item_code", "original_item_code"):
+        v = batch_top.get(fld)
+        if v:
+            item_code = v
+            break
 
-    # Resolve Item once (same item for all containers in a batch)
-    item_code = _resolve_item(batch)
     item_name = ""
     shelf_life_days = 0
     if item_code:
@@ -112,8 +121,8 @@ def generate_label_cells_for_batch(batch_name: str) -> dict:
             item_name = item_data.get("item_name") or ""
             shelf_life_days = int(item_data.get("shelf_life_in_days") or 0)
 
-    # M.D.: prefer Batch AMB.creation date; format dd/mm/yy
-    md_date = batch.creation
+    # M.D. from batch.creation
+    md_date = batch_top.get("creation")
     if isinstance(md_date, str):
         try:
             md_date = datetime.strptime(md_date[:10], "%Y-%m-%d")
@@ -121,53 +130,65 @@ def generate_label_cells_for_batch(batch_name: str) -> dict:
             md_date = None
     md_str = _format_dmy(md_date)
 
-    # E.D.: M.D. + shelf_life_in_days, OR batch.expiry_date if shelf_life unknown
+    # E.D.: M.D. + shelf_life_in_days, fallback batch.expiry_date
     ed_str = ""
     if md_date and shelf_life_days:
         ed_date = md_date + timedelta(days=shelf_life_days)
         ed_str = _format_dmy(ed_date)
-    elif getattr(batch, "expiry_date", None):
-        ed_str = _format_dmy(batch.expiry_date)
+    elif batch_top.get("expiry_date"):
+        ed_str = _format_dmy(batch_top["expiry_date"])
 
-    # Sample tag inference (one tag for the whole batch — applied to all empty rows)
+    # Sample tag inference (same helper as before)
     inferred_tag = _infer_sample_tag(item_code, batch_name)
 
-    # LOTE: use Batch AMB name (the LOT identifier itself)
+    # LOTE = batch name itself
     lot_value = batch_name
+
+    # Pull only the label_* fields we need to compare against
+    rows = frappe.db.get_all(
+        "Container Barrels",
+        filters={"parent": batch_name, "parenttype": "Batch AMB"},
+        fields=["name", "label_item_name", "label_lot",
+                "label_manufacture_date", "label_expiration_date",
+                "label_sample_tag", "label_is_active"],
+        order_by="idx",
+    )
 
     updated = 0
     skipped_existing = 0
 
-    for row in batch.container_barrels:
+    for row in rows:
+        updates = {}
+
+        # Per-field fill-when-empty
         if not row.get("label_item_name") and item_name:
-            row.label_item_name = item_name
-            updated += 1
+            updates["label_item_name"] = item_name
         elif row.get("label_item_name"):
             skipped_existing += 1
 
         if not row.get("label_lot"):
-            row.label_lot = lot_value
-            updated += 1
+            updates["label_lot"] = lot_value
 
         if not row.get("label_manufacture_date") and md_str:
-            row.label_manufacture_date = md_str
-            updated += 1
+            updates["label_manufacture_date"] = md_str
 
         if not row.get("label_expiration_date") and ed_str:
-            row.label_expiration_date = ed_str
-            updated += 1
+            updates["label_expiration_date"] = ed_str
 
         if not row.get("label_sample_tag") and inferred_tag:
-            row.label_sample_tag = inferred_tag
-            updated += 1
+            updates["label_sample_tag"] = inferred_tag
 
-        # is_active default 1 already comes from doctype default; only flip if explicitly None
         if row.get("label_is_active") is None:
-            row.label_is_active = 1
-            updated += 1
+            updates["label_is_active"] = 1
 
-    batch.save(ignore_permissions=False)
-    frappe.db.commit()
+        if updates:
+            frappe.db.set_value(
+                "Container Barrels",
+                row["name"],
+                updates,
+                update_modified=False,
+            )
+            updated += len(updates)
 
     warning = None
     if not item_code:
