@@ -47,6 +47,10 @@ app_include_js = [
     "/assets/amb_w_spc/js/sample_request_buttons.js"
 ]
 
+doctype_js = {
+    "Batch AMB": "public/js/batch_amb_labels.js",
+}
+
 
 override_doctype_class = {
     "Batch AMB": "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.BatchAMB"
