@@ -762,6 +762,30 @@ function setup_custom_buttons(frm) {
         });
     }, actions_group);
 
+    // Force Save button — workaround for known Frappe toolbar bug where Save
+    // button is hidden when form is dirty after child-table interactions.
+    // Equivalent to typing cur_frm.save() in the browser console.
+    frm.add_custom_button(__('Force Save / Forzar Guardar'), function() {
+        if (!frm.is_dirty()) {
+            frappe.show_alert({
+                message: __('Nothing to save.'),
+                indicator: 'blue',
+            });
+            return;
+        }
+        frm.save()
+            .then(function() {
+                frappe.show_alert({
+                    message: __('Saved.'),
+                    indicator: 'green',
+                });
+            })
+            .catch(function(err) {
+                // Frappe shows the validation error msgprint automatically.
+                console.error('Force Save failed:', err);
+            });
+    }, actions_group);
+
     // Generate Label Cells button — populates label_* fields on Container Barrels
     frm.add_custom_button(__('Generate Label Cells / Generar Etiquetas'), function() {
         if (!frm.doc.container_barrels || frm.doc.container_barrels.length === 0) {
