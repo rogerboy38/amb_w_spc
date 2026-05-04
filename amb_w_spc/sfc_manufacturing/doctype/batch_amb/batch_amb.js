@@ -762,6 +762,83 @@ function setup_custom_buttons(frm) {
         });
     }, actions_group);
 
+    // Generate Label Cells button — populates label_* fields on Container Barrels
+    frm.add_custom_button(__('Generate Label Cells / Generar Etiquetas'), function() {
+        if (!frm.doc.container_barrels || frm.doc.container_barrels.length === 0) {
+            frappe.msgprint({
+                title: __('No Container Barrels'),
+                message: __('Add at least one container barrel before generating labels.'),
+                indicator: 'orange',
+            });
+            return;
+        }
+        const proceed = function() {
+            frappe.call({
+                method: 'amb_w_spc.sfc_manufacturing.api.generate_label_cells_for_batch',
+                args: { batch_name: frm.doc.name },
+                freeze: true,
+                freeze_message: __('Filling label fields...'),
+                callback: function(r) {
+                    if (!r.message) return;
+                    frm.reload_doc();
+                    frappe.show_alert({
+                        message: __('Updated {0} label fields ({1} preserved)', [r.message.updated, r.message.skipped_existing]),
+                        indicator: r.message.no_item ? 'orange' : 'green',
+                    });
+                    if (r.message.warning) {
+                        frappe.msgprint({
+                            title: __('Note'),
+                            message: r.message.warning,
+                            indicator: 'orange',
+                        });
+                    }
+                },
+            });
+        };
+        const has_existing = (frm.doc.container_barrels || []).some(function(r) {
+            return r.label_item_name || r.label_lot || r.label_sample_tag;
+        });
+        if (has_existing) {
+            frappe.confirm(
+                __('Some barrels already have label data. Existing values will be PRESERVED; only empty fields will be filled. Continue?'),
+                proceed
+            );
+        } else {
+            proceed();
+        }
+    }, actions_group);
+
+    // Print Recommended Format button — picks SMP→Label Small 8 or BRL→Label 4
+    frm.add_custom_button(__('Print Recommended Format / Imprimir Formato Recomendado'), function() {
+        frappe.call({
+            method: 'amb_w_spc.sfc_manufacturing.api.get_print_format_for_batch',
+            args: { batch_name: frm.doc.name },
+            callback: function(r) {
+                if (!r.message) return;
+                const fmt = r.message.format_name;
+                if (r.message.warning) {
+                    frappe.msgprint({
+                        title: __('Print Format'),
+                        message: r.message.warning,
+                        indicator: 'orange',
+                    });
+                    return;
+                }
+                if (!fmt || fmt === 'mixed') return;
+                const w = window.open(
+                    '/printview?doctype=' + encodeURIComponent(frm.doctype) +
+                    '&name=' + encodeURIComponent(frm.doc.name) +
+                    '&format=' + encodeURIComponent(fmt) +
+                    '&no_letterhead=0',
+                    '_blank'
+                );
+                if (!w) {
+                    frappe.msgprint(__('Pop-ups blocked. Allow pop-ups and try again.'));
+                }
+            },
+        });
+    }, actions_group);
+
     // ========== MANUFACTURING GROUP ==========
 
     // Check for existing BOM and show appropriate button
