@@ -2,17 +2,31 @@ frappe.ui.form.on("Batch AMB", {
     refresh(frm) {
         if (frm.is_new()) return;
 
-        frm.add_custom_button(
-            __("Generate Label Cells / Generar Etiquetas"),
-            () => generate_label_cells(frm),
-            __("Labels / Etiquetas")
-        );
+        // Defer button additions until after other refresh handlers
+        // (notably the database-stored 'Batch L2' Client Script which
+        // calls frm.page.clear_actions()) have completed their button
+        // teardown / re-add cycle. Two-tier retry handles late paints.
+        const addButtons = () => {
+            // Idempotency guard: don't add the same button twice if both
+            // the 0ms and 250ms timer fire and the form hasn't been cleared
+            // between them.
+            if (frm.custom_buttons && frm.custom_buttons[__("Generate Label Cells / Generar Etiquetas")]) {
+                return;
+            }
+            frm.add_custom_button(
+                __("Generate Label Cells / Generar Etiquetas"),
+                () => generate_label_cells(frm),
+                __("Actions"),
+            );
+            frm.add_custom_button(
+                __("Print Recommended Format / Imprimir Formato Recomendado"),
+                () => suggest_and_print(frm),
+                __("Actions"),
+            );
+        };
 
-        frm.add_custom_button(
-            __("Print Recommended Format / Imprimir Formato Recomendado"),
-            () => suggest_and_print(frm),
-            __("Labels / Etiquetas")
-        );
+        setTimeout(addButtons, 0);
+        setTimeout(addButtons, 250);
     },
 });
 
