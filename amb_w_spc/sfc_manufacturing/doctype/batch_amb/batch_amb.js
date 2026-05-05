@@ -849,16 +849,55 @@ function setup_custom_buttons(frm) {
                     return;
                 }
                 if (!fmt || fmt === 'mixed') return;
-                const w = window.open(
-                    '/printview?doctype=' + encodeURIComponent(frm.doctype) +
-                    '&name=' + encodeURIComponent(frm.doc.name) +
-                    '&format=' + encodeURIComponent(fmt) +
-                    '&no_letterhead=0',
-                    '_blank'
-                );
-                if (!w) {
-                    frappe.msgprint(__('Pop-ups blocked. Allow pop-ups and try again.'));
-                }
+                frappe.dom.freeze(__('Generating PDF...'));
+                frappe.call({
+                    method: 'amb_print.amb_print.api.print_label_pdf',
+                    args: {
+                        doctype: frm.doctype,
+                        docname: frm.doc.name,
+                        print_format: fmt,
+                        save_attachment: 1,
+                        is_private: 0
+                    },
+                    callback: function(r2) {
+                        frappe.dom.unfreeze();
+                        if (!r2 || !r2.message) return;
+                        const m = r2.message;
+                        // Trigger a real download from the base64 content
+                        try {
+                            const byteChars = atob(m.pdf_base64);
+                            const bytes = new Uint8Array(byteChars.length);
+                            for (let i = 0; i < byteChars.length; i++) bytes[i] = byteChars.charCodeAt(i);
+                            const blob = new Blob([bytes], {type: 'application/pdf'});
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = m.file_name || (frm.doc.name + '.pdf');
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        } catch (err) {
+                            frappe.msgprint(__('PDF generated but auto-download failed. See attachments.'));
+                        }
+                        // Refresh attachments panel so the new file appears
+                        if (frm.attachments && frm.attachments.refresh) {
+                            frm.attachments.refresh();
+                        }
+                        frappe.show_alert({
+                            message: __('Label PDF saved as attachment: ') + (m.file_name || ''),
+                            indicator: 'green'
+                        }, 5);
+                    },
+                    error: function() {
+                        frappe.dom.unfreeze();
+                        frappe.msgprint({
+                            title: __('Print Failed'),
+                            message: __('Could not generate label PDF. Check error log.'),
+                            indicator: 'red'
+                        });
+                    }
+                })
             },
         });
     }, actions_group);
