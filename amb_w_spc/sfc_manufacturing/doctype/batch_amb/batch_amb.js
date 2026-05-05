@@ -880,10 +880,11 @@ function setup_custom_buttons(frm) {
                         } catch (err) {
                             frappe.msgprint(__('PDF generated but auto-download failed. See attachments.'));
                         }
-                        // Refresh attachments panel so the new file appears
-                        if (frm.attachments && frm.attachments.refresh) {
-                            frm.attachments.refresh();
-                        }
+                        // Reload doc so the newly-created File row appears in the Attach sidebar.
+                        // frm.attachments.refresh() only redraws the sidebar from already-cached
+                        // file data; it does not re-fetch from the server, so the new attachment
+                        // would stay invisible until the next page load.
+                        frm.reload_doc();
                         frappe.show_alert({
                             message: __('Label PDF saved as attachment: ') + (m.file_name || ''),
                             indicator: 'green'
