@@ -240,6 +240,8 @@ def get_print_format_for_batch(batch_name: str) -> dict:
             prefixes.add("SMP")
         elif upper.startswith("BRL"):
             prefixes.add("BRL")
+        elif upper.startswith("CTE"):
+            prefixes.add("CTE")
         else:
             prefixes.add("OTHER")
 
@@ -255,4 +257,6 @@ def get_print_format_for_batch(batch_name: str) -> dict:
         return {"format_name": "Label Small 8 (Container)", "prefix": "SMP", "warning": None}
     if prefix == "BRL":
         return {"format_name": "Label 4 (Container)", "prefix": "BRL", "warning": None}
+    if prefix == "CTE":
+        return {"format_name": "Label 8 (Cunete)", "prefix": "CTE", "warning": None}
     return {"format_name": "", "prefix": "OTHER", "warning": _("Unknown serial prefix; pick a format manually.")}
