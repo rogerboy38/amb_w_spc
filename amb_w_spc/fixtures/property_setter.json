@@ -1,0 +1,12 @@
+[
+ {
+  "doctype": "Property Setter",
+  "name": "Item Quality Inspection Parameter-value-depends_on",
+  "doc_type": "Item Quality Inspection Parameter",
+  "doctype_or_field": "DocField",
+  "field_name": "value",
+  "property": "depends_on",
+  "property_type": "Code",
+  "value": "eval:!doc.formula_based_criteria"
+ }
+]
