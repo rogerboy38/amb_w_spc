@@ -30,3 +30,6 @@ amb_w_spc.patches.v13.fix_bug114_sr_contact_fields
 
 # Phase 1A Step 2A — QIP Group tree extension (Custom Fields + Property Setters + seed + rebuild_tree)
 amb_w_spc.patches.v15.setup_qip_group_tree_extension
+
+# Phase 1A.6 — Posibles Valores L4 ingest (depth-4 hierarchy per ADR-002 §3 + §4; L3 promote-to-group + L4 leaves seeded from FoxPro DBF extraction)
+amb_w_spc.patches.phase1a6_qipg_l4_ingest
