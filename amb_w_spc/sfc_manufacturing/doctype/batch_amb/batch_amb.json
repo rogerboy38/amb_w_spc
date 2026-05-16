@@ -2170,7 +2170,7 @@
   },
   {
    "fieldname": "total_production_cost",
-   "fieldtype": "Float",
+   "fieldtype": "Currency",
    "label": "Total Production Cost",
    "hidden": 0,
    "permlevel": 0,
@@ -2185,7 +2185,7 @@
   },
   {
    "fieldname": "cost_per_kg",
-   "fieldtype": "Float",
+   "fieldtype": "Currency",
    "label": "Cost Per Kg",
    "hidden": 0,
    "permlevel": 0,
@@ -2205,13 +2205,14 @@
   },
   {
    "fieldname": "cost_source",
-   "fieldtype": "Data",
+   "fieldtype": "Select",
    "label": "Cost Source",
    "hidden": 0,
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 40
+   "idx": 40,
+   "options": "\nWork Order\nManual Entry\nEstimated\nBatch Calculation"
   },
   {
    "allow_bulk_edit": 0,
@@ -2605,13 +2606,14 @@
   },
   {
    "fieldname": "cost_calculation_method",
-   "fieldtype": "Data",
+   "fieldtype": "Select",
    "label": "Cost Calculation Method",
    "hidden": 0,
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 47
+   "idx": 47,
+   "options": "Manual\nWork Order\nEstimated\nActual"
   },
   {
    "fieldname": "output_products_section",
