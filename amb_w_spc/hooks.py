@@ -98,3 +98,7 @@ doc_events = {
 website_route_rules = [
     {"from_route": "/batch-dashboard/<path:path>", "to_route": "batch_dashboard"}
 ]
+
+# Bench CLI commands registration (Phase 1.2 admin commands by claude-ubuntuvm,
+# authored 2026-05-12 per kickoff f1b2a8d4). See amb_w_spc/commands.py.
+commands = ["amb_w_spc.commands"]
