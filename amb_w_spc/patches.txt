@@ -27,3 +27,6 @@ execute:amb_w_spc.patches.v15.create_sample_data
 
 # BUG-114C: Backfill contact fields on existing Sample Request AMB
 amb_w_spc.patches.v13.fix_bug114_sr_contact_fields
+
+# Phase 1A Step 2A — QIP Group tree extension (Custom Fields + Property Setters + seed + rebuild_tree)
+amb_w_spc.patches.v15.setup_qip_group_tree_extension
