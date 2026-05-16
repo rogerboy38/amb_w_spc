@@ -33,3 +33,9 @@ amb_w_spc.patches.v15.setup_qip_group_tree_extension
 
 # Phase 1A.6 — Posibles Valores L4 ingest (depth-4 hierarchy per ADR-002 §3 + §4; L3 promote-to-group + L4 leaves seeded from FoxPro DBF extraction)
 amb_w_spc.patches.phase1a6_qipg_l4_ingest
+
+# Phase 1A Step 2B — TDS Product Spec form derivation (Form Custom Field + backfill, plus override class wiring)
+amb_w_spc.patches.v15.setup_tds_form_derivation
+
+# Phase 1A Step 2C — IQI Parameter parameter_group backfill (specification→QIP lookup, not title-propagation)
+amb_w_spc.patches.v15.populate_iqi_parameter_group
