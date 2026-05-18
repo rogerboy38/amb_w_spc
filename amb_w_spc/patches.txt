@@ -39,3 +39,6 @@ amb_w_spc.patches.v15.setup_tds_form_derivation
 
 # Phase 1A Step 2C — IQI Parameter parameter_group backfill (specification→QIP lookup, not title-propagation)
 amb_w_spc.patches.v15.populate_iqi_parameter_group
+
+# Phase 1C-A — QIP data cleanup: bulk-assign parameter_group from FoxPro ANALISIS + populate Posibles Valores choices (Alicia QE approved 2026-05-18T17:00Z)
+amb_w_spc.patches.v15.phase_1c_a_qip_data_cleanup
