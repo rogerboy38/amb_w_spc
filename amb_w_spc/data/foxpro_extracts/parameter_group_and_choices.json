@@ -1,0 +1,4683 @@
+{
+  "APPEARANCE": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [
+      "CLEAR LIQUID",
+      "CLEAR TO HAZY LIQUID",
+      "CLOUDY LIQUID",
+      "FINE GRANULAR POWDER",
+      "FINE HOMOGENEOUS POWDER",
+      "FINE POWDER",
+      "FLAKES MILLED",
+      "FREE FLOWING POWDER",
+      "FRESH CLEAR JUICE",
+      "GRANULAR POWDER",
+      "HAZY LIQUID**",
+      "OFF WHITE TO LIGHT  BEIGE POWDER  THAT MAY CONTAIN A VERY SMALL N",
+      "OFF WHITE TO LIGHT BEIGE POWDER",
+      "OFF WHITE TO WHITE POWDER",
+      "SINGLE STRENGHT CLOUDY JUICE",
+      "SMALL FLAKES",
+      "SPONGINESS",
+      "VISCOUS LIQUID",
+      "VISCOUS LIQUID WITH PULP PARTICLES FLOATING",
+      "VISUAL OBSERVATION"
+    ],
+    "total_choices": 22
+  },
+  "COLOR VISUAL": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [
+      "AMBER",
+      "COLORLESS",
+      "COLORLESS TO LIGHT AMBER",
+      "DARK AMBER",
+      "DARK YELLOW TO BROWN COLOR",
+      "GOLDEN",
+      "GREEN",
+      "GREENISH",
+      "LIGHT AMBER",
+      "LIGHT BEIGE TO GOLDEN",
+      "LIGHT BEIGE TO LIGHT TAN",
+      "LIGHT GREEN - BROWN",
+      "LIGHT GREEN TO GREENISH",
+      "LIGHT TAN",
+      "LIGHT YELLOW TO GREEN",
+      "OFF BEIGE TO AMBAR",
+      "OFF WHITE TO AMBAR",
+      "OFF WHITE TO LIGHT BEIGE",
+      "OFF WHITE TO LIGHT TAN",
+      "OFF WHITE TO YELLOWISH"
+    ],
+    "total_choices": 27
+  },
+  "ODOR": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [
+      "ACCORDING TO ADDED FLAVOR",
+      "ALOE PLANT TYPICAL",
+      "LIGHT VEGETABLE",
+      "ODORLESS",
+      "SLIGHTLY ODERIFEROUS / CHARACTERISTIC",
+      "TYPICAL",
+      "TYPICAL OF ALOE",
+      "TYPICAL OF ALOE, LIGHT",
+      "TYPICAL OF ALOE, LIGHT VEGETABLE",
+      "TYPICAL OF ALOE, VEGETABLE",
+      "TYPICAL OF CANTALOUPE / SWEET",
+      "TYPICAL OF JACKFRUIT, SWEET",
+      "TYPICAL OF MIXTURE",
+      "TYPICAL OF NOPAL",
+      "TYPICAL OF NOPAL LIGHT VEGETABLE",
+      "TYPICAL OF NOPAL, LIGHT"
+    ],
+    "total_choices": 16
+  },
+  "TASTE": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [
+      "ACCORDING TO ADDED FLAVOR",
+      "ACIDIC, SALTY",
+      "BITTER",
+      "NEUTRAL",
+      "TASTELESS",
+      "TYPICAL",
+      "TYPICAL OF ALOE",
+      "TYPICAL OF ALOE, LIGHT",
+      "TYPICAL OF CANTALOUPE / SWEET",
+      "TYPICAL OF JACKFRUIT, SWEET",
+      "TYPICAL OF MIXTURE",
+      "TYPICAL OF NOPAL",
+      "TYPICAL OF NOPAL,LIGHT"
+    ],
+    "total_choices": 13
+  },
+  "TOTAL SOLIDS": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "0.5 - 1.0%",
+      "0.5 - 1.5%",
+      "1 - 20 %",
+      "1.0 - 1.5%",
+      "1.5 - 2.0%",
+      "1.5 - 2.5%",
+      "10.0 - 10.5%",
+      "11.5 - 12.5%",
+      "12.5 - 13.5%",
+      "13.5 - 14.5%",
+      "14.5 - 15.5%",
+      "15 - 20%",
+      "15.0 - 15.5%",
+      "19.5 - 20.5%",
+      "2 - 3%",
+      "2.0 - 2.5%",
+      "2.5 - 3.0%",
+      "20.0 - 20.5%",
+      "3.0 - 3.5%",
+      "3.5 - 4.5%"
+    ],
+    "total_choices": 34
+  },
+  "SPECIFIC GRAVITY*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "1.002 - 1.020"
+    ],
+    "total_choices": 1
+  },
+  "ALOVEROSET": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "AEROBIC PLATE COUNT": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "<10 CFU/ML",
+      "<100 CFU/g",
+      "NMT 10 CFU/ML",
+      "NMT 100 CFU/G",
+      "NMT 100 CFU/ML",
+      "NMT 100 CFU/g",
+      "NMT 1000 CFU/g",
+      "NMT 10000 CFU/g",
+      "NMT 200 CFU/ML",
+      "NMT 30 CFU/ML",
+      "NMT 3000 CFU/G",
+      "NMT 3500 CFU/G",
+      "NMT 50 CFU/G",
+      "NMT 50 CFU/ML",
+      "NMT 500 CFU/ML",
+      "NMT 500 CFU/g"
+    ],
+    "total_choices": 16
+  },
+  "MOLD AND YEAST": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "<10 CFU/ML",
+      "<10 CFU/g",
+      "NMT 10 CFU/G",
+      "NMT 10 CFU/ML",
+      "NMT 100 CFU/ML",
+      "NMT 100 CFU/g",
+      "NMT 1000 CFU/g",
+      "NMT 30 CFU/ML",
+      "NMT 50 CFU/ML",
+      "NMT 50 CFU/g",
+      "NMT 500 CFU/g",
+      "NMT <10 CFU/ML"
+    ],
+    "total_choices": 12
+  },
+  "COLIFORMS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE",
+      "NMT 10 CFU/ML",
+      "NMT 100 CFU/G"
+    ],
+    "total_choices": 3
+  },
+  "PATHOGENS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "PRESERVATIVES": {
+    "group": "other analysis",
+    "all_groups": [
+      "other analysis"
+    ],
+    "choices": [
+      "NONE"
+    ],
+    "total_choices": 1
+  },
+  "CARBOHYDRATES > 50,000 DA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PARTICLE SIZE": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [
+      "80% ON NO. 60 MESH",
+      "80% THROUGH NO. 100 MESH",
+      "80% THROUGH NO. 80 MESH",
+      "98% THROUGH NO. 100 MESH",
+      "99% THROUGH NO. 100 MESH"
+    ],
+    "total_choices": 5
+  },
+  "FOREIGH MATTER AND SPECS": {
+    "group": "contaminant",
+    "all_groups": [
+      "contaminant"
+    ],
+    "choices": [
+      "ABSENT"
+    ],
+    "total_choices": 1
+  },
+  "ASH": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 0.5%",
+      "NMT 20%",
+      "NMT 25%",
+      "NMT 35%",
+      "NMT 40%",
+      "NMT 45%",
+      "NMT 5%"
+    ],
+    "total_choices": 7
+  },
+  "SOLUBILITY": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MOISTURE": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 10%",
+      "NMT 5.0%",
+      "NMT 7.0%",
+      "NMT 8%"
+    ],
+    "total_choices": 4
+  },
+  "COLOR (ABSORBANCE 400NM)**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "0.12 - 0.21"
+    ],
+    "total_choices": 1
+  },
+  "SOLUBLE SOLIDS": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOE VERA PULP": {
+    "group": "other analysis",
+    "all_groups": [
+      "other analysis"
+    ],
+    "choices": [
+      "NLT 30%",
+      "NLT 5%"
+    ],
+    "total_choices": 2
+  },
+  "NOPAL GEL POWDER": {
+    "group": "other analysis",
+    "all_groups": [
+      "other analysis"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "NOPAL BITS": {
+    "group": "other analysis",
+    "all_groups": [
+      "other analysis"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOE VERA SOLIDS": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 50%"
+    ],
+    "total_choices": 1
+  },
+  "MALTODEXTRIN": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 50.0%"
+    ],
+    "total_choices": 1
+  },
+  "NOPAL SOLIDS": {
+    "group": "other analysis",
+    "all_groups": [
+      "other analysis"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "DENSITY": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "1.002 - 1.020"
+    ],
+    "total_choices": 1
+  },
+  "NOPAL PULP": {
+    "group": "other analysis",
+    "all_groups": [
+      "other analysis"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN CONTENT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "4 - 4.5%",
+      "90 - 95%",
+      "NLT 1%",
+      "NLT 18%",
+      "NLT 20%",
+      "NLT 25%",
+      "NLT 35%",
+      "NMT 0.1 PPM",
+      "NMT 0.6 PPM",
+      "NMT 1.5 PPM",
+      "NMT 10 PPM",
+      "NMT 10%",
+      "NMT 20 PPM",
+      "NMT 3.5 PPM",
+      "NMT 35%",
+      "NMT 5 PPM",
+      "NMT 5%",
+      "NMT 50 PPM"
+    ],
+    "total_choices": 18
+  },
+  "TOTAL CARBOHYDRATE CONTENT (SOLUBLE AND INSOLUBLE)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "FOR INFORMATION ONLY"
+    ],
+    "total_choices": 1
+  },
+  "TOTAL AEROBIC PLATE COUNT": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NMT 100 CFU/G",
+      "NMT 50 CFU/g"
+    ],
+    "total_choices": 2
+  },
+  "COLOR GARDNER*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "°BX": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 1.0",
+      "NLT 10",
+      "NLT 12",
+      "NTL 3.3"
+    ],
+    "total_choices": 4
+  },
+  "SALMONELLA": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE",
+      "NEGATIVE / 10g"
+    ],
+    "total_choices": 2
+  },
+  "GRADE": {
+    "group": "other analysis",
+    "all_groups": [
+      "other analysis"
+    ],
+    "choices": [
+      "FOOD GRADE"
+    ],
+    "total_choices": 1
+  },
+  "SMELL": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [
+      "NEUTRAL",
+      "TYPICAL OF ALOE, LIGHT"
+    ],
+    "total_choices": 2
+  },
+  "WATER CONTENT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 12%",
+      "NMT 8%"
+    ],
+    "total_choices": 2
+  },
+  "ANTHRAQUINONE (ALOIN) BY HPLC": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "HEAVY METALS": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 10 PPM",
+      "NMT 10%",
+      "NMT 10.0 MG/KG"
+    ],
+    "total_choices": 3
+  },
+  "ARSENIC (PPM)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CRUDE PROTEIN": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 0.5 %",
+      "NLT 1.0%",
+      "NMT 0.5 %"
+    ],
+    "total_choices": 3
+  },
+  "E.COLI": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE",
+      "NEGATIVE / 1g"
+    ],
+    "total_choices": 2
+  },
+  "BACTERIA": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NMT 100 CFU/G"
+    ],
+    "total_choices": 1
+  },
+  "TURBIDITY**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "10 - 15 NTU",
+      "NMT 10 NTU",
+      "NMT 30",
+      "NMT 400"
+    ],
+    "total_choices": 4
+  },
+  "FECAL COLIFORMS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "BETA-SITOSTEROL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients",
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 4%"
+    ],
+    "total_choices": 1
+  },
+  "MELAMINA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "0 ppm"
+    ],
+    "total_choices": 1
+  },
+  "FTALATOS": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "0 ppm"
+    ],
+    "total_choices": 1
+  },
+  "AMINOACIDOS": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN BY KFDA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "4 - 4.5%"
+    ],
+    "total_choices": 1
+  },
+  "SOLUTION COLOR (1%)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "DARK ORANGE"
+    ],
+    "total_choices": 1
+  },
+  "TOTAL ASH": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 4%",
+      "NMT 5%"
+    ],
+    "total_choices": 2
+  },
+  "ALCOHOL INSOLUBLE SUBSTAN": {
+    "group": "other analysis",
+    "all_groups": [
+      "other analysis"
+    ],
+    "choices": [
+      "NMT 10%"
+    ],
+    "total_choices": 1
+  },
+  "WATER SOLUBLE SUBSTANCES": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 50%"
+    ],
+    "total_choices": 1
+  },
+  "CADMIUM": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 0.5 PPM",
+      "NMT 1 PPM",
+      "NMT 1.6 PPM",
+      "NMT 820 PPB"
+    ],
+    "total_choices": 4
+  },
+  "LEAD": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "<0.2 mg/L",
+      "NMT 1 PPM",
+      "NMT 1.25 PPM",
+      "NMT 11 PPM",
+      "NMT 1200 PPB",
+      "NMT 3 PPM"
+    ],
+    "total_choices": 6
+  },
+  "MERCURY (PPM)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ENDRIN": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "DIELDRIN": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "ALDRIN": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "BHC": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "DDT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "ALOIN CONTENT*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 0.05 PPM BY DRY WEIGTH",
+      "NMT 0.1 PPM",
+      "NMT 0.1 PPM BY DRY WEIGTH*",
+      "NMT 1%",
+      "NMT 10 PPM BY DRY WEIGTH",
+      "NMT 50 PPM",
+      "NOT DETECTABLE"
+    ],
+    "total_choices": 7
+  },
+  "PH*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "3.0 - 5.0",
+      "3.5 - 5.0",
+      "3.5 - 5.5",
+      "4.0 - 5.0",
+      "4.0 - 6.0",
+      "4.5 - 5.0"
+    ],
+    "total_choices": 6
+  },
+  "EXTRACT RATIO": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "10:1"
+    ],
+    "total_choices": 1
+  },
+  "GLUTEN": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 20 PPM"
+    ],
+    "total_choices": 1
+  },
+  "PESTICIDES": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NEGATIVE",
+      "NOT DETECTABLE"
+    ],
+    "total_choices": 2
+  },
+  "DENSITY - BULK": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "0.50 to 0.65 g/ml",
+      "0.60 - 0.80 g/ml"
+    ],
+    "total_choices": 2
+  },
+  "DENSITY - TAPPED": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "0.5 - 0.9  g/ml",
+      "0.80 - 1.10 g/ml"
+    ],
+    "total_choices": 2
+  },
+  "MESH THRU #100": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 20%"
+    ],
+    "total_choices": 1
+  },
+  "MESH THRU #60": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 70%"
+    ],
+    "total_choices": 1
+  },
+  "ANTHRAQUINONE (ALOIN) BY KFDA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "4 - 4.5%"
+    ],
+    "total_choices": 1
+  },
+  "POLYSSACHARIDES GREATER THAN 50,000 DA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 70%"
+    ],
+    "total_choices": 1
+  },
+  "STAPH. AUREUS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE",
+      "NEGATIVE / 10g",
+      "NEGATIVE / 1g"
+    ],
+    "total_choices": 3
+  },
+  "GLUCOSE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients",
+      "physicochemical"
+    ],
+    "choices": [
+      "PRESENT"
+    ],
+    "total_choices": 1
+  },
+  "ISO-CITRIC ACID": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "PRESENT"
+    ],
+    "total_choices": 1
+  },
+  "COLOR GARDNER **": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TOTAL FAT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 0.05%"
+    ],
+    "total_choices": 1
+  },
+  "SATURATED FAT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 0.02%"
+    ],
+    "total_choices": 1
+  },
+  "PROTEIN": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 0.03%"
+    ],
+    "total_choices": 1
+  },
+  "DIETARY FIBER": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 0.002%"
+    ],
+    "total_choices": 1
+  },
+  "ANTHRAQUINONES*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 1 PPM"
+    ],
+    "total_choices": 1
+  },
+  "HYDROXY-METHYL-FURFURAL": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 100  PPM"
+    ],
+    "total_choices": 1
+  },
+  "ORGANOPHOSPHORUS": {
+    "group": "pesticides",
+    "all_groups": [
+      "pesticides"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "ORGANOCHLORINES": {
+    "group": "pesticides",
+    "all_groups": [
+      "pesticides"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "N-METILCARBAMATOS": {
+    "group": "pesticides",
+    "all_groups": [
+      "pesticides"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "ORGANONITROGEN": {
+    "group": "pesticides",
+    "all_groups": [
+      "pesticides"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "PYRETHROIDS": {
+    "group": "pesticides",
+    "all_groups": [
+      "pesticides"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "FOREIGN MATTERS": {
+    "group": "contaminant",
+    "all_groups": [
+      "contaminant"
+    ],
+    "choices": [
+      "NOT DETECTED"
+    ],
+    "total_choices": 1
+  },
+  "MELAMINE": {
+    "group": "contaminant",
+    "all_groups": [
+      "contaminant"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "DEHP": {
+    "group": "contaminant",
+    "all_groups": [
+      "contaminant"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "AMINOACIDS": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 1%"
+    ],
+    "total_choices": 1
+  },
+  "BULK DENSITY": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "0.30 - 0.5 g/ml",
+      "0.50 - 0.65 g/ml",
+      "FOR INFORMATION ONLY",
+      "NMT 0.65 g/ml",
+      "NMT 0.90 g/ml"
+    ],
+    "total_choices": 5
+  },
+  "SOLUBILITY**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "COMPLETELY SOLUBLE AT 15 MIN",
+      "COMPLETELY SOLUBLE AT 20 MIN"
+    ],
+    "total_choices": 2
+  },
+  "TOTAL SOLIDS OF ALOE VERA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "0.5 - 1.0%"
+    ],
+    "total_choices": 1
+  },
+  "AFLATOXIN B1": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 5 PPB"
+    ],
+    "total_choices": 1
+  },
+  "AFLATOXIN (B1+B2+G1+G2)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 10 PPB"
+    ],
+    "total_choices": 1
+  },
+  "OCHRATOXIN A": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 7 PPB"
+    ],
+    "total_choices": 1
+  },
+  "SOLUBILITY*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "COMPLETELY SOLUBLE AT 15 MIN",
+      "COMPLETELY SOLUBLE AT 20 MIN"
+    ],
+    "total_choices": 2
+  },
+  "TURBIDITY*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "10 - 15 NTU",
+      "NMT 0.2 NTU"
+    ],
+    "total_choices": 2
+  },
+  "ENTEROBACTERIACEAE": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "SPECIFIC GRAVITY": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "1.000 - 1.015",
+      "1.002 - 1.020",
+      "1.002 - 1.070",
+      "1.0761",
+      "1.0871",
+      "NLT 1040",
+      "NMT 1.200"
+    ],
+    "total_choices": 7
+  },
+  "ALOIN A CONTENT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 20%"
+    ],
+    "total_choices": 1
+  },
+  "APARIENCIA": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [
+      "DE BLANCO A LIGERAMENTE BLANCO",
+      "POLVO FINO HOMOGENEO"
+    ],
+    "total_choices": 2
+  },
+  "SPECIFIC GRAVITY **": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BACILLUS CEREUS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "CLOSTRIDIUM PERFRINGENS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "YERSINIA ENTEROCOLITICA": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "SHIGELLA SPP.": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "E. COLI (EHEC)": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "LISTERIA MONOCYTOGENES": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE",
+      "NMT 100 CFU/g"
+    ],
+    "total_choices": 2
+  },
+  "TAR COLOR": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "TOTAL ALOIN A + ALOIN B*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COLOR BY ABSORBANCE**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TURBIDITY": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 0.05",
+      "NMT 10 NTU",
+      "NMT 30",
+      "NMT 400",
+      "NMT 500 NTU"
+    ],
+    "total_choices": 5
+  },
+  "TURBIDEZ": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "< 0.2"
+    ],
+    "total_choices": 1
+  },
+  "COLOR (ABSORBANCE 400 NM)*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 0.1",
+      "NMT 0.25",
+      "NMT 0.5"
+    ],
+    "total_choices": 3
+  },
+  "COLOR (ABSORBANCIA 400 NM)*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "< 0.5"
+    ],
+    "total_choices": 1
+  },
+  "CENIZA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "< 40%"
+    ],
+    "total_choices": 1
+  },
+  "METALES PESADOS*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ARSENICO (PPM)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CADMIO": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "< 1 PPM"
+    ],
+    "total_choices": 1
+  },
+  "PLOMO": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "< 3 PPM"
+    ],
+    "total_choices": 1
+  },
+  "MERCURIO": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "< 0.1 PPM"
+    ],
+    "total_choices": 1
+  },
+  "ALOINA*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "< 0.1 PPM"
+    ],
+    "total_choices": 1
+  },
+  "POLISACARIDOS": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "> 10%"
+    ],
+    "total_choices": 1
+  },
+  "CUENTA AEROBICA TOTAL": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "< 100 UFC/G"
+    ],
+    "total_choices": 1
+  },
+  "HONGOS Y LEVADURAS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "< 50 UFC/G"
+    ],
+    "total_choices": 1
+  },
+  "COLIFORMES / PATOGENOS": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NEGATIVO / 25 G"
+    ],
+    "total_choices": 1
+  },
+  "FIBER CONTENT (INSOLUBLE CARBOHYDRATES)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 30%",
+      "NLT 5%",
+      "NMT 30%"
+    ],
+    "total_choices": 3
+  },
+  "POLYSACCHARIDES IN THE SOLUBLE FRACTION": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 10%"
+    ],
+    "total_choices": 1
+  },
+  "CARBOHYDRATE CONTENT (SOLUBLE FRACTION)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "FOR INFORMATION ONLY",
+      "NLT 20%"
+    ],
+    "total_choices": 2
+  },
+  "IDENTIFICATION": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "MATCHES REFERENCE STANDARD"
+    ],
+    "total_choices": 1
+  },
+  "POLYMERIC ACETYLATED MANNANS CONTENT OF SOLUBLE FR": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TOTAL ACID": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 0.1% AS CITRIC ACID pH 8.1"
+    ],
+    "total_choices": 1
+  },
+  "COLIFORMS/PATHOGENS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE/25 G"
+    ],
+    "total_choices": 1
+  },
+  "CITRIC ACID CONTENT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NMT 0.1%"
+    ],
+    "total_choices": 1
+  },
+  "VISCOSITY": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 100 cp",
+      "NMT 50 cp"
+    ],
+    "total_choices": 2
+  },
+  "ACEMANNAN(MANNOSE)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "DETECTED BY GPC"
+    ],
+    "total_choices": 1
+  },
+  "ACEMANNAN BY O-ACETIL METHOD": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "10-15%",
+      "15-20%",
+      "20-25%"
+    ],
+    "total_choices": 3
+  },
+  "TOTAL CARBOHYDRATE CONTENT (SOLUBLE & INSOLUBLE)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "FOR INFORMATION ONLY"
+    ],
+    "total_choices": 1
+  },
+  "POLYMERIC ACETYLATED MANNANS CONTENT (>15000 DA)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PH VALUE (0.7% WATER SOLUTION)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "3.5-5.0"
+    ],
+    "total_choices": 1
+  },
+  "ALOIN": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "<0.1 mg/L"
+    ],
+    "total_choices": 1
+  },
+  "TOTAL PLATE COUNT": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NMT 500 cfu/g"
+    ],
+    "total_choices": 1
+  },
+  "PULP CONTENT**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 1%",
+      "NLT 2%",
+      "NLT 3%",
+      "NLT 4%",
+      "NLT 5%"
+    ],
+    "total_choices": 5
+  },
+  "POLYSACCHARIDES MEASURED AS ACEMANNAN": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "10 - 15%",
+      "15 - 20%",
+      "20 - 25%"
+    ],
+    "total_choices": 3
+  },
+  "ENTEROHEMORRHAGIC E.COLI": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "WLM (ISOCITRATE AND ISOCITRATE LACTONE)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "POLYSACCHARIDES BY GPC": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "15 - 20 %",
+      "20 - 25%",
+      "25 - 30%",
+      "30 - 35%",
+      "35 -  40%",
+      "40 - 45%",
+      "NLT 1000 mg/L"
+    ],
+    "total_choices": 7
+  },
+  "ALOVEROSE (ACEMANNAN BY NMR)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "NLT 4600 mg/L"
+    ],
+    "total_choices": 1
+  },
+  "COLOR GARDNER": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "1 - 2",
+      "2 - 4",
+      "3 - 5",
+      "4 - 6"
+    ],
+    "total_choices": 4
+  },
+  "STREPTOCOCCUS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "HIDROXYANTHRACENE DERIVATIVES: AS BARBALOIN": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOVEROSE (ACEMANNAN)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOVEROSE (ACEMANNAN BY O-ACETIL)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COABALT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CHROMIUM": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "NICKEL": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ANTIMONY": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "POLYSSACHARIDES (5000 - 400, 000 DALTONS)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "DILUTION TIME (25°C)**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "DILUTION TIME (50°C)**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PARTICLE SIZE***": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ANTHRAQUINONES CONTENT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ARTIFICIAL COLORANT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SULFATES (SO2)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SUGAR": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BENZOIC ACID": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "P.AERUGINOSA": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MOLD": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "YEAST": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TOTAL SUGAR CONTENT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "REFRACTIVE INDEX": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "IASC CERTIFICATION": {
+    "group": "other analysis",
+    "all_groups": [
+      "other analysis"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FTIR IDENTIFICATION": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PH": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "3.5 - 5.0",
+      "3.5 - 5.5",
+      "3.5 - 6.0",
+      "3.5-4.5",
+      "4.0 - 5.0",
+      "4.0 - 6.0",
+      "6.00 - 6.50",
+      "6.38 - 6.71"
+    ],
+    "total_choices": 8
+  },
+  "STANDARD PLATE COUNT": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "YEAST & MOLDS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BARBALOINE": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LOSS ON DRYING": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "POLYSACCHARIDES (> 20 KDA)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "IDENTIFICATION (IR SPECTRUM)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MOISTURE & VOLATILE MATTER": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PH (1% SOLUTION)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ESCHERICHA COLI": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "STAPHYLOCOCCUS AUREUS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CANDIDA ALBICANS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BURKHOLDERIA CEPACIA": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FLAMMABILITY": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "REFRACTIVE INDEX (25°C)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TOTAL HEAVY METALS": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ARSENIC": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "<0.1 mg/L",
+      "NMT 0.5 PPM",
+      "NMT 1 PPM",
+      "NMT 1.5 MG/KG",
+      "NMT 2 PPM",
+      "NMT 2000 PPB",
+      "NMT 3 PPM"
+    ],
+    "total_choices": 7
+  },
+  "MERCURY": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "<0.01 mg/L",
+      "NMT 0.1 PPM",
+      "NMT 1 PPM",
+      "NMT 400 PPB"
+    ],
+    "total_choices": 4
+  },
+  "TOTAL POLYSACCHARIDES": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN CONTENT (BY DRY WEIGHT)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COLOR": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "OLOR": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SABOR": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COLOR POR ABSORBANCIA**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MATERIA EXTRAÑA": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TAMAÑO DE PARTÍCULA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PUREZA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CONTENIDO DE ALOÍNA*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "HUMEDAD": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "< 5.0%"
+    ],
+    "total_choices": 1
+  },
+  "CONTENIDO DE CENIZA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GRAVEDAD ESPECÍFICA*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CUENTA TOTAL AEROBIA": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COLIFORMES TOTALES": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PATÓGENOS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CONSERVADORES": {
+    "group": "other analysis",
+    "all_groups": [
+      "other analysis"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COLOR GARDNER *": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COLOR (ABSORBANCE 400NM)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LEAD*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CADMIUM*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MERCURY*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ARSENIC*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "HEAVY METALS*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TOTAL SOLIDS***": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "POLYSACCHARIDES (KFDA)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "POLYSACCHARIDES (GPC)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ACEMANNAN (ORTO-ACETYL)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "WLM": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "AEROBIC PLATE COUNT COSMETIC GRADE": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "THERMODURIC BACTERIA": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PUTRESCINE": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MOLD AND YEAST  COSMETIC GRADE": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "POLYSACCHARIDES (KFDA/AMB)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ACEMANNAN (ORTO-ACETYL/AMB)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ACEMANNAN": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "15%-20%",
+      "NLT 300 mg/L",
+      "NLT 6%",
+      "NLT 8%",
+      "PRESENT",
+      "TARGET 15%-20% (RANGE  OF 13.5% TO 22% TO ALLOW FOR 10% UNCERTAIN"
+    ],
+    "total_choices": 6
+  },
+  "ALOIN A**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN B**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "DIACETYL RHEIN*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOE EMODIN**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MOISTURE CONTENT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "INDEX OF REFRACTION": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LOPHENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients",
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "24-METHYL-LOPHENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients",
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "24-ETHYL-LOPHENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients",
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CYCLOARTANOL (CYC)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "24-METHYLENE-CYCLOARTANOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients",
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "EMODIN*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "DANTHRON**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ACEMANNAN (NMR)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN A + B": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN A*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN B*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN A CONTENT*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN B CONTENT*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOE EMODIN*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "DANTHRON*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COLIFORMES": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FOSETYL": {
+    "group": "pesticides",
+    "all_groups": [
+      "pesticides"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GLYPHOSATE": {
+    "group": "pesticides",
+    "all_groups": [
+      "pesticides"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ARSENIC-AMB": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "POLYSACCHARIDES": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [
+      "8 - 10%",
+      ">10% TOTAL POLYSACCHARIDE BY DRY WEIGTH",
+      "NLT 10%",
+      "NLT 10% BY DRY WEIGHT",
+      "NLT 10,200 mg/L",
+      "NLT 11%",
+      "NLT 11.34%",
+      "NLT 12%",
+      "NLT 15%",
+      "NLT 40%",
+      "NLT 5%",
+      "NLT 8%"
+    ],
+    "total_choices": 12
+  },
+  "WATER SOLUBLE EXTRACTIVE": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CONTAMINANTS": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALCOHOL INSOLUBLE SUBSTANCES": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TAPPED BULK DENSITY": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "WATER SOLUBLE EXTRACTIVE AS PER I.P. 66 METHOD": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "HAD*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "DENSIDAD COMPACTA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PH *": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "DENSIDAD ESPECIFICA*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "POLISACARIDOS MAYORES QUE 50,000 Da": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CUENTA TOTAL AEROBICA": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOE EMODIN (BY DRY WEIGHT)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN A (BY DRY WEIGHT)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN B (BY DRY WEIGHT)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "DANTHRON (BY DRY WEIGHT)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "O-ACETYL (CALCULATED BYACETYLCHOLINE)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN (0.5% SOLUTION)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TOTAL YEAST & MOLD": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TOTAL COLIFORMS": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "HYDROXYANTHRACENES DERIVATIVES (HADS)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FIBER CONTENT": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "O-ACETYL (CALCULATED AS ACETYLCHOLINE CHLORIDE)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MALIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LACTIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TAMC AND TYMC TOTAL": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BILE-TOLERANT GRAM-NEGATIVE BACTERIA": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PSEUDOMONAS AERUGINOSA": {
+    "group": "microbiological",
+    "all_groups": [
+      "microbiological"
+    ],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "EMODIN**": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CATELUTARIC ACID": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "VALERIC ACID": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CAPROIC ACID": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CAPRYLIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients",
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LAURIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients",
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GDL (GLUCONE DELTA LACTONE)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "EMODIN (BY DRY WEIGHT)": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CITRIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SUCCINIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FUMARIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ACETIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BUTYRIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FORMIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GLYCOLIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PROPIONIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PYROGLUTAMIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PYRUVIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "QUINIC ACID*": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ODOR/SMELL": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TASTE/FLAVOR": {
+    "group": "organoleptic",
+    "all_groups": [
+      "organoleptic"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TOTAL  POLYSACCHARIDES": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BIOTIN (B7)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FOLIC ACID (B9)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "RIBOFLAVIN (B2)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COBALAMIN (B12)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "NIACINAMIDE (B3)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PANTOTHENIC ACID (B5)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "VITAMIN C": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "VITAMIN E": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PYRIDOXINE (B6)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CHOLINE (B4)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COPPER (CU)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CHROME (CR)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MANGANESIUM (MN)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SODIUM (NA)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "POTASSIUM (K)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MAGNESIUM (MG)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CALCIUM (CA)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PHOSPHORUS (P)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "IRON (FE)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ZINC (ZN)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "HISTIDINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LEUCINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LYSINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TRYPTOPHAN": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "THREONINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TYROSINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CYSTEINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "METHIONINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ISOLEUCINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "VALINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ASPARTIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GLUTAMIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALANINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ARGININE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PROLINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SERINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ISOBUTYRIC ACID (%)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ISOVALERIC ACID (%)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "VALERIC ACID (%)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CAPRIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "OLEIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LINOTENIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PALMITOLEIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "HEXADECADIENOIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "2-CHLOROPHENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "2-CRESOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PHENOL [017]": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "2,4-DIMETHYLPHENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "4-CRESOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "3-CRESOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "2,6-DICHLOROPHENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "2,4-DICHLOROPHENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "2,4,6-TRICHLOROPHENOL (CAS 88-06-2)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "4-CHLORO 3-METHYLPHENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "APIGENIN": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CRISIN": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FLAVONOID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GALANGIN": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "KAEMFEROL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "NARINGENIN": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "QUERCETIN": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "RUTIN": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PALMITIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LINOLENIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LINOLEIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CYCLOARTANOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CAPESTEROL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "STIGMASTEROL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BRASSICASTEROL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SITOSTANOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CAMPASTANOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CHOLESTEROL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FRUCTOSE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LACTOSE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MALTOSE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SUCROSE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ACETIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BUTYRIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CITRIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FORMIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FUMARIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GLYCOLIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "KETO-GLUTARICO ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LACTIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MALIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [
+      "PRESENT"
+    ],
+    "total_choices": 1
+  },
+  "PROPIONIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PYROGLUTAMIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PYRUVIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "QUINIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SUCCINIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "POLISACÁRIDOS TOTALES": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BIOTINA (B7)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO FÓLICO (B9)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "RIBOFLAVINA (B2)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COBALAMINA (B12)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "NIACINAMIDA (B3)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO PANTOTÉNICO (B5)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "VITAMINA C": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "VITAMINA E": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PIRIDOXINA (B6)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COLINA (B4)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COBRE (CU)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CROMO (CR)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MANGANESO (MN)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SODIO (NA)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "POTASIO (K)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MAGNESIO (MG)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CALCIO (CA)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FÓSFORO (P)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "HIERRO (FE)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FENILALANINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "HISTIDINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LEUCINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LISINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TRIPTÓFANO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TREONINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "TIROSINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CISTEÍNA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "METIONINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ISOLEUCINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "VALINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO ASPÁRTICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GLUTÁMICO ÁCIDO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALANINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ARGININA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PROLINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SERINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO ISOBUTÍRICO (%)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO ISOVALÉRICO (%)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO VALÉRICO (%)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO CÁPRICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO LÁURICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO CAPRÍLICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO OLEICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO LINOTÉNICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO PALMITOLEICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO HEXADECADIENOICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "2-CLOROFENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FENOL [017]": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "2,4-DIMETILFENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "2,6-DICLOROFENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "2,4-DICLOROFENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "2,4,6-TRICLOROFENOL (CAS 88-06-2)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "4-CLORO 3-METILFENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "APIGENINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CRISINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FLAVONOIDE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GALANGINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "NARINGENINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "QUERCETINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "RUTINA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PALMÍTICO ÁCIDO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO LINOLÉNICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO LINOLÉICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LOFENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "24-ETIL-LOFENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "24-METIL-LOFENOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CICLOARTANOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "24-METILENO-CICLOARTANOL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ESTIGMASTEROL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BRASICASTEROL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COLESTEROL": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "FRUCTOSA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GLUCOSA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LACTOSA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MALTOSA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SACAROSA": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO ACÉTICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO BUTÍRICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO CÍTRICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO FÓRMICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO FUMÁRICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO GLICÓLICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "CETO-GLUTARICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO LÁCTICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO MÁLICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO PROPIÓNICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO PIROGLUTÁMICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO PIRÚVICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO QUÍNICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ÁCIDO SUCCÍNICO": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SOLIDOS TOTALES": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "DENSIDAD ESPECIFICA": {
+    "group": "physicochemical",
+    "all_groups": [
+      "physicochemical"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PEPTON 85-16": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "AUXINS": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GIBBERELLIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SPERMIDINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SALICYLIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ABSCISIC ACID": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "AMILASE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PROTEASE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "LIPASE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "VITAMIN A": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "AMMONIUM SULFATE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "BORO (BO)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "MOLYBDENUM (MO)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "NICKEL (NI)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "COBALT (Y)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SELENIUM (Se)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "SULFUR (S)": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "PHENYLALANINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "GLYCINE": {
+    "group": "total aloe vera nutrients",
+    "all_groups": [
+      "total aloe vera nutrients"
+    ],
+    "choices": [],
+    "total_choices": 0
+  },
+  "ALOIN A + ALOIN B": {
+    "group": null,
+    "all_groups": [],
+    "choices": [
+      "18 - 20%",
+      "NMT 30 PPM"
+    ],
+    "total_choices": 2
+  },
+  "ANTHRAQUINONES": {
+    "group": null,
+    "all_groups": [],
+    "choices": [
+      "NMT 1.0 MG/KG",
+      "NMT 2 PPM",
+      "below 0.5%"
+    ],
+    "total_choices": 3
+  },
+  "ARSENICO": {
+    "group": null,
+    "all_groups": [],
+    "choices": [
+      "< 0.5 PPM"
+    ],
+    "total_choices": 1
+  },
+  "COLOR BY ABSORBANCE*": {
+    "group": null,
+    "all_groups": [],
+    "choices": [
+      "NMT 3.000"
+    ],
+    "total_choices": 1
+  },
+  "METALES PESADOS": {
+    "group": null,
+    "all_groups": [],
+    "choices": [
+      "< 10 PPM"
+    ],
+    "total_choices": 1
+  },
+  "SPECIFIC GRAVITY**": {
+    "group": null,
+    "all_groups": [],
+    "choices": [
+      "1.002 - 1.020"
+    ],
+    "total_choices": 1
+  },
+  "BILE TOLERANT GRAM NEGATIVE BACTERIA": {
+    "group": null,
+    "all_groups": [],
+    "choices": [
+      "NEGATIVE",
+      "NMT 10 CFU/G"
+    ],
+    "total_choices": 2
+  },
+  "SALMONELLA SP.": {
+    "group": null,
+    "all_groups": [],
+    "choices": [
+      "NEGATIVE"
+    ],
+    "total_choices": 1
+  },
+  "ACCEMANNAN (TARGET 15%-20%)**": {
+    "group": null,
+    "all_groups": [],
+    "choices": [
+      "15% - 20%"
+    ],
+    "total_choices": 1
+  },
+  "WLM (ISOCITRATE)": {
+    "group": null,
+    "all_groups": [],
+    "choices": [
+      "NMT 5%"
+    ],
+    "total_choices": 1
+  }
+}

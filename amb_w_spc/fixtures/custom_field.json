@@ -1,5 +1,6 @@
 [
  {
+  "doctype": "Custom Field",
   "name": "Quality Inspection Parameter-custom_choices",
   "creation": "2026-05-18 11:57:19.634555",
   "modified": "2026-05-18 11:57:19.634555",
@@ -66,6 +67,7 @@
   "alignment": ""
  },
  {
+  "doctype": "Custom Field",
   "name": "Quality Inspection Parameter-custom_unit",
   "creation": "2026-05-18 11:57:19.499025",
   "modified": "2026-05-18 11:57:19.499025",
@@ -132,6 +134,7 @@
   "alignment": ""
  },
  {
+  "doctype": "Custom Field",
   "name": "Quality Inspection Parameter-custom_is_numeric",
   "creation": "2026-05-18 11:57:19.302309",
   "modified": "2026-05-18 11:57:19.302309",
@@ -198,6 +201,7 @@
   "alignment": ""
  },
  {
+  "doctype": "Custom Field",
   "name": "Quality Inspection Parameter-custom_specification_max",
   "creation": "2026-05-18 11:57:19.037322",
   "modified": "2026-05-18 11:57:19.037322",
@@ -264,6 +268,7 @@
   "alignment": ""
  },
  {
+  "doctype": "Custom Field",
   "name": "Quality Inspection Parameter-custom_specification_min",
   "creation": "2026-05-18 11:57:18.790484",
   "modified": "2026-05-18 11:57:18.790484",
@@ -330,6 +335,7 @@
   "alignment": ""
  },
  {
+  "doctype": "Custom Field",
   "name": "Quality Inspection Parameter-custom_specification_text",
   "creation": "2026-05-18 11:57:18.301449",
   "modified": "2026-05-18 11:57:18.301449",

@@ -1,7 +1,8 @@
 """Phase 1C-A QIP data cleanup — bulk-assign parameter_group from FoxPro ANALISIS + populate Posibles Valores choices.
 
-Reads canonical FoxPro extract at:
-    /media/sf_E_DRIVE/Claude/local-agent-mode-sessions/foxpro-staging/extracts/parameter_group_and_choices.json
+Reads canonical FoxPro extract bundled inside the app at:
+    apps/amb_w_spc/amb_w_spc/data/foxpro_extracts/parameter_group_and_choices.json
+    (resolved at runtime via frappe.get_app_path('amb_w_spc', 'data', 'foxpro_extracts', ...))
 
 For each entry, looks up the QIP master record by `parameter` field (FoxPro DESCRIP).
 If found:
@@ -25,7 +26,8 @@ from pathlib import Path
 import frappe
 
 
-DATA_FILE = "/media/sf_E_DRIVE/Claude/local-agent-mode-sessions/foxpro-staging/extracts/parameter_group_and_choices.json"
+# DATA_FILE resolved inside execute() via frappe.get_app_path() — portable across
+# any substrate that has amb_w_spc installed (VM3 dev, hostinger-vpt rehearsal, hostinger-vpp prod).
 
 # Map FoxPro 'group' tokens → canonical Quality Inspection Parameter Group names (per Phase 1A QIPG tree).
 # QIP Groups on canonical tree include: Organoleptic, Physicochemical, Microbiological, Other Analysis,
@@ -45,15 +47,17 @@ GROUP_NAME_MAP = {
 def execute():
 	"""Frappe patches.txt entry point."""
 
-	if not Path(DATA_FILE).exists():
+	data_file = Path(frappe.get_app_path("amb_w_spc", "data", "foxpro_extracts", "parameter_group_and_choices.json"))
+
+	if not data_file.exists():
 		frappe.log_error(
-			f"Phase 1C-A: data file missing at {DATA_FILE}",
+			f"Phase 1C-A: data file missing at {data_file}",
 			"Phase 1C-A Migration",
 		)
-		print(f"FAIL: data file missing at {DATA_FILE}")
+		print(f"FAIL: data file missing at {data_file}")
 		return
 
-	with open(DATA_FILE) as f:
+	with open(data_file) as f:
 		data = json.load(f)
 
 	print(f"Phase 1C-A QIP data cleanup — processing {len(data)} entries from FoxPro extract")
@@ -135,7 +139,7 @@ def execute():
 
 	# Report
 	msg = f"""Phase 1C-A QIP data cleanup complete:
-  - Source: {DATA_FILE}
+  - Source: {data_file}
   - Entries processed: {len(data)}
   - Assigned parameter_group to: {assigned_group} records
   - Populated Posibles Valores choices on: {populated_choices} records
