@@ -1,0 +1,375 @@
+{
+  "doctype": "Batch AMB",
+  "phase": "L153 V14.2.3 L122 triage \u2014 17 CF\u2194DocField collision strip",
+  "run_at_utc": "2026-05-21T02:11:35.997673Z",
+  "commit_sha_pre_strip": "c02cd48",
+  "commit_sha_post_strip": "900d569",
+  "fieldnames_stripped": 17,
+  "fields": [
+    {
+      "fieldname": "batch_output_products",
+      "docfield": {
+        "name": "eer30gp4c2",
+        "fieldtype": "Table",
+        "label": "Batch Output Products",
+        "options": "Batch Output Product",
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 51
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "batch_status",
+      "docfield": {
+        "name": "eeraqpd154",
+        "fieldtype": "Select",
+        "label": "Batch Status",
+        "options": null,
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 95
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [
+        {
+          "name": "get_running_batch_announcements",
+          "reference_doctype": null,
+          "script_type": "API"
+        }
+      ],
+      "client_script_refs": [
+        {
+          "name": "Navbar Settings Widget",
+          "dt": "Navbar Settings"
+        },
+        {
+          "name": "Production data widget Batch AMB",
+          "dt": "Batch AMB"
+        }
+      ]
+    },
+    {
+      "fieldname": "calculated_total_weight",
+      "docfield": {
+        "name": "eer1nk2bbi",
+        "fieldtype": "Float",
+        "label": "Calculated Total Weight",
+        "options": null,
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 39
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "cost_calculation_method",
+      "docfield": {
+        "name": "eervn6es4a",
+        "fieldtype": "Select",
+        "label": "Cost Calculation Method",
+        "options": "Manual\nWork Order\nEstimated\nActual",
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 47
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "cost_per_kg",
+      "docfield": {
+        "name": "eerbduijcn",
+        "fieldtype": "Currency",
+        "label": "Cost Per Kg",
+        "options": null,
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 38
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": [
+        {
+          "name": "Quotation-Comprehensive_Automation",
+          "dt": "Quotation"
+        }
+      ]
+    },
+    {
+      "fieldname": "cost_source",
+      "docfield": {
+        "name": "eer2npikn8",
+        "fieldtype": "Select",
+        "label": "Cost Source",
+        "options": "\nWork Order\nManual Entry\nEstimated\nBatch Calculation",
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 40
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "custom_certificate_code",
+      "docfield": {
+        "name": "eerv52n4g7",
+        "fieldtype": "Text",
+        "label": "Custom Certificate Code",
+        "options": null,
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 103
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "custom_consecutive",
+      "docfield": {
+        "name": "eer8ls3048",
+        "fieldtype": "Data",
+        "label": "Consecutive",
+        "options": null,
+        "reqd": 0,
+        "length": 10,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 87
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": [
+        {
+          "name": "batch_amb_old",
+          "dt": "Batch AMB"
+        }
+      ]
+    },
+    {
+      "fieldname": "custom_folio_produccion",
+      "docfield": {
+        "name": "eer1n9kph2",
+        "fieldtype": "Int",
+        "label": "Custom Folio Produccion",
+        "options": null,
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 104
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "custom_produced_qty",
+      "docfield": {
+        "name": "eerajgniej",
+        "fieldtype": "Float",
+        "label": "Custom Produced Qty",
+        "options": null,
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 106
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "custom_product_family",
+      "docfield": {
+        "name": "eeraumrjga",
+        "fieldtype": "Data",
+        "label": "Custom Product Family",
+        "options": null,
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 107
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "custom_subfamily",
+      "docfield": {
+        "name": "eern1r2ih6",
+        "fieldtype": "Data",
+        "label": "Subfamily",
+        "options": null,
+        "reqd": 0,
+        "length": 10,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 88
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "output_products",
+      "docfield": {
+        "name": "eeri4hjrmr",
+        "fieldtype": "Table",
+        "label": "Output Products",
+        "options": "Batch Output Product",
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 49
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "output_products_section",
+      "docfield": {
+        "name": "eervq4si8j",
+        "fieldtype": "Section Break",
+        "label": "Output Products",
+        "options": null,
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 48
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "production_end_date",
+      "docfield": {
+        "name": "eer8vqhu14",
+        "fieldtype": "Date",
+        "label": "Production End Date",
+        "options": null,
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 121
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "production_start_date",
+      "docfield": {
+        "name": "eerr7ekr3f",
+        "fieldtype": "Date",
+        "label": "Production Start Date",
+        "options": null,
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 124
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    },
+    {
+      "fieldname": "total_production_cost",
+      "docfield": {
+        "name": "eerqhvcebd",
+        "fieldtype": "Currency",
+        "label": "Total Production Cost",
+        "options": null,
+        "reqd": 0,
+        "length": 0,
+        "default": null,
+        "in_list_view": 0,
+        "idx": 36
+      },
+      "property_setters_surviving": [],
+      "server_script_refs": [],
+      "client_script_refs": []
+    }
+  ],
+  "custom_certificate_code_long_rows": 0,
+  "custom_certificate_code_safety": "safe (no rows > 140 chars)",
+  "relevant_patch_log_entries": [
+    {
+      "patch": "execute:amb_w_spc.patches.v15.install_warehouse_batch_integration",
+      "creation": "2026-05-12 08:31:55.693347"
+    }
+  ],
+  "batch_amb_remaining_cfs_post_strip": [
+    {
+      "name": "Batch AMB-cost_tracking_section",
+      "fieldname": "cost_tracking_section",
+      "owner": "Administrator",
+      "creation": "2026-05-11 12:13:00.216838",
+      "modified": "2025-11-15 11:20:46.462679",
+      "module": null
+    },
+    {
+      "name": "Batch AMB-column_break_cost",
+      "fieldname": "column_break_cost",
+      "owner": "Administrator",
+      "creation": "2026-05-11 12:13:00.888969",
+      "modified": "2025-11-15 11:20:46.774831",
+      "module": null
+    },
+    {
+      "name": "Batch AMB-custom_column_break_1",
+      "fieldname": "custom_column_break_1",
+      "owner": "Administrator",
+      "creation": "2026-05-11 12:13:01.017837",
+      "modified": "2025-11-24 17:34:23.268823",
+      "module": null
+    },
+    {
+      "name": "Batch AMB-bom_formula",
+      "fieldname": "bom_formula",
+      "owner": "Administrator",
+      "creation": "2026-05-12 16:41:44.194215",
+      "modified": "2025-11-16 11:25:43.605610",
+      "module": null
+    },
+    {
+      "name": "Batch AMB-golden_number_section",
+      "fieldname": "golden_number_section",
+      "owner": "Administrator",
+      "creation": "2026-05-12 16:41:45.052080",
+      "modified": "2025-11-12 13:23:35.718292",
+      "module": null
+    }
+  ],
+  "provenance_hypothesis": "All 17 stripped CFs likely originate from \u00a72.2 donor-receiver migration (batch migration from former manufacturing donor app into amb_w_spc, per memory/feedback_donor_receiver_version_invariant.md). The CFs lingered after the donor-receiver completion because the donor side cleared its doctype tree but the legacy tabCustom Field rows persisted on the shared database. The donor-receiver memory specifically warns about post-migration sync invariant \u2014 this is one concrete artifact of that invariant being broken at the CF table layer. custom_certificate_code is the one \u00a72.1 UI-edit drift case (Small Text added later via UI, masking the DocField Text)."
+}
