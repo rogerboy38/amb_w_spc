@@ -20,18 +20,85 @@ app_include = [
     "Real Time Monitoring"
 ]
 
-# Fixtures - auto-synced on bench migrate / Frappe Cloud deploy
+# ========================================
+#  FIXTURES (L153 fixtures-discipline rollout 2026-05-20)
+# ========================================
+# Per cowork-ops 2026-05-20T21:44Z directive (post L153 ratification):
+# Filter Custom Field / Property Setter / Client Script / Server Script by
+# DocType (dt / doc_type / reference_doctype) rather than module. amb_w_spc
+# claims QC / Manufacturing / SPC / Stock / Warehouse / Work Order domain;
+# amb_w_tds claims TDS / Sales / COA / BOM / Customer / CRM / Logistics.
+#
+# UOM: explicit name list per L152 ISO/SI convention — only AMB-QC-specific
+# UOMs that the QIP custom_unit + IQI value system references.
+
+_AMB_W_SPC_DOCTYPES = [
+    # Owned by amb_w_spc (defined in this app)
+    "Batch AMB", "Batch AMB Item", "Batch Output Product",
+    "Batch Processing History", "Bot User Configuration",
+    "Deviation CAPA Action", "Deviation Team Member", "Deviation Timeline",
+    "Doctypes Relationships", "Integration Points",
+    "Manufacturing Station", "Material Assessment Log",
+    "Material Assessment Log Item", "MRP Material Requirement", "MRP Planning",
+    "MRP Planning Item", "MRP Planning Material", "MRP Work Order",
+    "Operator Management Settings", "PLC Integration", "PLC Parameter Mapping",
+    "Purchase Receipt Integration", "Purchase Receipt Integration Item",
+    "Quality Certificate Link", "Real Time Process Data",
+    "Sales Order Fulfillment", "Sales Order Fulfillment Item",
+    "Sensor Configuration", "Sensor Skill", "SFC Operator",
+    "SFC Operator Attendance", "SFC Operator Skill", "SFC Transaction",
+    "SPC Alert", "SPC Alert Escalation Notification",
+    "SPC Alert New Notification", "SPC Alert Recipient", "SPC Audit Trail",
+    "SPC Batch Deviation", "SPC Batch Parameter", "SPC Batch Record",
+    "SPC Change Control", "SPC Control Chart", "SPC Corrective Action",
+    "SPC Corrective Action Due Reminder Notification",
+    "SPC Corrective Action Factor", "SPC Corrective Action Item",
+    "SPC Corrective Action New Notification", "SPC Data Point", "SPC Deviation",
+    "SPC Electronic Signature", "SPC Environment", "SPC Equipment",
+    "SPC Parameter Control Limit", "SPC Parameter Master",
+    "SPC Parameter Specification", "SPC Parameter Target Value",
+    "SPC Process Capability", "SPC Process Capability Completed Notification",
+    "SPC Process Capability Measurement", "SPC Quality Test", "SPC Raw Material",
+    "SPC Report", "SPC Report Cpk Value", "SPC Report Generated Notification",
+    "SPC Report Parameter", "SPC Report Recipient", "SPC Report Violation",
+    "SPC Specification", "SPC Workstation", "Station Equipment",
+    "Warehouse Pick Task", "Warehouse Pick Task Item", "Weight Event",
+    "Work Order Routing", "Work Order Routing Operation",
+    # ERPNext DocTypes amb_w_spc customizes (QC / Manufacturing / Stock)
+    "Batch", "Item Barcode", "Item Quality Inspection Parameter",
+    "Job Card", "Movement Type", "Quality Inspection",
+    "Quality Inspection Parameter", "Quality Inspection Parameter Group",
+    "Quality Inspection Template", "Serial and Batch Bundle", "Serial No",
+    "Stock Entry", "Stock Entry Detail", "Stock Reconciliation",
+    "Stock Reconciliation Item", "Warehouse", "Work Order", "Work Order Item",
+    "Workstation",
+]
+
+# AMB-QC-specific UOMs per L152 ISO/SI convention. Standard ERPNext UOMs
+# (Kg, Liter, Unit, etc.) are NOT listed — they ship with ERPNext core.
+_AMB_W_SPC_UOMS = [
+    "%",
+    "ppm",
+    "CFU/g",
+    "CFU/mL",
+    "mg/kg",
+    "g/mL",
+    "Brix grados",
+    "Color (absorbance 400nm)",
+    "Color Gardner",
+]
+
 fixtures = [
-    {
-        "dt": "Notification",
-        "filters": [["module", "=", "SPC Quality Management"]]
-    },
-    {"doctype": "Client Script",       "filters": [["module", "=", "SPC Quality Management"]]},
-    {"doctype": "Server Script",       "filters": [["module", "=", "SPC Quality Management"]]},
-    {"doctype": "Workspace",          "filters": [["name", "like", "AMB%"]]},
-    {"doctype": "Dashboard Chart",        "filters": [["module", "=", "SPC Quality Management"]]},
-    {"doctype": "Number Card",        "filters": [["module", "=", "SPC Quality Management"]]},
-    {"doctype": "Report",        "filters": [["module", "=", "SPC Quality Management"]]},
+    {"doctype": "Custom Field",     "filters": [["dt", "in", _AMB_W_SPC_DOCTYPES]]},
+    {"doctype": "Property Setter",  "filters": [["doc_type", "in", _AMB_W_SPC_DOCTYPES]]},
+    {"doctype": "Client Script",    "filters": [["dt", "in", _AMB_W_SPC_DOCTYPES]]},
+    {"doctype": "Server Script",    "filters": [["reference_doctype", "in", _AMB_W_SPC_DOCTYPES]]},
+    {"doctype": "UOM",              "filters": [["name", "in", _AMB_W_SPC_UOMS]]},
+    {"doctype": "Notification",     "filters": [["module", "=", "SPC Quality Management"]]},
+    {"doctype": "Workspace",        "filters": [["name", "like", "AMB%"]]},
+    {"doctype": "Dashboard Chart",  "filters": [["module", "=", "SPC Quality Management"]]},
+    {"doctype": "Number Card",      "filters": [["module", "=", "SPC Quality Management"]]},
+    {"doctype": "Report",           "filters": [["module", "=", "SPC Quality Management"]]},
 ]
 
 # After install hook
