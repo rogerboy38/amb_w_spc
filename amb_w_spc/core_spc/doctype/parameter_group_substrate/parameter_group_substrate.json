@@ -1,0 +1,24 @@
+{
+  "doctype": "DocType",
+  "module": "Core SPC",
+  "name": "Parameter Group Substrate",
+  "istable": 1,
+  "custom": 0,
+  "engine": "InnoDB",
+  "track_changes": 1,
+  "editable_grid": 1,
+  "allow_rename": 1,
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "description": "Child table wrapping Substrate link for Table MultiSelect on Quality Inspection Parameter Group. applicable_substrates field uses this doctype per Common Root architecture (BUG_121A, 2026-05-24).",
+  "fields": [
+    {
+      "fieldname": "substrate",
+      "label": "Substrate",
+      "fieldtype": "Link",
+      "options": "Substrate",
+      "reqd": 1,
+      "in_list_view": 1
+    }
+  ]
+}
