@@ -42,3 +42,9 @@ amb_w_spc.patches.v15.populate_iqi_parameter_group
 
 # Phase 1C-A — QIP data cleanup: bulk-assign parameter_group from FoxPro ANALISIS + populate Posibles Valores choices (Alicia QE approved 2026-05-18T17:00Z)
 amb_w_spc.patches.v15.phase_1c_a_qip_data_cleanup
+
+# Task #70 (2026-05-29) — Path Y substrate baseline backfill on Item.substrate.
+# Layered Phase 0→6→3→1→1b→2→tiebreaker rules; empty-when-unsure. Self-bootstraps
+# the Item.substrate CustomField if the fixture sync hasn't yet installed it.
+# Idempotent: re-runs produce zero writes when DB matches derived state.
+amb_w_spc.patches.v14_3_7.backfill_item_substrate

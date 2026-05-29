@@ -1,0 +1,44 @@
+{
+  "doctype": "DocType",
+  "module": "Core SPC",
+  "name": "Substrate",
+  "istable": 0,
+  "custom": 0,
+  "engine": "InnoDB",
+  "track_changes": 1,
+  "editable_grid": 1,
+  "allow_rename": 1,
+  "autoname": "field:substrate_code",
+  "naming_rule": "By fieldname",
+  "sort_field": "substrate_code",
+  "sort_order": "ASC",
+  "description": "Substrate codification — the 5 canonical material codes that anchor Path Y picker filtering. LQD/LQDC/LQDF/PWD/PWDF. Shipped as fixture; never edit on the running site (would drift from app source-of-truth).",
+  "fields": [
+    {
+      "fieldname": "substrate_code",
+      "label": "Substrate Code",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "unique": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "label_en",
+      "label": "Label (EN)",
+      "fieldtype": "Data",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "label_es",
+      "label": "Label (ES)",
+      "fieldtype": "Data",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "description",
+      "label": "Description",
+      "fieldtype": "Small Text"
+    }
+  ]
+}

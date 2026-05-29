@@ -88,8 +88,31 @@ _AMB_W_SPC_UOMS = [
     "Color Gardner",
 ]
 
+# Task #70 (2026-05-29) — Custom Fields on doctypes NOT in _AMB_W_SPC_DOCTYPES
+# that amb_w_spc owns because the substrate-aware code paths live in SPC. Tight
+# name-exception list UNIONed into the Custom Field fixture filter via
+# or_filters; without this, export-fixtures would silently drop these CFs
+# (their `dt` misses the doctype-list filter — same trap as L156).
+#
+# Item-substrate: dt=Item (owned by ERPNext / amb_w_tds; Item is in
+# _AMB_W_TDS_DOCTYPES). Picker (phase_1c_tab_v2.js) reads frm.doc.item.substrate
+# to filter parameters by Path Y. amb_w_tds's CF filter also catches this CF
+# via `dt in _AMB_W_TDS_DOCTYPES` — accepted latent dual-capture per Task #67
+# precedent (content identical, last-write-wins is idempotent).
+_AMB_W_SPC_CF_EXCEPTIONS = [
+    "Item-substrate",
+]
+
 fixtures = [
-    {"doctype": "Custom Field",     "filters": [["dt", "in", _AMB_W_SPC_DOCTYPES]]},
+    {"doctype": "Custom Field",
+     "or_filters": [
+         ["dt", "in", _AMB_W_SPC_DOCTYPES],
+         ["name", "in", _AMB_W_SPC_CF_EXCEPTIONS],
+     ]},
+    # Task #70 — 5 canonical Substrate records (LQD/LQDC/LQDF/PWD/PWDF). No
+    # filter needed; the doctype is a closed enumeration that always ships
+    # whole. JSON-shipped at custom=0 alongside this fixture.
+    {"doctype": "Substrate"},
     {"doctype": "Property Setter",  "filters": [["doc_type", "in", _AMB_W_SPC_DOCTYPES]]},
     {"doctype": "Client Script",    "filters": [["dt", "in", _AMB_W_SPC_DOCTYPES]]},
     {"doctype": "Server Script",    "filters": [["reference_doctype", "in", _AMB_W_SPC_DOCTYPES]]},

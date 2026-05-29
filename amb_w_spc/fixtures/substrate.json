@@ -1,0 +1,47 @@
+[
+ {
+  "description": null,
+  "doctype": "Substrate",
+  "label_en": "Liquid",
+  "label_es": "Líquido",
+  "modified": "2026-05-24 12:54:55.185820",
+  "name": "LQD",
+  "substrate_code": "LQD"
+ },
+ {
+  "description": null,
+  "doctype": "Substrate",
+  "label_en": "Liquid Concentrated",
+  "label_es": "Líquido Concentrado",
+  "modified": "2026-05-24 12:54:55.202128",
+  "name": "LQDC",
+  "substrate_code": "LQDC"
+ },
+ {
+  "description": null,
+  "doctype": "Substrate",
+  "label_en": "Liquid Formulated",
+  "label_es": "Líquido Formulado",
+  "modified": "2026-05-24 12:54:55.204632",
+  "name": "LQDF",
+  "substrate_code": "LQDF"
+ },
+ {
+  "description": null,
+  "doctype": "Substrate",
+  "label_en": "Powder",
+  "label_es": "Polvo",
+  "modified": "2026-05-24 12:54:55.206674",
+  "name": "PWD",
+  "substrate_code": "PWD"
+ },
+ {
+  "description": null,
+  "doctype": "Substrate",
+  "label_en": "Powder Formulated",
+  "label_es": "Polvo Formulado",
+  "modified": "2026-05-24 12:54:55.208688",
+  "name": "PWDF",
+  "substrate_code": "PWDF"
+ }
+]
