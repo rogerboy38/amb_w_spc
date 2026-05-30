@@ -103,6 +103,21 @@ _AMB_W_SPC_CF_EXCEPTIONS = [
     "Item-substrate",
 ]
 
+# Task #9 (2026-05-30) — canonical QIPG tree roots for fixture filter.
+# Mirrors the picker's source-of-truth at apps/amb_w_tds/amb_w_tds/public/js/
+# phase_1c_tab_v2.js (SC5V2_COMMON_ROOT + SC5V2_L2_CATEGORIES.qipg). Used as
+# `custom_parameter_group_child IN [...]` filter to capture Common Root + 7
+# L2 categories + all their direct descendants (~411 records). EXCLUDES:
+# the 4 ARCHIVED-2026-05 orphans, the 8 Products * legacy top-levels +
+# their substrate-segmented residue (Physicochemical LQDC, Legacy STD
+# LQDF/PWDF). Adjust this list if the picker's L2 constants change.
+_AMB_W_SPC_CANONICAL_QIPG_PARENTS = [
+    "Common Root",
+    "Organoleptic", "Physicochemical", "Microbiological",
+    "Pesticides", "Contaminant", "Other Analysis",
+    "Aloe Vera Nutrients",
+]
+
 fixtures = [
     {"doctype": "Custom Field",
      "or_filters": [
@@ -113,6 +128,19 @@ fixtures = [
     # filter needed; the doctype is a closed enumeration that always ships
     # whole. JSON-shipped at custom=0 alongside this fixture.
     {"doctype": "Substrate"},
+    # Task #9 (2026-05-30) — canonical Quality Inspection Parameter Group
+    # tree (Common Root + 7 L2 categories + ~403 direct descendants = ~411
+    # records). Filter via or_filters: (name='Common Root') OR (parent IN
+    # [Common Root, 7 L2 names]). Includes applicable_substrates Table
+    # MultiSelect child rows (Parameter Group Substrate per Task #67),
+    # which transport with each parent doc. Excludes 4 ARCHIVED-2026-05
+    # orphans + 8 Products * legacy top-levels + 3 substrate-segmented
+    # residue groups (Legacy STD LQDF/PWDF, Physicochemical LQDC).
+    {"doctype": "Quality Inspection Parameter Group",
+     "or_filters": [
+         ["name", "=", "Common Root"],
+         ["custom_parameter_group_child", "in", _AMB_W_SPC_CANONICAL_QIPG_PARENTS],
+     ]},
     {"doctype": "Property Setter",  "filters": [["doc_type", "in", _AMB_W_SPC_DOCTYPES]]},
     {"doctype": "Client Script",    "filters": [["dt", "in", _AMB_W_SPC_DOCTYPES]]},
     {"doctype": "Server Script",    "filters": [["reference_doctype", "in", _AMB_W_SPC_DOCTYPES]]},
