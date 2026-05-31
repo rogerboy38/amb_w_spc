@@ -22,12 +22,30 @@ Algorithm (strip-substrate-suffix patterns per Hugh's Task #11 brief):
   "<L2> <SUB> [ARCHIVED-2026-05]"  → "<L2>"  (handle archived-substrate combos)
   All others: LOG and DEFER (don't auto-rewrite — needs human review)
 
-Idempotent: select-before-write on every set_value; safe to re-run. Shared-DB
-constraint with vpp (per Hugh's transport playbook v2 PART B): the patch may
-fire on either side and the other side's re-run produces 0 writes.
+Migrates legacy substrate-segmented QIPG tree (Products Liquid/Powder
+Parameter Group containers + Microbiological/Physicochemical/Organoleptic/
+Other LQD substrate-suffix subgroups) to canonical 8-L2 tree (Common Root +
+7 L2 categories). Prerequisite: v14_3_9.1
+(`amb_w_spc.patches.v14_3_9_1.install_canonical_qipg_tree_prereq`) must
+install the canonical tree first on any fresh site where the tree isn't
+already present from a prior migrate. On sites with canonical tree already
+installed (vpt-docker post-2026-05-30, VM3 / Alicia's prod), v14_3_9.1
+short-circuits (idempotent skip) and v14_3_9 proceeds with legacy → canonical
+re-parenting.
+
+Idempotent: select-before-write on every set_value; safe to re-run.
 
 Self-bootstrap: aborts BEFORE any writes if Common Root + 7 L2 categories
-aren't present (Task #9 fixture must have installed first).
+aren't present. The expected ordering is now:
+  patches.txt:  v14_3_7 → v14_3_9_1 → v14_3_9 → v14_3_10 → ...
+
+Stale-claim removed 2026-05-31 (L189 cand): an earlier docstring revision
+claimed a "Shared-DB constraint with vpp (per transport playbook v2 PART B)
+— the patch may fire on either side and the other side's re-run produces 0
+writes." Hugh clarified 2026-05-31: hostinger-vpp has STANDALONE DB (not
+shared with vpt-docker). The idempotency property still holds independently
+because all operations are select-before-write — but the framing of
+"either-side" provenance was inaccurate.
 
 Legacy QIPG renames (Alicia §5): once QIPs are re-parented, the orphaned
 substrate-segmented parent QIPGs (e.g. "Organoleptic LQD") get renamed to

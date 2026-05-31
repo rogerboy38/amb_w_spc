@@ -49,13 +49,25 @@ amb_w_spc.patches.v15.phase_1c_a_qip_data_cleanup
 # Idempotent: re-runs produce zero writes when DB matches derived state.
 amb_w_spc.patches.v14_3_7.backfill_item_substrate
 
+# Task #15 Phase B unblock (2026-05-31) — Pre-fixture-sync prerequisite for
+# fresh-site deployments (hostinger-vpp first-time V14.2.0 migrate). Frappe
+# migrate runs patches BEFORE sync_fixtures, but v14_3_9 task11 has a self-
+# bootstrap precondition requiring Common Root + 7 L2 QIPGs which only exist
+# after sync_fixtures of amb_w_spc/fixtures/quality_inspection_parameter_group.json
+# (Task #9 fixture, 411 records). Idempotent skip if Common Root present.
+# Defensive NSM zombie cleanup on vpp (lft=0 Physicochemical LQD Filtred
+# Workstation entry caught by sysmayal-3 diagnostic). L188 cand.
+amb_w_spc.patches.v14_3_9_1.install_canonical_qipg_tree_prereq
+
 # Task #11 (2026-05-30) — Re-parent vpt-docker QIPs from substrate-segmented
 # legacy QIPGs (e.g. "Organoleptic LQD Color Visual") to canonical L2 leaves
 # (e.g. "Organoleptic Color Visual"). Plus legacy-rename orphaned substrate-
 # segmented QIPGs to [LEGACY-2026-05] suffix per Alicia §5 ratification (keeps
 # the 4 already-archived as-is). Self-bootstraps on Common Root + 7 L2 categories
-# preconditions. Idempotent select-before-write; rehearsal-validated on VM3
-# (caught 2 API signature bugs + 1 double-archive-suffix bug before commit).
+# preconditions (now ensured by v14_3_9_1 prereq). Idempotent select-before-
+# write; rehearsal-validated on VM3 (caught 2 API signature bugs + 1 double-
+# archive-suffix bug before commit). Docstring updated 2026-05-31 to remove
+# stale "Shared-DB constraint with vpp" claim (L189 cand).
 amb_w_spc.patches.v14_3_9.task11_reparent_vpt_qips_to_canonical_leaves
 
 # Task #15 (2026-05-31) — QIP cleanup + REVERSE-SHIP. Alicia ratified taxonomy
