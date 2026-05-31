@@ -116,3 +116,13 @@ amb_w_spc.patches.v14_3_12.diacetyl_rhein_nsm_reposition
 # fixtures / after_migrate; tree-managed patch-created nodes need
 # after_migrate rebuild to survive fixture-sync L2 boundary shifts.
 amb_w_spc.patches.v14_3_13.trigger_initial_after_migrate_rebuild
+
+# T18 Wave 1 (2026-05-31) — Aloe Vera Nutrients cleanup before Wave 2 bulk
+# additions. 42 ops on Alicia-OK'd rows: 24 Case A (delete Spanish dup),
+# 4 Case B (rename Spanish→English), 11 CONTAMINANT reclassify (Nutrients
+# L2 → Contaminant L2). Embedded data inline (no CSV-path dependency for
+# vpt-docker / vpp transport). Idempotent select-before-write. No
+# sync_fixtures call (L188.5-safe). after_migrate hook handles NSM rebuild.
+# 3 Case C entries (sterol family — 24-ETHYL/24-METHYL-LOPHENOL +
+# 24-METHYLENE-CYCLOARTANOL) deferred to Wave 2.
+amb_w_spc.patches.v15_1_0.t18_wave1_nutrient_cleanup
