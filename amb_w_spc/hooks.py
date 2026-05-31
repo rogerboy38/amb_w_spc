@@ -88,6 +88,14 @@ _AMB_W_SPC_UOMS = [
     "Color Gardner",
 ]
 
+# L153 §4.1 follow-on: Server Scripts with reference_doctype=NULL (scheduled /
+# API / cron-driven) need explicit-name capture. Per triage 2026-05-20T23:30Z.
+_AMB_W_SPC_NOREF_SERVER_SCRIPTS = [
+    "Batch and Serial",                  # Batch + Serial manufacturing
+    "get_running_batch_announcements",   # Batch announcements
+    "Work Order List Show Drafts",       # Work Order list view
+]
+
 # Task #70 (2026-05-29) — Custom Fields on doctypes NOT in _AMB_W_SPC_DOCTYPES
 # that amb_w_spc owns because the substrate-aware code paths live in SPC. Tight
 # name-exception list UNIONed into the Custom Field fixture filter via
@@ -143,7 +151,16 @@ fixtures = [
      ]},
     {"doctype": "Property Setter",  "filters": [["doc_type", "in", _AMB_W_SPC_DOCTYPES]]},
     {"doctype": "Client Script",    "filters": [["dt", "in", _AMB_W_SPC_DOCTYPES]]},
-    {"doctype": "Server Script",    "filters": [["reference_doctype", "in", _AMB_W_SPC_DOCTYPES]]},
+    # Server Script: UNION via or_filters only — see amb_w_tds hooks.py note.
+    # filters+or_filters in same dict = AND-of-both (intersection); for UNION
+    # we need both conditions inside or_filters as siblings.
+    {
+        "doctype": "Server Script",
+        "or_filters": [
+            ["reference_doctype", "in", _AMB_W_SPC_DOCTYPES],
+            ["name", "in", _AMB_W_SPC_NOREF_SERVER_SCRIPTS],
+        ],
+    },
     {"doctype": "UOM",              "filters": [["name", "in", _AMB_W_SPC_UOMS]]},
     {"doctype": "Notification",     "filters": [["module", "=", "SPC Quality Management"]]},
     {"doctype": "Workspace",        "filters": [["name", "like", "AMB%"]]},
@@ -182,6 +199,18 @@ override_doctype_dashboards = {
     "Batch AMB": "amb_w_spc.utils.batch_amb_dashboard.get_data",
 }
 
+# L187 (2026-05-31) — Post-fixture-sync QIPG NSM rebuild. Frappe migrate order is:
+# 1. Patches → 2. sync_fixtures → 3. after_migrate. sync_fixtures of Task #9's
+# 411-record QIPG canonical fixture repositions L2 boundaries (Physicochemical,
+# etc.) but does NOT reposition non-fixture QIPGs created by patches (e.g.
+# v14_3_10 STEP 1's `Physicochemical Diacetyl Rhein`). after_migrate hook runs
+# rebuild_tree AFTER fixture-driven L2 repositioning so non-fixture QIPGs
+# realign relative to the final L2 ranges. Idempotent; canary log if Diacetyl
+# Rhein still not contained after rebuild. See L187 banked memory.
+after_migrate = [
+    "amb_w_spc.utils.tree_consistency.rebuild_qipg_tree",
+]
+
 doc_events = {
     # ---- Batch AMB: Golden number auto-generation via amb_w_spc controller
     "Batch AMB": {
@@ -207,6 +236,11 @@ doc_events = {
             "amb_w_spc.core_spc.spc_server_validations.validate_spc_specification",
         ],
     },
+
+    "Quality Inspection Parameter Group": {
+        "after_rename": "amb_w_spc.qipg_events.after_rename_qipg",
+    }
+
 }
 
 # Whitelist methods for dashboard

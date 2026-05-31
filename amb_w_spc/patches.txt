@@ -91,3 +91,16 @@ amb_w_spc.patches.v14_3_11.task12_diacetyl_substrates_mercury_ecoli_reparent
 # single-node update_nsm + assert if rebuild insufficient. L186 cand:
 # rebuild_tree signature corrections to Hugh's initial draft.
 amb_w_spc.patches.v14_3_12.diacetyl_rhein_nsm_reposition
+
+# Task #15/#12 trailing 2 (2026-05-31) — v14_3_12 was transient: ran in
+# patches phase (BEFORE sync_fixtures), then Task #9 QIPG canonical fixture
+# re-ran rebuild_tree during sync_fixtures, repositioning Physicochemical
+# L2 without recomputing the non-fixture Diacetyl Rhein QIPG → orphan
+# persisted. v14_3_13 fix: register after_migrate hook in hooks.py that
+# runs rebuild_qipg_tree AFTER both patches AND sync_fixtures complete.
+# This patch triggers the same function during current migrate cycle to
+# fix existing vpt-docker / hostinger-vpp state; future migrates run the
+# hook automatically. L187 cand: Frappe migrate ordering — patches /
+# fixtures / after_migrate; tree-managed patch-created nodes need
+# after_migrate rebuild to survive fixture-sync L2 boundary shifts.
+amb_w_spc.patches.v14_3_13.trigger_initial_after_migrate_rebuild
