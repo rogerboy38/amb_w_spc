@@ -25,11 +25,11 @@ Algorithm (strip-substrate-suffix patterns per Hugh's Task #11 brief):
 Migrates legacy substrate-segmented QIPG tree (Products Liquid/Powder
 Parameter Group containers + Microbiological/Physicochemical/Organoleptic/
 Other LQD substrate-suffix subgroups) to canonical 8-L2 tree (Common Root +
-7 L2 categories). Prerequisite: v14_3_9.1
-(`amb_w_spc.patches.v14_3_9_1.install_canonical_qipg_tree_prereq`) must
+7 L2 categories). Prerequisite: v14_3_8.5
+(`amb_w_spc.patches.v14_3_8_5.install_canonical_qipg_tree_prereq`) must
 install the canonical tree first on any fresh site where the tree isn't
 already present from a prior migrate. On sites with canonical tree already
-installed (vpt-docker post-2026-05-30, VM3 / Alicia's prod), v14_3_9.1
+installed (vpt-docker post-2026-05-30, VM3 / Alicia's prod), v14_3_8.5
 short-circuits (idempotent skip) and v14_3_9 proceeds with legacy → canonical
 re-parenting.
 
@@ -37,7 +37,7 @@ Idempotent: select-before-write on every set_value; safe to re-run.
 
 Self-bootstrap: aborts BEFORE any writes if Common Root + 7 L2 categories
 aren't present. The expected ordering is now:
-  patches.txt:  v14_3_7 → v14_3_9_1 → v14_3_9 → v14_3_10 → ...
+  patches.txt:  v14_3_7 → v14_3_8_5 → v14_3_9 → v14_3_10 → ...
 
 Stale-claim removed 2026-05-31 (L189 cand): an earlier docstring revision
 claimed a "Shared-DB constraint with vpp (per transport playbook v2 PART B)

@@ -1,4 +1,4 @@
-"""v14_3_9.1 prerequisite — Install canonical QIPG tree for fresh-site deployments.
+"""v14_3_8.5 prerequisite — Install canonical QIPG tree for fresh-site deployments.
 
 Context (sysmayal-3 NACK 20260531T164414Z + cowork-ops diagnostic intel):
 Hostinger-vpp (srv1415373 / erp.sysmayal2.cloud) is a FRESH V14.2.0 deployment
@@ -21,7 +21,7 @@ migrate, and Frappe runs patches BEFORE sync_fixtures (per migrate.py:
 patches → sync_fixtures → after_migrate). So v14_3_9 task11 fails immediately
 with `ValidationError: Task #11 prerequisites missing` — chicken-and-egg.
 
-v14_3_9.1 (this patch) breaks the egg:
+v14_3_8.5 (this patch) breaks the egg:
   STEP 1 — Idempotent skip if Common Root already present (vpt-docker /
            VM3 path — no-op).
   STEP 2 — Defensive cleanup of NSM zombie at lft=0 if present (vpp-
@@ -32,7 +32,7 @@ v14_3_9.1 (this patch) breaks the egg:
   STEP 5 — Assert verification: Common Root + 7 L2 categories now present.
 
 Pre-condition: amb_w_spc/fixtures/quality_inspection_parameter_group.json
-must be on disk at patch-execution time (it is, since v14_3_9_1 ships with
+must be on disk at patch-execution time (it is, since v14_3_8_5 ships with
 the same commit / branch tip as the fixture). Verified by sysmayal-3
 diagnostic intel.
 
@@ -69,18 +69,18 @@ NSM_ZOMBIE_NAME = "Physicochemical LQD Filtred Workstation"
 def execute():
     # ─── STEP 1: Idempotent skip ───
     if frappe.db.exists(QIPG, COMMON_ROOT):
-        print(f"v14_3_9.1: '{COMMON_ROOT}' present → canonical tree already "
+        print(f"v14_3_8.5: '{COMMON_ROOT}' present → canonical tree already "
               f"installed; skipping prereq (vpt-docker / VM3 path).")
         return
 
-    print(f"v14_3_9.1: '{COMMON_ROOT}' missing → fresh-site path (e.g. vpp). "
+    print(f"v14_3_8.5: '{COMMON_ROOT}' missing → fresh-site path (e.g. vpp). "
           f"Triggering pre-fixture-sync prereq install.")
 
     # ─── STEP 2: Defensive NSM zombie cleanup (vpp-specific) ───
     if frappe.db.exists(QIPG, NSM_ZOMBIE_NAME):
         zombie_lft = frappe.db.get_value(QIPG, NSM_ZOMBIE_NAME, "lft")
         if zombie_lft == 0:
-            print(f"v14_3_9.1: removing NSM zombie '{NSM_ZOMBIE_NAME}' at lft=0 "
+            print(f"v14_3_8.5: removing NSM zombie '{NSM_ZOMBIE_NAME}' at lft=0 "
                   f"before fixture sync (would block tree rebuild integrity).")
             frappe.db.sql(
                 "DELETE FROM `tabQuality Inspection Parameter Group` "
@@ -90,21 +90,21 @@ def execute():
             frappe.db.commit()
 
     # ─── STEP 3: Install canonical tree via sync_fixtures ───
-    print(f"v14_3_9.1: triggering sync_fixtures(app='amb_w_spc') to install "
+    print(f"v14_3_8.5: triggering sync_fixtures(app='amb_w_spc') to install "
           f"Common Root + 7 L2 + 411 canonical QIPG records from "
           f"amb_w_spc/fixtures/quality_inspection_parameter_group.json.")
     sync_fixtures(app="amb_w_spc")
     frappe.db.commit()
 
     # ─── STEP 4: NSM rebuild_tree ───
-    print(f"v14_3_9.1: rebuild_tree to normalize NSM lft/rgt post-sync.")
+    print(f"v14_3_8.5: rebuild_tree to normalize NSM lft/rgt post-sync.")
     rebuild_tree(QIPG)
     frappe.db.commit()
 
     # ─── STEP 5: Assert verification ───
     if not frappe.db.exists(QIPG, COMMON_ROOT):
         raise AssertionError(
-            f"v14_3_9.1 FAILED: '{COMMON_ROOT}' not installed after "
+            f"v14_3_8.5 FAILED: '{COMMON_ROOT}' not installed after "
             f"sync_fixtures(app='amb_w_spc'). Check that "
             f"amb_w_spc/fixtures/quality_inspection_parameter_group.json "
             f"is present on disk + readable + valid JSON."
@@ -112,11 +112,11 @@ def execute():
     missing_l2 = [l2 for l2 in L2_CATEGORIES if not frappe.db.exists(QIPG, l2)]
     if missing_l2:
         raise AssertionError(
-            f"v14_3_9.1 FAILED: L2 categories not installed after fixture sync: "
+            f"v14_3_8.5 FAILED: L2 categories not installed after fixture sync: "
             f"{missing_l2}. Investigate fixture file integrity."
         )
 
-    print(f"v14_3_9.1: canonical tree installation verified ✓ "
+    print(f"v14_3_8.5: canonical tree installation verified ✓ "
           f"(Common Root + {len(L2_CATEGORIES)} L2 categories present). "
           f"Downstream patches v14_3_9/v14_3_10/v14_3_11/v14_3_12/v14_3_13 "
           f"can now proceed.")

@@ -57,14 +57,14 @@ amb_w_spc.patches.v14_3_7.backfill_item_substrate
 # (Task #9 fixture, 411 records). Idempotent skip if Common Root present.
 # Defensive NSM zombie cleanup on vpp (lft=0 Physicochemical LQD Filtred
 # Workstation entry caught by sysmayal-3 diagnostic). L188 cand.
-amb_w_spc.patches.v14_3_9_1.install_canonical_qipg_tree_prereq
+amb_w_spc.patches.v14_3_8_5.install_canonical_qipg_tree_prereq
 
 # Task #11 (2026-05-30) — Re-parent vpt-docker QIPs from substrate-segmented
 # legacy QIPGs (e.g. "Organoleptic LQD Color Visual") to canonical L2 leaves
 # (e.g. "Organoleptic Color Visual"). Plus legacy-rename orphaned substrate-
 # segmented QIPGs to [LEGACY-2026-05] suffix per Alicia §5 ratification (keeps
 # the 4 already-archived as-is). Self-bootstraps on Common Root + 7 L2 categories
-# preconditions (now ensured by v14_3_9_1 prereq). Idempotent select-before-
+# preconditions (now ensured by v14_3_8_5 prereq). Idempotent select-before-
 # write; rehearsal-validated on VM3 (caught 2 API signature bugs + 1 double-
 # archive-suffix bug before commit). Docstring updated 2026-05-31 to remove
 # stale "Shared-DB constraint with vpp" claim (L189 cand).
