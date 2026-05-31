@@ -26,8 +26,13 @@ v14_3_8.5 (this patch) breaks the egg:
            VM3 path — no-op).
   STEP 2 — Defensive cleanup of NSM zombie at lft=0 if present (vpp-
            specific; harmless on sites without zombie).
-  STEP 3 — Trigger sync_fixtures(app='amb_w_spc') to install the canonical
-           QIPG tree fixture BEFORE downstream patches need it.
+  STEP 3 — Targeted single-fixture import: import_file_by_path on ONLY
+           amb_w_spc/fixtures/quality_inspection_parameter_group.json.
+           Avoids broad sync_fixtures(app='amb_w_spc') iteration which
+           would touch fixture files for DocTypes whose tables aren't
+           yet schema-synced (substrate.json → tabSubstrate missing →
+           crash). L188.5 sibling pattern — see sysmayal-3 NACK2 catch
+           2026-05-31T17:09Z.
   STEP 4 — rebuild_tree to ensure NSM positions consistent post-fixture-sync.
   STEP 5 — Assert verification: Common Root + 7 L2 categories now present.
 
@@ -39,16 +44,23 @@ diagnostic intel.
 Side effects on sites where Common Root already exists (VM3 / vpt-docker):
 ZERO. STEP 1 short-circuits the entire patch.
 
-References: L188 (banked 2026-05-31) — pre-fixture-sync patch preconditions
-on fresh sites. L189 (banked) — stale patch docstrings during architecture
-changes (also applies to v14_3_9 task11 docstring update in this commit).
+References:
+  - L188 (banked 2026-05-31) — pre-fixture-sync patch preconditions on
+    fresh sites (the original lesson).
+  - L188.5 cand (banked 2026-05-31) — sync_fixtures(app=...) broad-app
+    iteration touches DocType tables not yet schema-synced. Sibling of L188.
+  - L189 (banked) — stale patch docstrings during architecture changes
+    (applies to v14_3_9 task11 docstring update in this commit's predecessor).
 
 Author: claude-sandbox @ VMBox3
 Date: 2026-05-31
-Task: #15 Phase B unblock (hostinger-vpp v14_3_9 chicken-and-egg)
+Task: #15 Phase B unblock v2 (hostinger-vpp NACK2 — substrate fixture
+       crashed sync_fixtures iteration)
 """
+import os
+
 import frappe
-from frappe.utils.fixtures import sync_fixtures
+from frappe.modules.import_file import import_file_by_path
 from frappe.utils.nestedset import rebuild_tree
 
 
@@ -89,11 +101,26 @@ def execute():
             )
             frappe.db.commit()
 
-    # ─── STEP 3: Install canonical tree via sync_fixtures ───
-    print(f"v14_3_8.5: triggering sync_fixtures(app='amb_w_spc') to install "
-          f"Common Root + 7 L2 + 411 canonical QIPG records from "
-          f"amb_w_spc/fixtures/quality_inspection_parameter_group.json.")
-    sync_fixtures(app="amb_w_spc")
+    # ─── STEP 3: Targeted single-fixture import ───
+    # IMPORTANT: do NOT call sync_fixtures(app='amb_w_spc') here. That iterates
+    # ALL fixture files alphabetically, and substrate.json hits tabSubstrate
+    # which isn't schema-synced yet during the patches phase. L188.5 sibling
+    # to L188 — caught by sysmayal-3 NACK2 2026-05-31T17:09Z. Use targeted
+    # single-file import_file_by_path instead.
+    fixture_path = os.path.join(
+        frappe.get_app_path("amb_w_spc"),
+        "fixtures",
+        "quality_inspection_parameter_group.json",
+    )
+    print(f"v14_3_8.5: import_file_by_path on {fixture_path} "
+          f"(targeted — avoids broad sync_fixtures iteration that would "
+          f"hit tabSubstrate / tabPreservative System schema gaps).")
+    import_file_by_path(
+        fixture_path,
+        data_import=True,
+        force=True,
+        reset_permissions=True,
+    )
     frappe.db.commit()
 
     # ─── STEP 4: NSM rebuild_tree ───
@@ -105,7 +132,7 @@ def execute():
     if not frappe.db.exists(QIPG, COMMON_ROOT):
         raise AssertionError(
             f"v14_3_8.5 FAILED: '{COMMON_ROOT}' not installed after "
-            f"sync_fixtures(app='amb_w_spc'). Check that "
+            f"import_file_by_path. Check that "
             f"amb_w_spc/fixtures/quality_inspection_parameter_group.json "
             f"is present on disk + readable + valid JSON."
         )
