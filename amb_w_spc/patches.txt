@@ -80,3 +80,14 @@ amb_w_spc.patches.v14_3_10.task15_qip_cleanup_and_reverse_ship
 # E.coli → Microbiological E.coli. Idempotent; STEP 0 precondition check
 # allows safe skip if v14_3_10 hasn't run yet.
 amb_w_spc.patches.v14_3_11.task12_diacetyl_substrates_mercury_ecoli_reparent
+
+# Task #15/#12 trailing (2026-05-31) — Diacetyl Rhein QIPG NSM reposition.
+# vpt-docker browser-verify surfaced Physicochemical Diacetyl Rhein ending
+# up with lft/rgt OUTSIDE Physicochemical L2's subtree range, despite
+# correct custom_parameter_group_child + Property Setter + controller class
+# attr. Idempotent: only fires if NSM containment violated. Verifies +
+# defensively recreates Property Setter if missing; clears meta cache;
+# rebuild_tree (1-arg signature per Frappe 16.17.5); falls back to
+# single-node update_nsm + assert if rebuild insufficient. L186 cand:
+# rebuild_tree signature corrections to Hugh's initial draft.
+amb_w_spc.patches.v14_3_12.diacetyl_rhein_nsm_reposition
