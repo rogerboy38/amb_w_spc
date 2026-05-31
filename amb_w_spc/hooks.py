@@ -237,10 +237,6 @@ doc_events = {
         ],
     },
 
-    "Quality Inspection Parameter Group": {
-        "after_rename": "amb_w_spc.qipg_events.after_rename_qipg",
-    }
-
 }
 
 # Whitelist methods for dashboard
