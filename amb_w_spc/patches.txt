@@ -68,3 +68,15 @@ amb_w_spc.patches.v14_3_9.task11_reparent_vpt_qips_to_canonical_leaves
 # 71 → 76. Shared-DB-with-vpp idempotent; case-insensitive parent→canonical
 # resolution per L162. NSM rebuild_tree if STEP 1 wrote.
 amb_w_spc.patches.v14_3_10.task15_qip_cleanup_and_reverse_ship
+
+# Task #12 (2026-05-31) — v14_3_10 follow-up: Diacetyl Rhein substrates +
+# Mercury/E.coli re-parent. v14_3_10 STEP 1 created Physicochemical Diacetyl
+# Rhein QIPG but omitted applicable_substrates child rows → Path Y picker
+# hid Diacetyl Rhein QIP (L183 candidate). Mercury + E.coli QIPs remained
+# parented to legacy substrate-segmented QIPGs with DOUBLE-SPACE name
+# pattern (`<L2> LQD  <Leaf>`) which Task #11 strip regex didn't match
+# (single-space pattern only). Fix: insert 5 substrate rows on Diacetyl
+# Rhein QIPG; conditional re-parent of Mercury → MERCURY - Physicochemical,
+# E.coli → Microbiological E.coli. Idempotent; STEP 0 precondition check
+# allows safe skip if v14_3_10 hasn't run yet.
+amb_w_spc.patches.v14_3_11.task12_diacetyl_substrates_mercury_ecoli_reparent
