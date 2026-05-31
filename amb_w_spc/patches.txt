@@ -57,3 +57,14 @@ amb_w_spc.patches.v14_3_7.backfill_item_substrate
 # preconditions. Idempotent select-before-write; rehearsal-validated on VM3
 # (caught 2 API signature bugs + 1 double-archive-suffix bug before commit).
 amb_w_spc.patches.v14_3_9.task11_reparent_vpt_qips_to_canonical_leaves
+
+# Task #15 (2026-05-31) — QIP cleanup + REVERSE-SHIP. Alicia ratified taxonomy
+# of 21 vpt-only QIPs identified by sysmayal: 19 deletes (2 pure orphans dup-
+# verified, 11 VALUE-MOVE to iqi.value, 1 METHOD-MOVE to iqi.custom_method,
+# 5 explicit re-link to typo/variant/new-canonical targets) + 5 REVERSE-SHIP
+# additions to canonical (Candida Albicans, Pseudomonas Aeruginosa,
+# Hydroxyanthracene Derivatives, Total Aloin A + Aloin B, Diacetyl Rhein)
+# + 1 new QIPG (Physicochemical Diacetyl Rhein). Net vpt 92 → 73; canonical
+# 71 → 76. Shared-DB-with-vpp idempotent; case-insensitive parent→canonical
+# resolution per L162. NSM rebuild_tree if STEP 1 wrote.
+amb_w_spc.patches.v14_3_10.task15_qip_cleanup_and_reverse_ship
