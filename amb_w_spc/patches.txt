@@ -126,3 +126,17 @@ amb_w_spc.patches.v14_3_13.trigger_initial_after_migrate_rebuild
 # 3 Case C entries (sterol family — 24-ETHYL/24-METHYL-LOPHENOL +
 # 24-METHYLENE-CYCLOARTANOL) deferred to Wave 2.
 amb_w_spc.patches.v15_1_0.t18_wave1_nutrient_cleanup
+
+# T18 Wave 2 (2026-05-31) — Aloe Vera Nutrients QIP additions (103 NUTRIENT
+# rows from Alicia spreadsheet). Wave 1 (commit ad2cadb) cleaned up dups +
+# misclassified entries. Wave 2 adds 103 net-new QIPs. 100 under canonical
+# Aloe Vera Nutrients leaves; 3 Aloe sterols (24-ETHYL/METHYL-LOPHENOL,
+# 24-METHYLENE-CYCLOARTANOL) under new "Physicochemical Authenticity Markers
+# (Aloe Sterols)" QIPG under Physicochemical L2 (Option C per Hugh+Alicia
+# ratification). Dependencies auto-created: 1 Option C QIPG + 5 missing
+# Nutrient leaf QIPGs, 17 composite UOMs, 71 Quality Inspection Method
+# records. 103 QIPs imported via L188.5-safe import_file_by_path on
+# t18_wave2_data.json. L191 mojibake fix applied at extraction. L192
+# compliance: companion fixture updates (QIPG +6, NEW QIP fixture 103
+# records) in same commit.
+amb_w_spc.patches.v15_2_0.t18_wave2_nutrient_additions

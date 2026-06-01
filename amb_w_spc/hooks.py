@@ -149,6 +149,18 @@ fixtures = [
          ["name", "=", "Common Root"],
          ["custom_parameter_group_child", "in", _AMB_W_SPC_CANONICAL_QIPG_PARENTS],
      ]},
+    # T18 Wave 2 (2026-05-31) — Quality Inspection Parameter records.
+    # 103 NUTRIENT additions from Alicia spreadsheet (100 under Aloe Vera Nutrients
+    # leaves + 3 Aloe sterols under new Physicochemical Authenticity Markers QIPG).
+    # Filter: parameter_group is a Wave-2-managed QIPG. Fixture file at
+    # amb_w_spc/fixtures/quality_inspection_parameter.json ships the curated
+    # 103-record set. L192 doctrine: keeps fresh sites consistent with patched
+    # existing sites (v15_2_0/t18_wave2_nutrient_additions.py).
+    {"doctype": "Quality Inspection Parameter",
+     "or_filters": [
+         ["parameter_group", "like", "%- Nutrients"],
+         ["parameter_group", "=", "Physicochemical Authenticity Markers (Aloe Sterols)"],
+     ]},
     {"doctype": "Property Setter",  "filters": [["doc_type", "in", _AMB_W_SPC_DOCTYPES]]},
     {"doctype": "Client Script",    "filters": [["dt", "in", _AMB_W_SPC_DOCTYPES]]},
     # Server Script: UNION via or_filters only — see amb_w_tds hooks.py note.

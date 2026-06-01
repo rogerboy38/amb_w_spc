@@ -10319,5 +10319,167 @@
   "modified": "2026-05-31 22:30:00.000000",
   "name": "PHENOL [017] - Contaminant",
   "old_parent": "Contaminant"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Physicochemical",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "Physicochemical Authenticity Markers (Aloe Sterols)",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "Physicochemical Authenticity Markers (Aloe Sterols)",
+  "old_parent": "Physicochemical"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Aloe Vera Nutrients",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "BETA-SITOSTEROL - Nutrients",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "BETA-SITOSTEROL - Nutrients",
+  "old_parent": "Aloe Vera Nutrients"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Aloe Vera Nutrients",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "GLUCOSE - Nutrients",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "GLUCOSE - Nutrients",
+  "old_parent": "Aloe Vera Nutrients"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Aloe Vera Nutrients",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "LOPHENOL - Nutrients",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "LOPHENOL - Nutrients",
+  "old_parent": "Aloe Vera Nutrients"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Aloe Vera Nutrients",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "NICKEL (NI) - Nutrients",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "NICKEL (NI) - Nutrients",
+  "old_parent": "Aloe Vera Nutrients"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Aloe Vera Nutrients",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "TOTAL POLYSACCHARIDES - Nutrients",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "TOTAL POLYSACCHARIDES - Nutrients",
+  "old_parent": "Aloe Vera Nutrients"
  }
 ]
