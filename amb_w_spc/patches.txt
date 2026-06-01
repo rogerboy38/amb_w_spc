@@ -127,6 +127,16 @@ amb_w_spc.patches.v14_3_13.trigger_initial_after_migrate_rebuild
 # 24-METHYLENE-CYCLOARTANOL) deferred to Wave 2.
 amb_w_spc.patches.v15_1_0.t18_wave1_nutrient_cleanup
 
+# v15_1_5 (2026-06-01) — Rename QIP Custom Fields custom_specification* →
+# custom_value_*/custom_method. VM3 had the rename done out-of-band (desk
+# UI / programmatic, never tracked in git); vpt-docker + hostinger-vpp
+# still on OLD names. Wave 2 (v15_2_0) STEP 0 preflight expects NEW CFs,
+# so this patch MUST run before v15_2_0 on any site that hasn't yet
+# renamed. Uses frappe.model.utils.rename_field (Frappe-native: atomic
+# ALTER + Link FK preservation + cache invalidation). Idempotent: skips
+# if NEW already present and OLD already absent (VM3 path). L180 + L190.
+amb_w_spc.patches.v15_1_5.rename_qip_custom_fields_specification_to_value
+
 # T18 Wave 2 (2026-05-31) — Aloe Vera Nutrients QIP additions (103 NUTRIENT
 # rows from Alicia spreadsheet). Wave 1 (commit ad2cadb) cleaned up dups +
 # misclassified entries. Wave 2 adds 103 net-new QIPs. 100 under canonical
