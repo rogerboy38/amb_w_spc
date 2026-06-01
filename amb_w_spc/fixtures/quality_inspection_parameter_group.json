@@ -42,249 +42,6 @@
   "custom_parameter_group_child": "Aloe Vera Nutrients",
   "docstatus": 0,
   "doctype": "Quality Inspection Parameter Group",
-  "group_name": "2-CHLOROPHENOL - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:11.574085",
-  "name": "2-CHLOROPHENOL - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "2-CRESOL - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:11.610240",
-  "name": "2-CRESOL - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "2,4-DICHLOROPHENOL - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:11.669421",
-  "name": "2,4-DICHLOROPHENOL - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "2,4-DIMETHYLPHENOL - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:11.707119",
-  "name": "2,4-DIMETHYLPHENOL - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "2,4,6-TRICHLOROPHENOL (CAS 88-06-2) - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:11.742128",
-  "name": "2,4,6-TRICHLOROPHENOL (CAS 88-06-2) - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "2,6-DICHLOROPHENOL - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:11.765405",
-  "name": "2,6-DICHLOROPHENOL - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "3-CRESOL - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:11.928836",
-  "name": "3-CRESOL - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "4-CHLORO 3-METHYLPHENOL - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:11.997543",
-  "name": "4-CHLORO 3-METHYLPHENOL - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "4-CRESOL - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.060796",
-  "name": "4-CRESOL - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
   "group_name": "ABSCISIC ACID - Nutrients",
   "is_group": 0,
   "modified": "2026-05-28 17:30:12.102443",
@@ -339,762 +96,6 @@
   "custom_parameter_group_child": "Aloe Vera Nutrients",
   "docstatus": 0,
   "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO ACÉTICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.240189",
-  "name": "ÁCIDO ACÉTICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO ASPÁRTICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.286766",
-  "name": "ÁCIDO ASPÁRTICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO BUTÍRICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.310320",
-  "name": "ÁCIDO BUTÍRICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO CÁPRICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.334516",
-  "name": "ÁCIDO CÁPRICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO CAPRÍLICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.368582",
-  "name": "ÁCIDO CAPRÍLICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO CÍTRICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.407045",
-  "name": "ÁCIDO CÍTRICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO FÓLICO (B9) - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.444563",
-  "name": "ÁCIDO FÓLICO (B9) - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO FÓRMICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.467089",
-  "name": "ÁCIDO FÓRMICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO FUMÁRICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.499850",
-  "name": "ÁCIDO FUMÁRICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO GLICÓLICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.533551",
-  "name": "ÁCIDO GLICÓLICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO HEXADECADIENOICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.568282",
-  "name": "ÁCIDO HEXADECADIENOICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO ISOBUTÍRICO (%) - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.654606",
-  "name": "ÁCIDO ISOBUTÍRICO (%) - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO ISOVALÉRICO (%) - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.681478",
-  "name": "ÁCIDO ISOVALÉRICO (%) - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO LÁCTICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.719170",
-  "name": "ÁCIDO LÁCTICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO LÁURICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.788517",
-  "name": "ÁCIDO LÁURICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO LINOLÉICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.820462",
-  "name": "ÁCIDO LINOLÉICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO LINOLÉNICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.844566",
-  "name": "ÁCIDO LINOLÉNICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO LINOTÉNICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.867591",
-  "name": "ÁCIDO LINOTÉNICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO MÁLICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.927264",
-  "name": "ÁCIDO MÁLICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO OLEICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.956312",
-  "name": "ÁCIDO OLEICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO PALMITOLEICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:12.982164",
-  "name": "ÁCIDO PALMITOLEICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO PANTOTÉNICO (B5) - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:13.026488",
-  "name": "ÁCIDO PANTOTÉNICO (B5) - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO PIROGLUTÁMICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:13.073804",
-  "name": "ÁCIDO PIROGLUTÁMICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO PIRÚVICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:13.112487",
-  "name": "ÁCIDO PIRÚVICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO PROPIÓNICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:13.170787",
-  "name": "ÁCIDO PROPIÓNICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO QUÍNICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:13.213422",
-  "name": "ÁCIDO QUÍNICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO SUCCÍNICO - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:13.255108",
-  "name": "ÁCIDO SUCCÍNICO - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "ÁCIDO VALÉRICO (%) - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:13.321050",
-  "name": "ÁCIDO VALÉRICO (%) - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALANINE - Nutrients",
   "is_group": 0,
   "modified": "2026-05-28 17:30:13.493434",
@@ -1126,33 +127,6 @@
   "is_group": 0,
   "modified": "2026-05-28 17:30:14.834130",
   "name": "AMILASE - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "AMMONIUM SULFATE - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:14.944924",
-  "name": "AMMONIUM SULFATE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
  },
  {
@@ -2827,33 +1801,6 @@
   "is_group": 0,
   "modified": "2026-05-28 17:30:21.930345",
   "name": "PEPTON 85-16 - Nutrients",
-  "old_parent": "Aloe Vera Nutrients"
- },
- {
-  "applicable_substrates": [
-   {
-    "substrate": "LQD"
-   },
-   {
-    "substrate": "LQDC"
-   },
-   {
-    "substrate": "LQDF"
-   },
-   {
-    "substrate": "PWD"
-   },
-   {
-    "substrate": "PWDF"
-   }
-  ],
-  "custom_parameter_group_child": "Aloe Vera Nutrients",
-  "docstatus": 0,
-  "doctype": "Quality Inspection Parameter Group",
-  "group_name": "PHENOL [017] - Nutrients",
-  "is_group": 0,
-  "modified": "2026-05-28 17:30:22.070136",
-  "name": "PHENOL [017] - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
  },
  {
@@ -10967,5 +9914,410 @@
   "modified": "2026-05-28 17:30:26.407900",
   "name": "WLM (ISOCITRATE AND ISOCITRATE LACTONE) - Physicochemical",
   "old_parent": "Physicochemical"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Aloe Vera Nutrients",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "CAPRYLIC ACID - Nutrients",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "CAPRYLIC ACID - Nutrients",
+  "old_parent": "Aloe Vera Nutrients"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Aloe Vera Nutrients",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "LINOLEIC ACID - Nutrients",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "LINOLEIC ACID - Nutrients",
+  "old_parent": "Aloe Vera Nutrients"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Aloe Vera Nutrients",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "LINOTENIC ACID - Nutrients",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "LINOTENIC ACID - Nutrients",
+  "old_parent": "Aloe Vera Nutrients"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Aloe Vera Nutrients",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "LAURIC ACID - Nutrients",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "LAURIC ACID - Nutrients",
+  "old_parent": "Aloe Vera Nutrients"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Contaminant",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "AMMONIUM SULFATE - Contaminant",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "AMMONIUM SULFATE - Contaminant",
+  "old_parent": "Contaminant"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Contaminant",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "2,4,6-TRICHLOROPHENOL (CAS 88-06-2) - Contaminant",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "2,4,6-TRICHLOROPHENOL (CAS 88-06-2) - Contaminant",
+  "old_parent": "Contaminant"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Contaminant",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "2,4-DICHLOROPHENOL - Contaminant",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "2,4-DICHLOROPHENOL - Contaminant",
+  "old_parent": "Contaminant"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Contaminant",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "2,4-DIMETHYLPHENOL - Contaminant",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "2,4-DIMETHYLPHENOL - Contaminant",
+  "old_parent": "Contaminant"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Contaminant",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "2,6-DICHLOROPHENOL - Contaminant",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "2,6-DICHLOROPHENOL - Contaminant",
+  "old_parent": "Contaminant"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Contaminant",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "2-CHLOROPHENOL - Contaminant",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "2-CHLOROPHENOL - Contaminant",
+  "old_parent": "Contaminant"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Contaminant",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "2-CRESOL - Contaminant",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "2-CRESOL - Contaminant",
+  "old_parent": "Contaminant"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Contaminant",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "3-CRESOL - Contaminant",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "3-CRESOL - Contaminant",
+  "old_parent": "Contaminant"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Contaminant",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "4-CHLORO 3-METHYLPHENOL - Contaminant",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "4-CHLORO 3-METHYLPHENOL - Contaminant",
+  "old_parent": "Contaminant"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Contaminant",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "4-CRESOL - Contaminant",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "4-CRESOL - Contaminant",
+  "old_parent": "Contaminant"
+ },
+ {
+  "applicable_substrates": [
+   {
+    "substrate": "LQD"
+   },
+   {
+    "substrate": "LQDC"
+   },
+   {
+    "substrate": "LQDF"
+   },
+   {
+    "substrate": "PWD"
+   },
+   {
+    "substrate": "PWDF"
+   }
+  ],
+  "custom_parameter_group_child": "Contaminant",
+  "docstatus": 0,
+  "doctype": "Quality Inspection Parameter Group",
+  "group_name": "PHENOL [017] - Contaminant",
+  "is_group": 0,
+  "modified": "2026-05-31 22:30:00.000000",
+  "name": "PHENOL [017] - Contaminant",
+  "old_parent": "Contaminant"
  }
 ]
