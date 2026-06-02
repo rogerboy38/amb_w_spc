@@ -1,0 +1,261 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "naming_series:",
+ "creation": "2026-05-25 04:30:00.000000",
+ "custom": 0,
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "identity_section",
+  "naming_series",
+  "parameter",
+  "customer",
+  "method",
+  "value_section",
+  "value_type",
+  "value_text",
+  "value_min",
+  "value_max",
+  "unit_of_measurement",
+  "approval_section",
+  "status",
+  "approved_by",
+  "approved_date",
+  "effective_from",
+  "effective_to",
+  "is_active",
+  "regulatory_section",
+  "regulatory_reference",
+  "customer_doc_ref",
+  "notes",
+  "lineage_section",
+  "amended_from",
+  "supersedes"
+ ],
+ "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "CAV-.YY.-.####",
+   "reqd": 1
+  },
+  {
+   "fieldname": "parameter",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Parameter",
+   "options": "Quality Inspection Parameter",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "method",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Method",
+   "options": "Quality Inspection Method"
+  },
+  {
+   "fieldname": "value_section",
+   "fieldtype": "Section Break",
+   "label": "Acceptable Value"
+  },
+  {
+   "default": "Choice",
+   "fieldname": "value_type",
+   "fieldtype": "Select",
+   "label": "Value Type",
+   "options": "Choice\nNumeric Range\nBoth",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.value_type=='Choice' || doc.value_type=='Both'",
+   "fieldname": "value_text",
+   "fieldtype": "Data",
+   "label": "Value Text"
+  },
+  {
+   "depends_on": "eval:doc.value_type=='Numeric Range' || doc.value_type=='Both'",
+   "fieldname": "value_min",
+   "fieldtype": "Float",
+   "label": "Value Min"
+  },
+  {
+   "depends_on": "eval:doc.value_type=='Numeric Range' || doc.value_type=='Both'",
+   "fieldname": "value_max",
+   "fieldtype": "Float",
+   "label": "Value Max"
+  },
+  {
+   "depends_on": "eval:doc.value_type!='Choice'",
+   "fieldname": "unit_of_measurement",
+   "fieldtype": "Link",
+   "label": "Unit of Measurement",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "approval_section",
+   "fieldtype": "Section Break",
+   "label": "Approval & Audit"
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Draft\nPending Approval\nApproved\nRevoked\nExpired",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "User"
+  },
+  {
+   "default": "Today",
+   "fieldname": "approved_date",
+   "fieldtype": "Date",
+   "label": "Approved Date"
+  },
+  {
+   "default": "Today",
+   "fieldname": "effective_from",
+   "fieldtype": "Date",
+   "label": "Effective From",
+   "search_index": 1
+  },
+  {
+   "fieldname": "effective_to",
+   "fieldtype": "Date",
+   "label": "Effective To",
+   "search_index": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active",
+   "search_index": 1
+  },
+  {
+   "fieldname": "regulatory_section",
+   "fieldtype": "Section Break",
+   "label": "Regulatory Context",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "regulatory_reference",
+   "fieldtype": "Data",
+   "label": "Regulatory Reference"
+  },
+  {
+   "fieldname": "customer_doc_ref",
+   "fieldtype": "Data",
+   "label": "Customer Document Reference"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "lineage_section",
+   "fieldtype": "Section Break",
+   "label": "Lineage"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Customer Acceptable Value",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "supersedes",
+   "fieldtype": "Link",
+   "label": "Supersedes",
+   "no_copy": 1,
+   "options": "Customer Acceptable Value"
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-05-25 04:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "SPC Quality Management",
+ "name": "Customer Acceptable Value",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Quality Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Quality User",
+   "write": 1
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Inspector User"
+  },
+  {
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales User"
+  },
+  {
+   "if_owner": 1,
+   "read": 1,
+   "role": "Customer"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
