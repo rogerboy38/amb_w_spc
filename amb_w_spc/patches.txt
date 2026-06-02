@@ -150,3 +150,15 @@ amb_w_spc.patches.v15_1_5.rename_qip_custom_fields_specification_to_value
 # compliance: companion fixture updates (QIPG +6, NEW QIP fixture 103
 # records) in same commit.
 amb_w_spc.patches.v15_2_0.t18_wave2_nutrient_additions
+
+# T19 Part 2 (2026-06-01) — DEAD-data legacy QIP cleanup. 15 QIPs surfaced
+# by Alicia's TDS 0705 TEST 3 validation post-T19-W1 picker resilience
+# (amb_w_tds commits 91811fc + 31824ad + 114f7cf + 62454cd). The picker now
+# recovers min/max via formula-parser fallback on 5 code branches, but 15
+# legacy QIPs have NO recoverable data (no value_text, no L4 choices, no
+# custom_choices first-line) → still display 0/0 in TDS forms.
+# Patch shell pre-staged; per-QIP RATIFIED dicts pending Alicia QE review.
+# Until ratified, patch SKIPS those entries (no-op). Re-runs after edit
+# are idempotent. Includes BETA-SITOSTEROL T18-W2 NLT-only fix (max=0 →
+# NULL for unbounded NLT 4 mg/100g semantic).
+amb_w_spc.patches.v15_3_0.t19_part2_qip_dead_data_cleanup
