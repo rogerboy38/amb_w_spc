@@ -127,7 +127,7 @@ def execute():
 			set_numeric += 1
 
 		# Save without triggering validate hooks that might require other fields, AND
-		# without re-validating pre-existing Link fields (one QIP has a stale custom_specification
+		# without re-validating pre-existing Link fields (one QIP has a stale custom_method
 		# value like "0227 ORGANIC INNOVALOE ALOE VERA GEL CONCENTRATE" that isn't a Method record —
 		# Phase 1C-A doesn't fix this; preserve-by-default per L119; separate hygiene task).
 		qip.flags.ignore_validate = True

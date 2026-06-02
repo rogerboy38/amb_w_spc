@@ -586,7 +586,7 @@
    "print_width": null,
    "columns": 0,
    "default": null,
-   "description": "Methodology code (PAM, EPA-6020A, BAM-FDA: CH. *, CPA-***) passthrough from QIP.custom_specification. Phase 2 promotion candidate to Link \u2192 Method Catalog if/when that DocType emerges.",
+   "description": "Methodology code (PAM, EPA-6020A, BAM-FDA: CH. *, CPA-***) passthrough from QIP.custom_method. Phase 2 promotion candidate to Link \u2192 Method Catalog if/when that DocType emerges.",
    "in_list_view": 0,
    "fetch_if_empty": 0,
    "in_filter": 0,

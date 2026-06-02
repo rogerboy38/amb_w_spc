@@ -589,7 +589,7 @@
   "property": "field_order",
   "property_type": "Data",
   "row_name": null,
-  "value": "[\"parameter\", \"parameter_group\", \"custom_specification\", \"description\"]"
+  "value": "[\"parameter\", \"parameter_group\", \"custom_method\", \"description\"]"
  },
  {
   "default_value": null,

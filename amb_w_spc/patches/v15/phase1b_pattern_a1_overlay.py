@@ -112,7 +112,7 @@ CUSTOM_FIELDS = [
 		"fieldtype": "Data",
 		"length": 140,
 		"insert_after": "default_l4_spec",
-		"description": "Methodology code (PAM, EPA-6020A, BAM-FDA: CH. *, CPA-***) passthrough from QIP.custom_specification. Phase 2 promotion candidate to Link → Method Catalog if/when that DocType emerges.",
+		"description": "Methodology code (PAM, EPA-6020A, BAM-FDA: CH. *, CPA-***) passthrough from QIP.custom_method. Phase 2 promotion candidate to Link → Method Catalog if/when that DocType emerges.",
 	},
 	{
 		"fieldname": "default_method",
