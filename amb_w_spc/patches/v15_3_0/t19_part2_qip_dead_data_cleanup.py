@@ -333,24 +333,46 @@ def _apply_ratification(qip_name, ratification):
 
 
 def _apply_beta_sitosterol_fix():
-    """Set BETA-SITOSTEROL.custom_value_max = NULL (unbounded NLT)."""
+    """Set BETA-SITOSTEROL.custom_value_max = 0 (unbounded NLT, L195 0-as-unset convention).
+
+    Original intent was max=NULL for "no upper bound". Discovered on vpt-docker
+    transport 2026-06-03: custom_value_max is a Float NOT NULL DEFAULT 0 column
+    on Frappe 16.17.5, so UPDATE ... SET custom_value_max = NULL raises
+    IntegrityError (1048, "Column 'custom_value_max' cannot be null").
+
+    Substrate schema drift discovered: VM3 has the column as decimal(21,9) NULL
+    (allowed NULL), vpt-docker has it as Float NOT NULL. The Custom Field was
+    likely created at different Frappe minor versions on each substrate, or
+    via different paths (UI vs fixture vs patch), producing different MariaDB
+    column constraints.
+
+    Per L195 picker JS convention (commit 31824ad, T19-W1.1):
+        "CAV value_min/value_max are NOT NULL default 0; if both equal 0,
+         treat as 'unset' rather than 'valid 0-0 range'."
+
+    The 0-as-unset semantic works on both substrates and matches the picker
+    behavior. Migrating max=0 here is equivalent in effect to the original
+    NULL intent for the BETA-SITOSTEROL NLT-only spec.
+
+    Idempotency: skip if max is already 0 or None.
+    """
     if not frappe.db.exists(QIP, BETA_SITOSTEROL_FIX["name"]):
         return f"  {BETA_SITOSTEROL_FIX['name']}: NOT FOUND — skip"
 
-    # Idempotency: if already NULL, no-op
     current_max = frappe.db.sql(
         "SELECT custom_value_max FROM `tabQuality Inspection Parameter` WHERE name = %s",
         BETA_SITOSTEROL_FIX["name"], as_dict=1
     )[0]["custom_value_max"]
-    if current_max is None:
-        return f"  {BETA_SITOSTEROL_FIX['name']}: max already NULL — idempotent skip"
+    if current_max is None or float(current_max) == 0:
+        return (f"  {BETA_SITOSTEROL_FIX['name']}: max already {current_max} "
+                f"(0-as-unset or NULL) — idempotent skip")
 
     frappe.db.sql(
         "UPDATE `tabQuality Inspection Parameter` "
-        "SET custom_value_max = NULL WHERE name = %s",
+        "SET custom_value_max = 0 WHERE name = %s",
         BETA_SITOSTEROL_FIX["name"]
     )
-    return (f"  {BETA_SITOSTEROL_FIX['name']}: max → NULL "
+    return (f"  {BETA_SITOSTEROL_FIX['name']}: max → 0 (0-as-unset; L195 convention) "
             f"(was {current_max}). {BETA_SITOSTEROL_FIX['note']}")
 
 
