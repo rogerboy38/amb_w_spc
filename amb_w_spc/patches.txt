@@ -162,3 +162,13 @@ amb_w_spc.patches.v15_2_0.t18_wave2_nutrient_additions
 # are idempotent. Includes BETA-SITOSTEROL T18-W2 NLT-only fix (max=0 →
 # NULL for unbounded NLT 4 mg/100g semantic).
 amb_w_spc.patches.v15_3_0.t19_part2_qip_dead_data_cleanup
+
+# v15_4_0 (2026-06-03) — Mavis peer review rename. "Customer Acceptable Value"
+# is non-standard per 27-source audit (FDA/ICH/ISO/AS9100/IATF 16949/EU GMP/
+# QbD Q-series); "Customer-Specific Specification" (CSS) is AS9100/IATF 16949
+# standard. Renames DocType in place (frappe.rename_doc force=True) — both
+# meta + tab<Name> table. Idempotent: skips if NEW exists or OLD missing.
+# Companion to amb_w_tds v14_3_8 field rename. Shipped pre vpt-docker
+# transport (the cheap window per cost-cliff analysis: code-only rename
+# now vs. live-data migration + downstream code touches later).
+amb_w_spc.patches.v15_4_0.rename_cav_to_css

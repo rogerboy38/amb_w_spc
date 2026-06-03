@@ -1,6 +1,6 @@
-// Customer Acceptable Value — client-side helpers
+// Customer-Specific Specification — client-side helpers
 // Refresh value_text/value_min/value_max visibility per value_type
-frappe.ui.form.on("Customer Acceptable Value", {
+frappe.ui.form.on("Customer-Specific Specification", {
     refresh(frm) {
         frm.toggle_display(["value_text"],
             frm.doc.value_type === "Choice" || frm.doc.value_type === "Both");

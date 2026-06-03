@@ -1,4 +1,4 @@
-"""Customer Acceptable Value — controller with Path A SC2 validations.
+"""Customer-Specific Specification — controller with Path A SC2 validations.
 
 Per Hugh's directive (2026-05-24, Path A SC2):
   - value_type='Choice'        → value_text reqd
@@ -17,7 +17,7 @@ from frappe.model.document import Document
 from frappe.utils import getdate, today
 
 
-class CustomerAcceptableValue(Document):
+class CustomerSpecificSpecification(Document):
     def validate(self):
         self._validate_value_fields()
         self._validate_effective_dates()
@@ -58,7 +58,7 @@ class CustomerAcceptableValue(Document):
                 frappe.throw(_("Effective To must be after Effective From"))
 
     def _validate_no_duplicate_approved(self):
-        """No two Approved+active CAVs for same (parameter, customer, method) at the same time."""
+        """No two Approved+active CSS records for same (parameter, customer, method) at the same time."""
         if self.status != "Approved" or not self.is_active:
             return
         # Find any other Approved + active record for the same triplet
@@ -76,14 +76,14 @@ class CustomerAcceptableValue(Document):
 
         # Time-window overlap check (current record's effective window must not overlap)
         existing = frappe.get_all(
-            "Customer Acceptable Value",
+            "Customer-Specific Specification",
             filters=filters,
             fields=["name", "effective_from", "effective_to"],
         )
         for other in existing:
             if self._date_windows_overlap(other.effective_from, other.effective_to):
                 frappe.throw(
-                    _("Duplicate Approved Customer Acceptable Value exists for this parameter+customer+method+time-window: {0}").format(
+                    _("Duplicate Approved Customer-Specific Specification exists for this parameter+customer+method+time-window: {0}").format(
                         frappe.bold(other.name)
                     )
                 )

@@ -44,7 +44,7 @@
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Naming Series",
-   "options": "CAV-.YY.-.####",
+   "options": "CSS-.YY.-.####",
    "reqd": 1
   },
   {
@@ -191,7 +191,7 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Customer Acceptable Value",
+   "options": "Customer-Specific Specification",
    "print_hide": 1,
    "read_only": 1
   },
@@ -200,7 +200,7 @@
    "fieldtype": "Link",
    "label": "Supersedes",
    "no_copy": 1,
-   "options": "Customer Acceptable Value"
+   "options": "Customer-Specific Specification"
   }
  ],
  "is_submittable": 1,
@@ -208,7 +208,7 @@
  "modified": "2026-05-25 04:30:00.000000",
  "modified_by": "Administrator",
  "module": "SPC Quality Management",
- "name": "Customer Acceptable Value",
+ "name": "Customer-Specific Specification",
  "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
