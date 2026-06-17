@@ -109,3 +109,38 @@ MIT License - see LICENSE file for details.
 - ✅ Enhanced error handling and logging
 - ✅ Multiple installation fallback methods
 - ✅ Frappe Cloud deployment ready
+
+## Sensor Skill Registry
+
+The `Sensor Skill` DocType (module: System Integration) is the canonical hardware registry for IoT sensors and scales. RPi clients read each skill's configuration via the whitelisted endpoint:
+
+```python
+amb_w_spc.api.sensor_skill.get_sensor_skill_config(skill_id="<id>")
+```
+
+The DocType lives in this app, but **records are seeded by external apps that manage specific deployments**. Current seed sources:
+
+| Source app | Patch | Records seeded | Status |
+|---|---|---|---|
+| `amb_w_spc` (this app) | `patches/v15/04_create_sensor_skills_idempotent.py` | `scale_plant`, `scale_lab` | Legacy v1.0.0 templates — not yet run on erp.sysmayal2.cloud |
+| `raven_ai_agent` | `patches/v0_3/create_sensor_skills_bot_iot_l01_and_fleet.py` | 5 production scale placeholders + 3 bot-iot-l01 testbed sensors | Active — seeded via bench migrate after PR merge |
+
+### Production Scale Fleet (placeholder skill IDs)
+
+| skill_id | Plant | Precision | Status |
+|---|---|---|---|
+| `scale_juice` | Juice Plant endpoint | 0.010 kg | Placeholder (enabled=0) |
+| `scale_dry` | Dry Plant endpoint | 0.010 kg | Placeholder (enabled=0) |
+| `scale_mix` | Mix Plant endpoint | 0.010 kg | Placeholder (enabled=0) |
+| `scale_formulated` | Formulated Plant endpoint | 0.010 kg | Placeholder (enabled=0) |
+| `scale_lab` | Laboratory Plant precision scale | 0.001 kg | Placeholder (enabled=0) |
+
+Flip `enabled=1` per skill when the corresponding scale hardware is physically connected and `python_config` tuned to the actual driver (ModbusRTU vs SerialCommand) and protocol parameters.
+
+### Naming Conventions
+
+- `scale_<plant>` — production scales (Juice, Dry, Mix, Formulated plant-floor; Lab precision)
+- `dev_l<NN>_<id>` — development testbed sensors on bot-iot-l<NN> (clearly non-production)
+- Skill IDs are stable identifiers; never rename a seeded skill — RPi clients cache config by skill_id with 300s TTL.
+
+See the [raven_ai_agent patch source](https://github.com/rogerboy38/raven_ai_agent/blob/main/raven_ai_agent/patches/v0_3/create_sensor_skills_bot_iot_l01_and_fleet.py) for the full skill catalog and `python_config` schema.
