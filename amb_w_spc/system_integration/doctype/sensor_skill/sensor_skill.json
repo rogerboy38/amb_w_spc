@@ -105,6 +105,62 @@
       "label": "Enabled",
       "default": "1",
       "in_list_view": 1
+    },
+    {
+      "fieldname": "template_governance_section",
+      "fieldtype": "Section Break",
+      "label": "Template Governance"
+    },
+    {
+      "fieldname": "template_version",
+      "fieldtype": "Data",
+      "label": "Template Version",
+      "reqd": 1,
+      "in_list_view": 1,
+      "description": "Semver (e.g. 1.2.3). Immutable once template_lifecycle_state=Released."
+    },
+    {
+      "fieldname": "github_commit_sha",
+      "fieldtype": "Data",
+      "label": "GitHub Commit SHA",
+      "length": 40,
+      "description": "40-char hex commit SHA of the canonical source on GitHub"
+    },
+    {
+      "fieldname": "column_break_governance_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "gamp5_category",
+      "fieldtype": "Select",
+      "label": "GAMP 5 Category",
+      "options": "1\n3\n4\n5",
+      "default": "5",
+      "reqd": 1,
+      "description": "GAMP 5 software classification — 5=Bespoke custom code (default for sensor skills)"
+    },
+    {
+      "fieldname": "template_lifecycle_state",
+      "fieldtype": "Select",
+      "label": "Template Lifecycle State",
+      "options": "Draft\nReleased\nDeprecated\nArchived",
+      "default": "Draft",
+      "reqd": 1,
+      "in_list_view": 1,
+      "description": "Template-level lifecycle (separate from per-instance Sensor Configuration lifecycle)"
+    },
+    {
+      "fieldname": "change_control_section",
+      "fieldtype": "Section Break",
+      "label": "Change Control",
+      "collapsible": 1
+    },
+    {
+      "fieldname": "change_control",
+      "fieldtype": "Table",
+      "label": "Change Control Records",
+      "options": "SPC Change Control",
+      "description": "FDA 21 CFR Part 11 change control history for this template"
     }
   ],
   "permissions": [
@@ -117,5 +173,6 @@
       "delete": 1
     }
   ],
-  "description": "Sensor Skill configuration for IoT device runtime"
+  "description": "Sensor Skill configuration for IoT device runtime",
+  "modified": "2026-06-17 06:58:46.830"
 }
