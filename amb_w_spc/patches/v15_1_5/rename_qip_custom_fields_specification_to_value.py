@@ -156,6 +156,20 @@ def execute():
         old_cfs_deleted += 1
         print(f"  Deleted OLD CF: {old_cf_name}")
 
+    # Net-new CFs (cowork-ops 2026-06-17, layer 4): custom_unit + custom_is_numeric
+    # have no OLD custom_specification_* source, so the rename loop above never
+    # creates them; they ship only in custom_field.json (synced AFTER patches).
+    # v15_2_0 STEP 0 asserts all six QIP CFs, so bootstrap these two here too.
+    # Idempotent: _ensure_new_cf skips if the CF already exists.
+    NET_NEW_CFS = [
+        ("custom_is_numeric", "Check", None,  "custom_value_max",  "Is Numeric"),
+        ("custom_unit",       "Link",  "UOM", "custom_is_numeric", "Unit (UOM)"),
+    ]
+    for _fn, _ft, _opt, _ia, _lbl in NET_NEW_CFS:
+        if _ensure_new_cf(_fn, _ft, _opt, _ia, _lbl):
+            cfs_created += 1
+            print(f"  Bootstrapped net-new CF {_fn}")
+
     # Final cache flush
     frappe.clear_cache(doctype=QIP)
     frappe.db.commit()
