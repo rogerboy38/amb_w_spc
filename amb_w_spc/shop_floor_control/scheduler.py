@@ -5,7 +5,7 @@ import frappe
 import socket
 import json
 import requests
-from frappe.utils import now, cint, flt, add_minutes
+from frappe.utils import now, cint, flt
 from frappe import _
 import threading
 import time

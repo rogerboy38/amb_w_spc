@@ -3,7 +3,7 @@
 
 import frappe
 from frappe import _
-from frappe.utils import now, add_hours, add_minutes
+from frappe.utils import now, add_to_date
 
 @frappe.whitelist()
 def get_dashboard_data():
@@ -394,7 +394,7 @@ def get_station_details(station_name):
 def get_sensor_trend_chart_data(sensor_name, hours=24):
     """Get trend data for sensor charts"""
     try:
-        from_time = add_hours(now(), -int(hours))
+        from_time = add_to_date(now(), hours=-int(hours))
         
         data = frappe.db.sql("""
             SELECT 

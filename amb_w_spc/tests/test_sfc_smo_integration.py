@@ -5,7 +5,7 @@ import frappe
 import unittest
 import time
 import json
-from frappe.utils import now, add_minutes, today, add_days
+from frappe.utils import now, today, add_days, add_to_date
 from unittest.mock import patch, MagicMock
 
 class TestSFCSMOIntegration(unittest.TestCase):
@@ -388,7 +388,7 @@ class TestSFCSMOIntegration(unittest.TestCase):
         bulk_data = []
         for i in range(10):
             bulk_data.append({
-                "timestamp": add_minutes(now(), -i),
+                "timestamp": add_to_date(now(), minutes=-i),
                 "station": self.station.name,
                 "sensor": self.sensor.name,
                 "parameter_name": "Temperature",
