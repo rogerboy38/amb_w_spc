@@ -27,3 +27,6 @@ execute:amb_w_spc.patches.v15.create_sample_data
 
 # BUG-114C: Backfill contact fields on existing Sample Request AMB
 execute:amb_w_spc.patches.v13.fix_bug114_sr_contact_fields
+
+# PR #23: Sensor Skill lifecycle state machine seed (sandbox-first)
+execute:amb_w_spc.patches.v16.01_seed_sensor_lifecycle
