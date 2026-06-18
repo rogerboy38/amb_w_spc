@@ -127,8 +127,14 @@ def execute():
             continue
 
         if not old_cf_exists and not new_cf_exists:
-            # Pre-fixture-sync fresh site (sync_fixtures will install NEW)
-            print(f"  Skip {old_fn} → {new_fn}: neither OLD nor NEW exists (fresh site; sync_fixtures will install NEW)")
+            # Fresh/cleaned site: neither OLD nor NEW exists. Patches run BEFORE
+            # sync_fixtures, and downstream v15_2_0 STEP 0 asserts the NEW CFs --
+            # so self-bootstrap NEW here instead of deferring to fixture sync
+            # (v14_3_7 Item.substrate pattern). No OLD data to copy; just create.
+            _ensure_new_cf(new_fn, fieldtype, options, insert_after, label)
+            cfs_created += 1
+            frappe.clear_cache(doctype=QIP)
+            print(f"  Bootstrapped NEW CF {new_fn} (fresh/cleaned site; no OLD data)")
             continue
 
         # Either:
