@@ -2159,7 +2159,7 @@ function generate_serials_l2(frm, count, prefix, packaging_type, tara_weight) {
                 frm.refresh_field('container_barrels');
                 
                 // ✅ Mark form as dirty
-                frm.dirty = true;
+                frm.dirty();
                 
                 // ✅ Force save button to appear
                 if (frm.save_btn) {
@@ -2300,7 +2300,7 @@ frappe.ui.form.on('Batch AMB Containers', {
             }
             
             // Method 3: Mark form as dirty to enable save
-            frm.dirty = true;
+            frm.dirty();
             
             // Show save button if missing
             if (frm.page && frm.page.set_primary_action) {
