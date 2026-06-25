@@ -95,7 +95,7 @@ def generate_label_cells_for_batch(batch_name: str) -> dict:
         "Batch AMB",
         batch_name,
         ["name", "item_on_batch", "current_item_code", "original_item_code",
-         "expiry_date", "creation"],
+         "expiry_date", "creation", "custom_golden_number"],
         as_dict=True,
     )
     if not batch_top:
@@ -141,8 +141,8 @@ def generate_label_cells_for_batch(batch_name: str) -> dict:
     # Sample tag inference (same helper as before)
     inferred_tag = _infer_sample_tag(item_code, batch_name)
 
-    # LOTE = batch name itself
-    lot_value = batch_name
+    # LOTE = Golden Number (fallback to batch name)
+    lot_value = batch_top.get("custom_golden_number") or batch_name
 
     # Pull only the label_* fields we need to compare against
     rows = frappe.db.get_all(
@@ -166,7 +166,7 @@ def generate_label_cells_for_batch(batch_name: str) -> dict:
         elif row.get("label_item_name"):
             skipped_existing += 1
 
-        if not row.get("label_lot"):
+        if not row.get("label_lot") or row.get("label_lot") == batch_name:
             updates["label_lot"] = lot_value
 
         if not row.get("label_manufacture_date") and md_str:
