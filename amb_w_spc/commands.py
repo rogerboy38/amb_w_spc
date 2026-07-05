@@ -1002,6 +1002,35 @@ def _now():
 	return time.time()
 
 
+@click.command("batch-amb-reconcile")
+@pass_context
+def batch_amb_reconcile(context):
+	"""Batch AMB <-> native Batch reconciliation healthcheck (Phase 1 item
+	1.6, batch-projection plan 2026-07-05).
+
+	Read-only. Emits a JSON report: counts, orphans both ways (eligible
+	output rows without a live native Batch / projected Batches whose AMB
+	anchor is gone) and field drift on linked pairs.
+
+	Exit codes:
+	  0  clean — no orphans, no drift
+	  1  findings — orphans and/or drift present (see JSON)
+	"""
+	import json as _json
+
+	site = get_site(context)
+	frappe.init(site=site)
+	frappe.connect()
+	try:
+		from amb_w_spc.sfc_manufacturing.batch_projection import reconcile
+
+		report = reconcile()
+		click.echo(_json.dumps(report, indent=2, default=str))
+		raise SystemExit(0 if report["clean"] else 1)
+	finally:
+		frappe.destroy()
+
+
 commands = [
 	audit_qip_tree_health,
 	rebuild_specification_tree,
@@ -1009,4 +1038,5 @@ commands = [
 	audit_iqi_parameter_completeness,
 	audit_spc_parameter_master_health,
 	audit_spc_specification_health,
+	batch_amb_reconcile,
 ]

@@ -710,6 +710,18 @@ class BatchAMB(NestedSet):
 
         product_code = (self.item_to_manufacture or "")[:4] or "0000"
 
+        # D1a stability guard (Phase 1 item 1.3): an already-minted golden
+        # number is immutable — counter-based FFF must never renumber on
+        # re-save. Decompose and stop.
+        from amb_w_spc.sfc_manufacturing.golden_number import GOLDEN_RE
+        existing_golden = (self.custom_golden_number or "").strip()
+        if GOLDEN_RE.match(existing_golden):
+            self.custom_generated_batch_name = existing_golden
+            self.custom_product_family = existing_golden[0:2]
+            self.custom_subfamily = existing_golden[2:4]
+            self.custom_consecutive = existing_golden[4:7]
+            return
+
         consecutive = "001"
         if self.work_order_ref:
             try:
@@ -784,7 +796,21 @@ class BatchAMB(NestedSet):
         # T-fix(golden): plant_code numeric id only (strip name suffix like " (Juice)")
         _pm = re.match(r"\d+", str(plant_code))
         plant_code = _pm.group() if _pm else "1"
-        base_golden_number = f"{product_code}{consecutive}{year}{plant_code}"
+
+        # D1a hardened generator (Phase 1 item 1.3, flag-gated for inert
+        # transport): FFF = per-(CCCC, YY) counter seeded from the historical
+        # max across lot-items, native Batches and Batch AMB goldens, with
+        # collision check. Flag off = legacy WO-derived consecutive.
+        from amb_w_spc.sfc_manufacturing.batch_projection import is_projection_enabled
+        if is_projection_enabled():
+            from amb_w_spc.sfc_manufacturing.golden_number import generate_golden_number
+            base_golden_number = generate_golden_number(
+                self.item_to_manufacture, plant_code, year,
+                exclude_batch_amb=self.name,
+            )
+            consecutive = base_golden_number[4:7]
+        else:
+            base_golden_number = f"{product_code}{consecutive}{year}{plant_code}"
 
         # Only set golden number fields here, NOT the title
         self.custom_golden_number = base_golden_number
@@ -3144,6 +3170,16 @@ def _run_golden_number_logic(doc):
     if not item:
         return
 
+    # D1a stability guard — mirror of set_batch_naming (item 1.3)
+    from amb_w_spc.sfc_manufacturing.golden_number import GOLDEN_RE
+    existing_golden = (getattr(doc, "custom_golden_number", None) or "").strip()
+    if GOLDEN_RE.match(existing_golden):
+        doc.custom_generated_batch_name = existing_golden
+        doc.custom_product_family = existing_golden[0:2]
+        doc.custom_subfamily = existing_golden[2:4]
+        doc.custom_consecutive = existing_golden[4:7]
+        return
+
     product_code = (item or "")[:4].zfill(4)
     wo_ref = (
         getattr(doc, "work_order_ref", None)
@@ -3193,7 +3229,17 @@ def _run_golden_number_logic(doc):
                         plant_code = code
                         break
 
-    golden_number = f"{product_code}{consecutive}{year}{plant_code}"
+    # D1a hardened generator, flag-gated — mirror of set_batch_naming (item 1.3)
+    from amb_w_spc.sfc_manufacturing.batch_projection import is_projection_enabled
+    if is_projection_enabled():
+        from amb_w_spc.sfc_manufacturing.golden_number import generate_golden_number
+        golden_number = generate_golden_number(
+            item, plant_code, year,
+            exclude_batch_amb=getattr(doc, "name", None),
+        )
+        consecutive = golden_number[4:7]
+    else:
+        golden_number = f"{product_code}{consecutive}{year}{plant_code}"
 
     doc.custom_golden_number = golden_number
     doc.custom_generated_batch_name = golden_number

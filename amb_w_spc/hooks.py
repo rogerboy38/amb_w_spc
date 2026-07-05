@@ -162,6 +162,10 @@ fixtures = [
          ["parameter_group", "=", "Physicochemical Authenticity Markers (Aloe Sterols)"],
      ]},
     {"doctype": "Property Setter",  "filters": [["doc_type", "in", _AMB_W_SPC_DOCTYPES]]},
+    # Phase 1 item 1.4 (batch projection, 2026-07-05) — users read-only on
+    # native Batch: the Custom DocPerm matrix for Batch ships as a fixture so
+    # the write/create/delete=0 tightening transports with the app.
+    {"doctype": "Custom DocPerm",   "filters": [["parent", "=", "Batch"]]},
     {"doctype": "Client Script",    "filters": [["dt", "in", _AMB_W_SPC_DOCTYPES]]},
     # Server Script: UNION via or_filters only — see amb_w_tds hooks.py note.
     # filters+or_filters in same dict = AND-of-both (intersection); for UNION
@@ -225,12 +229,30 @@ after_migrate = [
 
 doc_events = {
     # ---- Batch AMB: Golden number auto-generation via amb_w_spc controller
+    # ---- + Phase 1 batch projection (plan 2026-07-05 §2, flag-gated by
+    # ---- site_config batch_amb_projection_enabled — absent/0 = fully inert)
     "Batch AMB": {
         "validate": [
             "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_validate",
         ],
         "before_save": [
             "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_before_save",
+        ],
+        "after_insert": [
+            "amb_w_spc.sfc_manufacturing.batch_projection.project_batch_amb_outputs",
+        ],
+        "on_update": [
+            "amb_w_spc.sfc_manufacturing.batch_projection.project_batch_amb_outputs",
+        ],
+        "on_trash": [
+            "amb_w_spc.sfc_manufacturing.batch_projection.disable_projected_batches",
+        ],
+    },
+    # Phase 1 item 1.4 — controller-only guard: native Batch is a read-only
+    # projection; create/edit without the controller flag is rejected.
+    "Batch": {
+        "validate": [
+            "amb_w_spc.sfc_manufacturing.batch_projection.batch_controller_guard",
         ],
     },
     # Phase 1A Step 2B doc_events for TDS Product Specification relocated to amb_w_tds/hooks.py
