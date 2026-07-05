@@ -24,6 +24,9 @@ from frappe import _
 
 GOLDEN_RE = re.compile(r"^\d{10}$")
 
+#: sub-lot batch id shape ``<golden>-N`` (design §4b D2)
+SUBLOT_ID_RE = re.compile(r"^\d{10}-\d+$")
+
 #: plant name → plant digit (design §4b D2)
 PLANT_CODE_MAP = {
     "mix": "1",

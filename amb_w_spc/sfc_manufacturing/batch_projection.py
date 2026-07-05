@@ -21,7 +21,7 @@ import frappe
 from frappe import _
 from frappe.utils import add_days, cint, flt, getdate
 
-from amb_w_spc.sfc_manufacturing.golden_number import GOLDEN_RE
+from amb_w_spc.sfc_manufacturing.golden_number import GOLDEN_RE, SUBLOT_ID_RE
 
 #: only sub-lots (L2) carry stock — the level guard (design §4b)
 STOCK_CARRYING_LEVEL = "2"
@@ -120,9 +120,20 @@ def _sublot_suffix(doc):
 
 
 def _resolve_batch_id(doc, row, single_output):
-    batch_id = (row.output_golden_number or "").strip() or (row.output_traceability_code or "").strip()
-    if batch_id:
-        return batch_id, None
+    supplied = (row.output_golden_number or "").strip() or (row.output_traceability_code or "").strip()
+    if supplied:
+        # F2 (audit 2026-07-05): a row-supplied id becomes the immutable
+        # native Batch name (guard blocks edits, tombstone never deletes) —
+        # validate the shape and reject with an honest error. No silent
+        # fallthrough past a malformed value, no minting unvalidated names.
+        if GOLDEN_RE.match(supplied) or SUBLOT_ID_RE.match(supplied):
+            return supplied, None
+        return None, (
+            "row-supplied batch id {0!r} matches neither the golden shape "
+            "CCCCFFFYYP nor <golden>-N — row not projected; fix the output "
+            "row (it will surface as an AMB→native orphan in "
+            "batch-amb-reconcile until then)".format(supplied)
+        )
     golden = (doc.custom_golden_number or "").strip()
     if single_output and GOLDEN_RE.match(golden):
         return f"{golden}-{_sublot_suffix(doc)}", None

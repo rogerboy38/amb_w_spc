@@ -248,6 +248,31 @@ class TestProjection(ProjectionTestBase):
 		self.assertEqual(
 			frappe.db.count("Batch", {"custom_batch_amb": l2.name}), 0)
 
+	def test_malformed_row_supplied_id_rejected_not_minted(self):
+		"""F2 (audit 2026-07-05): a typo'd output golden must never become a
+		permanent native Batch name — row skipped, surfaced by reconcile."""
+		l1, l2 = self.make_sublot_with_output([{
+			"item_code": ITEM_OUTPUT_A,
+			"quantity_kg": 10,
+			"output_golden_number": "LOT-TYPO-123",
+		}])
+		self.assertEqual(frappe.db.count("Batch", {"custom_batch_amb": l2.name}), 0)
+		report = bp.reconcile()
+		self.assertIn(l2.name,
+					  [o["batch_amb"] for o in report["orphans_amb_to_native"]],
+					  "malformed row must surface as an AMB→native orphan")
+
+	def test_sublot_shaped_traceability_code_accepted(self):
+		trace = f"{ITEM_OUTPUT_A}901{YY}3-2"
+		l1, l2 = self.make_sublot_with_output([{
+			"item_code": ITEM_OUTPUT_A,
+			"quantity_kg": 10,
+			"output_traceability_code": trace,
+		}])
+		row = l2.output_products[0]
+		self.assertTrue(row.batch_no)
+		self.assertEqual(frappe.db.get_value("Batch", row.batch_no, "batch_id"), trace)
+
 	def test_double_fire_is_idempotent(self):
 		l1, l2 = self.make_sublot_with_output([{
 			"item_code": ITEM_OUTPUT_A,
