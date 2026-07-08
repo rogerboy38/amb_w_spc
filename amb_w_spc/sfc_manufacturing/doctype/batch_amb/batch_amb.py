@@ -45,6 +45,66 @@ def _set_field(doc, field, value):
     """Safely set a field on doc."""
     setattr(doc, field, value)
 
+
+# -------------------------------------------------------------------------
+# W1 (Task #36, ruling R-ID-1): lot-identity regime helpers
+# -------------------------------------------------------------------------
+
+MIGRATION_PROVENANCE_ACTION = "Origin: Migrated (legacy golden preserved)"
+
+
+def _apply_golden_decomposition(doc, golden):
+    """Decompose a preserved/validated 10-digit golden into component fields
+    using the golden_number.py slicing ``CCCC FFF YY P`` (O-3). Mirrors the
+    class D1a stability guard so both golden-setting layers agree."""
+    doc.custom_generated_batch_name = golden
+    doc.custom_product_family = golden[0:2]
+    doc.custom_subfamily = golden[2:4]
+    doc.custom_consecutive = golden[4:7]
+
+
+def _validate_migrated_golden(golden, name=None):
+    """R-ID-1 / O-2: a Migrated batch's legacy golden (FoxPro lote_real) is
+    authoritative and never regenerated. Empty or non-10-digit → throw so the
+    source is fixed rather than silently WO-derived."""
+    from amb_w_spc.sfc_manufacturing.golden_number import GOLDEN_RE
+    label = name or "(new)"
+    if not golden:
+        frappe.throw(_(
+            "Migrated Batch AMB {0}: a legacy golden number (FoxPro lote_real) "
+            "is required — it is never auto-generated.").format(label))
+    if not GOLDEN_RE.match(str(golden)):
+        frappe.throw(_(
+            "Migrated Batch AMB {0}: golden '{1}' is not a valid 10-digit lot "
+            "number; fix the source — migrated goldens are never regenerated."
+        ).format(label, golden))
+
+
+def add_migration_provenance_row(doc, folios=None, coa_folio=None, note=None):
+    """Append a system-generated Batch Processing History row documenting a
+    migrated batch's origin + FoxPro provenance. Idempotent on the marker
+    action. Caller saves the doc. Registered child doctype = Batch Processing
+    History (SFC Manufacturing module, confirmed O-4)."""
+    for row in (doc.get("processing_history") or []):
+        if (getattr(row, "processing_action", "") or "") == MIGRATION_PROVENANCE_ACTION:
+            return  # marker already present — idempotent
+    golden = _get_field(doc, "custom_golden_number", "customgoldennumber") or ""
+    bits = [f"Legacy golden {golden} kept verbatim per R-ID-1 (never WO-derived)."]
+    if folios:
+        folio_list = folios if isinstance(folios, (list, tuple)) else [str(folios)]
+        bits.append("FoxPro folios: " + ", ".join(str(f) for f in folio_list) + ".")
+    if coa_folio:
+        bits.append(f"COA folio {coa_folio}.")
+    if note:
+        bits.append(str(note))
+    doc.append("processing_history", {
+        "date": now_datetime(),
+        "processing_action": MIGRATION_PROVENANCE_ACTION,
+        "comments": " ".join(bits),
+        "system_generated": 1,
+    })
+
+
 def _sync_from_work_order(doc):
     """Backfill Batch AMB fields from linked Work Order without overwriting user values."""
     wo_ref = (
@@ -102,13 +162,38 @@ def _sync_from_work_order(doc):
         frappe.log_error(frappe.get_traceback(), "Batch AMB Work Order Backfill")
 
 def batch_amb_validate(doc, method=None):
-    """Validate hook - generate golden number components for Level 1 batches."""
-    try:
-        # Dual-field: custom_batch_level / custombatchlevel
-        level = str(_get_field(doc, 'custom_batch_level', 'custombatchlevel') or "1")
-        if level != "1":
-            return
+    """Validate hook - generate golden number components for Level 1 batches.
 
+    W1 (R-ID-1 / F-B): origin decides the golden. A Migrated batch keeps its
+    legacy golden verbatim (validated, never WO-derived); an already-valid
+    golden (native / class-set / D1a-projected) is immutable. Historically this
+    hook re-derived the golden from the Work Order UNCONDITIONALLY at line ~194
+    on every save, clobbering both migrated goldens and the class-set golden
+    (the class `set_batch_naming` guard was defeated because doc_events run
+    after class validate). Origin handling runs OUTSIDE the try/except below so
+    validation throws propagate — the try/except intentionally swallows only
+    derivation errors.
+    """
+    # Dual-field: custom_batch_level / custombatchlevel
+    level = str(_get_field(doc, 'custom_batch_level', 'custombatchlevel') or "1")
+    if level != "1":
+        return
+
+    from amb_w_spc.sfc_manufacturing.golden_number import GOLDEN_RE
+    origin = str(_get_field(doc, 'custom_batch_origin', 'custombatchorigin') or "Native")
+    existing_golden = str(
+        _get_field(doc, 'custom_golden_number', 'customgoldennumber') or ""
+    ).strip()
+    if origin == "Migrated":
+        _validate_migrated_golden(existing_golden, getattr(doc, 'name', None))
+        _apply_golden_decomposition(doc, existing_golden)
+        return
+    if existing_golden and GOLDEN_RE.match(existing_golden):
+        # F-B: never clobber an already-valid golden by re-deriving from the WO.
+        _apply_golden_decomposition(doc, existing_golden)
+        return
+
+    try:
         # Dual-field: item_to_manufacture / itemtomanufacture
         item = _get_field(doc, 'item_to_manufacture', 'itemtomanufacture')
         if not item:
@@ -703,6 +788,16 @@ class BatchAMB(NestedSet):
         # Only Level 1 should generate a new golden number
         level = str(self.custom_batch_level or "1")
         if level != "1":
+            return
+
+        # W1 / R-ID-1: Migrated batches keep the legacy golden verbatim
+        # (validated, never WO-derived). Checked before the item_to_manufacture
+        # short-circuit so a WO-less migrated lot is still validated.
+        origin = str(getattr(self, "custom_batch_origin", None) or "Native")
+        if origin == "Migrated":
+            golden = (self.custom_golden_number or "").strip()
+            _validate_migrated_golden(golden, getattr(self, "name", None))
+            _apply_golden_decomposition(self, golden)
             return
 
         if not self.item_to_manufacture:
