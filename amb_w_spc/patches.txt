@@ -172,3 +172,10 @@ amb_w_spc.patches.v15_3_0.t19_part2_qip_dead_data_cleanup
 # transport (the cheap window per cost-cliff analysis: code-only rename
 # now vs. live-data migration + downstream code touches later).
 amb_w_spc.patches.v15_4_0.rename_cav_to_css
+
+# v15_5_0 (2026-07-08) — W1 (Task #36, ruling R-ID-1): Batch AMB lot-identity
+# regime. Adds custom_batch_origin (Native|Migrated) + relaxes work_order_ref
+# to Native-only mandatory (Migrated lots carry a legacy golden verbatim, no
+# WO). Idempotent create_custom_fields + Property Setters. Companion to the
+# batch_amb.py controller guards (both golden-setting layers respect origin).
+amb_w_spc.patches.v15_5_0.w1_batch_origin
