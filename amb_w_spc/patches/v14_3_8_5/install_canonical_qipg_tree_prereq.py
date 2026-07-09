@@ -101,6 +101,40 @@ def execute():
             )
             frappe.db.commit()
 
+    # --- STEP 2.5: ensure QIPG link-target tables exist (cowork-ops 2026-06-17) ---
+    # QIPG fixture carries `applicable_substrates` (Table MultiSelect; its child
+    # doctype "Parameter Group Substrate" Links to "Substrate"). Importing those
+    # 393 child rows validates those tables, which 1146-crash on fresh/cleaned
+    # substrates where the doctypes+tables were deleted (the STEP 3 targeted
+    # import still triggers child-table validation). reload_doc rebuilds the
+    # DocType record AND its table during the patches phase. Order: Substrate
+    # (link target) first, then Parameter Group Substrate (child -> Substrate).
+    QIPG_LINK_PREREQ = [
+        ("core_spc", "substrate", "Substrate"),
+        ("core_spc", "parameter_group_substrate", "Parameter Group Substrate"),
+    ]
+    for _mod, _slug, _dt in QIPG_LINK_PREREQ:
+        if not frappe.db.table_exists(_dt):
+            print(f"v14_3_8.5: link-target table for '{_dt}' missing -> "
+                  f"reload_doc({_mod}/doctype/{_slug}) to recreate doctype+table.")
+            frappe.reload_doc(_mod, "doctype", _slug)
+            frappe.db.commit()
+
+    # Seed Substrate MASTER data (cowork-ops follow-up 2026-06-17): STEP 2.5
+    # recreates the TABLE but not its rows. v14_3_11.task12 STEP 1 inserts
+    # applicable_substrates child rows LINKing to substrate masters
+    # (LQD/LQDC/LQDF/PWD/PWDF) -> LinkValidationError on cleaned substrates
+    # (Substrate count=0). Safe now: tabSubstrate was schema-synced above.
+    if frappe.db.table_exists("Substrate") and not frappe.db.count("Substrate"):
+        _sub_fixture = os.path.join(
+            frappe.get_app_path("amb_w_spc"), "fixtures", "substrate.json")
+        if os.path.exists(_sub_fixture):
+            print("v14_3_8.5: seeding Substrate masters from fixtures/substrate.json "
+                  "(empty on cleaned substrate; required by v14_3_11.task12 links).")
+            import_file_by_path(_sub_fixture, data_import=True, force=True,
+                                reset_permissions=True)
+            frappe.db.commit()
+
     # ─── STEP 3: Targeted single-fixture import ───
     # IMPORTANT: do NOT call sync_fixtures(app='amb_w_spc') here. That iterates
     # ALL fixture files alphabetically, and substrate.json hits tabSubstrate

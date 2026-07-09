@@ -45,6 +45,61 @@ def _set_field(doc, field, value):
     """Safely set a field on doc."""
     setattr(doc, field, value)
 
+def _sync_from_work_order(doc):
+    """Backfill Batch AMB fields from linked Work Order without overwriting user values."""
+    wo_ref = (
+        getattr(doc, "work_order_ref", None)
+        or getattr(doc, "work_order", None)
+        or _get_field(doc, "work_order_ref", "workorderref")
+    )
+    if not wo_ref:
+        return
+
+    try:
+        wo = frappe.get_doc("Work Order", wo_ref)
+        production_item = getattr(wo, "production_item", None)
+        bom_no = getattr(wo, "bom_no", None)
+
+        item_name = None
+        if production_item:
+            item_name = frappe.db.get_value("Item", production_item, "item_name")
+
+        if not getattr(doc, "planned_qty", None) and getattr(wo, "qty", None):
+            doc.planned_qty = wo.qty
+
+        if production_item:
+            if not getattr(doc, "item_to_manufacture", None):
+                doc.item_to_manufacture = production_item
+            if hasattr(doc, "main_item") and not getattr(doc, "main_item", None):
+                doc.main_item = production_item
+            if hasattr(doc, "item_code") and not getattr(doc, "item_code", None):
+                doc.item_code = production_item
+            if hasattr(doc, "original_item_code") and not getattr(doc, "original_item_code", None):
+                doc.original_item_code = production_item
+            if hasattr(doc, "current_item_code") and not getattr(doc, "current_item_code", None):
+                doc.current_item_code = production_item
+
+        if item_name:
+            if hasattr(doc, "item_name") and not getattr(doc, "item_name", None):
+                doc.item_name = item_name
+            if hasattr(doc, "wo_item_name") and not getattr(doc, "wo_item_name", None):
+                doc.wo_item_name = item_name
+
+        if bom_no and frappe.db.exists("BOM", bom_no):
+            if hasattr(doc, "bom_no") and not getattr(doc, "bom_no", None):
+                doc.bom_no = bom_no
+            if hasattr(doc, "standard_bom_reference") and not getattr(doc, "standard_bom_reference", None):
+                doc.standard_bom_reference = bom_no
+            if hasattr(doc, "bom_reference") and not getattr(doc, "bom_reference", None):
+                doc.bom_reference = bom_no
+        elif bom_no:
+            frappe.log_error(
+                f"Batch AMB {getattr(doc, 'name', 'NEW')} linked Work Order {wo_ref} references missing BOM {bom_no}",
+                "Batch AMB Missing BOM Reference"
+            )
+
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), "Batch AMB Work Order Backfill")
 
 # -------------------------------------------------------------------------
 # W1 (Task #36, ruling R-ID-1): lot-identity regime helpers
@@ -896,6 +951,8 @@ class BatchAMB(NestedSet):
         # transport): FFF = per-(CCCC, YY) counter seeded from the historical
         # max across lot-items, native Batches and Batch AMB goldens, with
         # collision check. Flag off = legacy WO-derived consecutive.
+        # (W1 reconcile: prod 681a097's plain legacy line IS this flag-off
+        #  `else` branch — kept HEAD as the strict superset, no prod loss.)
         from amb_w_spc.sfc_manufacturing.batch_projection import is_projection_enabled
         if is_projection_enabled():
             from amb_w_spc.sfc_manufacturing.golden_number import generate_golden_number
