@@ -234,6 +234,8 @@ doc_events = {
     "Batch AMB": {
         "validate": [
             "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_validate",
+            # W4a (Task #36): derive Expiry = M.D. + Item.shelf_life_in_days when empty.
+            "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_expiry_hook",
         ],
         "before_save": [
             "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_before_save",

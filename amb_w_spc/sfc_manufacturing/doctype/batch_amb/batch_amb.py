@@ -3405,3 +3405,99 @@ def _run_golden_number_logic(doc):
 def fixed_generate_serial_numbers(batch_name, quantity=5, prefix=None, packaging_type=None, tara_weight=None):
     """BUG-112S: Whitelisted wrapper for generate_serial_numbers (called by Debug Test button)"""
     return generate_serial_numbers(batch_name, quantity=int(quantity), prefix=prefix, packaging_type=packaging_type, tara_weight=tara_weight)
+
+
+# ======================================================================
+#  W4a (Task #36) — Expiry derivation: E.D. = M.D. + Item.shelf_life_in_days
+#  DEV-only build 2026-07-09. Rides on W1 (custom_batch_origin).
+#
+#  Shelf-life precedence (DOCUMENTED — flagged for Alicia, not guessed):
+#    * Item.shelf_life_in_days is AUTHORITATIVE for W4a.
+#    * The TDS-preservative-derived shelf life (Task #35 / W2-W3) is LQD-only;
+#      POWDER carries no preservative system (Alicia 2026-05-27), so that path
+#      does NOT reach 0402. For any product that could carry BOTH an
+#      Item.shelf_life_in_days and a TDS-derived value, the precedence is an
+#      OPEN QUESTION for Alicia — W4a uses Item.shelf_life_in_days; do NOT guess.
+# ======================================================================
+
+def _resolve_mfg_date(doc):
+    """Manufacturing date (M.D.) for expiry derivation, origin-aware.
+    - Native (has a Work Order): ``wo_start_date`` (fetched from WO.actual_start_date).
+    - Migrated (no WO): ``production_start_date`` — the legacy production date the
+      migration populates from ``lotegen.FECHA_MFD``.
+    NO ``doc.creation`` fallback: an expiry computed off the migration date would be
+    wrong, and a wrong expiry is worse than a missing one (W4a)."""
+    from frappe.utils import getdate
+    for fn in ("wo_start_date", "production_start_date"):
+        val = getattr(doc, fn, None)
+        if val:
+            return getdate(val)
+    return None
+
+
+def compute_batch_expiry(doc, force=False):
+    """W4a core: E.D. = M.D. + Item.shelf_life_in_days.
+    Returns ``(expiry_date_or_None, message_or_None)``.
+    - Never overwrites an explicitly-set expiry unless ``force=True`` (operator recompute).
+    - Missing M.D. or shelf_life -> ``(None, <clear message>)``; NEVER defaults to 730.
+    """
+    from frappe.utils import add_days, cint
+    existing = doc.get("expiry_date")
+    if existing and not force:
+        # A human/computed expiry stands — not ours to change (esp. on signed docs).
+        return existing, None
+    mfg = _resolve_mfg_date(doc)
+    if not mfg:
+        return None, _(
+            "Expiry not computed: no manufacturing date (M.D.) on this batch. "
+            "Native batches take it from the Work Order start; a Migrated batch "
+            "needs its legacy production date (Production Start Date). "
+            "Enter the Expiry Date manually if it is known.")
+    item = doc.get("item_code") or doc.get("item_to_manufacture")
+    if not item:
+        return None, _("Expiry not computed: this batch has no item to read a shelf life from.")
+    shelf = cint(frappe.db.get_value("Item", item, "shelf_life_in_days"))
+    if not shelf:
+        return None, _(
+            "Expiry not computed: Item {0} has no Shelf Life (In Days) set. "
+            "A wrong expiry is worse than a missing one — set the Item's shelf life "
+            "or enter the Expiry Date manually.").format(item)
+    return add_days(mfg, shelf), None
+
+
+def batch_amb_expiry_hook(doc, method=None):
+    """doc_events ``validate`` hook (W4a): derive expiry when EMPTY, surface a
+    clear message when it cannot. Idempotent — skips once expiry is set (a value a
+    human set, on a signed document, is never auto-changed). Best-effort: an
+    expiry hiccup never blocks a save."""
+    try:
+        if doc.get("expiry_date"):
+            return  # already set (human or prior compute) — leave it
+        expiry, msg = compute_batch_expiry(doc, force=False)
+        if expiry:
+            doc.expiry_date = expiry
+        elif msg:
+            frappe.msgprint(msg, title=_("Expiry Date"), indicator="orange")
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), "Batch AMB expiry derivation (W4a)")
+
+
+@frappe.whitelist()
+def recompute_batch_expiry(batch_amb):
+    """W4a operator-triggered recompute (req #1): recompute E.D. from M.D. + shelf
+    life EVEN IF already set. Draft-only — an expiry on a signed (submitted)
+    document is not ours to change; amend it deliberately instead."""
+    doc = frappe.get_doc("Batch AMB", batch_amb)
+    doc.check_permission("write")
+    if doc.docstatus != 0:
+        frappe.throw(_(
+            "Recompute Expiry only works on DRAFT batches. The expiry on a "
+            "submitted/signed batch is not auto-changed — amend if it must change."))
+    expiry, msg = compute_batch_expiry(doc, force=True)
+    if expiry:
+        doc.expiry_date = expiry
+        doc.save()
+        return {"expiry_date": str(expiry)}
+    frappe.msgprint(msg or _("Could not compute expiry."), title=_("Expiry Date"),
+                    indicator="orange")
+    return {"expiry_date": None, "message": msg}
