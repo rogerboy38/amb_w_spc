@@ -183,3 +183,8 @@ amb_w_spc.patches.v15_5_0.w1_batch_origin
 # v15_6_0 (2026-07-09) — W4a: neutralize the wrong Batch AMB.expiry_date fetch_from
 # (was work_order_ref.actual_start_date = the START date) via a Property Setter.
 amb_w_spc.patches.v15_6_0.w4a_expiry_compute
+
+# v15_7_0 (2026-07-10) — enable the Batch AMB audit trail: track_changes=1 via a
+# DocType-level Property Setter (for_doctype). Ordered after v15_6_0 (fetch_from
+# clears first, then track_changes enables).
+amb_w_spc.patches.v15_7_0.batch_amb_track_changes
