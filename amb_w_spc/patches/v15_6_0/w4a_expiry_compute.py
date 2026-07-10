@@ -1,14 +1,12 @@
 # Copyright (c) 2026, AMB and contributors
-"""W4a (Task #36) — Expiry derivation prerequisite.
+"""W4a v15_6_0 — neutralize the wrong ``fetch_from`` on Batch AMB ``expiry_date``.
 
-Neutralizes the wrong ``fetch_from`` on Batch AMB ``expiry_date``: it fetched
-``work_order_ref.actual_start_date`` — i.e. the START date — which both mislabels
-expiry as the manufacturing date AND clobbers the controller-derived expiry on
-every save with a linked Work Order. W4a's controller compute
-(``batch_amb_expiry_hook`` / ``compute_batch_expiry``) owns ``expiry_date`` now:
-E.D. = M.D. + Item.shelf_life_in_days, derived only when empty.
+The field fetched ``work_order_ref.actual_start_date`` — i.e. the START date —
+which mislabels expiry as the manufacturing date and overwrites any expiry value
+on every save that has a linked Work Order. This patch clears that ``fetch_from``
+via a Property Setter, so the field is no longer auto-filled from the WO start.
 
-Idempotent (Property Setter upsert). DEV-only build; no transport.
+Idempotent (Property Setter upsert). One Property Setter row; zero data rows.
 """
 
 import frappe

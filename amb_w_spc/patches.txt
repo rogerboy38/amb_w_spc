@@ -180,7 +180,6 @@ amb_w_spc.patches.v15_4_0.rename_cav_to_css
 # batch_amb.py controller guards (both golden-setting layers respect origin).
 amb_w_spc.patches.v15_5_0.w1_batch_origin
 
-# v15_6_0 (2026-07-09) — W4a (Task #36): Expiry derivation. Neutralizes the wrong
-# expiry_date fetch_from (was work_order_ref.actual_start_date = start date); the
-# controller now derives E.D. = M.D. + Item.shelf_life_in_days when empty.
+# v15_6_0 (2026-07-09) — W4a: neutralize the wrong Batch AMB.expiry_date fetch_from
+# (was work_order_ref.actual_start_date = the START date) via a Property Setter.
 amb_w_spc.patches.v15_6_0.w4a_expiry_compute
