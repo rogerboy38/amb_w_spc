@@ -802,8 +802,13 @@ class BatchAMB(NestedSet):
         if not self.bom_no:
             return 0
         bom = frappe.get_doc("BOM", self.bom_no)
-        # original had total_cost * produced_qty – that inflates; keep as-is if you want
-        return flt(bom.total_cost) * flt(self.produced_qty)
+        # MIGCH task 2 (2026-07-13): bom.total_cost is the cost of bom.quantity units.
+        # Normalize to per-unit before scaling by produced_qty (old code inflated by
+        # a factor of bom.quantity whenever BOM quantity != 1).
+        if not flt(bom.quantity):
+            return 0
+        per_unit_cost = flt(bom.total_cost) / flt(bom.quantity)
+        return per_unit_cost * flt(self.produced_qty)
 
     def calculate_container_weights(self):
         """Calculate container weights from container_barrels child table."""
