@@ -1967,30 +1967,103 @@ def create_child_batch(parent_name, child_level):
 
 @frappe.whitelist()
 def assign_golden_number_to_batch(batch_name):
-    """Manual trigger for Golden Number assignment"""
+    """Manual golden-number assignment — a COPIER, not a computer (T3-v1).
+
+    Copies custom_generated_batch_name into custom_golden_number when, and only
+    when, the golden is empty and a well-formed computed value exists. Never
+    generates a value: random assignment is deleted (I1); computing a missing
+    derived value is Rung 4's lane, not this control's.
+
+    Returns a dict naming BOTH the sentence and the indicator (I4a/I4b); the
+    client renders both verbatim and adds no wording of its own. Outcomes:
+      assigned                    green   the ONLY branch that writes (once)
+      refused_*                   orange  writes nothing, names the problem (I5/I7)
+      already_assigned            blue    writes nothing (I8)
+      already_assigned_mismatch   orange  writes nothing — a FINDING (B2):
+        LEVEL-SCOPED by the maintained mirror, comparing STORED fields only.
+        The :57/:816 mirror sets derived == golden on every Document-path save
+        at L1, so at L1 this warning is unreachable in practice; it CAN fire at
+        L2/L3 (the mirror is level-scoped — A-II, 3/3 predictions) and for
+        divergences written past the Document layer (frappe.db.set_value).
+        It never computes a value and never writes one.
+    """
     try:
         batch = frappe.get_doc("Batch AMB", batch_name)
+        golden = (batch.custom_golden_number or "").strip()
+        derived = (batch.custom_generated_batch_name or "").strip()
 
-        if not batch.custom_golden_number:
-            golden_number = "".join(random.choices(string.digits, k=10))
-            batch.custom_golden_number = golden_number
-            batch.save()
-
+        if golden:
+            # Branch 2 — golden populated: NO branch below writes (I8).
+            if derived and derived != golden:
+                return {
+                    "outcome": "already_assigned_mismatch",
+                    "indicator": "orange",
+                    "golden_number": golden,
+                    "derived_value": derived,
+                    "message": (
+                        f"ALREADY ASSIGNED: {golden}. Stored derived value "
+                        f"differs: {derived} — a FINDING, nothing changed."
+                    ),
+                }
             return {
-                "success": True,
-                "golden_number": batch.custom_golden_number,
-                "message": f"Golden Number {batch.custom_golden_number} assigned successfully",
+                "outcome": "already_assigned",
+                "indicator": "blue",
+                "golden_number": golden,
+                "message": f"ALREADY ASSIGNED: {golden} — not re-assigned.",
             }
 
+        # Branch 1 — golden empty.
+        if derived:
+            from amb_w_spc.sfc_manufacturing.golden_number import GOLDEN_RE
+            if not GOLDEN_RE.match(derived):
+                # I7: a complete, well-formed value or nothing.
+                return {
+                    "outcome": "refused_malformed_derived",
+                    "indicator": "orange",
+                    "derived_value": derived,
+                    "message": (
+                        f"CANNOT ASSIGN — computed value '{derived}' is "
+                        "malformed (expected 10 digits). Nothing written."
+                    ),
+                }
+            batch.custom_golden_number = derived
+            batch.save()
+            return {
+                "outcome": "assigned",
+                "indicator": "green",
+                "golden_number": derived,
+                "message": f"ASSIGNED from computed value: {derived}",
+            }
+
+        if not (batch.item_to_manufacture or "").strip():
+            # Q-A's narrowed case: a duplicate-without-item lands exactly here.
+            return {
+                "outcome": "refused_missing_input",
+                "indicator": "orange",
+                "message": (
+                    "CANNOT ASSIGN — missing item_to_manufacture. No computed "
+                    "value is present and none can be derived without it."
+                ),
+            }
         return {
-            "success": True,
-            "golden_number": batch.custom_golden_number,
-            "message": f"Golden Number already assigned: {batch.custom_golden_number}",
+            "outcome": "refused_no_derived",
+            "indicator": "orange",
+            "message": (
+                "CANNOT ASSIGN — no computed value present "
+                "(custom_generated_batch_name is empty). Compute it first."
+            ),
         }
 
-    except Exception as e:
-        frappe.log_error(f"Golden Number Assignment Error: {str(e)}")
-        return {"success": False, "message": str(e)}
+    except Exception:
+        frappe.log_error(
+            title="Golden Number Assignment Error",
+            message=frappe.get_traceback(),
+        )
+        return {
+            "outcome": "error",
+            "indicator": "red",
+            "message": "Golden Number assignment failed — see Error Log.",
+        }
 
 
 @frappe.whitelist()

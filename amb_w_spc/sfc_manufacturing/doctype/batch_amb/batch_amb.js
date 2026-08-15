@@ -957,25 +957,22 @@ function setup_custom_buttons(frm) {
         });
     }, manufacturing_group);
 
-    // Assign Golden Number Button
+    // Assign Golden Number Button — T3-v1 (I4a/I4b): the server names BOTH the
+    // sentence and the indicator; the client renders them verbatim, adds no
+    // wording of its own, and reloads only after a real write (RD).
     frm.add_custom_button(__('Assign Golden Number'), function() {
         frappe.call({
             method: 'amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.assign_golden_number_to_batch',
             args: { batch_name: frm.doc.name },
             callback: function(r) {
-                if (r.message && r.message.success) {
-                    frappe.msgprint({
-                        title: __('Golden Number Assigned'),
-                        message: __('Golden Number {0} assigned successfully', [r.message.golden_number]),
-                        indicator: 'green'
-                    });
+                var m = r.message || {};
+                frappe.msgprint({
+                    title: __('Golden Number'),
+                    message: m.message || __('No response from server'),
+                    indicator: m.indicator || 'red'
+                });
+                if (m.outcome === 'assigned') {
                     frm.reload_doc();
-                } else {
-                    frappe.msgprint({
-                        title: __('Error'),
-                        message: __('Failed to assign Golden Number: ' + (r.message?.message || 'Unknown error')),
-                        indicator: 'red'
-                    });
                 }
             }
         });
