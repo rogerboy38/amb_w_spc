@@ -6,7 +6,8 @@ Golden lot code: ``CCCC FFF YY P`` (10 digits)
         historical maximum across ALL three registers (lot-items,
         native Batches, Batch AMB goldens); replaces the legacy
         WO-number-derived consecutive
-  YY    2-digit year (WO start date, else today)
+  YY    2-digit year — THE MINT CLOCK (Q-G ruled b, 2026-08-16): the year
+        the lot identity comes into existence; never a WO date
   P     plant code (1 Mix · 2 Dry · 3 Juice · 4 Laboratory · 5 Formulated)
 
 Collision surface (D1a, design §2): a candidate golden is rejected if it
@@ -22,10 +23,49 @@ import re
 import frappe
 from frappe import _
 
-GOLDEN_RE = re.compile(r"^\d{10}$")
+GOLDEN_RE = re.compile(r"^\d{10}$", re.ASCII)
 
 #: sub-lot batch id shape ``<golden>-N`` (design §4b D2)
-SUBLOT_ID_RE = re.compile(r"^\d{10}-\d+$")
+SUBLOT_ID_RE = re.compile(r"^\d{10}-\d+$", re.ASCII)
+
+#: Rung 4 fuse floor — the OLDEST legacy YY observed across all four golden
+#: registers (bare items 20-25 · ITEM_-prefixed 20-25 · native Batches 23-26
+#: · Batch AMB 23/26; measured 2026-08-16 on the bench copy of prod, GATE-0
+#: re-confirms on prod at ship time). Legacy YY is never reinterpreted (K3);
+#: the fuse discriminates format, it rewrites nothing.
+GOLDEN_YY_FLOOR = 20
+
+
+def mint_year_yy():
+    """THE mint clock (Q-G ruled b): YY = the year the identity is minted."""
+    from datetime import datetime
+    return datetime.now().strftime("%y")
+
+
+def yy_in_window(yy):
+    """Self-maintaining year fuse: GOLDEN_YY_FLOOR <= YY <= next year.
+
+    The UPPER bound is derived from the clock at call time — never a
+    hardcoded ceiling that rots. Non-numeric input is simply out of window.
+    """
+    from datetime import datetime
+    try:
+        val = int(str(yy))
+    except (TypeError, ValueError):
+        return False
+    return GOLDEN_YY_FLOOR <= val <= (datetime.now().year + 1) % 100
+
+
+def wo_tail_consecutive(wo_ref):
+    """FFF candidate from a WO reference: [:3] of the FINAL hyphen segment
+    (the counter under the deployed series MFG-WO-.###.YY.) — FIXED: [:3],
+    never [-3:]. Empty/odd input degrades to \"001\", as at both mint sites."""
+    try:
+        parts = (wo_ref or "").split("-")
+        last_part = parts[-1] if parts else ""
+        return (last_part[:3] if last_part else "001").zfill(3)
+    except Exception:
+        return "001"
 
 #: plant name → plant digit (design §4b D2)
 PLANT_CODE_MAP = {

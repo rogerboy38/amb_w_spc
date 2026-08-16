@@ -51,7 +51,7 @@ def _set_field(doc, field, value):
 MIGRATION_PROVENANCE_ACTION = "Origin: Migrated (legacy golden preserved)"
 
 
-def _enforce_l1_golden_fence(golden_number, doc_name=None):
+def _enforce_l1_golden_fence(golden_number, doc_name=None, verb="CREATE"):
     """F-1 (Rung 2): the L1 create fence — F-0 as RATIFIED.
 
     THE GOLDEN IS UNIQUE AMONG L1 ROOTS (F-0). One golden = one lot; L2/L3
@@ -84,13 +84,16 @@ def _enforce_l1_golden_fence(golden_number, doc_name=None):
     )
     if rows:
         holder = rows[0][0]
+        # Rung 4 (verb nuance, ruled at Card 2): ONE sentence family — the
+        # verb matches the press (CREATE at the mint doors, ASSIGN at the
+        # copier). Default preserves the F-1 sentence byte-for-byte.
         frappe.throw(
             _(
-                "CANNOT CREATE — golden number {0} already identifies lot {1}. "
+                "CANNOT {3} — golden number {0} already identifies lot {1}. "
                 "{2} would be a second L1 root carrying the same identity. "
                 "Nothing has been written. One golden = one lot (F-0): review "
                 "the Work Order series before retrying."
-            ).format(golden, holder, doc_name or "this new document"),
+            ).format(golden, holder, doc_name or "this new document", verb),
             title=_("Golden Number Collision"),
         )
 
@@ -854,7 +857,11 @@ class BatchAMB(NestedSet):
         # D1a stability guard (Phase 1 item 1.3): an already-minted golden
         # number is immutable — counter-based FFF must never renumber on
         # re-save. Decompose and stop.
-        from amb_w_spc.sfc_manufacturing.golden_number import GOLDEN_RE
+        from amb_w_spc.sfc_manufacturing.golden_number import (
+            GOLDEN_RE,
+            mint_year_yy,
+            wo_tail_consecutive,
+        )
         existing_golden = (self.custom_golden_number or "").strip()
         if GOLDEN_RE.match(existing_golden):
             self.custom_generated_batch_name = existing_golden
@@ -863,20 +870,10 @@ class BatchAMB(NestedSet):
             self.custom_consecutive = existing_golden[4:7]
             return
 
-        consecutive = "001"
-        if self.work_order_ref:
-            try:
-                parts = self.work_order_ref.split("-")
-                last_part = parts[-1]
-                wo_consecutive = last_part[:3] if last_part else "001"
-                consecutive = wo_consecutive.zfill(3)
-            except Exception:
-                consecutive = "001"
-
-        # Q-G(b) / Rung 3: the MINT clock is the clock — YY = the year the lot
-        # identity comes into existence. A Work Order date is not a mint-time
-        # input; legacy YY is never reinterpreted (K3).
-        year = datetime.now().strftime("%y")
+        # Rung 4: both components come from the one minter module — the WO
+        # feeds the consecutive, the MINT clock feeds the year (Q-G b / K3).
+        consecutive = wo_tail_consecutive(self.work_order_ref)
+        year = mint_year_yy()
 
         # plant_code = "1"
         # Get plant code using the new method
@@ -2073,7 +2070,7 @@ def assign_golden_number_to_batch(batch_name):
                 # Translate — the RULED sixth outcome renders THE FENCE'S OWN
                 # SENTENCE (one sentence, one census, one def). K4: nothing
                 # written on refusal — golden AND derived untouched.
-                _enforce_l1_golden_fence(derived, doc_name=batch.name)
+                _enforce_l1_golden_fence(derived, doc_name=batch.name, verb="ASSIGN")
             except frappe.ValidationError as fence_refusal:
                 # AF-1: the throw already queued a RED message_log entry; left
                 # in place it ships as _server_messages on the 200 and the desk
@@ -3402,7 +3399,11 @@ def _run_golden_number_logic(doc):
         return
 
     # D1a stability guard — mirror of set_batch_naming (item 1.3)
-    from amb_w_spc.sfc_manufacturing.golden_number import GOLDEN_RE
+    from amb_w_spc.sfc_manufacturing.golden_number import (
+        GOLDEN_RE,
+        mint_year_yy,
+        wo_tail_consecutive,
+    )
     existing_golden = (getattr(doc, "custom_golden_number", None) or "").strip()
     if GOLDEN_RE.match(existing_golden):
         doc.custom_generated_batch_name = existing_golden
@@ -3418,18 +3419,10 @@ def _run_golden_number_logic(doc):
         or ""
     ).strip()
 
-    consecutive = "001"
-    # Q-G(b) / Rung 3: the MINT clock is the clock — the WO's planned year no
-    # longer overrides it. The WO still feeds the consecutive, never the year.
-    year = datetime.now().strftime("%y")
-
-    if wo_ref:
-        try:
-            parts = wo_ref.split("-")
-            last_part = parts[-1] if parts else ""
-            consecutive = (last_part[:3] if last_part else "001").zfill(3)
-        except Exception:
-            pass
+    # Rung 4: both components from the one minter module — the WO feeds the
+    # consecutive, the MINT clock feeds the year (Q-G b / K3).
+    consecutive = wo_tail_consecutive(wo_ref)
+    year = mint_year_yy()
 
     # Plant Code Resolution
     plant_code = "1"

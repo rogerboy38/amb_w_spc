@@ -22,8 +22,40 @@ JS_PATH = DOCTYPE_DIR / "batch_amb.js"
 
 GOLDEN_RE = re.compile(r"^\d{10}$")
 
+GOLDEN_PY_PATH = HERE.parents[1] / "sfc_manufacturing" / "golden_number.py"
+
+
+def _load_golden_defs():
+    """AST-load the frappe-free Rung 4 helpers from the REAL module.
+
+    Returns whatever exists — at pre-Rung-4 bases the dict is empty, so the
+    stub wiring below stays conditional (a missing def must fail as a RED
+    test, never as a collection artifact)."""
+    tree = ast.parse(GOLDEN_PY_PATH.read_text(encoding="utf-8"))
+    wanted = [n for n in tree.body
+              if (isinstance(n, ast.FunctionDef)
+                  and n.name in ("mint_year_yy", "yy_in_window",
+                                 "wo_tail_consecutive"))
+              or (isinstance(n, ast.Assign)
+                  and any(getattr(t, "id", "") == "GOLDEN_YY_FLOOR"
+                          for t in n.targets))]
+    module = ast.Module(body=wanted, type_ignores=[])
+    ast.fix_missing_locations(module)
+    ns = {}
+    exec(compile(module, str(GOLDEN_PY_PATH), "exec"), ns)
+    # __builtins__ stays in ns — the compiled defs keep ns as __globals__ and
+    # their in-function imports need it at call time. Callers filter by name.
+    return ns
+
+
+_real_golden = _load_golden_defs()
+
 _golden_mod = types.ModuleType("amb_w_spc.sfc_manufacturing.golden_number")
 _golden_mod.GOLDEN_RE = GOLDEN_RE
+for _k in ("mint_year_yy", "yy_in_window", "wo_tail_consecutive",
+           "GOLDEN_YY_FLOOR"):
+    if _k in _real_golden:
+        setattr(_golden_mod, _k, _real_golden[_k])
 _projection_mod = types.ModuleType("amb_w_spc.sfc_manufacturing.batch_projection")
 _projection_mod.is_projection_enabled = lambda: False
 _pkg = types.ModuleType("amb_w_spc")
@@ -268,7 +300,8 @@ def _load_mint_site(name):
     }
     with mock.patch.dict(sys.modules, _STUB_MODULES):
         exec(compile(module, str(PY_PATH), "exec"), ns)
-    ns["_enforce_l1_golden_fence"] = lambda *a, **k: None
+    if name != "_enforce_l1_golden_fence":
+        ns["_enforce_l1_golden_fence"] = lambda *a, **k: None
     ns["_validate_migrated_golden"] = lambda *a, **k: None
     ns["_apply_golden_decomposition"] = lambda *a, **k: None
     return ns[name], stub
@@ -346,6 +379,103 @@ class TestRung3MintClock(unittest.TestCase):
     def test_site2_no_wo_mints_this_year(self):
         golden = self._mint_site2(None)
         self.assertEqual(golden[7:9], self._this_yy())   # control: GREEN at base too
+
+
+class TestRung4OneMinter(unittest.TestCase):
+    """Rung 4: one minter module with teeth — fuse, ASCII, routing, verb."""
+
+    def _real(self, name):
+        self.assertIn(name, _real_golden,
+                      f"{name} missing from golden_number.py — Rung 4 not applied")
+        return _real_golden[name]
+
+    def test_golden_re_rejects_nonascii_digits(self):
+        # RED at base: \d without re.ASCII matches fullwidth digits
+        src = GOLDEN_PY_PATH.read_text(encoding="utf-8")
+        tree = ast.parse(src)
+        ns = {"re": re}
+        assigns = [n for n in tree.body if isinstance(n, ast.Assign)
+                   and any(getattr(t, "id", "") in ("GOLDEN_RE", "SUBLOT_ID_RE")
+                           for t in n.targets)]
+        module = ast.Module(body=assigns, type_ignores=[])
+        ast.fix_missing_locations(module)
+        exec(compile(module, str(GOLDEN_PY_PATH), "exec"), ns)
+        fullwidth = "０１２３４５６７８９"
+        self.assertIsNone(ns["GOLDEN_RE"].match(fullwidth))
+        self.assertIsNotNone(ns["GOLDEN_RE"].match("0123456789"))
+        self.assertIsNone(ns["SUBLOT_ID_RE"].match(fullwidth + "-1"))
+        self.assertIsNotNone(ns["SUBLOT_ID_RE"].match("0123456789-1"))
+
+    def test_fuse_window_floor_and_derived_ceiling(self):
+        import datetime as _dt
+        fuse = self._real("yy_in_window")
+        floor = self._real("GOLDEN_YY_FLOOR")
+        self.assertEqual(floor, 20)          # measured corpus min, all 4 registers
+        self.assertFalse(fuse(floor - 1))
+        self.assertTrue(fuse(floor))
+        nxt = (_dt.datetime.now().year + 1) % 100
+        self.assertTrue(fuse(nxt))           # ceiling derives from the clock
+        self.assertFalse(fuse(nxt + 1))
+        self.assertFalse(fuse("garbage"))
+
+    def test_sites_route_through_the_one_minter(self):
+        # Structural ratchet — RED at base (count 4: dead block's comment +
+        # code, site 1, site 2); after Rung 4 only the DEAD :205-shadowed
+        # block keeps its comment + code pair.
+        src = PY_PATH.read_text(encoding="utf-8")
+        self.assertEqual(src.count("[:3]"), 2)
+        # Behavioural: both live sites agree with the module's own helpers.
+        tail = self._real("wo_tail_consecutive")
+        self.assertEqual(tail("MFG-WO-00042.03.25"), "000")
+        self.assertEqual(tail(""), "001")
+        self.assertEqual(tail(None), "001")
+
+    def test_verb_matches_press(self):
+        # Copier press → ASSIGN (RED at base: fence says CREATE everywhere).
+        func, stub = _load_copier_with_fence()
+        batch = _batch(golden="", derived="1234567890")
+        stub.get_doc.return_value = batch
+        stub.db.sql.return_value = [("LOTE-26-24-0003",)]
+        with mock.patch.dict(sys.modules, _STUB_MODULES):
+            r = func("LOTE-NEW-0001")
+        self.assertTrue(r["message"].startswith("CANNOT ASSIGN"), r["message"][:40])
+        # Fence direct, default verb → CREATE (control: GREEN at base too).
+        fence, fstub = _load_mint_site("_enforce_l1_golden_fence")
+        captured = {}
+        def _throw(msg, title=None):
+            captured["msg"] = str(msg)
+            raise RuntimeError("refused")
+        fstub.throw.side_effect = _throw
+        fstub.db.sql.return_value = [("LOTE-26-24-0003",)]
+        with self.assertRaises(RuntimeError):
+            fence("1234567890", doc_name="LOTE-NEW-0001")
+        self.assertTrue(captured["msg"].startswith("CANNOT CREATE"), captured["msg"][:40])
+
+    RAVEN_GOLDEN = HERE.parents[3] / "raven_ai_agent" / "raven_ai_agent" / \
+        "skills" / "bom_agent" / "golden.py"
+
+    @unittest.skipUnless(RAVEN_GOLDEN.exists(), "raven_ai_agent not on this bench")
+    def test_raven_fuse_mirrors_the_one_fuse(self):
+        # Cross-app drift test (the card's condition for shipping a MIRRORED
+        # fuse): raven's floor and window must equal golden_number's.
+        import datetime as _dt
+        tree = ast.parse(self.RAVEN_GOLDEN.read_text(encoding="utf-8"))
+        wanted = [n for n in tree.body
+                  if (isinstance(n, ast.FunctionDef) and n.name == "_yy_in_window")
+                  or (isinstance(n, ast.Assign)
+                      and any(getattr(t, "id", "") == "GOLDEN_YY_FLOOR"
+                              for t in n.targets))]
+        module = ast.Module(body=wanted, type_ignores=[])
+        ast.fix_missing_locations(module)
+        rns = {}
+        exec(compile(module, str(self.RAVEN_GOLDEN), "exec"), rns)
+        self.assertIn("GOLDEN_YY_FLOOR", rns, "raven fuse missing — drift")
+        self.assertEqual(rns["GOLDEN_YY_FLOOR"], self._real("GOLDEN_YY_FLOOR"))
+        amb_fuse = self._real("yy_in_window")
+        raven_fuse = rns["_yy_in_window"]
+        nxt = (_dt.datetime.now().year + 1) % 100
+        for probe in (19, 20, 25, nxt, nxt + 1):
+            self.assertEqual(raven_fuse(probe), amb_fuse(probe), probe)
 
 
 if __name__ == "__main__":
