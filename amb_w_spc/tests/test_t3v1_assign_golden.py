@@ -191,9 +191,17 @@ def _load_copier_with_fence():
         pass
     stub = mock.MagicMock(name="frappe")
     stub.ValidationError = _FenceRefusal
+    # AF-1: real frappe.throw APPENDS a red message_log entry BEFORE raising
+    # (messages.py:117-118); mirror that so the leak class is visible under test.
+    stub.message_log = []
     def throw(msg, title=None):
+        stub.message_log.append({"message": str(msg), "indicator": "red"})
         raise _FenceRefusal(str(msg))
     stub.throw.side_effect = throw
+    def clear_last_message():
+        if stub.message_log:
+            stub.message_log.pop()
+    stub.clear_last_message.side_effect = clear_last_message
     ns = {"frappe": stub, "_": lambda x: x}
     with mock.patch.dict(sys.modules, _STUB_MODULES):
         exec(compile(module, str(PY_PATH), "exec"), ns)
@@ -205,6 +213,7 @@ class TestCard2CopierFence(unittest.TestCase):
 
     def _press(self, holder_rows):
         func, stub = _load_copier_with_fence()
+        self.stub = stub
         batch = _batch(golden="", derived="1234567890")
         stub.get_doc.return_value = batch
         stub.db.sql.return_value = holder_rows      # the fence's census
@@ -225,6 +234,9 @@ class TestCard2CopierFence(unittest.TestCase):
         self.assertIn("Nothing has been written", r["message"]) # K4, the fence's own sentence
         b.save.assert_not_called()                              # nothing written
         self.assertEqual(b.custom_golden_number, "")            # golden untouched
+        # AF-1: the throw's red entry must NOT survive the translation — an
+        # entry left here ships as _server_messages and repaints the orange red.
+        self.assertEqual(self.stub.message_log, [])
 
 
 if __name__ == "__main__":

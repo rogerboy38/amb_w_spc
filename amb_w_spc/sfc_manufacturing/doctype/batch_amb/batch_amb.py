@@ -2083,6 +2083,10 @@ def assign_golden_number_to_batch(batch_name):
                 # written on refusal — golden AND derived untouched.
                 _enforce_l1_golden_fence(derived, doc_name=batch.name)
             except frappe.ValidationError as fence_refusal:
+                # AF-1: the throw already queued a RED message_log entry; left
+                # in place it ships as _server_messages on the 200 and the desk
+                # repaints the ruled orange red. The dict below is the signal.
+                frappe.clear_last_message()
                 return {
                     "outcome": "refused_collision",
                     "indicator": "orange",
