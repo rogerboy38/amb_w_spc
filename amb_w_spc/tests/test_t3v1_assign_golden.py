@@ -419,11 +419,12 @@ class TestRung4OneMinter(unittest.TestCase):
         self.assertFalse(fuse("garbage"))
 
     def test_sites_route_through_the_one_minter(self):
-        # Structural ratchet — RED at base (count 4: dead block's comment +
-        # code, site 1, site 2); after Rung 4 only the DEAD :205-shadowed
-        # block keeps its comment + code pair.
+        # Structural ratchet — armed-corpse card: the shadowed dead block is
+        # EXCISED, so no [:3] parse remains outside golden_number (was 4 at
+        # Rung-4's base, 2 after Rung 4, 0 after the excision — each step
+        # pre-declared in its card; this constant moves only with a card).
         src = PY_PATH.read_text(encoding="utf-8")
-        self.assertEqual(src.count("[:3]"), 2)
+        self.assertEqual(src.count("[:3]"), 0)
         # Behavioural: both live sites agree with the module's own helpers.
         tail = self._real("wo_tail_consecutive")
         self.assertEqual(tail("MFG-WO-00042.03.25"), "000")
@@ -476,6 +477,41 @@ class TestRung4OneMinter(unittest.TestCase):
         nxt = (_dt.datetime.now().year + 1) % 100
         for probe in (19, 20, 25, nxt, nxt + 1):
             self.assertEqual(raven_fuse(probe), amb_fuse(probe), probe)
+
+
+class TestArmedCorpse(unittest.TestCase):
+    """Armed-corpse card: the shadowed-def class is permanently test-visible.
+
+    SHAPE-based, never line-based (AC-V4): a duplicated hook def OR a
+    rewritten delegator turns this red, wherever it lands in the file.
+    """
+
+    HOOK_NAMES = ("batch_amb_validate", "batch_amb_before_save")
+
+    def test_each_hook_name_has_exactly_one_def_and_it_delegates(self):
+        # RED at any base carrying the corpse (two defs per name).
+        tree = ast.parse(PY_PATH.read_text(encoding="utf-8"))
+        for name in self.HOOK_NAMES:
+            defs = [n for n in tree.body
+                    if isinstance(n, ast.FunctionDef) and n.name == name]
+            self.assertEqual(len(defs), 1,
+                             f"{name}: {len(defs)} module-level defs — a "
+                             "shadowed duplicate is the armed-corpse class")
+            fn = defs[0]
+            self.assertLessEqual(len(fn.body), 4, f"{name}: not a delegator")
+            calls = [n for n in ast.walk(fn)
+                     if isinstance(n, ast.Call)
+                     and getattr(n.func, "id", "") == "_set_batch_naming_on_doc"]
+            self.assertTrue(calls, f"{name}: does not delegate to "
+                                   "_set_batch_naming_on_doc")
+
+    def test_no_year_logic_outside_the_one_minter(self):
+        # AC-V3 + ACR-2 clean invariants: after the excision the file cannot
+        # derive a year any way but through golden_number.mint_year_yy.
+        src = PY_PATH.read_text(encoding="utf-8")
+        self.assertEqual(src.count("strftime"), 0)
+        self.assertEqual(src.count(".year"), 0)
+        self.assertEqual(src.count('year = "2'), 0)
 
 
 if __name__ == "__main__":
