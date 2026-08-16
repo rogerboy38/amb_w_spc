@@ -873,18 +873,10 @@ class BatchAMB(NestedSet):
             except Exception:
                 consecutive = "001"
 
-        year = "24"
-        if self.wo_start_date:
-            try:
-                if isinstance(self.wo_start_date, str):
-                    wo_date = datetime.strptime(self.wo_start_date, "%Y-%m-%d")
-                    year = str(wo_date.year)[-2:]
-                else:
-                    year = str(self.wo_start_date.year)[-2:]
-            except Exception:
-                year = datetime.now().strftime("%y")
-        else:
-            year = datetime.now().strftime("%y")
+        # Q-G(b) / Rung 3: the MINT clock is the clock — YY = the year the lot
+        # identity comes into existence. A Work Order date is not a mint-time
+        # input; legacy YY is never reinterpreted (K3).
+        year = datetime.now().strftime("%y")
 
         # plant_code = "1"
         # Get plant code using the new method
@@ -3427,6 +3419,8 @@ def _run_golden_number_logic(doc):
     ).strip()
 
     consecutive = "001"
+    # Q-G(b) / Rung 3: the MINT clock is the clock — the WO's planned year no
+    # longer overrides it. The WO still feeds the consecutive, never the year.
     year = datetime.now().strftime("%y")
 
     if wo_ref:
@@ -3434,13 +3428,6 @@ def _run_golden_number_logic(doc):
             parts = wo_ref.split("-")
             last_part = parts[-1] if parts else ""
             consecutive = (last_part[:3] if last_part else "001").zfill(3)
-        except Exception:
-            pass
-
-        try:
-            wo_doc = frappe.get_doc("Work Order", wo_ref)
-            if getattr(wo_doc, "planned_start_date", None):
-                year = str(wo_doc.planned_start_date.year)[-2:]
         except Exception:
             pass
 
