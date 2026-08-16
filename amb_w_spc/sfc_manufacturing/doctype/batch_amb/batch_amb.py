@@ -50,6 +50,50 @@ def _set_field(doc, field, value):
 
 MIGRATION_PROVENANCE_ACTION = "Origin: Migrated (legacy golden preserved)"
 
+
+def _enforce_l1_golden_fence(golden_number, doc_name=None):
+    """F-1 (Rung 2): the L1 create fence — F-0 as RATIFIED.
+
+    THE GOLDEN IS UNIQUE AMONG L1 ROOTS (F-0). One golden = one lot; L2/L3
+    repeats are the same identity by design (FI6 — inheritance is not fenced;
+    inherited goldens early-return at the D1a guard and never reach the mint).
+
+    Called at BOTH live mint sites, BEFORE the pair-write (FI4/K1), with the
+    freshly derived value. Census scope is F-0 verbatim (FI5):
+      L1 root  ==  custom_batch_level IS NULL or in ('', '1')   (K5 — the
+                   code's own str(level or "1") == "1" semantics)
+      self excluded (K6 — an update to the holder is not a collision)
+    Identity collision only — format validity is Rung 4's (FI7).
+
+    On a hit: REFUSE, loudly, naming BOTH documents and the value (FI1/FI2).
+    The refusal writes NOTHING (FI3/K4) — it fires before either identity
+    field is touched, so no partial state exists to roll back. No silent
+    suffix, no regeneration, no mutation: converting a silent duplicate into
+    a loud refusal IS the feature.
+    """
+    golden = (golden_number or "").strip()
+    if not golden:
+        return
+    rows = frappe.db.sql(
+        """SELECT name FROM `tabBatch AMB`
+           WHERE IFNULL(custom_golden_number, '') = %s
+             AND (custom_batch_level IS NULL OR custom_batch_level IN ('', '1'))
+             AND name != IFNULL(%s, '')
+           LIMIT 1""",
+        (golden, doc_name),
+    )
+    if rows:
+        holder = rows[0][0]
+        frappe.throw(
+            _(
+                "CANNOT CREATE — golden number {0} already identifies lot {1}. "
+                "{2} would be a second L1 root carrying the same identity. "
+                "Nothing has been written. One golden = one lot (F-0): review "
+                "the Work Order series before retrying."
+            ).format(golden, holder, doc_name or "this new document"),
+            title=_("Golden Number Collision"),
+        )
+
 def _apply_golden_decomposition(doc, golden):
     """Decompose a preserved/validated 10-digit golden into component fields
     using the golden_number.py slicing ``CCCC FFF YY P`` (O-3). Mirrors the
@@ -910,6 +954,11 @@ class BatchAMB(NestedSet):
             consecutive = base_golden_number[4:7]
         else:
             base_golden_number = f"{product_code}{consecutive}{year}{plant_code}"
+
+        # F-1 (Rung 2): fence BEFORE the pair-write — refuse loudly on an
+        # L1-root collision, write nothing (FI1-FI5). Inherited goldens never
+        # reach this line (the D1a guard above returns first).
+        _enforce_l1_golden_fence(base_golden_number, doc_name=self.name)
 
         # Only set golden number fields here, NOT the title
         self.custom_golden_number = base_golden_number
@@ -3412,6 +3461,10 @@ def _run_golden_number_logic(doc):
         consecutive = golden_number[4:7]
     else:
         golden_number = f"{product_code}{consecutive}{year}{plant_code}"
+
+    # F-1 (Rung 2): fence BEFORE the pair-write — same check, same refusal,
+    # so the fallback path cannot mint what the class path would refuse.
+    _enforce_l1_golden_fence(golden_number, doc_name=getattr(doc, "name", None))
 
     doc.custom_golden_number = golden_number
     doc.custom_generated_batch_name = golden_number
