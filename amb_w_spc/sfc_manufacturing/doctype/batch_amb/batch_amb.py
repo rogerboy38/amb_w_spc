@@ -2075,6 +2075,20 @@ def assign_golden_number_to_batch(batch_name):
                         "malformed (expected 10 digits). Nothing written."
                     ),
                 }
+            try:
+                # Card 2: the last unfenced door. The fence THROWS (Document-
+                # layer law); this control returns dicts (:1991-1993 law).
+                # Translate — the RULED sixth outcome renders THE FENCE'S OWN
+                # SENTENCE (one sentence, one census, one def). K4: nothing
+                # written on refusal — golden AND derived untouched.
+                _enforce_l1_golden_fence(derived, doc_name=batch.name)
+            except frappe.ValidationError as fence_refusal:
+                return {
+                    "outcome": "refused_collision",
+                    "indicator": "orange",
+                    "derived_value": derived,
+                    "message": str(fence_refusal),
+                }
             batch.custom_golden_number = derived
             batch.save()
             return {

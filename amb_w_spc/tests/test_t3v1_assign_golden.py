@@ -51,12 +51,16 @@ def _load_function():
     ns = {"frappe": stub_frappe}
     with mock.patch.dict(sys.modules, _STUB_MODULES):
         exec(compile(module, str(PY_PATH), "exec"), ns)
+        # Card 2: the copier now calls the fence; this loader tests the copier's
+        # OWN outcomes, so the fence is a no-op here (it has its own suite).
+        ns["_enforce_l1_golden_fence"] = lambda *a, **k: None
         func = ns["assign_golden_number_to_batch"]
         return func, stub_frappe
 
 
 def _batch(golden="", derived="", item="0334"):
     b = types.SimpleNamespace(
+        name="LOTE-TEST-0001",
         custom_golden_number=golden,
         custom_generated_batch_name=derived,
         item_to_manufacture=item,
@@ -168,6 +172,59 @@ class TestFileInvariants(unittest.TestCase):
         block = self.js[start:end]
         self.assertEqual(block.count("reload_doc"), 1)
         self.assertIn("m.outcome === 'assigned'", block)
+
+
+def _load_copier_with_fence():
+    """Card 2: extract BOTH defs (copier + fence, each the LAST module-level
+    def) into one namespace so the copier's fence call hits the real fence."""
+    tree = ast.parse(PY_PATH.read_text(encoding="utf-8"))
+    wanted = {}
+    for name in ("assign_golden_number_to_batch", "_enforce_l1_golden_fence"):
+        defs = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == name]
+        assert defs, name
+        fn = defs[-1]
+        fn.decorator_list = []
+        wanted[name] = fn
+    module = ast.Module(body=list(wanted.values()), type_ignores=[])
+    ast.fix_missing_locations(module)
+    class _FenceRefusal(Exception):
+        pass
+    stub = mock.MagicMock(name="frappe")
+    stub.ValidationError = _FenceRefusal
+    def throw(msg, title=None):
+        raise _FenceRefusal(str(msg))
+    stub.throw.side_effect = throw
+    ns = {"frappe": stub, "_": lambda x: x}
+    with mock.patch.dict(sys.modules, _STUB_MODULES):
+        exec(compile(module, str(PY_PATH), "exec"), ns)
+    return ns["assign_golden_number_to_batch"], stub
+
+
+class TestCard2CopierFence(unittest.TestCase):
+    """Card 2 (+2, as carded): the copier refuses a colliding derived value."""
+
+    def _press(self, holder_rows):
+        func, stub = _load_copier_with_fence()
+        batch = _batch(golden="", derived="1234567890")
+        stub.get_doc.return_value = batch
+        stub.db.sql.return_value = holder_rows      # the fence's census
+        with mock.patch.dict(sys.modules, _STUB_MODULES):
+            return func("LOTE-NEW-0001"), batch
+
+    def test_copier_clean_still_assigns(self):
+        r, b = self._press([])
+        self.assertEqual(r["outcome"], "assigned")
+        b.save.assert_called_once()
+
+    def test_copier_collision_refuses_names_both_writes_nothing(self):
+        r, b = self._press([("LOTE-26-24-0003",)])
+        self.assertEqual(r["outcome"], "refused_collision")     # the RULED sixth outcome
+        self.assertEqual(r["indicator"], "orange")
+        self.assertIn("1234567890", r["message"])               # the value
+        self.assertIn("LOTE-26-24-0003", r["message"])          # the holder
+        self.assertIn("Nothing has been written", r["message"]) # K4, the fence's own sentence
+        b.save.assert_not_called()                              # nothing written
+        self.assertEqual(b.custom_golden_number, "")            # golden untouched
 
 
 if __name__ == "__main__":
