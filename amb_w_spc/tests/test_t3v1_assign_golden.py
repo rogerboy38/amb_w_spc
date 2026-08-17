@@ -490,10 +490,14 @@ class TestArmedCorpse(unittest.TestCase):
 
     def test_each_hook_name_has_exactly_one_def_and_it_delegates(self):
         # RED at any base carrying the corpse (two defs per name).
+        # AC-ADV-1: census includes AsyncFunctionDef — an async duplicate
+        # would silently DE-arm the hook (coroutine never awaited), the
+        # refuter-found blind spot outside the original guarded class.
         tree = ast.parse(PY_PATH.read_text(encoding="utf-8"))
         for name in self.HOOK_NAMES:
             defs = [n for n in tree.body
-                    if isinstance(n, ast.FunctionDef) and n.name == name]
+                    if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+                    and n.name == name]
             self.assertEqual(len(defs), 1,
                              f"{name}: {len(defs)} module-level defs — a "
                              "shadowed duplicate is the armed-corpse class")
