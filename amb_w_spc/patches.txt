@@ -188,3 +188,8 @@ amb_w_spc.patches.v15_6_0.w4a_expiry_compute
 # DocType-level Property Setter (for_doctype). Ordered after v15_6_0 (fetch_from
 # clears first, then track_changes enables).
 amb_w_spc.patches.v15_7_0.batch_amb_track_changes
+
+# v15_8_0 (2026-08-24) — LOOP-1 / B-3b: historic FoxPro lot capture on Batch AMB,
+# AT THE PARENT (child table on the parent doctype, never nested inside
+# container_barrels — G-5/M90). Additive; the golden minter is untouched.
+amb_w_spc.patches.v15_8_0.b3b_historic_lot_capture

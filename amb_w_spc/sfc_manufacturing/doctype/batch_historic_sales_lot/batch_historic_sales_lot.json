@@ -1,0 +1,71 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-08-24 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sales_lot",
+  "folio",
+  "customer",
+  "invoice",
+  "year"
+ ],
+ "fields": [
+  {
+   "fieldname": "sales_lot",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Sales Lot / Lote de Venta",
+   "reqd": 1,
+   "columns": 2,
+   "description": "The FoxPro lote_de_venta as shipped. Verbatim: a sales lot is a historic fact, never re-derived."
+  },
+  {
+   "fieldname": "folio",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Folio",
+   "columns": 1,
+   "description": "Production folio carried with the sales lot. Data, not Int: FoxPro folios are not guaranteed numeric and a leading zero is meaning, not formatting."
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Customer / Cliente",
+   "columns": 2,
+   "description": "Customer as recorded historically. Deliberately Data, NOT Link: the legacy value may name a customer that no longer exists, and a broken Link would block the save."
+  },
+  {
+   "fieldname": "invoice",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Invoice / Factura",
+   "columns": 2
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Year",
+   "columns": 1,
+   "description": "Recorded year. Data rather than Int so a blank or a legacy non-numeric survives import unchanged."
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-24 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "SFC Manufacturing",
+ "name": "Batch Historic Sales Lot",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
