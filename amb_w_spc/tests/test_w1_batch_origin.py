@@ -17,7 +17,7 @@ from amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb import (
 	MIGRATION_PROVENANCE_ACTION,
 	_validate_migrated_golden,
 )
-from amb_w_spc.tests.test_batch_projection import ProjectionTestBase
+from amb_w_spc.tests.test_batch_projection import ITEM_JUICE_FAMILY, ProjectionTestBase
 
 # synthetic migrated golden — family 03, high subfamily/consecutive to avoid
 # colliding with real 03xx data; shape CCCC FFF YY P = 0397 888 26 1
@@ -52,6 +52,13 @@ class TestBatchOriginMigrated(ProjectionTestBase):
 			"custom_golden_number": golden,
 			"work_order_ref": None,      # O-1: migrated lots may have no WO
 			"item_to_manufacture": None,
+			# ⭐ current_item_code is REQUIRED for this doc to be SAVEABLE, and
+			# that is not incidental: every processing-history writer copies it
+			# into the child row, where `item_code` is reqd=1. A migrated batch
+			# with no item cannot record its own history — pinned explicitly by
+			# test_item_less_migrated_batch_cannot_record_history below, so the
+			# gap is documented rather than hidden by this default.
+			"current_item_code": ITEM_JUICE_FAMILY,
 			"is_group": 1,
 		}
 		fields.update(kw)
@@ -94,6 +101,22 @@ class TestBatchOriginMigrated(ProjectionTestBase):
 		self.assertEqual(len(markers), 1)
 		self.assertIn(MIGRATED_GOLDEN, markers[0].comments or "")
 		self.assertIn("6048", markers[0].comments or "")
+
+		# ⭐ GREEN FOR THE RIGHT REASON. Before LOOP-3 this helper supplied 2 of
+		# the 5 mandatory child fields, so it could not complete a save at all.
+		# "no exception" is therefore NOT the assertion that matters — these are:
+		# every mandatory field LANDED, read back from the DB, and carrying the
+		# value the parent held rather than a placeholder.
+		row = markers[0]
+		self.assertEqual(row.item_code, doc.current_item_code)
+		self.assertEqual(row.plant, doc.current_plant2)
+		self.assertEqual(row.quality_status, doc.quality_status or "Pending")
+		self.assertEqual(row.processing_action, MIGRATION_PROVENANCE_ACTION)
+		# ⚠ date is asserted as what LANDED after reload, not what was passed in
+		self.assertTrue(row.date, "date did not persist")
+		for field in ("date", "plant", "item_code", "quality_status", "processing_action"):
+			self.assertTrue(getattr(row, field, None),
+							f"mandatory child field {field} is empty after reload")
 		# idempotent: a second record adds no duplicate marker
 		add_migration_provenance_row(fresh)
 		fresh.save(ignore_permissions=True)
@@ -101,6 +124,50 @@ class TestBatchOriginMigrated(ProjectionTestBase):
 		markers = [r for r in (again.get("processing_history") or [])
 				   if (r.processing_action or "") == MIGRATION_PROVENANCE_ACTION]
 		self.assertEqual(len(markers), 1)
+
+	def test_provenance_plant_is_read_from_the_document_not_a_constant(self):
+		"""⭐ THE DISCRIMINATOR (VMG-L d). Every Batch AMB on this bench defaults to
+		the same plant, so a single document cannot tell a READ from a hardcoded
+		constant — both would pass. Two parents with DIFFERENT plants can."""
+		from amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb import (
+			add_migration_provenance_row,
+		)
+		plants = [p.name for p in frappe.get_all("Production Plant AMB", limit=2)]
+		if len(plants) < 2:
+			self.skipTest("need two Production Plant AMB rows to discriminate")
+
+		landed = []
+		for idx, plant in enumerate(plants):
+			doc = self._make_migrated(golden=f"039788826{idx}", current_plant2=plant)
+			add_migration_provenance_row(doc)
+			doc.save(ignore_permissions=True)
+			fresh = frappe.get_doc("Batch AMB", doc.name)
+			row = [r for r in fresh.processing_history
+				   if (r.processing_action or "") == MIGRATION_PROVENANCE_ACTION][0]
+			self.assertEqual(row.plant, plant,
+							 f"row plant {row.plant!r} != parent plant {plant!r}")
+			landed.append(row.plant)
+
+		# ⛔ the assertion a constant cannot survive
+		self.assertNotEqual(landed[0], landed[1],
+							"both rows landed the same plant — this cannot discriminate")
+
+	def test_item_less_migrated_batch_cannot_record_history(self):
+		"""⛔ PINS A KNOWN, DELIBERATE GAP — do not 'fix' this by inventing a value.
+
+		A migrated L1 group batch with no work order has no `current_item_code`
+		and no `item_to_manufacture`: its item identity lives on its sublots.
+		Every history writer copies item_code into the child row, where it is
+		reqd=1, so such a batch CANNOT record history and therefore cannot save.
+
+		Supplying a placeholder here would put a fabricated item code on an audit
+		row, which is worse than the refusal. The refusal is asserted so that if
+		anyone later relaxes the child's reqd flag or invents a default, this test
+		fails and the decision gets made in daylight instead of by accident.
+		"""
+		with self.assertRaises(frappe.MandatoryError):
+			doc = self._make_migrated(golden="0397888262", current_item_code=None)
+			doc.save(ignore_permissions=True)
 
 	def test_migrated_empty_golden_refused_on_insert(self):
 		with self.assertRaises(frappe.ValidationError):

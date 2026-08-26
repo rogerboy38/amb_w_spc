@@ -920,11 +920,20 @@ class BatchAMB(NestedSet):
                 if changes:
                     comments = ", ".join(changes)
             
+            # ⛔ THE SAME FIVE-MANDATORY CONTRACT AS log_batch_history() ABOVE.
+            # This writer previously read `current_item_code` with NO fallback,
+            # while its sibling at log_batch_history() already had one. On a
+            # migrated L1 group batch (no work order) `current_item_code` is
+            # empty, so THIS row blocked the parent's save — and because
+            # frappe blames the parent for a child's missing field, the error
+            # read "[Batch AMB, ...]: item_code" and pointed at a field that is
+            # reqd=0 on the parent. Two sibling writers, one hardened and one
+            # not, is how that survived. They now match.
             history_entry = {
                 "date": now_datetime(),
-                "plant": self.current_plant2,
-                "item_code": self.current_item_code,
-                "quality_status": self.quality_status,
+                "plant": self.current_plant2 if hasattr(self, 'current_plant2') else None,
+                "item_code": self.current_item_code or self.item_to_manufacture,
+                "quality_status": self.quality_status if hasattr(self, 'quality_status') else "Pending",
                 "processing_action": action,
                 "changed_by": frappe.session.user,
                 "comments": comments,
