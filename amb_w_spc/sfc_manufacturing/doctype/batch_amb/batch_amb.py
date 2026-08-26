@@ -830,11 +830,26 @@ class BatchAMB(NestedSet):
             return False
     
     def log_batch_history(self, action=None, comments=None, system_generated=False):
-        """Log batch history entry for audit trail"""
+        """⛔⛔ DEAD CODE — SHADOWED, NEVER EXECUTES.
+
+        This class defines `log_batch_history` TWICE and Python keeps the LAST
+        one, so this definition is unreachable. The live copy is further down.
+        Measured, not inferred: `inspect.getsourcelines(BatchAMB.log_batch_history)`
+        reports the later line.
+
+        ⚠ Do not fix bugs here and expect behaviour to change. Left in place
+        rather than deleted so the removal stays a deliberate, separately
+        reviewed change — but marked, so nobody else loses time to it.
+
+        ⭐ Note what this cost: this dead copy already carried the
+        `item_to_manufacture` fallback that the LIVE copy lacked. That is exactly
+        how the fallback came to look like established convention while the
+        executing code had none — the precedent being copied was never running.
+        """
         try:
             action = action or "Batch Updated"
             comments = comments or f"Batch {self.name} updated"
-            
+
             history_entry = {
                 "date": now_datetime(),
                 "plant": self.current_plant2 if hasattr(self, 'current_plant2') else None,
@@ -927,13 +942,36 @@ class BatchAMB(NestedSet):
             # empty, so THIS row blocked the parent's save — and because
             # frappe blames the parent for a child's missing field, the error
             # read "[Batch AMB, ...]: item_code" and pointed at a field that is
-            # reqd=0 on the parent. Two sibling writers, one hardened and one
-            # not, is how that survived. They now match.
+            # reqd=0 on the parent.
+            #
+            # ⛔⛔ AND THIS IS THE LIVE `log_batch_history`. The class defines it
+            # TWICE (see the shadowed copy above); Python keeps the LAST, so this
+            # one runs and that one never has. The shadowed copy already carried
+            # the item_to_manufacture fallback — which is why the fallback looked
+            # like established convention while the executing code had none.
+            # Same family as the banked `batch_amb_validate` double-definition.
+            #
+            # ⚠ NO `hasattr` GUARDS HERE, deliberately. On a Document every
+            # declared field returns True from hasattr, so `... if hasattr(...)`
+            # can never take its else branch — it reads as protection and is
+            # dead. The failure mode is an EMPTY value, which hasattr cannot see.
+            # `plant` is therefore left BARE rather than given a fallback: there
+            # is no honest value to default to, and a fabricated plant on an
+            # audit row is worse than a refusal. (`current_item_code` has a real
+            # alternate source, so it keeps its `or`; `quality_status` has a
+            # domain default, so it keeps "Pending".)
+            #
+            # ⚠ MEASURED, so the next reader does not over-trust this: clearing
+            # `current_plant2` and saving did NOT raise here — the row that
+            # persisted carried the pre-clear value. Removing the dead guard is
+            # therefore behaviour-preserving on the paths exercised, not a new
+            # refusal. The claim "an empty plant now fails loudly" was tested and
+            # NOT demonstrated; do not repeat it as though it were.
             history_entry = {
                 "date": now_datetime(),
-                "plant": self.current_plant2 if hasattr(self, 'current_plant2') else None,
+                "plant": self.current_plant2,
                 "item_code": self.current_item_code or self.item_to_manufacture,
-                "quality_status": self.quality_status if hasattr(self, 'quality_status') else "Pending",
+                "quality_status": self.quality_status or "Pending",
                 "processing_action": action,
                 "changed_by": frappe.session.user,
                 "comments": comments,
