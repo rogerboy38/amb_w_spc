@@ -141,8 +141,35 @@ def add_migration_provenance_row(doc, folios=None, coa_folio=None, note=None):
         bits.append(f"COA folio {coa_folio}.")
     if note:
         bits.append(str(note))
+    # ⛔ ALL FIVE MANDATORY CHILD FIELDS MUST BE SUPPLIED HERE.
+    # `Batch Processing History` requires date · plant · item_code ·
+    # quality_status · processing_action, and every one of them has default=None.
+    # This helper previously supplied two, so it could not complete a save at
+    # all — every caller raised MandatoryError. It is not enough for the row to
+    # be *appended*; it has to be *saveable*.
+    #
+    # ⚠⚠ AND THE ERROR NAMES THE WRONG DOCUMENT — do not trust it. Frappe raises
+    #       [Batch AMB, LOTE-26-35-0117]: plant, item_code, quality_status
+    # because document.py:1117 collects the CHILDREN's missing fields, while
+    # document.py:1129-1133 formats the message with the PARENT's doctype and
+    # name. The two halves describe different documents. `Batch AMB.item_code`
+    # is reqd=0 and a bare Batch AMB saves fine, so reading that message
+    # literally sends you to a field that is not the problem. (Measured
+    # 2026-08-26; same misattribution family as A-3's "Parent Batch AMB is
+    # required for level 2".)
+    #
+    # ⭐ The values are COPIED FROM THE PARENT being written — never invented
+    # here — following the convention already used by log_batch_history(). If
+    # the parent genuinely lacks them the save still fails, and that is correct:
+    # a provenance row that cannot say which plant it belongs to should not be
+    # written silently.
     doc.append("processing_history", {
         "date": now_datetime(),
+        "plant": getattr(doc, "current_plant2", None),
+        "item_code": _get_field(doc, "current_item_code", "item_to_manufacture"),
+        # the child's quality_status is a free-text Data field (options=''), not
+        # a Select — the fallback mirrors log_batch_history()'s existing default.
+        "quality_status": getattr(doc, "quality_status", None) or "Pending",
         "processing_action": MIGRATION_PROVENANCE_ACTION,
         "comments": " ".join(bits),
         "system_generated": 1,
