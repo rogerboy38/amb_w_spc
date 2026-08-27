@@ -1751,7 +1751,35 @@ def create_child_batch(parent_name, child_level):
     
     :param parent_name: Name of the parent Batch AMB document
     :param child_level: '2' for sublot, '3' for container
+
+    ⭐⭐ THE GATE STATEMENT (VMG-O O-13) — what this function's guarantees cover,
+    and what they do not:
+
+      GUARDED: the `validate()` document lifecycle. Anything minting a child
+               through this whitelisted endpoint gets an attributable failure
+               instead of a silent one.
+
+      ⛔ NOT GUARDED — F-43 doors ① and ③, which bypass validate() entirely:
+         ① frappe.db.set_value / doc.db_set  — writes the column directly; no
+            validate(), no save cycle. 74 + 40 live uses across the amb apps.
+         ③ raw frappe.db.sql("UPDATE …")     — no ORM at all; no validate, no
+            hooks, no docstatus rules.
+         A row written by either door never reaches this handler, so nothing
+         here can make those writes attributable. Naming them is the point:
+         this is a fence on one path, not on the field.
+
+      ⛔ ALSO NOT CLOSED — the DOUBLE-MINT (VMG-O §6). The L1 golden fence is
+         SELECT-then-throw with no FOR UPDATE, there is no unique index on
+         (parent_batch_amb, custom_batch_level), and a second button exists as a
+         DB Client Script. That class stays OPEN and needs its own cargo.
+
+      ⛔ ALSO OUT OF SCOPE — the TITLE-LENGTH class (VMG-O O-8′). The composer is
+         `auto_set_title` (:477), outside this function; a caller-set title does
+         not survive `before_save`. Carried as its own cargo. Measured: A-3 mints
+         only levels 1-2 (titles 12 / 18 chars), so the trap is NOT armed during
+         the import; it is reachable by humans creating L3/L4 children afterwards.
     """
+    child = None
     try:
         if child_level not in ['2', '3']:
             return {"success": False, "message": "Invalid child level. Must be '2' or '3'"}
@@ -1836,18 +1864,60 @@ def create_child_batch(parent_name, child_level):
             parent.db_set("is_group", 1)
 
         child.insert()
-        
-        # Regenerate naming to ensure correct title based on level
-        child.set_batch_naming()
-        child.save()
-        
+
+        # ⛔ THE :1841-1842 PAIR WAS REMOVED HERE (LOOP-4, VMG-O O-6).
+        # It read:
+        #       child.set_batch_naming()   # "Regenerate naming ... based on level"
+        #       child.save()
+        # `set_batch_naming` returns immediately for any level != "1" (see :635-640),
+        # and a child is ALWAYS level 2 or 3 — so the call was a no-op and the save
+        # persisted a change that never happened. That save was also the second of
+        # two throw points under one handler, and the dangerous one: the row was
+        # ALREADY inserted, and on a POST the request commits at the end regardless
+        # (frappe/app.py), so a throw there left a COMMITTED ROW behind a reported
+        # failure. Removing it removes the throw point, which is why this cargo can
+        # claim O-5 structurally rather than by catching harder.
+
         frappe.db.commit()
-        
+
         return {"success": True, "name": child.name, "message": f"Level {child_level} batch created successfully"}
-        
+
+    except frappe.ValidationError as e:
+        # ⭐ WHAT THIS HANDLER GUARANTEES (VMG-O O-3/O-4): a failure is SURFACED to
+        # the caller AND names the series value that was consumed. The desk shows
+        # `r.message.message` (batch_amb.js:1918), so this string is what a human
+        # reads.
+        #
+        # ⛔ AND WHAT IT DOES NOT DO — stated so a green is not over-read (O-7):
+        # this is RECORD-THE-NAME, not validate-before-consume. Frappe consumes the
+        # series in `set_new_name` (document.py:442) and only then runs `_validate`
+        # (:448); the length check lives at base_document.py:1212 and THROWS rather
+        # than truncating. Both are framework frames below anything this function
+        # may touch, so the name is already gone by the time we see the error. What
+        # changes is that the gap is now ATTRIBUTABLE instead of invisible.
+        consumed = getattr(child, "name", None)
+        detail = f"{e}"
+        if consumed:
+            detail = f"{detail} [series value consumed and not used: {consumed}]"
+        frappe.log_error(
+            f"Error creating child batch: {detail}", "Child Batch Creation"
+        )
+        return {"success": False, "consumed_name": consumed, "message": detail}
+
     except Exception as e:
-        frappe.log_error(f"Error creating child batch: {str(e)}", "Child Batch Creation")
-        return {"success": False, "message": str(e)}
+        # ⛔ NOT A BARE SWALLOW. Anything that is not a ValidationError is a defect
+        # we have not characterised, so it is logged with the same attribution and
+        # then RE-RAISED — the caller gets a real traceback and the request fails
+        # loudly. The old code returned {"success": False} for every exception in a
+        # 94-line body, which is how a zero-mint became indistinguishable from a
+        # validation refusal.
+        consumed = getattr(child, "name", None)
+        frappe.log_error(
+            f"Unhandled error creating child batch"
+            f"{f' [series value consumed: {consumed}]' if consumed else ''}: {e}",
+            "Child Batch Creation",
+        )
+        raise
 
 
 @frappe.whitelist()
