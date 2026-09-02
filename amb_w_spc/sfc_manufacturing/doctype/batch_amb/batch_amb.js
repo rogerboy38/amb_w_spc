@@ -849,56 +849,112 @@ function setup_custom_buttons(frm) {
                     return;
                 }
                 if (!fmt || fmt === 'mixed') return;
-                frappe.dom.freeze(__('Generating PDF...'));
-                frappe.call({
-                    method: 'amb_print.amb_print.api.print_label_pdf',
-                    args: {
-                        doctype: frm.doctype,
-                        docname: frm.doc.name,
-                        print_format: fmt,
-                        save_attachment: 1,
-                        is_private: 0
-                    },
-                    callback: function(r2) {
-                        frappe.dom.unfreeze();
-                        if (!r2 || !r2.message) return;
-                        const m = r2.message;
-                        // Trigger a real download from the base64 content
-                        try {
-                            const byteChars = atob(m.pdf_base64);
-                            const bytes = new Uint8Array(byteChars.length);
-                            for (let i = 0; i < byteChars.length; i++) bytes[i] = byteChars.charCodeAt(i);
-                            const blob = new Blob([bytes], {type: 'application/pdf'});
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = m.file_name || (frm.doc.name + '.pdf');
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
-                        } catch (err) {
-                            frappe.msgprint(__('PDF generated but auto-download failed. See attachments.'));
+
+                // Track 5 (2026-09-02): fires the actual print_label_pdf call.
+                // Factored out so both the direct path (other formats) and the
+                // sample-tag dialog's primary action (Label Small 8 only) share it.
+                const do_print = function(sample_tags) {
+                    frappe.dom.freeze(__('Generating PDF...'));
+                    frappe.call({
+                        method: 'amb_print.amb_print.api.print_label_pdf',
+                        args: {
+                            doctype: frm.doctype,
+                            docname: frm.doc.name,
+                            print_format: fmt,
+                            save_attachment: 1,
+                            is_private: 0,
+                            sample_tags: sample_tags || null
+                        },
+                        callback: function(r2) {
+                            frappe.dom.unfreeze();
+                            if (!r2 || !r2.message) return;
+                            const m = r2.message;
+                            // Trigger a real download from the base64 content
+                            try {
+                                const byteChars = atob(m.pdf_base64);
+                                const bytes = new Uint8Array(byteChars.length);
+                                for (let i = 0; i < byteChars.length; i++) bytes[i] = byteChars.charCodeAt(i);
+                                const blob = new Blob([bytes], {type: 'application/pdf'});
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = m.file_name || (frm.doc.name + '.pdf');
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                URL.revokeObjectURL(url);
+                            } catch (err) {
+                                frappe.msgprint(__('PDF generated but auto-download failed. See attachments.'));
+                            }
+                            // Reload doc so the newly-created File row appears in the Attach sidebar.
+                            // frm.attachments.refresh() only redraws the sidebar from already-cached
+                            // file data; it does not re-fetch from the server, so the new attachment
+                            // would stay invisible until the next page load.
+                            frm.reload_doc();
+                            frappe.show_alert({
+                                message: __('Label PDF saved as attachment: ') + (m.file_name || ''),
+                                indicator: 'green'
+                            }, 5);
+                        },
+                        error: function() {
+                            frappe.dom.unfreeze();
+                            frappe.msgprint({
+                                title: __('Print Failed'),
+                                message: __('Could not generate label PDF. Check error log.'),
+                                indicator: 'red'
+                            });
                         }
-                        // Reload doc so the newly-created File row appears in the Attach sidebar.
-                        // frm.attachments.refresh() only redraws the sidebar from already-cached
-                        // file data; it does not re-fetch from the server, so the new attachment
-                        // would stay invisible until the next page load.
-                        frm.reload_doc();
-                        frappe.show_alert({
-                            message: __('Label PDF saved as attachment: ') + (m.file_name || ''),
-                            indicator: 'green'
-                        }, 5);
-                    },
-                    error: function() {
-                        frappe.dom.unfreeze();
-                        frappe.msgprint({
-                            title: __('Print Failed'),
-                            message: __('Could not generate label PDF. Check error log.'),
-                            indicator: 'red'
-                        });
-                    }
-                })
+                    });
+                };
+
+                // Track 5 (2026-09-02): Label Small 8 (Container) is the only
+                // format that honours sample_tags — offer the dialog only for
+                // it. Four fixed phrases, default OFF, fixed order (never
+                // free text, so spelling cannot drift from a single place).
+                if (fmt === 'Label Small 8 (Container)') {
+                    const tag_dialog = new frappe.ui.Dialog({
+                        title: __('Sample Tags / Etiquetas de Muestra'),
+                        fields: [
+                            {
+                                fieldtype: 'Check',
+                                fieldname: 'tag_microbiological',
+                                label: __('Microbiological Analysis Sample'),
+                                default: 0
+                            },
+                            {
+                                fieldtype: 'Check',
+                                fieldname: 'tag_customer',
+                                label: __('Customer Retention Sample'),
+                                default: 0
+                            },
+                            {
+                                fieldtype: 'Check',
+                                fieldname: 'tag_distributor',
+                                label: __('Distributor Retention Sample'),
+                                default: 0
+                            },
+                            {
+                                fieldtype: 'Check',
+                                fieldname: 'tag_amb_wellness',
+                                label: __('AMB Wellness Retention'),
+                                default: 0
+                            },
+                        ],
+                        primary_action_label: __('Print'),
+                        primary_action: function(values) {
+                            const sample_tags = [];
+                            if (values.tag_microbiological) sample_tags.push('MICROBIOLOGICAL ANALYSIS SAMPLE');
+                            if (values.tag_customer) sample_tags.push('CUSTOMER RETENTION SAMPLE');
+                            if (values.tag_distributor) sample_tags.push('DISTRIBUTOR RETENTION SAMPLE');
+                            if (values.tag_amb_wellness) sample_tags.push('AMB WELLNESS RETENTION');
+                            tag_dialog.hide();
+                            do_print(sample_tags);
+                        }
+                    });
+                    tag_dialog.show();
+                } else {
+                    do_print(null);
+                }
             },
         });
     }, actions_group);
