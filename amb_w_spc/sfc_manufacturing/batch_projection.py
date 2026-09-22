@@ -81,6 +81,13 @@ def project_batch_amb_outputs(doc, method=None):
     (via row.batch_no, then Batch.custom_batch_output_row, then batch_id)
     and syncs instead of duplicating. Level guard: only L2 emits.
     """
+    # ⛔ RELEASE-CONTRACT v1 §3 — old-writer exclusion. FIRST, before every other
+    # guard: while the release service owns the request, the legacy projection must
+    # not write. The level guard below protects the L3 targets but NOT the level-2
+    # parent LOTE-26-31-0002, which would emit if any path caused it to save. The
+    # flag is the protection that does not depend on which document is touched.
+    if frappe.flags.get("batch_amb_release_service"):
+        return
     if not is_projection_enabled():
         return
     if str(doc.custom_batch_level or "") != STOCK_CARRYING_LEVEL:
