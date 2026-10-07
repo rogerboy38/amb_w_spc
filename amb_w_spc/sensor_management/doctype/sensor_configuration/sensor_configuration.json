@@ -1,7 +1,7 @@
 {
   "name": "Sensor Configuration",
   "creation": "2025-10-26 18:21:11.485977",
-  "modified": "2025-10-26 18:21:11.676911",
+  "modified": "2026-06-17 06:57:25.985",
   "modified_by": "Administrator",
   "owner": "Administrator",
   "docstatus": 0,
@@ -2589,6 +2589,110 @@
       "documentation_url": null,
       "placeholder": null,
       "doctype": "DocField"
+    },
+    {
+      "fieldname": "lifecycle_section",
+      "fieldtype": "Section Break",
+      "label": "Lifecycle State Machine"
+    },
+    {
+      "fieldname": "lifecycle_state",
+      "fieldtype": "Int",
+      "label": "Lifecycle State",
+      "default": "0",
+      "reqd": 1,
+      "in_list_view": 1,
+      "description": "0=Template, 1=Provisioned, 2=Configured, 3=Calibrated, 4=Tested, 5=Approved, 6=Certified, 7=Suspended (reserved), 8=Failed (reserved), 9=Retired"
+    },
+    {
+      "fieldname": "lifecycle_state_label",
+      "fieldtype": "Select",
+      "label": "Lifecycle State Label",
+      "options": "Template\nProvisioned\nConfigured\nCalibrated\nTested\nApproved\nCertified\nSuspended\nFailed\nRetired",
+      "default": "Template",
+      "read_only": 1,
+      "in_list_view": 1,
+      "description": "Auto-synced from lifecycle_state via before_save hook"
+    },
+    {
+      "fieldname": "qualification_cycle_number",
+      "fieldtype": "Int",
+      "label": "Qualification Cycle #",
+      "default": "0",
+      "read_only": 1,
+      "description": "Increments on each demotion from Certified — tracks re-qualification rounds"
+    },
+    {
+      "fieldname": "column_break_lifecycle_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "company",
+      "fieldtype": "Link",
+      "label": "Company",
+      "options": "Company",
+      "reqd": 1,
+      "in_list_view": 1,
+      "default": ":Company",
+      "description": "Business unit owning this sensor (AMB-Wellness parent or Juice/Dry/Mix/Laboratory/Formulated). Defaults to system default Company."
+    },
+    {
+      "fieldname": "certified_template_version",
+      "fieldtype": "Data",
+      "label": "Certified Template Version",
+      "read_only": 1,
+      "description": "Semver of the Sensor Skill template pinned at certification (e.g. 1.2.3)"
+    },
+    {
+      "fieldname": "template_drift",
+      "fieldtype": "Select",
+      "label": "Template Drift",
+      "options": "None\nMinor\nMajor\nBreaking",
+      "default": "None",
+      "read_only": 1,
+      "description": "Drift between certified_template_version and current Sensor Skill template version"
+    },
+    {
+      "fieldname": "shadow_mode_enabled",
+      "fieldtype": "Check",
+      "label": "Shadow Mode Enabled",
+      "default": "0",
+      "description": "Only meaningful at lifecycle_state=4 (Tested) — invoke skill but suppress downstream actions"
+    },
+    {
+      "fieldname": "certification_section",
+      "fieldtype": "Section Break",
+      "label": "Certification Record",
+      "collapsible": 1
+    },
+    {
+      "fieldname": "last_certified_on",
+      "fieldtype": "Datetime",
+      "label": "Last Certified On",
+      "read_only": 1
+    },
+    {
+      "fieldname": "last_certified_by",
+      "fieldtype": "Link",
+      "label": "Last Certified By",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_lifecycle_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "calibration_events_section",
+      "fieldtype": "Section Break",
+      "label": "Calibration Events (ISO 17025)",
+      "collapsible": 1
+    },
+    {
+      "fieldname": "calibration_events",
+      "fieldtype": "Table",
+      "label": "Calibration Events",
+      "options": "Sensor Skill Calibration Event"
     },
     {
       "name": "v3q9jbkcdr",

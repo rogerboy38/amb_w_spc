@@ -1,0 +1,218 @@
+{
+  "name": "Sensor Skill Calibration Event",
+  "creation": "2026-06-17 00:00:00.000000",
+  "modified": "2026-06-17 00:00:00.000000",
+  "modified_by": "Administrator",
+  "owner": "Administrator",
+  "docstatus": 0,
+  "idx": 0,
+  "issingle": 0,
+  "is_virtual": 0,
+  "is_tree": 0,
+  "istable": 1,
+  "editable_grid": 1,
+  "track_changes": 1,
+  "module": "Sensor Management",
+  "app": "amb_w_spc",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "event_id",
+    "event_datetime",
+    "technician",
+    "column_break_1",
+    "environmental_temp_c",
+    "environmental_humidity_pct",
+    "section_break_standard",
+    "reference_standard",
+    "reference_cert_number",
+    "column_break_2",
+    "tolerance_band",
+    "measurement_uncertainty",
+    "section_break_measurement",
+    "as_found_value",
+    "as_found_unit",
+    "column_break_3",
+    "as_left_value",
+    "as_left_unit",
+    "section_break_outcome",
+    "pass_fail",
+    "column_break_4",
+    "linked_signature",
+    "linked_audit_trail",
+    "section_break_notes",
+    "notes"
+  ],
+  "fields": [
+    {
+      "fieldname": "event_id",
+      "fieldtype": "Data",
+      "label": "Event ID",
+      "unique": 1,
+      "reqd": 1,
+      "in_list_view": 1,
+      "description": "Unique calibration event identifier (ISO 17025 §7.8.2.1d)"
+    },
+    {
+      "fieldname": "event_datetime",
+      "fieldtype": "Datetime",
+      "label": "Calibration Date",
+      "reqd": 1,
+      "in_list_view": 1,
+      "description": "ISO 17025 §7.8.2.1f"
+    },
+    {
+      "fieldname": "technician",
+      "fieldtype": "Link",
+      "label": "Technician",
+      "options": "User",
+      "reqd": 1,
+      "description": "Person performing the calibration"
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "environmental_temp_c",
+      "fieldtype": "Float",
+      "label": "Ambient Temperature (°C)",
+      "description": "ISO 17025 §7.8.4d"
+    },
+    {
+      "fieldname": "environmental_humidity_pct",
+      "fieldtype": "Float",
+      "label": "Ambient Humidity (%)",
+      "description": "ISO 17025 §7.8.4d"
+    },
+    {
+      "fieldname": "section_break_standard",
+      "fieldtype": "Section Break",
+      "label": "Reference Standard (Traceability)"
+    },
+    {
+      "fieldname": "reference_standard",
+      "fieldtype": "Link",
+      "label": "Reference Standard",
+      "options": "SPC Equipment",
+      "description": "Traceable measurement standard used (ISO 17025 §7.8.4e)"
+    },
+    {
+      "fieldname": "reference_cert_number",
+      "fieldtype": "Data",
+      "label": "Reference Cert Number",
+      "description": "Certificate number of the reference standard"
+    },
+    {
+      "fieldname": "column_break_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "tolerance_band",
+      "fieldtype": "Data",
+      "label": "Tolerance Band",
+      "description": "Acceptance tolerance (e.g. ±0.5 °C)"
+    },
+    {
+      "fieldname": "measurement_uncertainty",
+      "fieldtype": "Data",
+      "label": "Measurement Uncertainty",
+      "description": "Expanded uncertainty U with coverage factor k (ISO 17025 §7.8.4f)"
+    },
+    {
+      "fieldname": "section_break_measurement",
+      "fieldtype": "Section Break",
+      "label": "Measurement Results"
+    },
+    {
+      "fieldname": "as_found_value",
+      "fieldtype": "Float",
+      "label": "As-Found Value",
+      "in_list_view": 1,
+      "description": "Reading BEFORE adjustment (ISO 17025 §7.8.4b)"
+    },
+    {
+      "fieldname": "as_found_unit",
+      "fieldtype": "Data",
+      "label": "As-Found Unit"
+    },
+    {
+      "fieldname": "column_break_3",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "as_left_value",
+      "fieldtype": "Float",
+      "label": "As-Left Value",
+      "in_list_view": 1,
+      "description": "Reading AFTER adjustment (ISO 17025 §7.8.4b)"
+    },
+    {
+      "fieldname": "as_left_unit",
+      "fieldtype": "Data",
+      "label": "As-Left Unit"
+    },
+    {
+      "fieldname": "section_break_outcome",
+      "fieldtype": "Section Break",
+      "label": "Outcome"
+    },
+    {
+      "fieldname": "pass_fail",
+      "fieldtype": "Select",
+      "label": "Pass / Fail",
+      "options": "Pass\nFail\nConditional",
+      "reqd": 1,
+      "in_list_view": 1,
+      "description": "Conformity determination per decision rule (ISO 17025 §7.8.7)"
+    },
+    {
+      "fieldname": "column_break_4",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "linked_signature",
+      "fieldtype": "Link",
+      "label": "Electronic Signature",
+      "options": "SPC Electronic Signature",
+      "description": "21 CFR Part 11 §11.50 signing record"
+    },
+    {
+      "fieldname": "linked_audit_trail",
+      "fieldtype": "Link",
+      "label": "Audit Trail",
+      "options": "SPC Audit Trail",
+      "description": "Linked audit trail entry"
+    },
+    {
+      "fieldname": "section_break_notes",
+      "fieldtype": "Section Break",
+      "label": "Notes",
+      "collapsible": 1
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Long Text",
+      "label": "Notes",
+      "description": "Free-text technician notes, deviations observed, conditional pass justification"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Quality Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    },
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC"
+}
