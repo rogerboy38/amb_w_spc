@@ -6,6 +6,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Common Root",
   "is_group": 1,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-24 13:03:17.632654",
   "name": "Common Root",
   "old_parent": ""
@@ -17,6 +19,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Aloe Vera Nutrients",
   "is_group": 1,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-24 13:03:17.809237",
   "name": "Aloe Vera Nutrients",
   "old_parent": "Common Root"
@@ -44,6 +48,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ABSCISIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:12.102443",
   "name": "ABSCISIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -71,6 +77,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ACETIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:12.196485",
   "name": "ACETIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -98,6 +106,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALANINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.493434",
   "name": "ALANINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -125,6 +135,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "AMILASE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.834130",
   "name": "AMILASE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -152,6 +164,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ARGININE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.213426",
   "name": "ARGININE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -179,6 +193,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ASPARTIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.472713",
   "name": "ASPARTIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -206,6 +222,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "AUXINS - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.523667",
   "name": "AUXINS - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -233,6 +251,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BIOTIN (B7) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.763053",
   "name": "BIOTIN (B7) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -260,6 +280,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BORO (BO) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.792464",
   "name": "BORO (BO) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -287,6 +309,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BRASSICASTEROL - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.834317",
   "name": "BRASSICASTEROL - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -314,6 +338,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BUTYRIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.944964",
   "name": "BUTYRIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -341,6 +367,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CALCIUM (CA) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.033578",
   "name": "CALCIUM (CA) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -368,6 +396,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CAMPASTANOL - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.066670",
   "name": "CAMPASTANOL - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -395,6 +425,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CAPESTEROL - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.153510",
   "name": "CAPESTEROL - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -422,6 +454,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CAPRIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.217089",
   "name": "CAPRIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -449,6 +483,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CHOLESTEROL - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.597184",
   "name": "CHOLESTEROL - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -476,6 +512,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CHOLINE (B4) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.623991",
   "name": "CHOLINE (B4) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -503,6 +541,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CHROME (CR) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.678359",
   "name": "CHROME (CR) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -530,6 +570,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CISTEÍNA - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.769757",
   "name": "CISTEÍNA - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -557,6 +599,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CITRIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.804755",
   "name": "CITRIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -584,6 +628,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "COBALAMIN (B12) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.999104",
   "name": "COBALAMIN (B12) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -611,6 +657,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "COBALT (Y) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.058649",
   "name": "COBALT (Y) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -638,6 +686,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "COPPER (CU) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.651186",
   "name": "COPPER (CU) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -665,6 +715,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CRISIN - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.673442",
   "name": "CRISIN - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -692,6 +744,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CYCLOARTANOL - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.842885",
   "name": "CYCLOARTANOL - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -719,6 +773,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CYSTEINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.937940",
   "name": "CYSTEINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -746,6 +802,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FLAVONOID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.018484",
   "name": "FLAVONOID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -773,6 +831,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FOLIC ACID (B9) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.065639",
   "name": "FOLIC ACID (B9) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -800,6 +860,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FORMIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.162018",
   "name": "FORMIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -827,6 +889,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FÓSFORO (P) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.225158",
   "name": "FÓSFORO (P) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -854,6 +918,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FRUCTOSE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.251908",
   "name": "FRUCTOSE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -881,6 +947,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FUMARIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.333522",
   "name": "FUMARIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -908,6 +976,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GALANGIN - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.355894",
   "name": "GALANGIN - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -935,6 +1005,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GIBBERELLIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.397864",
   "name": "GIBBERELLIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -962,6 +1034,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GLUTAMIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.442823",
   "name": "GLUTAMIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -989,6 +1063,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GLUTÁMICO ÁCIDO - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.467279",
   "name": "GLUTÁMICO ÁCIDO - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1016,6 +1092,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GLYCINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.511276",
   "name": "GLYCINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1043,6 +1121,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GLYCOLIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.546267",
   "name": "GLYCOLIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1070,6 +1150,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "HEXADECADIENOIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.696381",
   "name": "HEXADECADIENOIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1097,6 +1179,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "HISTIDINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.744295",
   "name": "HISTIDINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1124,6 +1208,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "IRON (FE) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.945672",
   "name": "IRON (FE) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1151,6 +1237,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ISOBUTYRIC ACID (%) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.991537",
   "name": "ISOBUTYRIC ACID (%) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1178,6 +1266,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ISOLEUCINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.019279",
   "name": "ISOLEUCINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1205,6 +1295,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ISOVALERIC ACID (%) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.049260",
   "name": "ISOVALERIC ACID (%) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1232,6 +1324,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "KAEMFEROL - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.072470",
   "name": "KAEMFEROL - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1259,6 +1353,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "KETO-GLUTARICO ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.122676",
   "name": "KETO-GLUTARICO ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1286,6 +1382,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LACTIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.144829",
   "name": "LACTIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1313,6 +1411,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LACTOSE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.166888",
   "name": "LACTOSE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1340,6 +1440,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LEUCINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.213281",
   "name": "LEUCINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1367,6 +1469,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LINOLENIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.237738",
   "name": "LINOLENIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1394,6 +1498,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LIPASE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.260066",
   "name": "LIPASE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1421,6 +1527,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LYSINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.408418",
   "name": "LYSINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1448,6 +1556,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MAGNESIUM (MG) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.433105",
   "name": "MAGNESIUM (MG) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1475,6 +1585,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MALIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.459094",
   "name": "MALIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1502,6 +1614,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MALTOSE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.503760",
   "name": "MALTOSE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1529,6 +1643,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MANGANESIUM (MN) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.527842",
   "name": "MANGANESIUM (MN) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1556,6 +1672,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "METHIONINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.815572",
   "name": "METHIONINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1583,6 +1701,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MOLYBDENUM (MO) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.140154",
   "name": "MOLYBDENUM (MO) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1610,6 +1730,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "NARINGENIN - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.191891",
   "name": "NARINGENIN - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1637,6 +1759,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "NIACINAMIDE (B3) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.213210",
   "name": "NIACINAMIDE (B3) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1664,6 +1788,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "OLEIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.474104",
   "name": "OLEIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1691,6 +1817,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PALMITIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.797940",
   "name": "PALMITIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1718,6 +1846,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PALMÍTICO ÁCIDO - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.819905",
   "name": "PALMÍTICO ÁCIDO - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1745,6 +1875,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PALMITOLEIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.846296",
   "name": "PALMITOLEIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1772,6 +1904,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PANTOTHENIC ACID (B5) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.868999",
   "name": "PANTOTHENIC ACID (B5) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1799,6 +1933,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PEPTON 85-16 - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.930345",
   "name": "PEPTON 85-16 - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1826,6 +1962,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PHENYLALANINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.091713",
   "name": "PHENYLALANINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1853,6 +1991,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PHOSPHORUS (P) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.116093",
   "name": "PHOSPHORUS (P) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1880,6 +2020,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "POLISACÁRIDOS TOTALES - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.720626",
   "name": "POLISACÁRIDOS TOTALES - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1907,6 +2049,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "POTASSIUM (K) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.897596",
   "name": "POTASSIUM (K) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1934,6 +2078,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PROLINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.920787",
   "name": "PROLINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1961,6 +2107,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PROPIONIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.945896",
   "name": "PROPIONIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -1988,6 +2136,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PROTEASE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.970300",
   "name": "PROTEASE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2015,6 +2165,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PYRIDOXINE (B6) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.191320",
   "name": "PYRIDOXINE (B6) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2042,6 +2194,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PYROGLUTAMIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.260377",
   "name": "PYROGLUTAMIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2069,6 +2223,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PYRUVIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.288238",
   "name": "PYRUVIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2096,6 +2252,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "QUERCETIN - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.310848",
   "name": "QUERCETIN - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2123,6 +2281,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "QUINIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.339426",
   "name": "QUINIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2150,6 +2310,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "RIBOFLAVIN (B2) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.453696",
   "name": "RIBOFLAVIN (B2) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2177,6 +2339,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "RUTIN - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.481324",
   "name": "RUTIN - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2204,6 +2368,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SALICYLIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.551976",
   "name": "SALICYLIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2231,6 +2397,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SELENIUM (Se) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.628388",
   "name": "SELENIUM (Se) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2258,6 +2426,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SERINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.662137",
   "name": "SERINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2285,6 +2455,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SITOSTANOL - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.710512",
   "name": "SITOSTANOL - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2312,6 +2484,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SODIUM (NA) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.788279",
   "name": "SODIUM (NA) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2339,6 +2513,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SPERMIDINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.124771",
   "name": "SPERMIDINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2366,6 +2542,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "STIGMASTEROL - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.333469",
   "name": "STIGMASTEROL - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2393,6 +2571,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SUCCINIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.429799",
   "name": "SUCCINIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2420,6 +2600,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SUCROSE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.452490",
   "name": "SUCROSE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2447,6 +2629,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SULFUR (S) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.593986",
   "name": "SULFUR (S) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2474,6 +2658,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "THREONINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.886951",
   "name": "THREONINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2501,6 +2687,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TRIPTÓFANO - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.585416",
   "name": "TRIPTÓFANO - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2528,6 +2716,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TRYPTOPHAN - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.612642",
   "name": "TRYPTOPHAN - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2555,6 +2745,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TYROSINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.768849",
   "name": "TYROSINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2582,6 +2774,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "VALERIC ACID (%) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.846323",
   "name": "VALERIC ACID (%) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2609,6 +2803,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "VALINE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.878512",
   "name": "VALINE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2636,6 +2832,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "VITAMIN A - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.984846",
   "name": "VITAMIN A - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2663,6 +2861,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "VITAMIN C - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.094503",
   "name": "VITAMIN C - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2690,6 +2890,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "VITAMIN E - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.120721",
   "name": "VITAMIN E - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2717,6 +2919,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ZINC (ZN) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.616907",
   "name": "ZINC (ZN) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -2728,6 +2932,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Contaminant",
   "is_group": 1,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-24 13:03:17.858440",
   "name": "Contaminant",
   "old_parent": "Common Root"
@@ -2755,6 +2961,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "DEHP - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.151296",
   "name": "DEHP - Contaminant",
   "old_parent": "Contaminant"
@@ -2782,6 +2990,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FOREIGH MATTER AND SPECS - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.096591",
   "name": "FOREIGH MATTER AND SPECS - Contaminant",
   "old_parent": "Contaminant"
@@ -2809,6 +3019,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FOREIGN MATTERS - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.123701",
   "name": "FOREIGN MATTERS - Contaminant",
   "old_parent": "Contaminant"
@@ -2836,6 +3048,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MELAMINE - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.602787",
   "name": "MELAMINE - Contaminant",
   "old_parent": "Contaminant"
@@ -2863,6 +3077,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Arsenic",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-26 21:29:45.685371",
   "name": "Physicochemical Arsenic",
   "old_parent": "Contaminant"
@@ -2890,6 +3106,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Cadmium",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.234548",
   "name": "Physicochemical Cadmium",
   "old_parent": "Contaminant"
@@ -2917,6 +3135,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Heavy Metals",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.416270",
   "name": "Physicochemical Heavy Metals",
   "old_parent": "Contaminant"
@@ -2944,6 +3164,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Lead",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.465508",
   "name": "Physicochemical Lead",
   "old_parent": "Contaminant"
@@ -2971,6 +3193,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Lead Mercury",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.487577",
   "name": "Physicochemical Lead Mercury",
   "old_parent": "Contaminant"
@@ -2982,6 +3206,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Microbiological",
   "is_group": 1,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-24 13:03:17.819885",
   "name": "Microbiological",
   "old_parent": "Common Root"
@@ -3009,6 +3235,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "AEROBIC PLATE COUNT COSMETIC GRADE - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.358185",
   "name": "AEROBIC PLATE COUNT COSMETIC GRADE - Microbiological",
   "old_parent": "Microbiological"
@@ -3036,6 +3264,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BACILLUS CEREUS - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.553251",
   "name": "BACILLUS CEREUS - Microbiological",
   "old_parent": "Microbiological"
@@ -3063,6 +3293,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BACTERIA - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.581717",
   "name": "BACTERIA - Microbiological",
   "old_parent": "Microbiological"
@@ -3090,6 +3322,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BILE-TOLERANT GRAM-NEGATIVE BACTERIA - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.714897",
   "name": "BILE-TOLERANT GRAM-NEGATIVE BACTERIA - Microbiological",
   "old_parent": "Microbiological"
@@ -3117,6 +3351,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BURKHOLDERIA CEPACIA - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.919286",
   "name": "BURKHOLDERIA CEPACIA - Microbiological",
   "old_parent": "Microbiological"
@@ -3144,6 +3380,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CANDIDA ALBICANS - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.101613",
   "name": "CANDIDA ALBICANS - Microbiological",
   "old_parent": "Microbiological"
@@ -3171,6 +3409,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CLOSTRIDIUM PERFRINGENS - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.890689",
   "name": "CLOSTRIDIUM PERFRINGENS - Microbiological",
   "old_parent": "Microbiological"
@@ -3198,6 +3438,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "COLIFORMES - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.125118",
   "name": "COLIFORMES - Microbiological",
   "old_parent": "Microbiological"
@@ -3225,6 +3467,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "COLIFORMES TOTALES - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.286665",
   "name": "COLIFORMES TOTALES - Microbiological",
   "old_parent": "Microbiological"
@@ -3252,6 +3496,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "COLIFORMS/PATHOGENS - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.311503",
   "name": "COLIFORMS/PATHOGENS - Microbiological",
   "old_parent": "Microbiological"
@@ -3279,6 +3525,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CUENTA TOTAL AEROBIA - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.807028",
   "name": "CUENTA TOTAL AEROBIA - Microbiological",
   "old_parent": "Microbiological"
@@ -3306,6 +3554,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "E. COLI (EHEC) - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.583484",
   "name": "E. COLI (EHEC) - Microbiological",
   "old_parent": "Microbiological"
@@ -3333,6 +3583,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ENTEROBACTERIACEAE - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.732406",
   "name": "ENTEROBACTERIACEAE - Microbiological",
   "old_parent": "Microbiological"
@@ -3360,6 +3612,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ENTEROHEMORRHAGIC E.COLI - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.757794",
   "name": "ENTEROHEMORRHAGIC E.COLI - Microbiological",
   "old_parent": "Microbiological"
@@ -3387,6 +3641,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ESCHERICHA COLI - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.807085",
   "name": "ESCHERICHA COLI - Microbiological",
   "old_parent": "Microbiological"
@@ -3414,6 +3670,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FECAL COLIFORMS - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.867845",
   "name": "FECAL COLIFORMS - Microbiological",
   "old_parent": "Microbiological"
@@ -3441,6 +3699,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "HONGOS Y LEVADURAS - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.766346",
   "name": "HONGOS Y LEVADURAS - Microbiological",
   "old_parent": "Microbiological"
@@ -3468,6 +3728,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LISTERIA MONOCYTOGENES - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.286499",
   "name": "LISTERIA MONOCYTOGENES - Microbiological",
   "old_parent": "Microbiological"
@@ -3495,6 +3757,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Microbiological Aerobic Plate Count",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.837882",
   "name": "Microbiological Aerobic Plate Count",
   "old_parent": "Microbiological"
@@ -3522,6 +3786,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Microbiological Coliforms",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.859512",
   "name": "Microbiological Coliforms",
   "old_parent": "Microbiological"
@@ -3549,6 +3815,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Microbiological E.coli",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.881155",
   "name": "Microbiological E.coli",
   "old_parent": "Microbiological"
@@ -3576,6 +3844,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Microbiological Mold and Yeast",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.905233",
   "name": "Microbiological Mold and Yeast",
   "old_parent": "Microbiological"
@@ -3603,6 +3873,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Microbiological Pathogens",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.934885",
   "name": "Microbiological Pathogens",
   "old_parent": "Microbiological"
@@ -3630,6 +3902,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Microbiological Salmonella",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.961867",
   "name": "Microbiological Salmonella",
   "old_parent": "Microbiological"
@@ -3657,6 +3931,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Microbiological Staph. Aureus",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.985088",
   "name": "Microbiological Staph. Aureus",
   "old_parent": "Microbiological"
@@ -3684,6 +3960,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MOLD - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.081230",
   "name": "MOLD - Microbiological",
   "old_parent": "Microbiological"
@@ -3711,6 +3989,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MOLD AND YEAST COSMETIC GRADE - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.112498",
   "name": "MOLD AND YEAST COSMETIC GRADE - Microbiological",
   "old_parent": "Microbiological"
@@ -3738,6 +4018,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "P.AERUGINOSA - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.776137",
   "name": "P.AERUGINOSA - Microbiological",
   "old_parent": "Microbiological"
@@ -3765,6 +4047,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PATÓGENOS - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.893174",
   "name": "PATÓGENOS - Microbiological",
   "old_parent": "Microbiological"
@@ -3792,6 +4076,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PSEUDOMONAS AERUGINOSA - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.016334",
   "name": "PSEUDOMONAS AERUGINOSA - Microbiological",
   "old_parent": "Microbiological"
@@ -3819,6 +4105,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SHIGELLA SPP. - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.687320",
   "name": "SHIGELLA SPP. - Microbiological",
   "old_parent": "Microbiological"
@@ -3846,6 +4134,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "STANDARD PLATE COUNT - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.182717",
   "name": "STANDARD PLATE COUNT - Microbiological",
   "old_parent": "Microbiological"
@@ -3873,6 +4163,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "STAPHYLOCOCCUS AUREUS - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.262148",
   "name": "STAPHYLOCOCCUS AUREUS - Microbiological",
   "old_parent": "Microbiological"
@@ -3900,6 +4192,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "STREPTOCOCCUS - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.361032",
   "name": "STREPTOCOCCUS - Microbiological",
   "old_parent": "Microbiological"
@@ -3927,6 +4221,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TAMC AND TYMC TOTAL - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.683204",
   "name": "TAMC AND TYMC TOTAL - Microbiological",
   "old_parent": "Microbiological"
@@ -3954,6 +4250,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "THERMODURIC BACTERIA - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.849811",
   "name": "THERMODURIC BACTERIA - Microbiological",
   "old_parent": "Microbiological"
@@ -3981,6 +4279,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL AEROBIC PLATE COUNT - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.974915",
   "name": "TOTAL AEROBIC PLATE COUNT - Microbiological",
   "old_parent": "Microbiological"
@@ -4008,6 +4308,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL COLIFORMS - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.228766",
   "name": "TOTAL COLIFORMS - Microbiological",
   "old_parent": "Microbiological"
@@ -4035,6 +4337,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL PLATE COUNT - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.367005",
   "name": "TOTAL PLATE COUNT - Microbiological",
   "old_parent": "Microbiological"
@@ -4062,6 +4366,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL YEAST & MOLD - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.531713",
   "name": "TOTAL YEAST & MOLD - Microbiological",
   "old_parent": "Microbiological"
@@ -4089,6 +4395,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "YEAST - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.483514",
   "name": "YEAST - Microbiological",
   "old_parent": "Microbiological"
@@ -4116,6 +4424,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "YEAST & MOLDS - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.537624",
   "name": "YEAST & MOLDS - Microbiological",
   "old_parent": "Microbiological"
@@ -4143,6 +4453,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "YERSINIA ENTEROCOLITICA - Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.579908",
   "name": "YERSINIA ENTEROCOLITICA - Microbiological",
   "old_parent": "Microbiological"
@@ -4154,6 +4466,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Organoleptic",
   "is_group": 1,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-24 13:03:17.838696",
   "name": "Organoleptic",
   "old_parent": "Common Root"
@@ -4181,6 +4495,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Apariencia - Organoleptic",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.174031",
   "name": "Apariencia - Organoleptic",
   "old_parent": "Organoleptic"
@@ -4208,6 +4524,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Materia Extraña - Organoleptic",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.556210",
   "name": "Materia Extraña - Organoleptic",
   "old_parent": "Organoleptic"
@@ -4235,6 +4553,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Odor/Smell - Organoleptic",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.450360",
   "name": "Odor/Smell - Organoleptic",
   "old_parent": "Organoleptic"
@@ -4262,6 +4582,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Organoleptic Appearance",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.538459",
   "name": "Organoleptic Appearance",
   "old_parent": "Organoleptic"
@@ -4289,6 +4611,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Organoleptic Color Visual",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.571308",
   "name": "Organoleptic Color Visual",
   "old_parent": "Organoleptic"
@@ -4316,6 +4640,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Organoleptic Odor",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.600484",
   "name": "Organoleptic Odor",
   "old_parent": "Organoleptic"
@@ -4343,6 +4669,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Organoleptic Particle Size",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.630169",
   "name": "Organoleptic Particle Size",
   "old_parent": "Organoleptic"
@@ -4370,6 +4698,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Organoleptic Taste",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.655218",
   "name": "Organoleptic Taste",
   "old_parent": "Organoleptic"
@@ -4397,6 +4727,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SABOR - Organoleptic",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.520318",
   "name": "SABOR - Organoleptic",
   "old_parent": "Organoleptic"
@@ -4424,6 +4756,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Smell - Organoleptic",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.746985",
   "name": "Smell - Organoleptic",
   "old_parent": "Organoleptic"
@@ -4451,6 +4785,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TASTE/FLAVOR - Organoleptic",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.802987",
   "name": "TASTE/FLAVOR - Organoleptic",
   "old_parent": "Organoleptic"
@@ -4462,6 +4798,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Other Analysis",
   "is_group": 1,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-24 13:03:17.828748",
   "name": "Other Analysis",
   "old_parent": "Common Root"
@@ -4489,6 +4827,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALCOHOL INSOLUBLE SUBSTAN - Other Analysis",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.535500",
   "name": "ALCOHOL INSOLUBLE SUBSTAN - Other Analysis",
   "old_parent": "Other Analysis"
@@ -4516,6 +4856,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOE VERA PULP - Other Analysis",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.677978",
   "name": "ALOE VERA PULP - Other Analysis",
   "old_parent": "Other Analysis"
@@ -4543,6 +4885,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CONSERVADORES - Other Analysis",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.456603",
   "name": "CONSERVADORES - Other Analysis",
   "old_parent": "Other Analysis"
@@ -4570,6 +4914,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GRADE - Other Analysis",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.622473",
   "name": "GRADE - Other Analysis",
   "old_parent": "Other Analysis"
@@ -4597,6 +4943,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "IASC CERTIFICATION - Other Analysis",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.854694",
   "name": "IASC CERTIFICATION - Other Analysis",
   "old_parent": "Other Analysis"
@@ -4624,6 +4972,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "NOPAL BITS - Other Analysis",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.257067",
   "name": "NOPAL BITS - Other Analysis",
   "old_parent": "Other Analysis"
@@ -4651,6 +5001,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "NOPAL GEL POWDER - Other Analysis",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.284299",
   "name": "NOPAL GEL POWDER - Other Analysis",
   "old_parent": "Other Analysis"
@@ -4678,6 +5030,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "NOPAL PULP - Other Analysis",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.310908",
   "name": "NOPAL PULP - Other Analysis",
   "old_parent": "Other Analysis"
@@ -4705,6 +5059,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "NOPAL SOLIDS - Other Analysis",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.337545",
   "name": "NOPAL SOLIDS - Other Analysis",
   "old_parent": "Other Analysis"
@@ -4732,6 +5088,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Other Analysis Preservatives",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.728760",
   "name": "Other Analysis Preservatives",
   "old_parent": "Other Analysis"
@@ -4759,6 +5117,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Other Analysis Special Properties",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.754116",
   "name": "Other Analysis Special Properties",
   "old_parent": "Other Analysis"
@@ -4770,6 +5130,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Pesticides",
   "is_group": 1,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-24 13:03:17.849236",
   "name": "Pesticides",
   "old_parent": "Common Root"
@@ -4797,6 +5159,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GLYPHOSATE - Pesticides",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.590950",
   "name": "GLYPHOSATE - Pesticides",
   "old_parent": "Pesticides"
@@ -4824,6 +5188,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "N-METILCARBAMATOS - Pesticides",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.167765",
   "name": "N-METILCARBAMATOS - Pesticides",
   "old_parent": "Pesticides"
@@ -4851,6 +5217,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ORGANOCHLORINES - Pesticides",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.502283",
   "name": "ORGANOCHLORINES - Pesticides",
   "old_parent": "Pesticides"
@@ -4878,6 +5246,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ORGANONITROGEN - Pesticides",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.677748",
   "name": "ORGANONITROGEN - Pesticides",
   "old_parent": "Pesticides"
@@ -4905,6 +5275,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ORGANOPHOSPHORUS - Pesticides",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.701288",
   "name": "ORGANOPHOSPHORUS - Pesticides",
   "old_parent": "Pesticides"
@@ -4932,6 +5304,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Bhc",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.182169",
   "name": "Physicochemical Bhc",
   "old_parent": "Pesticides"
@@ -4959,6 +5333,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Ddt",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.311479",
   "name": "Physicochemical Ddt",
   "old_parent": "Pesticides"
@@ -4986,6 +5362,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Dieldrin",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.335800",
   "name": "Physicochemical Dieldrin",
   "old_parent": "Pesticides"
@@ -5013,6 +5391,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Endrin",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.360221",
   "name": "Physicochemical Endrin",
   "old_parent": "Pesticides"
@@ -5040,6 +5420,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PYRETHROIDS - Pesticides",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.137512",
   "name": "PYRETHROIDS - Pesticides",
   "old_parent": "Pesticides"
@@ -5051,6 +5433,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical",
   "is_group": 1,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-24 13:18:53.096237",
   "name": "Physicochemical",
   "old_parent": "Common Root"
@@ -5078,6 +5462,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "°BX - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:11.521116",
   "name": "°BX - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5105,6 +5491,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "24-ETHYL-LOPHENOL - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:11.799712",
   "name": "24-ETHYL-LOPHENOL - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5132,6 +5520,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "24-METHYL-LOPHENOL - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:11.851235",
   "name": "24-METHYL-LOPHENOL - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5159,6 +5549,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "24-METHYLENE-CYCLOARTANOL - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:11.900049",
   "name": "24-METHYLENE-CYCLOARTANOL - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5186,6 +5578,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ACEMANNAN - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:12.133731",
   "name": "ACEMANNAN - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5213,6 +5607,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ACEMANNAN BY O-ACETIL METHOD - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:12.162770",
   "name": "ACEMANNAN BY O-ACETIL METHOD - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5240,6 +5636,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "AFLATOXIN (B1+B2+G1+G2) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.431110",
   "name": "AFLATOXIN (B1+B2+G1+G2) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5267,6 +5665,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "AFLATOXIN B1 - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.459595",
   "name": "AFLATOXIN B1 - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5294,6 +5694,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALCOHOL INSOLUBLE SUBSTANCES - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.568214",
   "name": "ALCOHOL INSOLUBLE SUBSTANCES - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5321,6 +5723,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALDRIN - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.624165",
   "name": "ALDRIN - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5348,6 +5752,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOE EMODIN (BY DRY WEIGHT) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.651837",
   "name": "ALOE EMODIN (BY DRY WEIGHT) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5375,6 +5781,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOE VERA SOLIDS - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.733378",
   "name": "ALOE VERA SOLIDS - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5402,6 +5810,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.778814",
   "name": "ALOIN - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5429,6 +5839,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN (0.5% SOLUTION) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.837702",
   "name": "ALOIN (0.5% SOLUTION) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5456,6 +5868,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN A (BY DRY WEIGHT) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.871184",
   "name": "ALOIN A (BY DRY WEIGHT) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5483,6 +5897,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN A + B - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:13.934035",
   "name": "ALOIN A + B - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5510,6 +5926,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN A CONTENT* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.040936",
   "name": "ALOIN A CONTENT* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5537,6 +5955,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN A* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.069526",
   "name": "ALOIN A* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5564,6 +5984,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN A** - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.109912",
   "name": "ALOIN A** - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5591,6 +6013,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN B (BY DRY WEIGHT) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.178952",
   "name": "ALOIN B (BY DRY WEIGHT) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5618,6 +6042,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN B CONTENT* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.296847",
   "name": "ALOIN B CONTENT* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5645,6 +6071,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN B* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.343149",
   "name": "ALOIN B* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5672,6 +6100,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN B** - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.386419",
   "name": "ALOIN B** - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5699,6 +6129,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN BY KFDA - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.444446",
   "name": "ALOIN BY KFDA - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5726,6 +6158,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN CONTENT - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.474253",
   "name": "ALOIN CONTENT - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5753,6 +6187,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN CONTENT (BY DRY WEIGHT) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.539959",
   "name": "ALOIN CONTENT (BY DRY WEIGHT) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5780,6 +6216,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOIN CONTENT* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.610795",
   "name": "ALOIN CONTENT* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5807,6 +6245,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOVEROSE (ACEMANNAN BY NMR) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.637003",
   "name": "ALOVEROSE (ACEMANNAN BY NMR) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5834,6 +6274,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOVEROSE (ACEMANNAN BY O-ACETIL) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.696500",
   "name": "ALOVEROSE (ACEMANNAN BY O-ACETIL) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5861,6 +6303,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOVEROSE (ACEMANNAN) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.722208",
   "name": "ALOVEROSE (ACEMANNAN) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5888,6 +6332,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ALOVEROSET - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.774872",
   "name": "ALOVEROSET - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5915,6 +6361,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "AMINOACIDOS - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.860788",
   "name": "AMINOACIDOS - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5942,6 +6390,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "AMINOACIDS - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.896657",
   "name": "AMINOACIDS - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5969,6 +6419,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ANTHRAQUINONE (ALOIN) BY HPLC - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:14.990950",
   "name": "ANTHRAQUINONE (ALOIN) BY HPLC - Physicochemical",
   "old_parent": "Physicochemical"
@@ -5996,6 +6448,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ANTHRAQUINONE (ALOIN) BY KFDA - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.029228",
   "name": "ANTHRAQUINONE (ALOIN) BY KFDA - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6023,6 +6477,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ANTHRAQUINONES CONTENT - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.069790",
   "name": "ANTHRAQUINONES CONTENT - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6050,6 +6506,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ANTHRAQUINONES* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.095436",
   "name": "ANTHRAQUINONES* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6077,6 +6535,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ANTIMONY - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.130996",
   "name": "ANTIMONY - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6104,6 +6564,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ARSENIC - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.238140",
   "name": "ARSENIC - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6131,6 +6593,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ARSENIC (PPM) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.276990",
   "name": "ARSENIC (PPM) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6158,6 +6622,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ARSENIC-AMB - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.321271",
   "name": "ARSENIC-AMB - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6185,6 +6651,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ARSENIC* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.359160",
   "name": "ARSENIC* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6212,6 +6680,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ARSENICO (PPM) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.391096",
   "name": "ARSENICO (PPM) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6239,6 +6709,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ARTIFICIAL COLORANT - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.444766",
   "name": "ARTIFICIAL COLORANT - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6266,6 +6738,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BARBALOINE - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.616445",
   "name": "BARBALOINE - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6293,6 +6767,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BENZOIC ACID - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.641184",
   "name": "BENZOIC ACID - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6320,6 +6796,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BETA-SITOSTEROL - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.691605",
   "name": "BETA-SITOSTEROL - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6347,6 +6825,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CADMIO - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:15.981457",
   "name": "CADMIO - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6374,6 +6854,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CAPROIC ACID - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.245497",
   "name": "CAPROIC ACID - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6401,6 +6883,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CAPRYLIC ACID - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.293564",
   "name": "CAPRYLIC ACID - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6428,6 +6912,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CARBOHYDRATE CONTENT (SOLUBLE FRACTION) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.321081",
   "name": "CARBOHYDRATE CONTENT (SOLUBLE FRACTION) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6455,6 +6941,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CARBOHYDRATES gt 50,000 DA - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.466667",
   "name": "CARBOHYDRATES gt 50,000 DA - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6482,6 +6970,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CATELUTARIC ACID - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.510067",
   "name": "CATELUTARIC ACID - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6509,6 +6999,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CENIZA - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.565331",
   "name": "CENIZA - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6536,6 +7028,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CHROMIUM - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.741895",
   "name": "CHROMIUM - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6563,6 +7057,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CITRIC ACID CONTENT - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.841536",
   "name": "CITRIC ACID CONTENT - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6590,6 +7086,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "COABALT - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:16.941933",
   "name": "COABALT - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6617,6 +7115,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "COLIFORMES / PATOGENOS - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.228965",
   "name": "COLIFORMES / PATOGENOS - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6644,6 +7144,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "COLOR BY ABSORBANCE** - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.374836",
   "name": "COLOR BY ABSORBANCE** - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6671,6 +7173,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "COLOR POR ABSORBANCIA** - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.409695",
   "name": "COLOR POR ABSORBANCIA** - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6698,6 +7202,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CONTAMINANTS - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.498068",
   "name": "CONTAMINANTS - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6725,6 +7231,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CONTENIDO DE ALOÍNA* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.565019",
   "name": "CONTENIDO DE ALOÍNA* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6752,6 +7260,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CONTENIDO DE CENIZA - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.618900",
   "name": "CONTENIDO DE CENIZA - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6779,6 +7289,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CRUDE PROTEIN - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.698670",
   "name": "CRUDE PROTEIN - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6806,6 +7318,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CUENTA AEROBICA TOTAL - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.772555",
   "name": "CUENTA AEROBICA TOTAL - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6833,6 +7347,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "DANTHRON (BY DRY WEIGHT) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:17.963031",
   "name": "DANTHRON (BY DRY WEIGHT) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6860,6 +7376,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "DANTHRON* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.016001",
   "name": "DANTHRON* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6887,6 +7405,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "DANTHRON** - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.103742",
   "name": "DANTHRON** - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6914,6 +7434,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "DENSIDAD COMPACTA - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.240982",
   "name": "DENSIDAD COMPACTA - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6941,6 +7463,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "DENSIDAD ESPECIFICA - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.293080",
   "name": "DENSIDAD ESPECIFICA - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6968,6 +7492,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "DENSITY - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.339532",
   "name": "DENSITY - Physicochemical",
   "old_parent": "Physicochemical"
@@ -6995,6 +7521,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "DENSITY - TAPPED - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.442246",
   "name": "DENSITY - TAPPED - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7022,6 +7550,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "DIACETYL RHEIN* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.472647",
   "name": "DIACETYL RHEIN* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7049,6 +7579,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "DIETARY FIBER - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.501769",
   "name": "DIETARY FIBER - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7076,6 +7608,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "DILUTION TIME (25°C)** - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.558905",
   "name": "DILUTION TIME (25°C)** - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7103,6 +7637,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "EMODIN (BY DRY WEIGHT) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.629762",
   "name": "EMODIN (BY DRY WEIGHT) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7130,6 +7666,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "EMODIN* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.661328",
   "name": "EMODIN* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7157,6 +7695,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "EMODIN** - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.701513",
   "name": "EMODIN** - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7184,6 +7724,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "EXTRACT RATIO - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.845623",
   "name": "EXTRACT RATIO - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7211,6 +7753,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FIBER CONTENT - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.900462",
   "name": "FIBER CONTENT - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7238,6 +7782,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FIBER CONTENT (INSOLUBLE CARBOHYDRATES) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.950303",
   "name": "FIBER CONTENT (INSOLUBLE CARBOHYDRATES) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7265,6 +7811,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FLAMMABILITY - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:18.977203",
   "name": "FLAMMABILITY - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7292,6 +7840,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FOSETYL - Pesticides",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.184246",
   "name": "FOSETYL - Pesticides",
   "old_parent": "Physicochemical"
@@ -7319,6 +7869,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FTALATOS - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.279707",
   "name": "FTALATOS - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7346,6 +7898,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "FTIR IDENTIFICATION - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.308549",
   "name": "FTIR IDENTIFICATION - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7373,6 +7927,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GDL (GLUCONE DELTA LACTONE) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.376753",
   "name": "GDL (GLUCONE DELTA LACTONE) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7400,6 +7956,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GLUCOSE - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.418848",
   "name": "GLUCOSE - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7427,6 +7985,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GLUTEN - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.488355",
   "name": "GLUTEN - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7454,6 +8014,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GRAVEDAD ESPECÍFICA* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.648717",
   "name": "GRAVEDAD ESPECÍFICA* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7481,6 +8043,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "HAD* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.672873",
   "name": "HAD* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7508,6 +8072,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "HIDROXYANTHRACENE DERIVATIVES: AS BARBALOIN - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.717766",
   "name": "HIDROXYANTHRACENE DERIVATIVES: AS BARBALOIN - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7535,6 +8101,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "HUMEDAD - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.787973",
   "name": "HUMEDAD - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7562,6 +8130,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "HYDROXYANTHRACENES DERIVATIVES (HADS) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.828620",
   "name": "HYDROXYANTHRACENES DERIVATIVES (HADS) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7589,6 +8159,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "IDENTIFICATION - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.876377",
   "name": "IDENTIFICATION - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7616,6 +8188,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "IDENTIFICATION (IR SPECTRUM) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.898517",
   "name": "IDENTIFICATION (IR SPECTRUM) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7643,6 +8217,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "INDEX OF REFRACTION - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.924017",
   "name": "INDEX OF REFRACTION - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7670,6 +8246,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "ISO-CITRIC ACID - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:19.967868",
   "name": "ISO-CITRIC ACID - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7697,6 +8275,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LAURIC ACID - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.189714",
   "name": "LAURIC ACID - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7724,6 +8304,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LOPHENOL - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.339372",
   "name": "LOPHENOL - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7751,6 +8333,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LOSS ON DRYING - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.364332",
   "name": "LOSS ON DRYING - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7778,6 +8362,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MALTODEXTRIN - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.480676",
   "name": "MALTODEXTRIN - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7805,6 +8391,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MELAMINA - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.579426",
   "name": "MELAMINA - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7832,6 +8420,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MERCURIO - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.627173",
   "name": "MERCURIO - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7859,6 +8449,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MERCURY - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.649500",
   "name": "MERCURY - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7886,6 +8478,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MERCURY (PPM) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.674129",
   "name": "MERCURY (PPM) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7913,6 +8507,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MERCURY* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.719110",
   "name": "MERCURY* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7940,6 +8536,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MESH THRU #100 - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.743787",
   "name": "MESH THRU #100 - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7967,6 +8565,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MESH THRU #60 - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.766427",
   "name": "MESH THRU #60 - Physicochemical",
   "old_parent": "Physicochemical"
@@ -7994,6 +8594,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "METALES PESADOS* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:20.787740",
   "name": "METALES PESADOS* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8021,6 +8623,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MOISTURE & VOLATILE MATTER - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.031624",
   "name": "MOISTURE & VOLATILE MATTER - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8048,6 +8652,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "MOISTURE CONTENT - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.058705",
   "name": "MOISTURE CONTENT - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8075,6 +8681,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "NICKEL - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.234927",
   "name": "NICKEL - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8102,6 +8710,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "O-ACETYL (CALCULATED AS ACETYLCHOLINE CHLORIDE) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.362022",
   "name": "O-ACETYL (CALCULATED AS ACETYLCHOLINE CHLORIDE) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8129,6 +8739,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "O-ACETYL (CALCULATED BYACETYLCHOLINE) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.392601",
   "name": "O-ACETYL (CALCULATED BYACETYLCHOLINE) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8156,6 +8768,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "OCHRATOXIN A - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.423135",
   "name": "OCHRATOXIN A - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8183,6 +8797,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PESTICIDES - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.954442",
   "name": "PESTICIDES - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8210,6 +8826,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PH - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:21.976182",
   "name": "PH - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8237,6 +8855,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PH (1% SOLUTION) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.004258",
   "name": "PH (1% SOLUTION) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8264,6 +8884,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PH VALUE (0.7% WATER SOLUTION) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.026797",
   "name": "PH VALUE (0.7% WATER SOLUTION) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8291,6 +8913,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PH* - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.048555",
   "name": "PH* - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8318,6 +8942,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Aloin Content",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-26 21:29:30.686204",
   "name": "Physicochemical Aloin Content",
   "old_parent": "Physicochemical"
@@ -8345,6 +8971,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Ash",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.141805",
   "name": "Physicochemical Ash",
   "old_parent": "Physicochemical"
@@ -8372,6 +9000,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Brix grados",
   "is_group": 1,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.209720",
   "name": "Physicochemical Brix grados",
   "old_parent": "Physicochemical"
@@ -8399,6 +9029,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Color (absorbance 400nm)",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.264133",
   "name": "Physicochemical Color (absorbance 400nm)",
   "old_parent": "Physicochemical"
@@ -8426,6 +9058,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Color Gardner",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.288770",
   "name": "Physicochemical Color Gardner",
   "old_parent": "Physicochemical"
@@ -8453,6 +9087,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Filtred Workstation",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.386510",
   "name": "Physicochemical Filtred Workstation",
   "old_parent": "Physicochemical"
@@ -8480,6 +9116,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Hydroxyanthracene Derivatives",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.439141",
   "name": "Physicochemical Hydroxyanthracene Derivatives",
   "old_parent": "Physicochemical"
@@ -8507,6 +9145,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Microbiological",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 20:24:23.239542",
   "name": "Physicochemical Microbiological",
   "old_parent": "Physicochemical"
@@ -8534,6 +9174,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Moisture",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.510269",
   "name": "Physicochemical Moisture",
   "old_parent": "Physicochemical"
@@ -8561,6 +9203,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical pH",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-26 21:30:53.329854",
   "name": "Physicochemical pH",
   "old_parent": "Physicochemical"
@@ -8588,6 +9232,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Polysaccharides",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.533118",
   "name": "Physicochemical Polysaccharides",
   "old_parent": "Physicochemical"
@@ -8615,6 +9261,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Polyssacharides Greater Than 50,000 Da",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.560374",
   "name": "Physicochemical Polyssacharides Greater Than 50,000 Da",
   "old_parent": "Physicochemical"
@@ -8642,6 +9290,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Press Workstation",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.583774",
   "name": "Physicochemical Press Workstation",
   "old_parent": "Physicochemical"
@@ -8669,6 +9319,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Specific Gravity",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.606157",
   "name": "Physicochemical Specific Gravity",
   "old_parent": "Physicochemical"
@@ -8696,6 +9348,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Total Aloin A + Aloin B",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 20:24:23.279407",
   "name": "Physicochemical Total Aloin A + Aloin B",
   "old_parent": "Physicochemical"
@@ -8723,6 +9377,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Total Solids",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.628007",
   "name": "Physicochemical Total Solids",
   "old_parent": "Physicochemical"
@@ -8750,6 +9406,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PLOMO - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.653019",
   "name": "PLOMO - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8777,6 +9435,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "POLISACARIDOS - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.676180",
   "name": "POLISACARIDOS - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8804,6 +9464,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "POLISACARIDOS MAYORES QUE 50,000 Da - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.698867",
   "name": "POLISACARIDOS MAYORES QUE 50,000 Da - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8831,6 +9493,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "POLYMERIC ACETYLATED MANNANS CONTENT (gt15000 DA) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.743040",
   "name": "POLYMERIC ACETYLATED MANNANS CONTENT (gt15000 DA) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8858,6 +9522,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "POLYMERIC ACETYLATED MANNANS CONTENT OF SOLUBLE FR - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.765631",
   "name": "POLYMERIC ACETYLATED MANNANS CONTENT OF SOLUBLE FR - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8885,6 +9551,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "POLYSACCHARIDES BY GPC - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.789456",
   "name": "POLYSACCHARIDES BY GPC - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8912,6 +9580,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "POLYSACCHARIDES IN THE SOLUBLE FRACTION - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.832582",
   "name": "POLYSACCHARIDES IN THE SOLUBLE FRACTION - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8939,6 +9609,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "POLYSACCHARIDES MEASURED AS ACEMANNAN - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.854969",
   "name": "POLYSACCHARIDES MEASURED AS ACEMANNAN - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8966,6 +9638,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "POLYSSACHARIDES (5000 - 400, 000 DALTONS) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.876389",
   "name": "POLYSSACHARIDES (5000 - 400, 000 DALTONS) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -8993,6 +9667,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PROTEIN - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:22.992364",
   "name": "PROTEIN - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9020,6 +9696,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PULP CONTENT** - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.041232",
   "name": "PULP CONTENT** - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9047,6 +9725,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PUREZA - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.081990",
   "name": "PUREZA - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9074,6 +9754,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PUTRESCINE - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.111354",
   "name": "PUTRESCINE - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9101,6 +9783,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "REFRACTIVE INDEX - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.369517",
   "name": "REFRACTIVE INDEX - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9128,6 +9812,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "REFRACTIVE INDEX (25°C) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.424060",
   "name": "REFRACTIVE INDEX (25°C) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9155,6 +9841,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SATURATED FAT - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.591161",
   "name": "SATURATED FAT - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9182,6 +9870,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SOLIDOS TOTALES - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.880889",
   "name": "SOLIDOS TOTALES - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9209,6 +9899,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SOLUBILITY - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.940747",
   "name": "SOLUBILITY - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9236,6 +9928,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SOLUBLE SOLIDS - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:23.981194",
   "name": "SOLUBLE SOLIDS - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9263,6 +9957,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SOLUTION COLOR (1%) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.089934",
   "name": "SOLUTION COLOR (1%) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9290,6 +9986,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SUGAR - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.495457",
   "name": "SUGAR - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9317,6 +10015,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "SULFATES (SO2) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.556113",
   "name": "SULFATES (SO2) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9344,6 +10044,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TAMAÑO DE PARTÍCULA - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.627947",
   "name": "TAMAÑO DE PARTÍCULA - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9371,6 +10073,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TAPPED BULK DENSITY - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.712625",
   "name": "TAPPED BULK DENSITY - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9398,6 +10102,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TAR COLOR - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.776098",
   "name": "TAR COLOR - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9425,6 +10131,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL ACID - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:24.926413",
   "name": "TOTAL ACID - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9452,6 +10160,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL ASH - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.022275",
   "name": "TOTAL ASH - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9479,6 +10189,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL CARBOHYDRATE CONTENT (SOLUBLE & INSOLUBLE) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.122292",
   "name": "TOTAL CARBOHYDRATE CONTENT (SOLUBLE & INSOLUBLE) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9506,6 +10218,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL CARBOHYDRATE CONTENT (SOLUBLE AND INSOLUBLE) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.157444",
   "name": "TOTAL CARBOHYDRATE CONTENT (SOLUBLE AND INSOLUBLE) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9533,6 +10247,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL FAT - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.262995",
   "name": "TOTAL FAT - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9560,6 +10276,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL HEAVY METALS - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.326539",
   "name": "TOTAL HEAVY METALS - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9587,6 +10305,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL POLYSACCHARIDES - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.440304",
   "name": "TOTAL POLYSACCHARIDES - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9614,6 +10334,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL SOLIDS OF ALOE VERA - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.464604",
   "name": "TOTAL SOLIDS OF ALOE VERA - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9641,6 +10363,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL SUGAR CONTENT - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.504882",
   "name": "TOTAL SUGAR CONTENT - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9668,6 +10392,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TURBIDEZ - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.661677",
   "name": "TURBIDEZ - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9695,6 +10421,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TURBIDITY - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.712480",
   "name": "TURBIDITY - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9722,6 +10450,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "VALERIC ACID - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.801544",
   "name": "VALERIC ACID - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9749,6 +10479,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "VISCOSITY - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:25.950048",
   "name": "VISCOSITY - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9776,6 +10508,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "WATER CONTENT - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.142121",
   "name": "WATER CONTENT - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9803,6 +10537,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "WATER SOLUBLE EXTRACTIVE - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.183865",
   "name": "WATER SOLUBLE EXTRACTIVE - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9830,6 +10566,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "WATER SOLUBLE EXTRACTIVE AS PER I.P. 66 METHOD - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.205263",
   "name": "WATER SOLUBLE EXTRACTIVE AS PER I.P. 66 METHOD - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9857,6 +10595,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "WATER SOLUBLE SUBSTANCES - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.247899",
   "name": "WATER SOLUBLE SUBSTANCES - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9884,6 +10624,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "WLM - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.291114",
   "name": "WLM - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9911,6 +10653,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "WLM (ISOCITRATE AND ISOCITRATE LACTONE) - Physicochemical",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-28 17:30:26.407900",
   "name": "WLM (ISOCITRATE AND ISOCITRATE LACTONE) - Physicochemical",
   "old_parent": "Physicochemical"
@@ -9938,6 +10682,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "CAPRYLIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "CAPRYLIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -9965,6 +10711,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LINOLEIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "LINOLEIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -9992,6 +10740,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LINOTENIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "LINOTENIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -10019,6 +10769,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LAURIC ACID - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "LAURIC ACID - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -10046,6 +10798,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "AMMONIUM SULFATE - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "AMMONIUM SULFATE - Contaminant",
   "old_parent": "Contaminant"
@@ -10073,6 +10827,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "2,4,6-TRICHLOROPHENOL (CAS 88-06-2) - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "2,4,6-TRICHLOROPHENOL (CAS 88-06-2) - Contaminant",
   "old_parent": "Contaminant"
@@ -10100,6 +10856,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "2,4-DICHLOROPHENOL - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "2,4-DICHLOROPHENOL - Contaminant",
   "old_parent": "Contaminant"
@@ -10127,6 +10885,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "2,4-DIMETHYLPHENOL - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "2,4-DIMETHYLPHENOL - Contaminant",
   "old_parent": "Contaminant"
@@ -10154,6 +10914,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "2,6-DICHLOROPHENOL - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "2,6-DICHLOROPHENOL - Contaminant",
   "old_parent": "Contaminant"
@@ -10181,6 +10943,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "2-CHLOROPHENOL - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "2-CHLOROPHENOL - Contaminant",
   "old_parent": "Contaminant"
@@ -10208,6 +10972,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "2-CRESOL - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "2-CRESOL - Contaminant",
   "old_parent": "Contaminant"
@@ -10235,6 +11001,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "3-CRESOL - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "3-CRESOL - Contaminant",
   "old_parent": "Contaminant"
@@ -10262,6 +11030,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "4-CHLORO 3-METHYLPHENOL - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "4-CHLORO 3-METHYLPHENOL - Contaminant",
   "old_parent": "Contaminant"
@@ -10289,6 +11059,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "4-CRESOL - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "4-CRESOL - Contaminant",
   "old_parent": "Contaminant"
@@ -10316,6 +11088,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "PHENOL [017] - Contaminant",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "PHENOL [017] - Contaminant",
   "old_parent": "Contaminant"
@@ -10343,6 +11117,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "Physicochemical Authenticity Markers (Aloe Sterols)",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "Physicochemical Authenticity Markers (Aloe Sterols)",
   "old_parent": "Physicochemical"
@@ -10370,6 +11146,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "BETA-SITOSTEROL - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "BETA-SITOSTEROL - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -10397,6 +11175,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "GLUCOSE - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "GLUCOSE - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -10424,6 +11204,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "LOPHENOL - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "LOPHENOL - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -10451,6 +11233,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "NICKEL (NI) - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "NICKEL (NI) - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
@@ -10478,6 +11262,8 @@
   "doctype": "Quality Inspection Parameter Group",
   "group_name": "TOTAL POLYSACCHARIDES - Nutrients",
   "is_group": 0,
+  "lft": null,
+  "rgt": null,
   "modified": "2026-05-31 22:30:00.000000",
   "name": "TOTAL POLYSACCHARIDES - Nutrients",
   "old_parent": "Aloe Vera Nutrients"
