@@ -451,6 +451,21 @@ class BatchAMB(NestedSet):
         """Auto-generate title based on batch level and parent using Golden Number."""
         level = str(self.custom_batch_level or "1")
 
+        # G1 (TASKS-266, 2026-11-01): a sub-lot's title is minted ONCE. Until now every
+        # save recounted the siblings (count of the parent's other children at that
+        # level + 1), so a plain re-save of "-1" renumbered it to "-2" once a second
+        # sub-lot existed — two siblings with the same title (prod: two older parents
+        # and one level-3 pair). The stored title now stays unless the record is new,
+        # has no title yet, or its parent / level actually changed. Existing titles are
+        # never rewritten by this guard (no data patch; prod's duplicates stay as they
+        # are until ruled on separately). Level 1 is untouched: its title is the
+        # immutable golden number.
+        if level != "1" and self.title and not self.is_new():
+            before = self.get_doc_before_save()
+            if before and (before.parent_batch_amb or None) == (self.parent_batch_amb or None) \
+                    and str(before.custom_batch_level or "1") == level:
+                return
+
         # Level 1: use Golden Number directly
         if level == "1":
             if self.custom_golden_number:
