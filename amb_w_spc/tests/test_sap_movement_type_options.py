@@ -19,7 +19,7 @@ OPTIONS = "\n".join([
 	"108 (Send to Subcontractor / Material Transfer)",
 	"109 (Stores Movement / Material Transfer)",
 	"261 (FrontFlush - Goods Issue for Production)",
-	"281 (Kitting front flush on WIP)",
+	"281 (Goods Issue for Sampling)",
 	"311 (BackFlush - Transfer for Kitting)",
 	"313 (Kitting to WIP / Material Transfer for Manufacture)",
 	"501 (Receipt without Purchase Order)",
