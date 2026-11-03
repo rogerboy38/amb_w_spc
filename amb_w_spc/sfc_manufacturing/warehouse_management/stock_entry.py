@@ -4,6 +4,8 @@ from frappe.utils import nowdate, now_datetime, flt
 from erpnext.stock.doctype.stock_entry.stock_entry import StockEntry
 import json
 
+from amb_w_spc.sfc_manufacturing.warehouse_management.sap_movement_codes import KNOWN_CODES, sap_code
+
 class CustomStockEntry(StockEntry):
 	"""Custom Stock Entry with SAP Movement Type support and signature workflow"""
 	
@@ -50,8 +52,13 @@ class CustomStockEntry(StockEntry):
 			}
 		}
 		
-		mapping = sap_mappings.get(self.custom_sap_movement_type)
+		# The field stores "<code> (<label>)"; look the rules up by the leading code.
+		code = sap_code(self.custom_sap_movement_type)
+		mapping = sap_mappings.get(code)
 		if not mapping:
+			if code in KNOWN_CODES:
+				# A valid option with no warehouse/zone rules defined here (only 261/311 have any).
+				return
 			frappe.throw(_("Invalid SAP Movement Type: {0}").format(self.custom_sap_movement_type))
 		
 		# Set purpose based on SAP movement type
@@ -142,13 +149,13 @@ class CustomStockEntry(StockEntry):
 	
 	def validate_required_signatures(self):
 		"""Validate that all required signatures are present before submission"""
-		if self.custom_sap_movement_type == "311":  # BackFlush requires both signatures
+		if sap_code(self.custom_sap_movement_type) == "311":  # BackFlush requires both signatures
 			if not self.custom_warehouse_supervisor_signature:
 				frappe.throw(_("Warehouse Supervisor signature is required for SAP Movement 311"))
 			if not self.custom_kitting_supervisor_signature:
 				frappe.throw(_("Kitting Supervisor signature is required for SAP Movement 311"))
 				
-		elif self.custom_sap_movement_type == "261":  # FrontFlush requires warehouse signature
+		elif sap_code(self.custom_sap_movement_type) == "261":  # FrontFlush requires warehouse signature
 			if not self.custom_warehouse_supervisor_signature:
 				frappe.throw(_("Warehouse Supervisor signature is required for SAP Movement 261"))
 	
