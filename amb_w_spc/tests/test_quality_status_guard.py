@@ -15,7 +15,13 @@ class Doc:
 	def __init__(self, new_status, old_status="<new>", name="BATCH-1"):
 		self.name = name
 		self._new = new_status
-		self._before = None if old_status == "<new>" else types.SimpleNamespace(get=lambda k, d=None, _o=old_status: _o if k == "quality_status" else d)
+		self._before = (
+			None
+			if old_status == "<new>"
+			else types.SimpleNamespace(
+				get=lambda k, d=None, _o=old_status: _o if k == "quality_status" else d
+			)
+		)
 
 	def get(self, key, default=None):
 		return self._new if key == "quality_status" else default
@@ -48,12 +54,27 @@ class TestWho(Case):
 		for role in ("Quality Manager", "Quality User"):
 			self.assertFalse(self.guard(Doc("Passed", "Pending"), [role]), role)
 		# ... and the same change by everyone else is refused (a stub that never refuses fails here)
-		for roles in ([], ["System Manager"], ["RND Manager"], ["System RND"], ["Manufacturing Manager"], ["Manufacturing User"],
-				["Quality Inspector"], ["System Manager", "Manufacturing Manager", "Manufacturing User"]):
+		for roles in (
+			[],
+			["System Manager"],
+			["RND Manager"],
+			["System RND"],
+			["Manufacturing Manager"],
+			["Manufacturing User"],
+			["Quality Inspector"],
+			["System Manager", "Manufacturing Manager", "Manufacturing User"],
+		):
 			self.assertTrue(self.guard(Doc("Passed", "Pending"), roles), roles)
 
 	def test_every_transition_out_of_a_status_is_covered(self):
-		for old, new in (("Pending", "Passed"), ("Failed", "Passed"), ("Passed", "Failed"), ("Hold", "Passed"), ("Passed", "Hold"), ("Passed", "Pending")):
+		for old, new in (
+			("Pending", "Passed"),
+			("Failed", "Passed"),
+			("Passed", "Failed"),
+			("Hold", "Passed"),
+			("Passed", "Hold"),
+			("Passed", "Pending"),
+		):
 			self.assertTrue(self.guard(Doc(new, old), ["Manufacturing User"]), (old, new))
 			self.assertFalse(self.guard(Doc(new, old), ["Quality User"]), (old, new))
 
@@ -75,8 +96,8 @@ class TestNewDocument(Case):
 	def test_nobody_else_can_create_a_batch_already_passed(self):
 		self.assertTrue(self.guard(Doc("Passed"), ["Manufacturing User"]))
 		self.assertTrue(self.guard(Doc("Failed"), ["System Manager"]))
-		self.assertFalse(self.guard(Doc(None), ["Manufacturing User"]))        # default
-		self.assertFalse(self.guard(Doc("Pending"), ["Manufacturing User"]))   # default, explicit
+		self.assertFalse(self.guard(Doc(None), ["Manufacturing User"]))  # default
+		self.assertFalse(self.guard(Doc("Pending"), ["Manufacturing User"]))  # default, explicit
 		self.assertFalse(self.guard(Doc("Passed"), ["Quality Manager"]))
 
 
@@ -100,15 +121,23 @@ class TestWiring(Case):
 		self.assertEqual(len(paths), 1)
 		mod, _, fn = paths[0].rpartition(".")
 		hooked = getattr(importlib.import_module(mod), fn)
-		with mock.patch.object(bam, "frappe", fake_frappe(["Manufacturing User"])), mock.patch.object(bam, "_", lambda s: s):
+		with (
+			mock.patch.object(bam, "frappe", fake_frappe(["Manufacturing User"])),
+			mock.patch.object(bam, "_", lambda s: s),
+		):
 			with self.assertRaises(PermissionError):
 				hooked(Doc("Passed", "Pending"), "before_validate")
-		with mock.patch.object(bam, "frappe", fake_frappe(["Quality Manager"])), mock.patch.object(bam, "_", lambda s: s):
+		with (
+			mock.patch.object(bam, "frappe", fake_frappe(["Quality Manager"])),
+			mock.patch.object(bam, "_", lambda s: s),
+		):
 			hooked(Doc("Passed", "Pending"), "before_validate")
 
 	def test_before_validate_not_validate_so_the_ignore_validate_flag_and_the_controller_do_not_matter(self):
 		hooks = importlib.import_module("amb_w_spc.hooks")
-		self.assertNotIn("batch_amb_quality_status_guard", " ".join(hooks.doc_events["Batch AMB"]["validate"]))
+		self.assertNotIn(
+			"batch_amb_quality_status_guard", " ".join(hooks.doc_events["Batch AMB"]["validate"])
+		)
 		self.assertIn("before_validate", hooks.doc_events["Batch AMB"])
 
 
