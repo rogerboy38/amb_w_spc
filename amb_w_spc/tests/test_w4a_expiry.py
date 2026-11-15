@@ -25,15 +25,15 @@ PILOT_GOLDEN = "0402252251"
 PILOT_EXPIRY = "2027-12-12"  # 2025-12-12 + 730  (LEAP-NEUTRAL: days == months)
 ITEM_NOSHELF = "0396"       # test item with shelf_life = 0
 
-# Leap-crossing ground truth — signed customer COA, Barentz France, lot 0466050262:
+# Leap-crossing ground truth — signed customer COA, Example Customer A France, lot 0466050262:
 # M.D. 2026-05-28, shelf 730d, PRINTED E.D. 2028-05-27. The window crosses
 # 29-Feb-2028, so the two methods DISAGREE by one day:
 #   add_days(2026-05-28, 730)  = 2028-05-27  <- correct, matches the signed COA
 #   add_months(2026-05-28, 24) = 2028-05-28  <- WRONG by one day
 # The printed (days-based) date is what the customer holds — days must win.
-BARENTZ_MFD = "2026-05-28"
-BARENTZ_EXPIRY = "2028-05-27"        # add_days(730)
-BARENTZ_MONTHS_WRONG = "2028-05-28"  # add_months(24) — off by one
+CUSTOMER_A_MFD = "2026-05-28"
+CUSTOMER_A_EXPIRY = "2028-05-27"        # add_days(730)
+CUSTOMER_A_MONTHS_WRONG = "2028-05-28"  # add_months(24) — off by one
 
 
 class W4aBase(ProjectionTestBase):
@@ -73,13 +73,13 @@ class TestExpiryComputeUnit(W4aBase):
 		self.assertEqual(getdate(exp), getdate(PILOT_EXPIRY))
 
 	def test_leap_crossing_uses_add_days_not_add_months(self):
-		# Barentz ground truth (lot 0466050262): the ONLY case in this suite that
+		# Example Customer A ground truth (lot 0466050262): the ONLY case in this suite that
 		# crosses 29-Feb-2028, so it distinguishes add_days(730) from
 		# add_months(24). item 0402 supplies the 730d shelf.
 		exp, msg = compute_batch_expiry(frappe._dict(
-			production_start_date=BARENTZ_MFD, item_code=PILOT_ITEM))
-		self.assertEqual(str(exp), BARENTZ_EXPIRY)            # 2028-05-27, matches signed COA
-		self.assertNotEqual(str(exp), BARENTZ_MONTHS_WRONG)  # not 2028-05-28 (add_months bug)
+			production_start_date=CUSTOMER_A_MFD, item_code=PILOT_ITEM))
+		self.assertEqual(str(exp), CUSTOMER_A_EXPIRY)            # 2028-05-27, matches signed COA
+		self.assertNotEqual(str(exp), CUSTOMER_A_MONTHS_WRONG)  # not 2028-05-28 (add_months bug)
 		self.assertIsNone(msg)
 
 	def test_no_manufacturing_date_returns_message_not_date(self):
@@ -110,9 +110,9 @@ class TestExpiryIntegration(W4aBase):
 		self.assertEqual(getdate(doc.expiry_date), getdate(PILOT_EXPIRY))
 
 	def test_leap_crossing_computes_on_insert(self):
-		# Barentz 0466050262 shape (item 0402 = 730d shelf); crosses 29-Feb-2028.
-		doc = self._migrated(golden="0466050262", item=PILOT_ITEM, mfg=BARENTZ_MFD)
-		self.assertEqual(str(doc.expiry_date), BARENTZ_EXPIRY)  # 2028-05-27, days-based
+		# Example Customer A 0466050262 shape (item 0402 = 730d shelf); crosses 29-Feb-2028.
+		doc = self._migrated(golden="0466050262", item=PILOT_ITEM, mfg=CUSTOMER_A_MFD)
+		self.assertEqual(str(doc.expiry_date), CUSTOMER_A_EXPIRY)  # 2028-05-27, days-based
 
 	def test_explicit_expiry_survives_insert(self):
 		doc = self._migrated(expiry="2030-06-01")
