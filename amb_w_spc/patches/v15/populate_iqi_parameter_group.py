@@ -6,7 +6,7 @@
 
 - Empirical baseline on VM3 v2.sysmayal.cloud reveals the kickoff strategy hits 0 rows:
   - 445 non-flag rows with empty `parameter_group` (across 113 parent docs)
-  - Only 5 title rows TOTAL, in 2 of 113 affected parent docs (022700001 + 0308 Barentz)
+  - Only 5 title rows TOTAL, in 2 of 113 affected parent docs (022700001 + 0308 Example Customer A)
   - For those 2 docs, non-flag rows already have parameter_group populated (via Frappe's own auto-fill on save)
   - The other 111 docs containing empty-pg rows have NO title rows → title-based propagation can't reach them
 
