@@ -53,22 +53,38 @@ def rec(
 
 
 class Table:
-	"""The lot table in memory: the four things the module asks of it, and a record of what was written."""
+	"""The lot table in memory: the four things the module asks of it (get, children, save, write_columns), and
+	a record of what was read and written."""
 
 	def __init__(self, *records):
 		self.rows = {r["name"]: dict(r) for r in records}
 		self.history = []  # one entry per saved change: (lot, before, after, reason, note)
 		self.column_writes = []  # direct column writes: (names, values)
+		self.reads = []  # every read: ("get", name) or ("children", [names])
 
 	def get(self, name):
+		self.reads.append(("get", name))
 		row = self.rows.get(name)
 		return dict(row) if row else None
 
-	def save(self, name, values, reason=None, note=None):
+	def children(self, names):
+		names = list(names)
+		self.reads.append(("children", names))
+		return [dict(r) for _n, r in sorted(self.rows.items()) if r["parent_batch_amb"] in names]
+
+	def write_columns(self, names, values):
+		assert set(values) <= set(lq.GUARDED_FIELDS), values
+		self.column_writes.append((list(names), dict(values)))
+		for name in names:
+			self.rows[name].update(values)
+
+	def save(self, name, values, reason=None, note=None, always=False):
 		before = {f: self.rows[name].get(f) for f in lq.GUARDED_FIELDS}
 		after = lq._after(before, values)
 		if after is None:
-			return False
+			if not always:
+				return False
+			after = dict(before)
 		self.rows[name].update(values)
 		self.history.append(
 			types.SimpleNamespace(lot=name, before=before, after=after, reason=reason, note=note)
@@ -478,7 +494,32 @@ class Db:
 			return self.docs[-1]
 
 		f.get_doc.side_effect = get_doc
+
+		def get_all(doctype, filters=None, fields=None, **kwargs):
+			assert doctype == "Batch AMB"
+			self.log.append(("get_all", filters, fields, kwargs))
+			(op, names) = filters["parent_batch_amb"]
+			assert op == "in"
+			return [
+				{k: r.get(k) for k in fields}
+				for _n, r in sorted(self.rows.items())
+				if r["parent_batch_amb"] in names
+			]
+
+		def set_value(doctype, filters, values):
+			assert doctype == "Batch AMB"
+			self.log.append(("set_value", filters, dict(values)))
+			(op, names) = filters["name"]
+			assert op == "in"
+			for name in names:
+				self.rows[name].update(values)
+
+		f.get_all.side_effect = get_all
+		f.db.set_value.side_effect = set_value
 		return f
+
+	def saves(self):
+		return [entry for entry in self.log if entry[0] == "save"]
 
 
 class TestTheRealSave(unittest.TestCase):
@@ -486,7 +527,7 @@ class TestTheRealSave(unittest.TestCase):
 		db = Db(rec("L"))
 		with site(frappe=db.frappe()):
 			self.assertTrue(lq.certificate_approved(INTERNAL, "CERT-1", "L", "Pass"))
-		((_save, name, kwargs, flag, appended),) = db.log
+		((_save, name, kwargs, flag, appended),) = db.saves()
 		self.assertEqual(name, "L")
 		self.assertIs(flag, lq._WRITER)  # the flag is up during the save ...
 		self.assertEqual(db.docs[-1].flags, {})  # ... and down after it
@@ -549,7 +590,7 @@ class TestTheRealSave(unittest.TestCase):
 				lq.certificate_approved(INTERNAL, "CERT-1", "L", "Pass")
 			self.assertIn(needle, f.throw.call_args.args[0])
 			self.assertIn("L", f.throw.call_args.args[0])
-			self.assertEqual(db.log, [])  # no save was attempted: nothing invented, nothing written
+			self.assertEqual(db.saves(), [])  # no save was attempted: nothing invented, nothing written
 			self.assertEqual(db.rows["L"]["quality_status"], "Pending")
 
 	def test_the_item_to_manufacture_stands_in_for_an_empty_current_item(self):
@@ -581,7 +622,7 @@ class TestTheRealSave(unittest.TestCase):
 		db = Db(rec("L", status="Passed", source="Own certificate", cert="CERT-1"))
 		with site(frappe=db.frappe()):
 			self.assertFalse(lq.certificate_approved(INTERNAL, "CERT-1", "L", "Pass"))
-		self.assertEqual((db.log, db.docs[-1].appended), ([], []))
+		self.assertEqual((db.saves(), db.docs[-1].appended), ([], []))
 
 	def test_the_same_document_saved_again_by_someone_else_is_judged_by_the_guard(self):
 		# the flag does not outlive the writer's save: a later change on the same object is a hand change
@@ -616,7 +657,7 @@ class TestTheHandWritersAreGone(unittest.TestCase):
 			self.assertFalse(hasattr(bam.BatchAMB, name), name)
 			self.assertNotIn(name, self.functions())
 
-	def test_nothing_in_the_lot_controller_assigns_the_status_except_a_new_child_starting_pending(self):
+	def test_nothing_in_the_lot_controller_assigns_the_status_or_where_it_came_from(self):
 		writers = {}
 		for name, fn in self.functions().items():
 			for node in ast.walk(fn):
@@ -628,7 +669,7 @@ class TestTheHandWritersAreGone(unittest.TestCase):
 				for t in targets:
 					if isinstance(t, ast.Attribute) and t.attr in lq.GUARDED_FIELDS:
 						writers.setdefault(name, []).append(ast.unparse(node))
-		self.assertEqual(writers, {"create_child_batch": ["child.quality_status = 'Pending'"]})
+		self.assertEqual(writers, {})
 
 	def test_the_controller_no_longer_logs_its_own_row_when_the_status_changes_but_still_notifies(self):
 		(cls,) = [n for n in self.tree.body if isinstance(n, ast.ClassDef) and n.name == "BatchAMB"]

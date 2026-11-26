@@ -1778,7 +1778,9 @@ def create_child_batch(parent_name, child_level):
         # ============================================================
         # 6. QUALITY STATUS FIELDS
         # ============================================================
-        child.quality_status = "Pending"
+        # TASKS-384 B4: set at the insert below (lot_quality.insert_child): a child under a record whose status
+        # comes from a certificate is born with the parent's certificate, its verdict and source "Inherited";
+        # otherwise Pending.
         
         # ============================================================
         # 7. RESET CHILD-SPECIFIC FIELDS (Start fresh)
@@ -1793,7 +1795,7 @@ def create_child_batch(parent_name, child_level):
         if not parent.is_group:
             parent.db_set("is_group", 1)
 
-        child.insert()
+        lot_quality.insert_child(child, parent)
 
         # ⛔ THE :1841-1842 PAIR WAS REMOVED HERE (LOOP-4, VMG-O O-6).
         # It read:
