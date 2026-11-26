@@ -233,6 +233,16 @@ def _sync_from_work_order(doc):
         frappe.log_error(frappe.get_traceback(), "Batch AMB Work Order Backfill")
 
 
+def _work_order_status_is_ours_to_write(wo):
+    """TASKS-383: True only for a draft Work Order (docstatus 0). A submitted or cancelled Work Order's status
+    belongs to ERPNext and its workflow; a Batch AMB save must not rewrite it. Anything that is not plainly a
+    draft (docstatus 1, 2, missing or unreadable) is refused."""
+    try:
+        return int(getattr(wo, "docstatus", None)) == 0
+    except (TypeError, ValueError):
+        return False
+
+
 class BatchAMB(NestedSet):
     """
     Batch AMB - Production Batch Management
@@ -809,10 +819,18 @@ class BatchAMB(NestedSet):
             return False
     
     def update_work_order_status(self):
-        """Update linked Work Order status based on batch status"""
+        """Update linked Work Order status based on batch status.
+
+        TASKS-383: a Batch AMB save never changes the status of a Work Order that is not a draft. ERPNext owns
+        the status of a submitted (and of a cancelled) Work Order; this write once turned a Completed order to
+        "Draft" when only the lot's quality status was edited. The write is kept, unchanged, for a draft
+        Work Order (docstatus 0) only.
+        """
         try:
             if self.work_order_ref:
                 wo = frappe.get_doc("Work Order", self.work_order_ref)
+                if not _work_order_status_is_ours_to_write(wo):
+                    return False
                 # Map batch status to work order status
                 status_map = {
                     "Draft": "Draft",
@@ -1329,6 +1347,9 @@ class BatchAMB(NestedSet):
         ):
             try:
                 wo = frappe.get_doc("Work Order", self.work_order_ref)
+                # TASKS-383: same rule as update_work_order_status — a draft Work Order only.
+                if not _work_order_status_is_ours_to_write(wo):
+                    return
                 status_map = {
                     "Draft": "Draft",
                     "Scheduled": "Not Started",
