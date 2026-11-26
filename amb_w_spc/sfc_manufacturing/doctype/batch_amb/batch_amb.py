@@ -276,9 +276,10 @@ class BatchAMB(NestedSet):
     def on_update(self):
         """After update hook"""
         self.sync_with_lote_amb()
-        self.update_work_order_status()
+        # TASKS-384, decision 311: the Work Order is the truth and the lot record follows it. A lot save writes
+        # no Work Order status, in any docstatus; the two writers that did (from batch_status and from
+        # processing_status) are gone.
         self.log_batch_history()
-        self.update_work_order_processing_status()
 
     def on_submit(self):
         """On submit"""
@@ -808,27 +809,6 @@ class BatchAMB(NestedSet):
             frappe.log_error(f"Error syncing with Lote AMB: {str(e)}", "Batch AMB Sync")
             return False
     
-    def update_work_order_status(self):
-        """Update linked Work Order status based on batch status"""
-        try:
-            if self.work_order_ref:
-                wo = frappe.get_doc("Work Order", self.work_order_ref)
-                # Map batch status to work order status
-                status_map = {
-                    "Draft": "Draft",
-                    "In Progress": "In Process",
-                    "Completed": "Completed",
-                    "Cancelled": "Cancelled"
-                }
-                new_status = status_map.get(self.batch_status, wo.status)
-                if wo.status != new_status:
-                    wo.db_set("status", new_status)
-                    frappe.db.commit()
-                    return True
-        except Exception as e:
-            frappe.log_error(f"Error updating work order status: {str(e)}", "Batch AMB Sync")
-            return False
-    
     def log_batch_history(self, action=None, comments=None, system_generated=False):
         """⛔⛔ DEAD CODE — SHADOWED, NEVER EXECUTES.
 
@@ -1319,32 +1299,6 @@ class BatchAMB(NestedSet):
                     self.actual_start = None
                 if self.actual_completion:
                     self.actual_completion = None
-
-    def update_work_order_processing_status(self):
-        """Sync processing status with linked Work Order"""
-        if (
-            hasattr(self, "work_order_ref")
-            and self.work_order_ref
-            and hasattr(self, "processing_status")
-        ):
-            try:
-                wo = frappe.get_doc("Work Order", self.work_order_ref)
-                status_map = {
-                    "Draft": "Draft",
-                    "Scheduled": "Not Started",
-                    "In Progress": "In Process",
-                    "Quality Check": "In Process",
-                    "Completed": "Completed",
-                    "On Hold": "On Hold",
-                    "Cancelled": "Cancelled",
-                }
-
-                wo_status = status_map.get(self.processing_status, wo.status)
-                if wo.status != wo_status:
-                    wo.db_set("status", wo_status)
-                    frappe.db.commit()
-            except Exception as e:
-                frappe.log_error(f"Error updating Work Order status: {str(e)}")
 
     # -----------------------------
     # Instance whitelisted methods
