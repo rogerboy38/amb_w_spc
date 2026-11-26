@@ -232,9 +232,11 @@ doc_events = {
     # ---- + Phase 1 batch projection (plan 2026-07-05 §2, flag-gated by
     # ---- site_config batch_amb_projection_enabled — absent/0 = fully inert)
     "Batch AMB": {
-        # TASKS-342 ruling 75: only Quality Manager / Quality User may change quality_status. `before_validate` runs
-        # before the controller's validate (which would log and notify the change first) and, unlike `validate`, is
-        # not skipped by `doc.flags.ignore_validate`.
+        # TASKS-384 B3 (replaces the role guard of TASKS-342): quality_status and the four fields that say where
+        # it came from are written by the lot's certificate only (sfc_manufacturing/lot_quality.py); any other
+        # change is refused for every role. First line at `before_validate`: it runs before the controller's
+        # validate and, unlike `validate`, is not skipped by `doc.flags.ignore_validate`. Second line, the same
+        # check, first in `on_update` below: it catches a value changed during the save by a later hook.
         "before_validate": [
             "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_quality_status_guard",
         ],
@@ -250,6 +252,7 @@ doc_events = {
             "amb_w_spc.sfc_manufacturing.batch_projection.project_batch_amb_outputs",
         ],
         "on_update": [
+            "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_quality_status_guard",
             "amb_w_spc.sfc_manufacturing.batch_projection.project_batch_amb_outputs",
         ],
         "on_trash": [
