@@ -6,6 +6,7 @@
 #   * a lot on a hand hold is not released by an approval: it shows the verdict and takes it when the hold is lifted
 #   * one history row per change, appended before the save, with who / when / from / to / certificate / reason
 #   * the hand writers of the lot are gone
+#   * the approval writes the lot's certificate link (coa_reference / coa_amb2) and the withdrawal takes it back
 #
 # The rules are run against an in-memory table (`Table`) through the module's data-access seam; the real seam
 # (`lot_quality.LotTable`) is run against a fake frappe whose documents call the REAL guard when saved.
@@ -53,8 +54,10 @@ def rec(
 
 
 class Table:
-	"""The lot table in memory: the four things the module asks of it (get, children, save, write_columns), and
-	a record of what was read and written."""
+	"""The lot table in memory: the five things the module asks of it (get, children, released_by, save,
+	write_columns), and a record of what was read and written."""
+
+	acting_on = None
 
 	def __init__(self, *records):
 		self.rows = {r["name"]: dict(r) for r in records}
@@ -72,6 +75,14 @@ class Table:
 		self.reads.append(("children", names))
 		return [dict(r) for _n, r in sorted(self.rows.items()) if r["parent_batch_amb"] in names]
 
+	def released_by(self, certificate_doctype, certificate):
+		self.reads.append(("released_by", (certificate_doctype, certificate)))
+		return [
+			dict(r)
+			for _n, r in sorted(self.rows.items())
+			if (r.get("released_by_doctype"), r.get("released_by")) == (certificate_doctype, certificate)
+		]
+
 	def write_columns(self, names, values):
 		assert set(values) <= set(lq.GUARDED_FIELDS), values
 		self.column_writes.append((list(names), dict(values)))
@@ -79,7 +90,8 @@ class Table:
 			self.rows[name].update(values)
 
 	def save(self, name, values, reason=None, note=None, always=False):
-		before = {f: self.rows[name].get(f) for f in lq.GUARDED_FIELDS}
+		assert set(values) <= {*lq.GUARDED_FIELDS, *lq.LINK_FIELDS}, values
+		before = {f: self.rows[name].get(f) for f in (*lq.GUARDED_FIELDS, *values)}
 		after = lq._after(before, values)
 		if after is None:
 			if not always:
@@ -498,6 +510,14 @@ class Db:
 		def get_all(doctype, filters=None, fields=None, **kwargs):
 			assert doctype == "Batch AMB"
 			self.log.append(("get_all", filters, fields, kwargs))
+			if "released_by" in filters:  # LotTable.released_by: the records a certificate speaks for
+				assert set(filters) == {"released_by_doctype", "released_by"}, filters
+				wanted = (filters["released_by_doctype"], filters["released_by"])
+				return [
+					{k: r.get(k) for k in fields}
+					for _n, r in sorted(self.rows.items())
+					if (r.get("released_by_doctype"), r.get("released_by")) == wanted
+				]
 			(op, names) = filters["parent_batch_amb"]
 			assert op == "in"
 			return [
@@ -619,7 +639,7 @@ class TestTheRealSave(unittest.TestCase):
 		self.assertEqual(db.rows["L"]["quality_status"], "Pending")
 
 	def test_nothing_to_change_means_no_save_and_no_row(self):
-		db = Db(rec("L", status="Passed", source="Own certificate", cert="CERT-1"))
+		db = Db(dict(rec("L", status="Passed", source="Own certificate", cert="CERT-1"), coa_amb2="CERT-1"))
 		with site(frappe=db.frappe()):
 			self.assertFalse(lq.certificate_approved(INTERNAL, "CERT-1", "L", "Pass"))
 		self.assertEqual((db.saves(), db.docs[-1].appended), ([], []))
@@ -701,6 +721,174 @@ class TestTheHandWritersAreGone(unittest.TestCase):
 		with mock.patch.object(bam, "frappe", f):
 			bam.duplicate_batch("LOTE-1")
 		self.assertEqual(copy.at_insert, ["Pending", None, None, None, None])
+
+
+# ----------------------------------------------------------------------------------------------------------------
+# the lot's link to its certificate: written by the approval on the certificate's own record, taken back by the
+# withdrawal (review of TASKS-384, finding 7)
+# ----------------------------------------------------------------------------------------------------------------
+LINK_OF = {INTERNAL: "coa_amb2", CUSTOMER: "coa_reference"}
+
+
+class TestCertificateLink(unittest.TestCase):
+	def family(self, **lot_fields):
+		return Table(dict(rec("L"), **lot_fields), rec("S1", "2", "L"), rec("C1", "3", "S1"))
+
+	def links(self, t, name):
+		return {f: t.rows[name].get(f) for f in ("coa_reference", "coa_amb2")}
+
+	def test_the_link_fields_are_the_two_link_fields_of_the_lot_record_by_certificate_type(self):
+		self.assertEqual(lq.CERTIFICATE_LINKS, {"COA AMB": "coa_reference", "COA AMB2": "coa_amb2"})
+		fields = {f["fieldname"]: f for f in json.loads(LOT_JSON.read_text(encoding="utf-8"))["fields"]}
+		for cert_type, fieldname in lq.CERTIFICATE_LINKS.items():
+			self.assertEqual(
+				(fields[fieldname]["fieldtype"], fields[fieldname]["options"]), ("Link", cert_type)
+			)
+
+	def test_an_approval_writes_the_link_of_the_certificates_type_on_its_own_record(self):
+		for cert_type, fieldname in LINK_OF.items():
+			t = self.family()
+			with site(t):
+				lq.certificate_approved(cert_type, "CERT-1", "L", "Pass")
+			other = "coa_reference" if fieldname == "coa_amb2" else "coa_amb2"
+			self.assertEqual(self.links(t, "L"), {fieldname: "CERT-1", other: None}, cert_type)
+			# the same save and the same row as the status
+			(row,) = t.rows_of("L")
+			self.assertEqual((row.before.get(fieldname), row.after[fieldname]), (None, "CERT-1"))
+			self.assertEqual(row.after["quality_status"], "Passed")
+
+	def test_the_link_is_not_written_on_the_records_that_inherit(self):
+		for cert_type in LINK_OF:
+			t = self.family()
+			with site(t):
+				lq.certificate_approved(cert_type, "CERT-1", "L", "Pass")
+			for name in ("S1", "C1"):
+				self.assertEqual(t.rows[name]["status_source"], "Inherited")
+				self.assertEqual(self.links(t, name), {"coa_reference": None, "coa_amb2": None}, name)
+			for _names, values in t.column_writes:
+				self.assertEqual(set(values), set(lq.GUARDED_FIELDS))
+
+	def test_a_sub_lots_own_certificate_is_linked_on_the_sub_lot_and_not_on_the_lot(self):
+		t = self.family()
+		with site(t):
+			lq.certificate_approved(INTERNAL, "CERT-S", "S1", "Pass")
+		self.assertEqual(self.links(t, "S1")["coa_amb2"], "CERT-S")
+		self.assertEqual(self.links(t, "L"), {"coa_reference": None, "coa_amb2": None})
+
+	def test_a_withdrawal_clears_the_link(self):
+		for cert_type, fieldname in LINK_OF.items():
+			t = self.family()
+			with site(t):
+				lq.certificate_approved(cert_type, "CERT-1", "L", "Pass")
+				t.history.clear()
+				lq.certificate_withdrawn(cert_type, "CERT-1", "L")
+			self.assertEqual(self.links(t, "L"), {"coa_reference": None, "coa_amb2": None}, cert_type)
+			(row,) = t.rows_of("L")  # one row: the status and the link together
+			self.assertEqual((row.before[fieldname], row.after[fieldname]), ("CERT-1", None))
+			self.assertEqual(row.after["quality_status"], "Pending")
+
+	def test_with_a_standing_certificate_of_the_same_type_the_link_points_at_that_one(self):
+		t = self.family()
+		with site(t):
+			lq.certificate_approved(INTERNAL, "CERT-1", "L", "Pass")
+			lq.certificate_approved(INTERNAL, "CERT-2", "L", "Fail")
+			self.assertEqual(self.links(t, "L")["coa_amb2"], "CERT-2")
+			lq.certificate_withdrawn(
+				INTERNAL, "CERT-2", "L", standing={"doctype": INTERNAL, "name": "CERT-1", "result": "Pass"}
+			)
+		self.assertEqual(self.links(t, "L"), {"coa_reference": None, "coa_amb2": "CERT-1"})
+		self.assertEqual(t.state("L"), ("Passed", "Own certificate", "CERT-1", "Passed"))
+
+	def test_a_standing_certificate_of_the_other_type_does_not_go_in_this_types_field(self):
+		t = self.family()
+		with site(t):
+			lq.certificate_approved(CUSTOMER, "CERT-C", "L", "Pass")
+			lq.certificate_approved(INTERNAL, "CERT-I", "L", "Fail")
+			self.assertEqual(self.links(t, "L"), {"coa_reference": "CERT-C", "coa_amb2": "CERT-I"})
+			lq.certificate_withdrawn(
+				INTERNAL, "CERT-I", "L", standing={"doctype": CUSTOMER, "name": "CERT-C", "result": "Pass"}
+			)
+		self.assertEqual(self.links(t, "L"), {"coa_reference": "CERT-C", "coa_amb2": None})
+		self.assertEqual(t.state("L"), ("Passed", "Own certificate", "CERT-C", "Passed"))
+
+	def test_the_withdrawal_of_one_certificate_does_not_clear_the_link_to_another(self):
+		# the same type: a later certificate replaced the link; the earlier one is withdrawn
+		t = self.family()
+		with site(t):
+			lq.certificate_approved(INTERNAL, "CERT-1", "L", "Pass")
+			lq.certificate_approved(INTERNAL, "CERT-2", "L", "Pass")
+			t.history.clear()
+			self.assertEqual(lq.certificate_withdrawn(INTERNAL, "CERT-1", "L"), 0)
+		self.assertEqual(self.links(t, "L")["coa_amb2"], "CERT-2")
+		self.assertEqual(t.history, [])
+		# the other type, and a link somebody set by hand to another certificate
+		t = self.family(coa_reference="CERT-HAND")
+		with site(t):
+			lq.certificate_approved(INTERNAL, "CERT-1", "L", "Pass")
+			lq.certificate_withdrawn(CUSTOMER, "CERT-9", "L")
+			self.assertEqual(self.links(t, "L"), {"coa_reference": "CERT-HAND", "coa_amb2": "CERT-1"})
+			t.rows["L"]["coa_amb2"] = "CERT-HAND-2"  # edited by hand after the approval: the field is free
+			lq.certificate_withdrawn(INTERNAL, "CERT-1", "L")
+		self.assertEqual(t.state("L")[0], "Pending")
+		self.assertEqual(self.links(t, "L"), {"coa_reference": "CERT-HAND", "coa_amb2": "CERT-HAND-2"})
+
+	def test_the_link_is_taken_back_also_when_the_status_comes_from_another_certificate(self):
+		t = self.family()
+		with site(t):
+			lq.certificate_approved(INTERNAL, "CERT-I", "L", "Pass")
+			lq.certificate_approved(CUSTOMER, "CERT-C", "L", "Fail")
+			t.history.clear()
+			written = lq.certificate_withdrawn(
+				INTERNAL, "CERT-I", "L", standing={"doctype": CUSTOMER, "name": "CERT-C", "result": "Fail"}
+			)
+		self.assertEqual(written, 1)
+		self.assertEqual(self.links(t, "L"), {"coa_reference": "CERT-C", "coa_amb2": None})
+		self.assertEqual(t.state("L"), ("Failed", "Own certificate", "CERT-C", "Failed"))  # untouched
+		(row,) = t.history
+		self.assertEqual(
+			(row.lot, row.before["quality_status"], row.after["quality_status"]), ("L",) + ("Failed",) * 2
+		)
+
+	def test_a_lot_released_without_a_link_gets_it_when_the_same_certificate_is_approved_again(self):
+		t = self.family(
+			quality_status="Passed",
+			status_source="Own certificate",
+			released_by_doctype=INTERNAL,
+			released_by="CERT-1",
+			certificate_status="Passed",
+		)
+		with site(t):
+			lq.certificate_approved(INTERNAL, "CERT-1", "L", "Pass")
+		self.assertEqual(self.links(t, "L")["coa_amb2"], "CERT-1")
+
+	def test_the_real_save_writes_the_link_in_the_same_save_and_says_so_in_the_same_row(self):
+		for cert_type, fieldname in LINK_OF.items():
+			db = Db(rec("L"), rec("S1", "2", "L"), rec("C1", "3", "S1"))
+			with site(frappe=db.frappe()):
+				lq.certificate_approved(cert_type, "CERT-1", "L", "Pass")
+				self.assertEqual(db.rows["L"][fieldname], "CERT-1")
+				self.assertEqual([e[1] for e in db.saves()], ["L", "S1"])  # no save of its own for the link
+				(row,) = db.history["L"]
+				self.assertIn(f"certificate link {fieldname}: from none to CERT-1", row["comments"])
+				self.assertIn("from Pending to Passed", row["comments"])
+				self.assertNotIn("certificate link", db.history["S1"][0]["comments"])
+				self.assertIsNone(db.rows["S1"].get(fieldname))
+				self.assertIsNone(db.rows["C1"].get(fieldname))
+				lq.certificate_withdrawn(cert_type, "CERT-1", "L")
+			self.assertIsNone(db.rows["L"][fieldname])
+			self.assertEqual([e[1] for e in db.saves()], ["L", "S1", "L", "S1"])
+			self.assertIn(
+				f"certificate link {fieldname}: from CERT-1 to none", db.history["L"][1]["comments"]
+			)
+
+	def test_the_links_stay_free_to_edit_and_the_save_takes_no_other_field(self):
+		for fieldname in lq.LINK_FIELDS:
+			self.assertNotIn(fieldname, lq.GUARDED_FIELDS)
+		db = Db(rec("L"))
+		with site(frappe=db.frappe()):
+			with self.assertRaises(Refused):
+				lq.LotTable().save("L", {"quality_status": "Pending", "batch_status": "Completed"})
+		self.assertEqual(db.saves(), [])
 
 
 if __name__ == "__main__":

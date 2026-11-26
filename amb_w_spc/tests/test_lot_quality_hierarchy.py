@@ -5,6 +5,8 @@
 #   * a withdrawal resets only the records the certificate wrote; a sub-lot that loses its own certificate takes
 #     the status of its nearest certified ancestor
 #   * a record on a hand hold keeps Hold and stores the verdict; the records below it are written as usual
+#   * a withdrawal also resets a record that still names the certificate but is no longer reached by the walk
+#     down (moved under another parent before the guard refused that)
 #   * a new sub-lot or container under a released record is born released (Inherited)
 #   * how it is written: one full save and ONE history row for the lot and for each sub-lot; the containers by
 #     one column write per sub-lot, named in that sub-lot's row; one read per level of the tree
@@ -281,6 +283,143 @@ class TestWithdrawalGoesDown(unittest.TestCase):
 		self.assertEqual(t.state("C21"), PENDING)
 
 
+class TestWithdrawalFindsWhatWasMoved(unittest.TestCase):
+	"""Review of TASKS-384, finding 3: the withdrawal resets by `released_by*`, not only by the walk down. The
+	moves are made in the table directly: that is a record moved before the guard refused it."""
+
+	def released(self, *more):
+		t = tree(rec("M"), rec("MS", "2", "M"), *more)
+		with site(t):
+			lq.certificate_approved(INTERNAL, "CERT-S1", "S1", "Fail")
+			lq.certificate_approved(CUSTOMER, "CERT-L", "L", "Pass")
+		t.history.clear()
+		t.column_writes.clear()
+		t.reads.clear()
+		return t
+
+	def test_a_container_moved_under_another_lots_sub_lot_is_still_reset(self):
+		t = self.released()
+		t.rows["C21"]["parent_batch_amb"] = "MS"
+		with site(t):
+			written = lq.certificate_withdrawn(CUSTOMER, "CERT-L", "L")
+		self.assertEqual(t.state("C21"), PENDING)
+		self.assertIsNone(t.rows["C21"]["released_by_doctype"])
+		self.assertEqual(written, 7)  # L, S2, S3, C22, C31, C32 and the moved C21
+		# no saved record speaks for it where it sits now: it gets a row of its own, which says how it was found
+		(row,) = t.rows_of("C21")
+		self.assertIn("CERT-L withdrawn", row.reason)
+		self.assertIn("found by its certificate, outside the walk down from L", row.reason)
+		self.assertEqual((t.state("M"), t.state("MS")), (PENDING, PENDING))
+
+	def test_a_sub_lot_moved_under_another_lot_is_reset_with_its_containers(self):
+		t = self.released()
+		t.rows["S3"]["parent_batch_amb"] = "M"
+		with site(t):
+			lq.certificate_withdrawn(CUSTOMER, "CERT-L", "L")
+		for name in ("S3", "C31", "C32"):
+			self.assertEqual(t.state(name), PENDING, name)
+		(row,) = t.rows_of("S3")
+		self.assertIn("C31, C32", row.note)  # one row on the sub-lot, its containers named in it
+		self.assertEqual([h.lot for h in t.history], ["L", "S2", "S3"])
+		self.assertIn(
+			(
+				["C31", "C32"],
+				dict.fromkeys(lq.GUARDED_FIELDS) | {"quality_status": "Pending", "status_source": ""},
+			),
+			t.column_writes,
+		)
+
+	def test_a_moved_record_takes_the_nearest_certified_ancestor_where_it_sits_now(self):
+		t = self.released()
+		t.rows["C21"]["parent_batch_amb"] = "S1"  # under the sub-lot that failed on its own certificate
+		t.rows["S3"]["parent_batch_amb"] = "M"
+		with site(t):
+			lq.certificate_approved(INTERNAL, "CERT-M", "M", "Partial")  # S3 stays with CERT-L: own walk only
+			t.rows["S3"].update(
+				released_by="CERT-L", released_by_doctype=CUSTOMER, certificate_status="Passed"
+			)
+			t.rows["S3"].update(quality_status="Passed")
+			lq.certificate_withdrawn(CUSTOMER, "CERT-L", "L")
+		self.assertEqual(t.state("C21"), inherited("CERT-S1", "Failed"))
+		self.assertEqual(t.state("S3"), inherited("CERT-M", "Hold"))
+		self.assertEqual(t.rows["S3"]["released_by_doctype"], INTERNAL)
+		self.assertIn("follows M", t.rows_of("S3")[-1].reason)
+
+	def test_a_moved_record_never_takes_the_standing_certificate_of_the_lot_it_left(self):
+		t = self.released()
+		t.rows["C21"]["parent_batch_amb"] = "MS"
+		with site(t):
+			lq.certificate_withdrawn(
+				CUSTOMER, "CERT-L", "L", standing={"doctype": INTERNAL, "name": "CERT-L0", "result": "Fail"}
+			)
+		self.assertEqual(t.state("L"), own("CERT-L0", "Failed"))
+		self.assertEqual(t.state("C22"), inherited("CERT-L0", "Failed"))
+		self.assertEqual(t.state("C21"), PENDING)
+
+	def test_a_record_the_walk_cannot_reach_below_the_lot_is_reset_and_follows_the_lot(self):
+		# a level 4 record born under a released container carries the certificate; the walk stops at level 3
+		t = self.released(
+			dict(rec("P1", "4", "C21", "Passed", "Inherited", "CERT-L"), released_by_doctype=CUSTOMER)
+		)
+		with site(t):
+			lq.certificate_withdrawn(CUSTOMER, "CERT-L", "L")
+		self.assertEqual(t.state("P1"), PENDING)
+		t = self.released(
+			dict(rec("P1", "4", "C21", "Passed", "Inherited", "CERT-L"), released_by_doctype=CUSTOMER)
+		)
+		with site(t):
+			lq.certificate_withdrawn(
+				CUSTOMER, "CERT-L", "L", standing={"doctype": INTERNAL, "name": "CERT-L0", "result": "Pass"}
+			)
+		self.assertEqual(t.state("P1"), inherited("CERT-L0", "Passed"))
+
+	def test_moved_records_are_reset_also_when_the_lots_status_comes_from_another_certificate(self):
+		t = self.released()
+		t.rows["C21"]["parent_batch_amb"] = "MS"
+		with site(t):
+			lq.certificate_approved(
+				INTERNAL, "CERT-L2", "L", "Fail"
+			)  # replaces CERT-L on L and below; not C21
+			self.assertEqual(t.state("C21"), inherited("CERT-L", "Passed"))
+			# two writes: the moved container, and the lot's link, which still pointed at CERT-L
+			self.assertEqual(lq.certificate_withdrawn(CUSTOMER, "CERT-L", "L"), 2)
+		self.assertEqual((t.rows["L"]["coa_reference"], t.rows["L"]["coa_amb2"]), (None, "CERT-L2"))
+		self.assertEqual(t.state("C21"), PENDING)
+		self.assertEqual(t.state("L"), own("CERT-L2", "Failed"))
+
+	def test_a_moved_record_on_hand_hold_keeps_hold_and_forgets_the_verdict(self):
+		t = self.released()
+		t.rows["C21"].update(parent_batch_amb="MS", quality_status="Hold", status_source="Hold action")
+		with site(t):
+			lq.certificate_withdrawn(CUSTOMER, "CERT-L", "L")
+		self.assertEqual(t.state("C21"), held())
+
+	def test_another_certificates_records_are_not_touched_and_the_query_names_the_certificate(self):
+		t = self.released()
+		t.rows["C11"]["parent_batch_amb"] = "MS"  # carries CERT-S1, which is not withdrawn
+		with site(t):
+			lq.certificate_withdrawn(CUSTOMER, "CERT-L", "L")
+		self.assertEqual(t.state("C11"), inherited("CERT-S1", "Failed"))
+		self.assertEqual([what for kind, what in t.reads if kind == "released_by"], [(CUSTOMER, "CERT-L")])
+
+	def test_the_real_table_asks_for_the_records_by_the_two_released_by_fields(self):
+		db = Db(rec("L"), rec("S1", "2", "L"), rec("C11", "3", "S1"), rec("M"), rec("MS", "2", "M"))
+		with site(frappe=db.frappe()):
+			lq.certificate_approved(CUSTOMER, "CERT-L", "L", "Pass")
+			db.rows["C11"]["parent_batch_amb"] = "MS"
+			del db.log[:]
+			lq.certificate_withdrawn(CUSTOMER, "CERT-L", "L")
+		queries = [e for e in db.log if e[0] == "get_all" and "released_by" in e[1]]
+		self.assertEqual(
+			[e[1] for e in queries], [{"released_by_doctype": CUSTOMER, "released_by": "CERT-L"}]
+		)
+		self.assertEqual((queries[0][2], queries[0][3].get("limit_page_length")), (list(lq.RECORD_FIELDS), 0))
+		self.assertEqual(db.rows["C11"]["quality_status"], "Pending")
+		self.assertIsNone(db.rows["C11"]["released_by"])
+		self.assertEqual([e[1] for e in db.saves()], ["L", "S1", "C11"])  # the moved container: a full save
+		self.assertEqual(len(db.history["C11"]), 1)
+
+
 class TestHowItIsWritten(unittest.TestCase):
 	def test_one_row_on_the_lot_and_on_each_sub_lot_and_none_on_the_containers(self):
 		t = tree()
@@ -437,6 +576,42 @@ class TestTheRealTable(unittest.TestCase):
 		f.db.commit.assert_not_called()  # the caller's transaction, whole
 		f.db.sql.assert_not_called()
 
+	def test_a_sub_lot_that_cannot_carry_its_row_is_named_with_the_lot_of_the_certificate(self):
+		# review finding 9: the user is on the certificate of L and has never opened S2
+		for item in ("approval", "withdrawal"):
+			db = self.db()
+			f = db.frappe()
+			with site(frappe=f):
+				if item == "withdrawal":
+					lq.certificate_approved(INTERNAL, "CERT-L", "L", "Pass")
+				db.rows["S2"]["current_plant2"] = None
+				with self.assertRaises(Refused):
+					if item == "approval":
+						lq.certificate_approved(INTERNAL, "CERT-L", "L", "Pass")
+					else:
+						lq.certificate_withdrawn(INTERNAL, "CERT-L", "L")
+			msg = f.throw.call_args.args[0]
+			for needle in (
+				"certificate of lot record L",
+				"lot record S2",
+				"Current Plant",
+				"Open lot record S2",
+			):
+				self.assertIn(needle, msg, item)
+			self.assertNotIn(
+				"S2", [e[1] for e in db.saves()][-1:], item
+			)  # the rule is the same: S2 is not saved
+
+	def test_the_certificates_own_lot_keeps_the_message_for_the_record_in_front_of_the_user(self):
+		db = self.db()
+		db.rows["L"]["current_plant2"] = None
+		f = db.frappe()
+		with site(frappe=f), self.assertRaises(Refused):
+			lq.certificate_approved(INTERNAL, "CERT-L", "L", "Pass")
+		msg = f.throw.call_args.args[0]
+		self.assertIn("The quality status of lot record L cannot be changed", msg)
+		self.assertNotIn("also writes", msg)
+
 	def test_the_column_write_takes_the_quality_fields_only(self):
 		with site() as f:
 			with self.assertRaises(Refused):
@@ -487,10 +662,11 @@ class Child(Fields):
 		return None
 
 	def insert(self):
-		# what Frappe runs around an insert: the guard's two lines, for real
+		# what Frappe runs around an insert: the document is named (Document.insert: set_new_name comes before
+		# run_before_save_methods), then the guard's two lines, for real
+		self.name = "LOTE-NEW"
 		lq.refuse_hand_change(self, "before_validate")
 		self.flag_at_insert = self.flags.get(lq.WRITER_FLAG)
-		self.name = "LOTE-NEW"
 		lq.refuse_hand_change(self, "on_update")
 		self.inserted = {f: self.get(f) for f in lq.GUARDED_FIELDS}
 		self.rows = list(self.processing_history or [])
@@ -573,6 +749,36 @@ class TestANewChild(unittest.TestCase):
 			"LOTE-1",
 		):
 			self.assertIn(needle, row["comments"])
+
+	def test_the_row_of_its_birth_names_the_new_record(self):
+		# review finding 11: the row is appended before the insert, when the record has no name; the guard's
+		# first line, which Frappe runs after naming the document, writes the name in it. One insert, no save.
+		_out, child, _f = self.create(**self.released())
+		(row,) = child.rows
+		self.assertEqual(row["batch_reference"], "LOTE-NEW")
+
+	def test_only_the_writers_own_rows_without_a_name_are_filled(self):
+		doc = Fields(
+			name="LOTE-9",
+			processing_history=[
+				{"processing_action": "Quality Status Changed", "batch_reference": None},
+				{"processing_action": "Quality Status Changed", "batch_reference": "LOTE-OLD"},
+				{"processing_action": "Started", "batch_reference": None},
+				Fields(processing_action="Quality Status Changed"),
+			],
+		)
+		doc.get_doc_before_save = lambda: None
+		with site():
+			lq.refuse_hand_change(doc, "before_validate")  # a save like any other: nothing is filled
+			self.assertIsNone(doc.processing_history[0]["batch_reference"])
+			doc.flags[lq.WRITER_FLAG] = lq._WRITER
+			lq.refuse_hand_change(doc, "before_validate")
+		rows = doc.processing_history
+		self.assertEqual(
+			[rows[0]["batch_reference"], rows[1]["batch_reference"], rows[2]["batch_reference"]],
+			["LOTE-9", "LOTE-OLD", None],
+		)
+		self.assertEqual(rows[3].batch_reference, "LOTE-9")  # a child document, as on a real insert
 
 	def test_under_a_record_no_certificate_speaks_for_it_is_born_pending_with_no_row(self):
 		for parent in (
