@@ -21,6 +21,8 @@ from frappe.utils import (
 )
 from frappe.utils.nestedset import NestedSet
 
+from amb_w_spc.sfc_manufacturing import lot_quality
+
 
 # ======================================================================
 #  DOC_EVENTS WRAPPER FUNCTIONS (required by hooks.py doc_events)
@@ -252,15 +254,12 @@ class BatchAMB(NestedSet):
         self.set_item_details()
         self.validate_processing_dates()
         self.calculate_yield_percentage()
-        # Check if quality status changed
+        # Quality status changed: notify. The history row of the change is NOT written here (TASKS-384 B3):
+        # the only writer of the status, lot_quality.set_lot_quality_status, appends it before this save, with
+        # who, when, from, to, which certificate and why. A second row here would double it.
         doc_before = self.get_doc_before_save()
         if doc_before and hasattr(doc_before, 'quality_status'):
             if doc_before.quality_status != self.quality_status:
-                self.log_batch_history(
-                    action="Quality Status Changed",
-                    comments=f"Quality changed from {doc_before.quality_status} to {self.quality_status}",
-                    system_generated=True
-                )
                 self.notify_stakeholders()
 
     def before_save(self):
@@ -1356,31 +1355,8 @@ class BatchAMB(NestedSet):
         frappe.msgprint(_("Cannot complete processing from current status"))
         return False
 
-    @frappe.whitelist()
-    def approve_quality(self):
-        """Method to approve quality check"""
-        if self.processing_status == "Quality Check":
-            self.processing_status = "Completed"
-            if hasattr(self, "quality_status"):
-                self.quality_status = "Passed"
-            self.save()
-            frappe.msgprint(_("Quality check approved, batch completed"))
-            return True
-        frappe.msgprint(_("Cannot approve quality from current status"))
-        return False
-
-    @frappe.whitelist()
-    def reject_quality(self):
-        """Method to reject quality check"""
-        if self.processing_status == "Quality Check":
-            self.processing_status = "On Hold"
-            if hasattr(self, "quality_status"):
-                self.quality_status = "Failed"
-            self.save()
-            frappe.msgprint(_("Quality check rejected, batch on hold"))
-            return True
-        frappe.msgprint(_("Cannot reject quality from current status"))
-        return False
+    # TASKS-384 B3: the two whitelisted methods that set the quality status "Passed" / "Failed" by hand from the
+    # lot are gone. The status is set by the lot's certificate (lot_quality.py).
 
     @frappe.whitelist()
     def cancel_processing(self):
@@ -2065,6 +2041,8 @@ def duplicate_batch(source_name):
         new_batch.lote_amb_reference = None
         new_batch.custom_generated_batch_name = None
         new_batch.custom_golden_number = None
+        # a copy is a new lot record: it starts Pending, with no certificate (TASKS-384 B3)
+        lot_quality.reset_for_copy(new_batch)
 
         new_batch.insert()
 
@@ -3202,34 +3180,14 @@ def make_sample_request_from_source(source_doctype, source_name):
 # actual controller class resolution (fixes NestedSet issue)
 # ============================================================
 
-# TASKS-342 ruling 75 (Hugh): only these roles may change a Batch AMB's `quality_status` (the status the QC hold
-# gate in rnd_warehouse_management trusts). Not System Manager: Administrator holds every role, so it passes.
-QUALITY_STATUS_ROLES = ("Quality Manager", "Quality User")
-QUALITY_STATUS_DEFAULT = "Pending"  # an empty status is "Pending" everywhere in this app (see _sync_from_work_order)
-
-
 def batch_amb_quality_status_guard(doc, method=None):
-    """doc_events before_validate hook: refuse, on the server, a change of `quality_status` by a user who holds neither
-    Quality Manager nor Quality User. It is a hook and not a class method on purpose: this DocType may be loaded as
-    a plain Document (see the note on `override_doctype_class` in hooks.py), in which case `BatchAMB.validate`
-    never runs, while the doc_events hooks always do. A new document counts as a change from "Pending" (an empty
-    status is Pending), so nobody else can create a batch already Passed. Covers every path that SAVES the
-    document (form, API, `frappe.client.set_value`, `approve_quality`, other apps' `doc.save()`); a direct
-    `db_set` / `frappe.db.set_value` / SQL write bypasses validate and is not covered."""
-    before = doc.get_doc_before_save() if hasattr(doc, "get_doc_before_save") else None
-    old = (before.get("quality_status") if before else None) or QUALITY_STATUS_DEFAULT
-    new = doc.get("quality_status") or QUALITY_STATUS_DEFAULT
-    if old == new:
-        return
-    if set(QUALITY_STATUS_ROLES) & set(frappe.get_roles()):
-        return
-    frappe.throw(
-        _("Only Quality Manager or Quality User can change the quality status of a batch ({0}: {1} → {2}).").format(
-            doc.name or _("new"), old, new
-        ),
-        frappe.PermissionError,
-        title=_("Quality status"),
-    )
+    """doc_events hook on Batch AMB, `before_validate` and `on_update` (TASKS-384 B3; replaces the role guard of
+    TASKS-342): the quality status of a lot record, and the four fields that say where it came from, are written
+    by the lot's certificate through `lot_quality.set_lot_quality_status` only. Any other change is refused for
+    every role. A hook and not a class method on purpose: this DocType may be loaded as a plain NestedSet (see
+    the note on `override_doctype_class` in hooks.py), in which case `BatchAMB.validate` never runs, while the
+    doc_events hooks always do. What it covers and what it does not: `lot_quality.refuse_hand_change`."""
+    lot_quality.refuse_hand_change(doc, method)
 
 
 def batch_amb_validate(doc, method=None):
