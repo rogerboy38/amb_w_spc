@@ -38,6 +38,7 @@ frappe.ui.form.on('Batch AMB', {
                     }
                 });
             }, __("Create"));
+            add_certificate_button(frm);
         }
 
         // BatchL2 enhancements
@@ -1663,6 +1664,26 @@ function show_status_indicators(frm) {
             indicator
         );
     }
+}
+
+// TASKS-384 B2: "Certificate" on a saved lot record. The server (amb_w_tds) decides the certificate type from the
+// product, inserts the draft with lot, Work Order, item and specification filled, and returns {doctype, name}.
+// A refusal is the server's own message: frappe.call shows it, nothing is caught here.
+function add_certificate_button(frm) {
+    frm.add_custom_button(__("Certificate"), () => {
+        frappe.call({
+            method: "amb_w_tds.api.certificate.make_certificate_for_lot",
+            args: { lot: frm.doc.name },
+            freeze: true,
+            freeze_message: __("Creating certificate..."),
+            callback(r) {
+                const made = r && !r.exc && r.message;
+                if (made && made.doctype && made.name) {
+                    frappe.set_route("Form", made.doctype, made.name);
+                }
+            }
+        });
+    }, __("Create"));
 }
 
 function set_default_values(frm) {
