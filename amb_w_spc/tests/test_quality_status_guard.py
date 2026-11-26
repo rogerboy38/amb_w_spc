@@ -224,6 +224,82 @@ class TestRefusal(Case):
 		self.assertIn("starts with the quality status Pending", msg)
 
 
+INHERITED_STATE = {
+	"quality_status": "Passed",
+	"status_source": "Inherited",
+	"released_by_doctype": "COA AMB2",
+	"released_by": "CERT-1",
+	"certificate_status": "Passed",
+}
+
+
+class TestTheParentPointer(Case):
+	"""Review of TASKS-384, finding 3: a record that carries a certificate's state is not moved by hand."""
+
+	def moved(self, state, old="SUB-1", new="SUB-2", **now):
+		before = dict(state, parent_batch_amb=old)
+		return Doc(old=before, name="CONT-1", **dict(before, parent_batch_amb=new, **now))
+
+	def test_a_re_parented_inherited_container_is_refused_for_every_role_on_both_lines(self):
+		for roles in EVERY_ROLE_SET:
+			for method in ("before_validate", "on_update"):
+				self.assertTrue(self.guard(self.moved(INHERITED_STATE), roles, method), (roles, method))
+		self.assertTrue(self.guard(self.moved(INHERITED_STATE, new=None)))  # taken out of the tree
+		self.assertTrue(self.guard(self.moved(INHERITED_STATE, old=None, new="SUB-2")))
+
+	def test_a_record_with_any_state_from_a_certificate_is_refused(self):
+		own = dict(INHERITED_STATE, status_source="Own certificate")
+		held = dict(INHERITED_STATE, quality_status="Hold", status_source="Hold action")
+		for state in (own, held):
+			self.assertTrue(self.guard(self.moved(state), ["System Manager"]), state["status_source"])
+		# "Inherited" alone refuses, whatever else the row says
+		self.assertTrue(self.guard(self.moved({"quality_status": "Passed", "status_source": "Inherited"})))
+
+	def test_a_record_no_certificate_speaks_for_moves_freely(self):
+		for state in (
+			{},
+			{"quality_status": "Pending"},
+			{"quality_status": "Hold", "status_source": "Hold action"},  # a hand hold, nothing stored
+			{"quality_status": "Passed"},  # a status from before this rule
+		):
+			self.assertFalse(self.guard(self.moved(state), ["Manufacturing User"]), state)
+
+	def test_a_save_that_does_not_move_the_record_is_free(self):
+		self.assertFalse(self.guard(self.moved(INHERITED_STATE, new="SUB-1")))
+		self.assertFalse(self.guard(self.moved(INHERITED_STATE, old=None, new="")))
+		self.assertFalse(self.guard(self.moved(INHERITED_STATE, new="SUB-1", batch_status="Completed")))
+
+	def test_a_new_record_is_placed_not_moved_and_the_writers_own_save_passes(self):
+		self.assertFalse(self.guard(Doc(name=None, parent_batch_amb="SUB-1")))
+		doc = self.moved(INHERITED_STATE)
+		doc.flags = {lq.WRITER_FLAG: lq._WRITER}
+		self.assertFalse(self.guard(doc))
+
+	def test_the_message_says_which_record_which_certificate_and_what_to_do(self):
+		f = fake_frappe()
+		with mock.patch.object(lq, "frappe", f), mock.patch.object(lq, "_", lambda s: s):
+			with self.assertRaises(Refused):
+				lq.refuse_hand_change(self.moved(INHERITED_STATE), "before_validate")
+		msg = f.throw.call_args.args[0]
+		for needle in (
+			"CONT-1",
+			"SUB-1",
+			"SUB-2",
+			"COA AMB2 CERT-1",
+			"Inherited",
+			"The certificate must be rejected first",
+			"Pending",
+		):
+			self.assertIn(needle, msg)
+
+	def test_the_certificate_links_are_not_guarded(self):
+		for fieldname in ("coa_reference", "coa_amb2"):
+			before = dict(INHERITED_STATE, **{fieldname: "CERT-1"})
+			for value in ("CERT-2", None):
+				doc = Doc(old=before, **dict(before, **{fieldname: value}))
+				self.assertFalse(self.guard(doc, ["Quality User"]), (fieldname, value))
+
+
 class TestWiring(Case):
 	"""Through the real hooks.py: unhook it and these fail."""
 

@@ -13,6 +13,30 @@ Hand hold (decision 315): a record whose `status_source` is "Hold action" keeps 
 certificate does. The certificate's verdict is stored in `certificate_status` / `released_by*` and takes effect when
 the hold is lifted (`lift_hand_hold`, which the hold action of a later task will call; no button calls it today).
 
+Down the hierarchy (TASKS-384 B4, decision 319): an approval is written down `parent_batch_amb` to the sub-lots
+and the containers below the certificate's record, as source "Inherited" naming the same certificate. A record with
+a certificate of its own is left alone together with everything below it (those follow it). A withdrawal resets only
+the records this certificate wrote; a sub-lot that loses its own certificate takes the status of its nearest
+certified ancestor. A hand hold is a matter of the one record that is held: its status stays "Hold" while its
+`certificate_status` / `released_by*` keep following the certificate like any other record, and the records below
+it are written as usual.
+
+How an approval is written, for a lot with S sub-lots and C containers: 1 + S full document saves (the lot and each
+sub-lot), each with ONE history row; the containers are written by a direct column write, one UPDATE per saved
+record that has containers below it, with no history row of their own. The row of the lot or sub-lot above them
+names every container written with it and its status before and after. See `LotTable.write_columns` for why, and
+for what a direct column write does not do.
+
+The parent pointer (review of TASKS-384, finding 3): a record that carries a certificate's state cannot be moved
+under another record by hand (`refuse_hand_change`), and a withdrawal also resets every record that still names
+the withdrawn certificate in `released_by*`, wherever it sits in the tree (`_reset_elsewhere`), so a record moved
+before that refusal existed is found too.
+
+The certificate link (finding 7): the approval writes the certificate on the record it is approved for, in
+`coa_reference` (COA AMB) or `coa_amb2` (COA AMB2), in the same save and the same history row; the withdrawal
+takes it back when the field still points at the withdrawn certificate. Records that inherit get no link written.
+The two fields stay editable by hand and are NOT guarded: they are a pointer for readers, not the status.
+
 What the refusal covers and what it does not: see `refuse_hand_change`.
 """
 
@@ -40,11 +64,16 @@ GUARDED_FIELDS = (
 	"released_by",
 	"certificate_status",
 )
-RECORD_FIELDS = ("name", "parent_batch_amb", "custom_batch_level", *GUARDED_FIELDS)
-CERTIFICATE_LEVELS = (
-	"1",
-	"2",
-)  # a certificate is made for a lot or a sub-lot; containers follow (decision 319)
+# the lot record's link to its certificate, by the certificate's type: written with the approval, on the record
+# the certificate is approved for only; editable by hand, not guarded
+CERTIFICATE_LINKS = {"COA AMB": "coa_reference", "COA AMB2": "coa_amb2"}
+LINK_FIELDS = tuple(CERTIFICATE_LINKS.values())
+PARENT_FIELD = "parent_batch_amb"
+RECORD_FIELDS = ("name", PARENT_FIELD, "custom_batch_level", *GUARDED_FIELDS, *LINK_FIELDS)
+# a certificate is made for a lot or a sub-lot; containers follow (decision 319)
+CERTIFICATE_LEVELS = ("1", "2")
+# written down to, without a history row of its own; a record of any other level is not written
+CONTAINER_LEVEL = "3"
 
 HISTORY_TABLE = "processing_history"
 HISTORY_ACTION = "Quality Status Changed"  # an option of Batch Processing History.processing_action
@@ -71,11 +100,46 @@ def _level(record):
 
 
 def _after(before, values):
-	"""-> the GUARDED_FIELDS of a record once `values` are written, or None when that changes nothing."""
+	"""-> the GUARDED_FIELDS of a record once `values` are written (and the certificate link, when `values`
+	names one), or None when that changes nothing."""
 	after = dict({fieldname: before.get(fieldname) for fieldname in GUARDED_FIELDS}, **values)
-	if all(_norm(f, before.get(f)) == _norm(f, after[f]) for f in GUARDED_FIELDS):
+	if all(_norm(f, before.get(f)) == _norm(f, after[f]) for f in after):
 		return None
 	return after
+
+
+def _link_at_approval(certificate_doctype, certificate):
+	"""-> {link field: certificate} for the record the certificate is approved for, {} for a type with no field."""
+	fieldname = CERTIFICATE_LINKS.get(certificate_doctype)
+	return {fieldname: certificate} if fieldname else {}
+
+
+def _link_at_withdrawal(record, certificate_doctype, certificate, standing):
+	"""-> what becomes of the record's link when the certificate is withdrawn: nothing ({}) unless the field
+	still points at the withdrawn certificate; then the certificate that still stands when it is of the same
+	type (the field links to one type), else empty."""
+	fieldname = CERTIFICATE_LINKS.get(certificate_doctype)
+	if not fieldname or record.get(fieldname) != certificate:
+		return {}
+	if standing and standing.get("doctype") == certificate_doctype and standing.get("name"):
+		return {fieldname: standing.get("name")}
+	return {fieldname: None}
+
+
+def _name_own_rows(doc):
+	"""A record inserted by this module (`insert_child`) gets its history row before it has a name. Frappe names
+	the document before `before_validate`, so the first line of the guard, which runs there, writes the name in
+	the row: the same insert, no second save."""
+	name = getattr(doc, "name", None)
+	if not name:
+		return
+	for row in doc.get(HISTORY_TABLE) or []:
+		if row.get("processing_action") != HISTORY_ACTION or row.get("batch_reference"):
+			continue
+		if isinstance(row, dict):
+			row["batch_reference"] = name
+		else:
+			row.set("batch_reference", name)
 
 
 def _certificate_of(record):
@@ -124,12 +188,21 @@ def refuse_hand_change(doc, method=None):
 	value that travelled as JSON is never that object. What is NOT covered, named so that a green test is not
 	over-read:
 	  * a direct column write (`frappe.db.set_value`, `doc.db_set`, `frappe.db.sql`, the query builder) runs no
-	    document event at all;
+	    document event at all. This module makes one itself, for containers (`LotTable.write_columns`): the
+	    guard neither sees it nor could stop the same write made by other code;
 	  * Python code on the server that imports this module and sets the flag itself, or that calls
 	    `set_lot_quality_status` directly: the writer is not whitelisted, but any server-side code can call it;
 	  * a save with no previous row to compare against is judged as an insert (only empty / "Pending" pass).
+
+	The parent pointer: a save that changes `parent_batch_amb` of a record whose stored `status_source` is
+	"Inherited", or whose stored `released_by` names a certificate (its own, an inherited one, or one stored
+	under a hand hold), is refused the same way: the record's status belongs to the tree it sits in, and what
+	is below it inherits through it. A Pending record with no certificate moves freely, and so does a record
+	on a hand hold that no certificate speaks for. Not covered: a direct column write of the parent, as above;
+	`certificate_withdrawn` therefore also looks for its records by `released_by*`.
 	"""
 	if _is_writer_save(doc):
+		_name_own_rows(doc)
 		return
 	before = doc.get_doc_before_save() if hasattr(doc, "get_doc_before_save") else None
 	changed = []
@@ -139,6 +212,7 @@ def refuse_hand_change(doc, method=None):
 		if old != new:
 			changed.append((fieldname, old, new))
 	if not changed:
+		_refuse_parent_change(doc, before)
 		return
 	what = ", ".join(
 		_("{0}: {1} to {2}").format(_label(fieldname), old or _("empty"), new or _("empty"))
@@ -155,6 +229,30 @@ def refuse_hand_change(doc, method=None):
 	frappe.throw(message, frappe.ValidationError, title=_("Quality status"))
 
 
+def _refuse_parent_change(doc, before):
+	if not before:
+		return  # an insert: the new record is placed, not moved
+	old, new = before.get(PARENT_FIELD) or "", doc.get(PARENT_FIELD) or ""
+	if old == new:
+		return
+	if before.get("status_source") != INHERITED and not before.get("released_by"):
+		return
+	frappe.throw(
+		_(
+			"Lot record {0} cannot be moved (parent: {1} to {2}): its quality status comes from certificate {3} {4} (status source: {5}), and the records below it follow it. The certificate must be rejected first, so that the record is Pending with no certificate; then move it, and approve the certificate again where that applies."
+		).format(
+			doc.name or _("new"),
+			old or _("none"),
+			new or _("none"),
+			before.get("released_by_doctype") or "",
+			before.get("released_by") or _("unknown"),
+			before.get("status_source") or _("none"),
+		),
+		frappe.ValidationError,
+		title=_("Quality status"),
+	)
+
+
 def reset_for_copy(doc):
 	"""A copy of a lot record is a new record: it starts Pending, with no certificate."""
 	doc.quality_status = PENDING
@@ -168,25 +266,87 @@ def reset_for_copy(doc):
 class LotTable:
 	"""The lot table as this module needs it. Tests replace it with an in-memory table."""
 
+	# the record of the certificate being approved or withdrawn, set by `_approve` / `_withdraw`: a refusal on
+	# another record written with it says so (the user is looking at the certificate, not at that record)
+	acting_on = None
+
+	def released_by(self, certificate_doctype, certificate):
+		"""-> every record whose status is said by this certificate, wherever it sits in the tree."""
+		if not (certificate_doctype and certificate):
+			return []
+		return frappe.get_all(
+			DOCTYPE,
+			filters={"released_by_doctype": certificate_doctype, "released_by": certificate},
+			fields=list(RECORD_FIELDS),
+			order_by="name asc",
+			limit_page_length=0,
+		)
+
 	def get(self, name):
 		"""-> {RECORD_FIELDS} of one record, or None."""
 		if not name:
 			return None
 		return frappe.db.get_value(DOCTYPE, name, list(RECORD_FIELDS), as_dict=True)
 
-	def save(self, name, values, reason=None, note=None):
-		"""Write `values` (some of GUARDED_FIELDS) on one record through a full document save, with ONE history
+	def children(self, names):
+		"""-> the records whose parent is one of `names`: one query for a whole level of the tree."""
+		names = list(names)
+		if not names:
+			return []
+		return frappe.get_all(
+			DOCTYPE,
+			filters={"parent_batch_amb": ["in", names]},
+			fields=list(RECORD_FIELDS),
+			order_by="name asc",
+			limit_page_length=0,
+		)
+
+	def write_columns(self, names, values):
+		"""Write `values` (GUARDED_FIELDS only) on many CONTAINERS with one UPDATE, past the document.
+
+		Said plainly: this is a direct column write. It runs no document event, so the guard does not see it
+		(nor would it stop anyone else's), no validation of the container runs, no history row is appended on
+		the container and its other hooks do not fire; `modified` / `modified_by` are set. It is used for
+		containers only, by the approval / withdrawal of the certificate above them, because a lot can have
+		hundreds of containers and a full save of each would run the whole lot controller per container inside
+		the approval, and any unrelated validation failure of one container would stop the release of the lot.
+		The record of each container's release is the history row of the lot or sub-lot it was written with
+		(`_containers_note`: every container by name, with its status before and after, the certificate, who and
+		when), and on the container itself `released_by*` and `status_source`."""
+		names = list(names)
+		if not names:
+			return
+		unknown = set(values) - set(GUARDED_FIELDS)
+		if unknown:
+			frappe.throw(
+				_("Only the quality status fields are written this way (not {0}).").format(sorted(unknown))
+			)
+		frappe.db.set_value(DOCTYPE, {"name": ["in", names]}, dict(values))
+
+	def save(self, name, values, reason=None, note=None, always=False):
+		"""Write `values` (some of GUARDED_FIELDS and, on the record a certificate is approved for or withdrawn
+		from, its LINK_FIELDS) on one record through a full document save, with ONE history
 		row appended before the save so that this save writes it. -> True when something changed and was saved,
-		False when the record already had these values (no save, no row). No try/except: what stops the save
-		stops the caller."""
+		False when the record already had these values (no save, no row). `always`: save the row even when the
+		record's own values do not change (it then speaks for the containers written with it). No try/except:
+		what stops the save stops the caller."""
+		unknown = set(values) - set(GUARDED_FIELDS) - set(LINK_FIELDS)
+		if unknown:
+			frappe.throw(
+				_(
+					"Only the quality status fields and the certificate link are written this way (not {0})."
+				).format(sorted(unknown))
+			)
 		doc = frappe.get_doc(DOCTYPE, name)
-		before = {fieldname: doc.get(fieldname) for fieldname in GUARDED_FIELDS}
+		before = {fieldname: doc.get(fieldname) for fieldname in (*GUARDED_FIELDS, *values)}
 		after = _after(before, values)
 		if after is None:
-			return False
+			if not always:
+				return False
+			after = dict(before)
 		for fieldname, value in values.items():
 			doc.set(fieldname, value)
-		doc.append(HISTORY_TABLE, _history_row(doc, before, after, reason, note))
+		doc.append(HISTORY_TABLE, _history_row(doc, before, after, reason, note, self.acting_on))
 		doc.flags[WRITER_FLAG] = _WRITER
 		try:
 			# the authority for this write is the certificate's approval, checked where the certificate is
@@ -197,14 +357,18 @@ class LotTable:
 		return True
 
 
-def _history_row(doc, before, after, reason, note):
+def _history_row(doc, before, after, reason, note, acting_on=None):
 	"""The Batch Processing History row of one change: who, when, from, to, which certificate, why.
 
 	The child table requires date, plant, item_code, quality_status and processing_action. Plant and item come
 	from the lot record; nothing is invented: a record with no plant, or with neither a current item nor an item
 	to manufacture, cannot carry the row, so the change is refused with a message that says which field to fill.
 	From / to / certificate go in `comments`: `previous_value` and `new_value` are declared with length 1 and
-	`coa_reference` is a link to COA AMB only."""
+	`coa_reference` is a link to COA AMB only.
+
+	`acting_on`: the record of the certificate being approved or withdrawn. When the record that cannot carry
+	the row is another one (a sub-lot written with it), the message names both: the user is looking at the
+	certificate of `acting_on` and has never opened this record. The rule itself is the same."""
 	plant = doc.get("current_plant2")
 	item_code = doc.get("current_item_code") or doc.get("item_to_manufacture")
 	missing = [
@@ -215,11 +379,19 @@ def _history_row(doc, before, after, reason, note):
 		)
 		if not value
 	]
+	if missing and acting_on and doc.name and acting_on != doc.name:
+		frappe.throw(
+			_(
+				"This action on the certificate of lot record {2} also writes lot record {0} (it follows {2}, or it still carries this certificate), and {0} cannot be written: it has no {1}, and the history row of the change needs it. Open lot record {0}, fill it there, and repeat the action on the certificate. Nothing was changed."
+			).format(doc.name, " / ".join(missing), acting_on),
+			frappe.ValidationError,
+			title=_("Quality status"),
+		)
 	if missing:
 		frappe.throw(
 			_(
 				"The quality status of lot record {0} cannot be changed: the record has no {1}, and the history row of the change needs it. Fill it on the lot record and repeat the action."
-			).format(doc.name, " / ".join(missing)),
+			).format(doc.name or _("new"), " / ".join(missing)),
 			frappe.ValidationError,
 			title=_("Quality status"),
 		)
@@ -257,6 +429,13 @@ def _history_text(before, after, reason, note):
 		),
 		f"certificate: from {certificate(before)} to {certificate(after)}",
 	]
+	for fieldname in LINK_FIELDS:
+		if fieldname in after and (before.get(fieldname) or "") != (after.get(fieldname) or ""):
+			parts.append(
+				"certificate link {}: from {} to {}".format(
+					fieldname, before.get(fieldname) or "none", after.get(fieldname) or "none"
+				)
+			)
 	held = after.get("status_source") == HOLD_ACTION and before.get("status_source") == HOLD_ACTION
 	if held:
 		parts.append("hand hold in force: the status stays Hold, the certificate's verdict is stored")
@@ -351,8 +530,11 @@ def set_lot_quality_status(lot, status, certificate=None, reason=None, certifica
 
 def certificate_approved(certificate_doctype, certificate, lot, result):
 	"""The certificate reached "Approved". Map `result` (Pass/Fail/Partial) and write the lot `lot` (a Batch AMB
-	name, level 1 or 2) as source "Own certificate". Raises (frappe.throw) if result has no mapping or the lot
-	cannot be written."""
+	name, level 1 or 2) as source "Own certificate", with the certificate in the lot's link field of its type
+	(`coa_reference` / `coa_amb2`), then write down the hierarchy (B4): every record below it becomes "Inherited"
+	from this certificate (no link written), except a record with a certificate of its own and what is below
+	that. Raises (frappe.throw) if result has no mapping or a record cannot be written; everything is written
+	in the caller's transaction, nothing is committed here. -> the number of records written."""
 	return _approve(LotTable(), certificate_doctype, certificate, lot, result)
 
 
@@ -360,8 +542,17 @@ def certificate_withdrawn(certificate_doctype, certificate, lot, standing=None):
 	"""The certificate left "Approved" by Reject (to Draft) or a shared COA AMB was cancelled.
 
 	`standing` = None, or a dict {"doctype":…, "name":…, "result":…} of ANOTHER approved certificate of the same
-	record that still stands: the lot then takes that one's mapped status instead of Pending. Resets only a
-	record this certificate wrote: a lot whose `released_by` is another certificate (or none) is left as it is."""
+	record that still stands: the lot then takes that one's mapped status instead of Pending. Resets only the
+	records this certificate wrote (B4): the lot when its `released_by` is this certificate, and the records
+	below it whose `released_by` is this certificate. Without a standing certificate a sub-lot takes the status
+	of its nearest certified ancestor (as "Inherited"), or Pending when there is none.
+
+	Every other record that still names this certificate in `released_by*`, wherever it sits in the tree (it was
+	moved, or the walk down does not reach it), is reset too: each takes its own nearest certified ancestor's
+	status, or Pending. The lot's link field (`coa_reference` / `coa_amb2`), when it still points at this
+	certificate, is set to the standing certificate if that is of the same type, else emptied; this also when
+	the lot's status comes from another certificate.
+	-> the number of records written."""
 	return _withdraw(LotTable(), certificate_doctype, certificate, lot, standing)
 
 
@@ -401,9 +592,136 @@ def _target(table, certificate_doctype, certificate, lot):
 	return record
 
 
+def _values(record, view, source):
+	"""What `record` becomes under `view` = (certificate type, certificate, status), or under no certificate."""
+	if view is None:
+		return _resolve(record, PENDING, source="")
+	certificate_doctype, certificate, status = view
+	return _resolve(record, status, certificate_doctype, certificate, source)
+
+
+def _has_no_certificate_of_its_own(child, parent):
+	"""An approval above is written to `child` unless the child has a certificate of its own. `parent` is the
+	record above it as it was before the write (it tells the source of a child on hand hold)."""
+	source = child.get("status_source")
+	if source == HOLD_ACTION:
+		source = _source_under_hold(child, parent)
+	return source != OWN_CERTIFICATE
+
+
+def _plan(table, top, top_values, view, follows):
+	"""Read the tree below `top` (one query per level, nothing written) and decide what is written.
+
+	-> [{"record", "values", "containers": [(record, values)]}], `top` first: the records saved with a history
+	row (levels 1 and 2), each with the containers (level 3) that are written with it by a column write.
+	`follows(child, parent as read)` says whether a record below takes the new values; a record that does not
+	is left alone with everything below it. A record of another level is not written and not walked through."""
+	plan = [{"record": top, "values": top_values, "containers": []}]
+	speaks_for = {top["name"]: plan[0]}  # record -> the saved record whose history row covers it
+	as_read = {top["name"]: top}
+	frontier = [top["name"]]
+	while frontier:
+		children = table.children(frontier)
+		frontier = []
+		for child in children:
+			if child["name"] in as_read:
+				continue  # a loop in the parent pointers: every record is decided once
+			parent = as_read.get(child.get("parent_batch_amb"))
+			level = _level(child)
+			if (
+				not parent
+				or level not in (*CERTIFICATE_LEVELS, CONTAINER_LEVEL)
+				or not follows(child, parent)
+			):
+				continue
+			as_read[child["name"]] = child
+			values = _values(child, view, INHERITED)
+			if level == CONTAINER_LEVEL:
+				entry = speaks_for[parent["name"]]
+				if _after(child, values) is not None:
+					entry["containers"].append((child, values))
+			else:
+				entry = {"record": child, "values": values, "containers": []}
+				plan.append(entry)
+			speaks_for[child["name"]] = entry
+			frontier.append(child["name"])
+	return plan
+
+
+def _containers_note(containers):
+	"""The part of a history row that records the containers written with it: each by name, from what to what."""
+	if not containers:
+		return None
+	groups = {}
+	for record, values in containers:
+		held = values.get("status_source") == HOLD_ACTION
+		key = (_norm("quality_status", record.get("quality_status")), values.get("quality_status"), held)
+		groups.setdefault(key, []).append(record["name"])
+	parts = [
+		"{} from {} to {}{}: {}".format(
+			len(names), old, new, " (on hand hold: the verdict is stored)" if held else "", ", ".join(names)
+		)
+		for (old, new, held), names in groups.items()
+	]
+	return "containers written with this row, without a row of their own: " + "; ".join(parts)
+
+
+def _write_down(table, top, top_values, view, follows, reason):
+	"""Write `top` and what follows it. Top first, then each sub-lot, each save followed by the column write of
+	its containers. Nothing is caught: the first record that cannot be written stops the caller, whose
+	transaction holds every write made so far. -> the number of records written."""
+	written = 0
+	for entry in _plan(table, top, top_values, view, follows):
+		record, containers = entry["record"], entry["containers"]
+		saved = table.save(
+			record["name"],
+			entry["values"],
+			reason=reason if record is top else "follows {}: {}".format(top["name"], reason),
+			note=_containers_note(containers),
+			always=bool(containers),
+		)
+		written += 1 if saved else 0
+		groups = {}
+		for container, values in containers:
+			key = tuple((fieldname, values.get(fieldname)) for fieldname in GUARDED_FIELDS)
+			groups.setdefault(key, []).append(container["name"])
+		for key, names in groups.items():
+			table.write_columns(names, dict(key))
+			written += len(names)
+	return written
+
+
+def _nearest_certified_ancestor(table, record, excluding=None):
+	"""Walk up `parent_batch_amb` to the nearest record whose source is "Own certificate" (underneath a hand
+	hold, if it is held) -> that record, or None. `excluding`: a (type, certificate) that does not count (the
+	one being withdrawn)."""
+	chain, seen, parent = [], {record["name"]}, record.get("parent_batch_amb")
+	while parent and parent not in seen:
+		seen.add(parent)
+		above = table.get(parent)
+		if not above:
+			break
+		chain.append(above)
+		parent = above.get("parent_batch_amb")
+	for position, above in enumerate(chain):
+		source = above.get("status_source")
+		if source == HOLD_ACTION:
+			source = _source_under_hold(above, chain[position + 1] if position + 1 < len(chain) else None)
+		if (
+			source == OWN_CERTIFICATE
+			and _certificate_of(above)
+			and _certificate_of(above) != excluding
+			and above.get("certificate_status")
+		):
+			return above
+	return None
+
+
 def _approve(table, certificate_doctype, certificate, lot, result):
 	status = _mapped(result)
+	# not locked: two approvals in the same tree at once each plan from this read (the concurrent-approval race)
 	record = _target(table, certificate_doctype, certificate, lot)
+	table.acting_on = record["name"]
 	if _level(record) not in CERTIFICATE_LEVELS:
 		frappe.throw(
 			_(
@@ -412,46 +730,136 @@ def _approve(table, certificate_doctype, certificate, lot, result):
 			frappe.ValidationError,
 			title=_("Quality status"),
 		)
-	return _set(
+	view = (certificate_doctype, certificate, status)
+	return _write_down(
 		table,
-		record["name"],
-		status,
-		certificate=certificate,
-		certificate_doctype=certificate_doctype,
-		source=OWN_CERTIFICATE,
-		reason=f"certificate {certificate_doctype} {certificate} approved with result {result}",
+		record,
+		dict(_values(record, view, OWN_CERTIFICATE), **_link_at_approval(certificate_doctype, certificate)),
+		view,
+		_has_no_certificate_of_its_own,
+		f"certificate {certificate_doctype} {certificate} approved with result {result}",
 	)
+
+
+def _without(table, record, this, certificate_doctype, certificate):
+	"""What a record that loses the certificate `this` falls back on: its nearest certified ancestor's status,
+	as "Inherited", or Pending. -> (view, source, reason)"""
+	above = _nearest_certified_ancestor(table, record, excluding=this)
+	if not above:
+		return None, "", f"certificate {certificate_doctype} {certificate} withdrawn"
+	view = (above.get("released_by_doctype"), above.get("released_by"), above.get("certificate_status"))
+	reason = "certificate {} {} withdrawn; follows {}, which {} {} says is {}".format(
+		certificate_doctype, certificate, above["name"], view[0], view[1], view[2]
+	)
+	return view, INHERITED, reason
 
 
 def _withdraw(table, certificate_doctype, certificate, lot, standing=None):
 	record = _target(table, certificate_doctype, certificate, lot)
-	if _certificate_of(record) != (certificate_doctype, certificate):
-		return False  # this certificate did not write the record: nothing of its own to take back
-	if standing:
-		if (standing.get("doctype"), standing.get("name")) == (certificate_doctype, certificate):
-			frappe.throw(_("The certificate that still stands cannot be the one that is withdrawn."))
-		return _set(
-			table,
-			record["name"],
-			_mapped(standing.get("result")),
-			certificate=standing.get("name"),
-			certificate_doctype=standing.get("doctype"),
-			source=OWN_CERTIFICATE,
-			reason="certificate {} {} withdrawn; {} {} still stands with result {}".format(
-				certificate_doctype,
-				certificate,
-				standing.get("doctype"),
-				standing.get("name"),
-				standing.get("result"),
-			),
+	table.acting_on = record["name"]
+	this = (certificate_doctype, certificate)
+
+	def wrote(child, parent=None):
+		return _certificate_of(child) == this  # only the records this certificate wrote
+
+	link = _link_at_withdrawal(record, certificate_doctype, certificate, standing)
+	written = 0
+	if wrote(record):
+		if standing:
+			if (standing.get("doctype"), standing.get("name")) == this:
+				frappe.throw(_("The certificate that still stands cannot be the one that is withdrawn."))
+			view = (standing.get("doctype"), standing.get("name"), _mapped(standing.get("result")))
+			if not (view[0] and view[1]):
+				frappe.throw(_("The certificate that still stands must be named with its type."))
+			source = OWN_CERTIFICATE
+			reason = "certificate {} {} withdrawn; {} {} still stands with result {}".format(
+				certificate_doctype, certificate, view[0], view[1], standing.get("result")
+			)
+		else:
+			view, source, reason = _without(table, record, this, certificate_doctype, certificate)
+		written += _write_down(
+			table, record, dict(_values(record, view, source), **link), view, wrote, reason
 		)
-	return _set(
-		table,
-		record["name"],
-		PENDING,
-		source="",
-		reason=f"certificate {certificate_doctype} {certificate} withdrawn",
+	elif link:
+		# this certificate did not write the record's status (nothing of that to take back), but the record's
+		# link still points at it
+		saved = table.save(
+			record["name"],
+			link,
+			reason=f"certificate {certificate_doctype} {certificate} withdrawn; the status comes from another certificate",
+		)
+		written += 1 if saved else 0
+	return written + _reset_elsewhere(table, record, this, certificate_doctype, certificate, wrote)
+
+
+def _reset_elsewhere(table, lot, this, certificate_doctype, certificate, wrote):
+	"""After the walk down from the certificate's lot: reset every record that STILL names the certificate in
+	`released_by*` (a query on those two fields, not on the tree). These are records the walk does not reach: a
+	record moved under another parent, a record below one of another level, a record below a sub-lot that got a
+	certificate of its own. Each takes its nearest certified ancestor's status, or Pending (never the standing
+	certificate: that one is of the certificate's lot, which such a record follows only if it is still below
+	it, and then the ancestor rule gives it). Highest level first, so that a moved sub-lot is written with its
+	own containers (one row, as in the walk down); a container found alone gets a full save and a row of its
+	own, since no saved record speaks for it."""
+	written = 0
+	found = sorted(table.released_by(certificate_doctype, certificate), key=lambda r: (_level(r), r["name"]))
+	for stale in found:
+		record = table.get(stale["name"])
+		if not record or not wrote(record):
+			continue  # written meanwhile, with a record found before it
+		view, source, reason = _without(table, record, this, certificate_doctype, certificate)
+		written += _write_down(
+			table,
+			record,
+			_values(record, view, source),
+			view,
+			wrote,
+			"{} (found by its certificate, outside the walk down from {})".format(reason, lot["name"]),
+		)
+	return written
+
+
+def insert_child(child, parent):
+	"""`create_child_batch`'s insert (B4). A new sub-lot or container under a record whose status comes from a
+	certificate is born with that status: the parent's certificate, what it says, source "Inherited", and one
+	history row. Under a record no certificate speaks for, it is born Pending. `child` is the new document, not
+	yet inserted; `parent` the document it is created under.
+
+	A parent on hand hold: the child takes what the parent's certificate says, not the hold (the hold is on the
+	parent record; see the module docstring)."""
+	certificate = _certificate_of(parent)
+	says = parent.get("certificate_status")
+	values = dict.fromkeys(GUARDED_FIELDS)
+	values["quality_status"] = PENDING
+	if certificate and says in LOT_STATUSES:
+		values = {
+			"quality_status": says,
+			"status_source": INHERITED,
+			"released_by_doctype": certificate[0] or None,
+			"released_by": certificate[1],
+			"certificate_status": says,
+		}
+	for fieldname, value in values.items():
+		child.set(fieldname, value)
+	if not values["status_source"]:
+		return child.insert()  # Pending, no certificate: an insert like any other, judged by the guard
+	child.append(
+		HISTORY_TABLE,
+		_history_row(
+			child,
+			dict.fromkeys(GUARDED_FIELDS),
+			values,
+			"created under {}, which {} {} says is {}".format(
+				parent.get("name"), certificate[0], certificate[1], says
+			),
+			None,
+		),
 	)
+	child.flags[WRITER_FLAG] = _WRITER
+	try:
+		return child.insert()
+	finally:
+		child.flags.pop(WRITER_FLAG, None)
 
 
 def _lift(table, lot, reason):
