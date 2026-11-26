@@ -1521,6 +1521,71 @@
    "columns": 0,
    "default": null,
    "depends_on": null,
+   "description": "Internal certificate (COA AMB2) of this lot record",
+   "documentation_url": null,
+   "fetch_from": null,
+   "fetch_if_empty": 0,
+   "fieldname": "coa_amb2",
+   "fieldtype": "Link",
+   "hidden": 0,
+   "hide_border": 0,
+   "hide_days": 0,
+   "hide_seconds": 0,
+   "ignore_user_permissions": 0,
+   "ignore_xss_filter": 0,
+   "in_filter": 0,
+   "in_global_search": 0,
+   "in_list_view": 0,
+   "in_preview": 0,
+   "in_standard_filter": 0,
+   "is_virtual": 0,
+   "label": "COA AMB2",
+   "length": 0,
+   "link_filters": null,
+   "make_attachment_public": 0,
+   "mandatory_depends_on": null,
+   "max_height": null,
+   "no_copy": 0,
+   "non_negative": 0,
+   "oldfieldname": null,
+   "oldfieldtype": null,
+   "options": "COA AMB2",
+   "parent": "Batch AMB",
+   "parentfield": "fields",
+   "parenttype": "DocType",
+   "permlevel": 0,
+   "placeholder": null,
+   "precision": "",
+   "print_hide": 0,
+   "print_hide_if_no_value": 0,
+   "print_width": null,
+   "read_only": 0,
+   "read_only_depends_on": null,
+   "remember_last_selected_value": 0,
+   "report_hide": 0,
+   "reqd": 0,
+   "search_index": 0,
+   "set_only_once": 0,
+   "show_dashboard": 0,
+   "show_on_timeline": 0,
+   "show_preview_popup": 0,
+   "sort_options": 0,
+   "translatable": 0,
+   "trigger": null,
+   "unique": 0,
+   "width": null,
+   "idx": 25
+  },
+  {
+   "allow_bulk_edit": 0,
+   "allow_in_quick_entry": 0,
+   "allow_on_submit": 0,
+   "bold": 0,
+   "collapsible": 0,
+   "collapsible_depends_on": null,
+   "columns": 0,
+   "default": null,
+   "depends_on": null,
    "description": null,
    "documentation_url": null,
    "fetch_from": null,
@@ -1574,7 +1639,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 25
+   "idx": 26
   },
   {
    "allow_bulk_edit": 0,
@@ -1639,7 +1704,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 26
+   "idx": 27
   },
   {
    "allow_bulk_edit": 0,
@@ -1704,7 +1769,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 27
+   "idx": 28
   },
   {
    "allow_bulk_edit": 0,
@@ -1769,7 +1834,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 28
+   "idx": 29
   },
   {
    "allow_bulk_edit": 0,
@@ -1834,7 +1899,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 29
+   "idx": 30
   },
   {
    "allow_bulk_edit": 0,
@@ -1899,7 +1964,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 30
+   "idx": 31
   },
   {
    "allow_bulk_edit": 0,
@@ -1964,7 +2029,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 31
+   "idx": 32
   },
   {
    "allow_bulk_edit": 0,
@@ -2029,7 +2094,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 32
+   "idx": 33
   },
   {
    "allow_bulk_edit": 0,
@@ -2094,7 +2159,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 33
+   "idx": 34
   },
   {
    "allow_bulk_edit": 0,
@@ -2159,14 +2224,14 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 34
+   "idx": 35
   },
   {
    "fieldname": "cost_and_output_section",
    "fieldtype": "Section Break",
    "label": "Cost & Output",
    "collapsible": 1,
-   "idx": 35
+   "idx": 36
   },
   {
    "fieldname": "total_production_cost",
@@ -2176,12 +2241,12 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 36
+   "idx": 37
   },
   {
    "fieldname": "cost_output_col_break",
    "fieldtype": "Column Break",
-   "idx": 37
+   "idx": 38
   },
   {
    "fieldname": "cost_per_kg",
@@ -2191,7 +2256,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 38
+   "idx": 39
   },
   {
    "fieldname": "calculated_total_weight",
@@ -2201,7 +2266,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 39
+   "idx": 40
   },
   {
    "fieldname": "cost_source",
@@ -2211,7 +2276,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 40,
+   "idx": 41,
    "options": "\nWork Order\nManual Entry\nEstimated\nBatch Calculation"
   },
   {
@@ -2277,7 +2342,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 41
+   "idx": 42
   },
   {
    "allow_bulk_edit": 0,
@@ -2342,7 +2407,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 42
+   "idx": 43
   },
   {
    "allow_bulk_edit": 0,
@@ -2407,7 +2472,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 43
+   "idx": 44
   },
   {
    "allow_bulk_edit": 0,
@@ -2472,7 +2537,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 44
+   "idx": 45
   },
   {
    "allow_bulk_edit": 0,
@@ -2537,7 +2602,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 45
+   "idx": 46
   },
   {
    "allow_bulk_edit": 0,
@@ -2602,7 +2667,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 46
+   "idx": 47
   },
   {
    "fieldname": "cost_calculation_method",
@@ -2612,7 +2677,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 47,
+   "idx": 48,
    "options": "Manual\nWork Order\nEstimated\nActual"
   },
   {
@@ -2620,7 +2685,7 @@
    "fieldtype": "Section Break",
    "label": "Output Products",
    "insert_after": "quality_test_results",
-   "idx": 48
+   "idx": 49
   },
   {
    "description": "Output products from this batch (Level 2 transformation)",
@@ -2629,14 +2694,14 @@
    "insert_after": "output_products_section",
    "label": "Output Products",
    "options": "Batch Output Product",
-   "idx": 49
+   "idx": 50
   },
   {
    "fieldname": "batch_output_products_section",
    "fieldtype": "Section Break",
    "label": "Batch Output Products",
    "insert_after": "output_products",
-   "idx": 50
+   "idx": 51
   },
   {
    "fieldname": "batch_output_products",
@@ -2646,7 +2711,7 @@
    "description": "Detailed batch output products with traceability",
    "insert_after": "batch_output_products_section",
    "hidden": 0,
-   "idx": 51
+   "idx": 52
   },
   {
    "fieldname": "batch_output_products_end_section",
@@ -2717,7 +2782,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 52
+   "idx": 53
   },
   {
    "allow_bulk_edit": 0,
@@ -2782,7 +2847,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 53
+   "idx": 54
   },
   {
    "allow_bulk_edit": 0,
@@ -2847,7 +2912,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 54
+   "idx": 55
   },
   {
    "allow_bulk_edit": 0,
@@ -2912,7 +2977,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 55
+   "idx": 56
   },
   {
    "allow_bulk_edit": 0,
@@ -2977,7 +3042,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 56
+   "idx": 57
   },
   {
    "allow_bulk_edit": 0,
@@ -3042,7 +3107,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 57
+   "idx": 58
   },
   {
    "allow_bulk_edit": 0,
@@ -3107,7 +3172,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 58
+   "idx": 59
   },
   {
    "allow_bulk_edit": 0,
@@ -3172,7 +3237,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 59
+   "idx": 60
   },
   {
    "allow_bulk_edit": 0,
@@ -3237,7 +3302,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 60
+   "idx": 61
   },
   {
    "allow_bulk_edit": 0,
@@ -3302,7 +3367,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 61
+   "idx": 62
   },
   {
    "allow_bulk_edit": 0,
@@ -3367,7 +3432,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 62
+   "idx": 63
   },
   {
    "allow_bulk_edit": 0,
@@ -3432,7 +3497,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 63
+   "idx": 64
   },
   {
    "allow_bulk_edit": 0,
@@ -3497,7 +3562,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 64
+   "idx": 65
   },
   {
    "allow_bulk_edit": 0,
@@ -3562,7 +3627,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 65
+   "idx": 66
   },
   {
    "allow_bulk_edit": 0,
@@ -3627,7 +3692,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 66
+   "idx": 67
   },
   {
    "allow_bulk_edit": 0,
@@ -3692,14 +3757,14 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 67
+   "idx": 68
   },
   {
    "fieldname": "container_settings_section",
    "fieldtype": "Section Break",
    "label": "Container Settings",
    "collapsible": 0,
-   "idx": 68
+   "idx": 69
   },
   {
    "fieldname": "barrel_settings_section",
@@ -3770,7 +3835,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 69,
+   "idx": 70,
    "insert_after": "barrel_settings_section"
   },
   {
@@ -3781,13 +3846,13 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 70,
+   "idx": 71,
    "insert_after": "barrel_count"
   },
   {
    "fieldname": "container_settings_col_break",
    "fieldtype": "Column Break",
-   "idx": 71,
+   "idx": 72,
    "insert_after": "use_containers"
   },
   {
@@ -3798,7 +3863,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 72
+   "idx": 73
   },
   {
    "fieldname": "total_containers",
@@ -3808,7 +3873,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 73
+   "idx": 74
   },
   {
    "allow_bulk_edit": 0,
@@ -3873,7 +3938,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 74
+   "idx": 75
   },
   {
    "allow_bulk_edit": 0,
@@ -3938,7 +4003,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 75
+   "idx": 76
   },
   {
    "allow_bulk_edit": 0,
@@ -4003,7 +4068,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 76
+   "idx": 77
   },
   {
    "allow_bulk_edit": 0,
@@ -4068,7 +4133,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 77
+   "idx": 78
   },
   {
    "allow_bulk_edit": 0,
@@ -4133,7 +4198,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 78
+   "idx": 79
   },
   {
    "allow_bulk_edit": 0,
@@ -4198,7 +4263,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 79
+   "idx": 80
   },
   {
    "allow_bulk_edit": 0,
@@ -4263,7 +4328,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 80
+   "idx": 81
   },
   {
    "allow_bulk_edit": 0,
@@ -4328,14 +4393,14 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 81
+   "idx": 82
   },
   {
    "fieldname": "spc_parameters_section",
    "fieldtype": "Section Break",
    "insert_after": "container_barrels",
    "label": "SPC Parameters",
-   "idx": 82
+   "idx": 83
   },
   {
    "fieldname": "batch_parameters",
@@ -4343,14 +4408,14 @@
    "insert_after": "spc_parameters_section",
    "label": "SPC Batch Parameters",
    "options": "SPC Batch Parameter",
-   "idx": 83
+   "idx": 84
   },
   {
    "fieldname": "quality_tests_section",
    "fieldtype": "Section Break",
    "insert_after": "batch_parameters",
    "label": "Quality Tests",
-   "idx": 84
+   "idx": 85
   },
   {
    "fieldname": "quality_test_results",
@@ -4358,7 +4423,7 @@
    "insert_after": "quality_tests_section",
    "label": "Quality Test Results",
    "options": "SPC Quality Test",
-   "idx": 85
+   "idx": 86
   },
   {
    "allow_bulk_edit": 0,
@@ -4423,7 +4488,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 86
+   "idx": 87
   },
   {
    "allow_bulk_edit": 0,
@@ -4488,7 +4553,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 87
+   "idx": 88
   },
   {
    "allow_bulk_edit": 0,
@@ -4553,7 +4618,7 @@
    "trigger": null,
    "unique": 0,
    "width": null,
-   "idx": 88
+   "idx": 89
   },
   {
    "fieldname": "actual_completion",
@@ -4563,7 +4628,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 89
+   "idx": 90
   },
   {
    "fieldname": "actual_start",
@@ -4573,7 +4638,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 90
+   "idx": 91
   },
   {
    "fieldname": "batch_id",
@@ -4583,7 +4648,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 91
+   "idx": 92
   },
   {
    "fieldname": "batch_id_general_lot",
@@ -4593,7 +4658,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 92
+   "idx": 93
   },
   {
    "fieldname": "batch_level",
@@ -4603,7 +4668,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 93
+   "idx": 94
   },
   {
    "fieldname": "batch_quantity",
@@ -4613,7 +4678,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 94
+   "idx": 95
   },
   {
    "fieldname": "batch_status",
@@ -4623,7 +4688,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 95
+   "idx": 96
   },
   {
    "fieldname": "bom_no",
@@ -4634,7 +4699,7 @@
    "read_only": 0,
    "reqd": 0,
    "options": "BOM",
-   "idx": 96
+   "idx": 97
   },
   {
    "fieldname": "bom_reference",
@@ -4645,7 +4710,7 @@
    "read_only": 0,
    "reqd": 0,
    "options": "BOM",
-   "idx": 97
+   "idx": 98
   },
   {
    "fieldname": "bom_status",
@@ -4655,7 +4720,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 98
+   "idx": 99
   },
   {
    "fieldname": "brix_level",
@@ -4665,7 +4730,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 99
+   "idx": 100
   },
   {
    "fieldname": "calculate_cost",
@@ -4675,7 +4740,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 100
+   "idx": 101
   },
   {
    "fieldname": "concentration_type",
@@ -4685,7 +4750,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 101
+   "idx": 102
   },
   {
    "fieldname": "cost_per_unit",
@@ -4695,7 +4760,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 102
+   "idx": 103
   },
   {
    "fieldname": "custom_certificate_code",
@@ -4705,7 +4770,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 103
+   "idx": 104
   },
   {
    "fieldname": "custom_folio_produccion",
@@ -4715,7 +4780,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 104
+   "idx": 105
   },
   {
    "fieldname": "custom_last_api_sync",
@@ -4725,7 +4790,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 105
+   "idx": 106
   },
   {
    "fieldname": "custom_produced_qty",
@@ -4735,7 +4800,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 106
+   "idx": 107
   },
   {
    "fieldname": "custom_product_family",
@@ -4745,7 +4810,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 107
+   "idx": 108
   },
   {
    "fieldname": "custom_serial_numbers",
@@ -4755,7 +4820,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 108
+   "idx": 109
   },
   {
    "fieldname": "item_name",
@@ -4765,7 +4830,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 109
+   "idx": 110
   },
   {
    "fieldname": "item_on_batch",
@@ -4776,7 +4841,7 @@
    "read_only": 0,
    "reqd": 0,
    "options": "Item",
-   "idx": 110
+   "idx": 111
   },
   {
    "fieldname": "labor_cost",
@@ -4786,7 +4851,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 111
+   "idx": 112
   },
   {
    "fieldname": "main_item",
@@ -4797,7 +4862,7 @@
    "read_only": 0,
    "reqd": 0,
    "options": "Item",
-   "idx": 112
+   "idx": 113
   },
   {
    "fieldname": "manufacturing_plant",
@@ -4808,7 +4873,7 @@
    "read_only": 0,
    "reqd": 0,
    "options": "Warehouse",
-   "idx": 113
+   "idx": 114
   },
   {
    "fieldname": "material_cost",
@@ -4818,7 +4883,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 114
+   "idx": 115
   },
   {
    "fieldname": "naming_series_amb",
@@ -4828,7 +4893,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 115
+   "idx": 116
   },
   {
    "fieldname": "overhead_cost",
@@ -4838,7 +4903,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 116
+   "idx": 117
   },
   {
    "fieldname": "processed_quantity",
@@ -4848,7 +4913,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 117
+   "idx": 118
   },
   {
    "fieldname": "processing_notes",
@@ -4858,7 +4923,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 118
+   "idx": 119
   },
   {
    "fieldname": "processing_status",
@@ -4868,7 +4933,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 119
+   "idx": 120
   },
   {
    "fieldname": "produced_qty",
@@ -4878,7 +4943,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 120
+   "idx": 121
   },
   {
    "fieldname": "production_end_date",
@@ -4888,7 +4953,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 121
+   "idx": 122
   },
   {
    "fieldname": "production_plant",
@@ -4899,7 +4964,7 @@
    "read_only": 0,
    "reqd": 0,
    "options": "Warehouse",
-   "idx": 122
+   "idx": 123
   },
   {
    "fieldname": "production_plant_id",
@@ -4909,7 +4974,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 123
+   "idx": 124
   },
   {
    "fieldname": "production_start_date",
@@ -4919,7 +4984,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 124
+   "idx": 125
   },
   {
    "fieldname": "production_year",
@@ -4929,7 +4994,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 125
+   "idx": 126
   },
   {
    "fieldname": "scheduled_start_date",
@@ -4939,7 +5004,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 126
+   "idx": 127
   },
   {
    "fieldname": "scheduled_start_time",
@@ -4949,7 +5014,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 127
+   "idx": 128
   },
   {
    "fieldname": "standard_bom_reference",
@@ -4960,7 +5025,7 @@
    "read_only": 0,
    "reqd": 0,
    "options": "BOM",
-   "idx": 128
+   "idx": 129
   },
   {
    "fieldname": "status",
@@ -4970,7 +5035,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 129
+   "idx": 130
   },
   {
    "fieldname": "title_batch_id",
@@ -4980,7 +5045,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 130
+   "idx": 131
   },
   {
    "fieldname": "title_field",
@@ -4990,7 +5055,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 131
+   "idx": 132
   },
   {
    "fieldname": "total_batch_cost",
@@ -5000,7 +5065,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 132
+   "idx": 133
   },
   {
    "fieldname": "uom",
@@ -5011,7 +5076,7 @@
    "read_only": 0,
    "reqd": 0,
    "options": "UOM",
-   "idx": 133
+   "idx": 134
   },
   {
    "fieldname": "work_order",
@@ -5022,7 +5087,7 @@
    "read_only": 0,
    "reqd": 0,
    "options": "Work Order",
-   "idx": 134
+   "idx": 135
   },
   {
    "fieldname": "yield_percentage",
@@ -5032,7 +5097,7 @@
    "permlevel": 0,
    "read_only": 0,
    "reqd": 0,
-   "idx": 135
+   "idx": 136
   }
  ],
  "force_re_route_to_default_view": 0,
