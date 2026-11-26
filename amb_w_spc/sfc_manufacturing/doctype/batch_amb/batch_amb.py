@@ -3269,6 +3269,36 @@ def make_sample_request_from_source(source_doctype, source_name):
 # actual controller class resolution (fixes NestedSet issue)
 # ============================================================
 
+# TASKS-342 ruling 75 (Hugh): only these roles may change a Batch AMB's `quality_status` (the status the QC hold
+# gate in rnd_warehouse_management trusts). Not System Manager: Administrator holds every role, so it passes.
+QUALITY_STATUS_ROLES = ("Quality Manager", "Quality User")
+QUALITY_STATUS_DEFAULT = "Pending"  # an empty status is "Pending" everywhere in this app (see _sync_from_work_order)
+
+
+def batch_amb_quality_status_guard(doc, method=None):
+    """doc_events before_validate hook: refuse, on the server, a change of `quality_status` by a user who holds neither
+    Quality Manager nor Quality User. It is a hook and not a class method on purpose: this DocType may be loaded as
+    a plain Document (see the note on `override_doctype_class` in hooks.py), in which case `BatchAMB.validate`
+    never runs, while the doc_events hooks always do. A new document counts as a change from "Pending" (an empty
+    status is Pending), so nobody else can create a batch already Passed. Covers every path that SAVES the
+    document (form, API, `frappe.client.set_value`, `approve_quality`, other apps' `doc.save()`); a direct
+    `db_set` / `frappe.db.set_value` / SQL write bypasses validate and is not covered."""
+    before = doc.get_doc_before_save() if hasattr(doc, "get_doc_before_save") else None
+    old = (before.get("quality_status") if before else None) or QUALITY_STATUS_DEFAULT
+    new = doc.get("quality_status") or QUALITY_STATUS_DEFAULT
+    if old == new:
+        return
+    if set(QUALITY_STATUS_ROLES) & set(frappe.get_roles()):
+        return
+    frappe.throw(
+        _("Only Quality Manager or Quality User can change the quality status of a batch ({0}: {1} → {2}).").format(
+            doc.name or _("new"), old, new
+        ),
+        frappe.PermissionError,
+        title=_("Quality status"),
+    )
+
+
 def batch_amb_validate(doc, method=None):
     """Hook for validate event - ensures Golden Number is generated."""
     _set_batch_naming_on_doc(doc)

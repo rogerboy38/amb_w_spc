@@ -232,6 +232,12 @@ doc_events = {
     # ---- + Phase 1 batch projection (plan 2026-07-05 §2, flag-gated by
     # ---- site_config batch_amb_projection_enabled — absent/0 = fully inert)
     "Batch AMB": {
+        # TASKS-342 ruling 75: only Quality Manager / Quality User may change quality_status. `before_validate` runs
+        # before the controller's validate (which would log and notify the change first) and, unlike `validate`, is
+        # not skipped by `doc.flags.ignore_validate`.
+        "before_validate": [
+            "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_quality_status_guard",
+        ],
         "validate": [
             "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_validate",
             # W4a (Task #36): derive Expiry = M.D. + Item.shelf_life_in_days when empty.
