@@ -26,9 +26,9 @@ from amb_w_spc.tests.test_lot_quality import INTERNAL, USER, Db, Refused, Table,
 
 FILLER, WO_OWNER = "quality-filler", "planner"
 EMAIL = {
-	USER: "approver@example.invalid",
-	FILLER: "filler@example.invalid",
-	WO_OWNER: "planner@example.invalid",
+	USER: "mail-approver",
+	FILLER: "mail-filler",
+	WO_OWNER: "mail-planner",
 }
 QUALITY_ROLE_USERS = ("quality-1", "quality-2", "quality-3")
 
@@ -202,7 +202,7 @@ class TestOneSummary(SummaryCase):
 		self.assertEqual(self.mails(f)[0]["recipients"], [EMAIL[FILLER], EMAIL[USER]])
 
 	def test_administrator_and_guest_are_never_recipients(self):
-		users = people(Administrator={"enabled": 1, "email": "admin@example.invalid"})
+		users = people(Administrator={"enabled": 1, "email": "mail-admin"})
 		t, f = Table(*tree()), summary_frappe(users=users, session="Administrator", wo_owner="Guest")
 		self.approve(t, f)
 		self.assertEqual(self.mails(f)[0]["recipients"], [EMAIL[FILLER]])
@@ -414,7 +414,7 @@ def controller_db():
 	db.work_orders["WO-1"] = {"owner": WO_OWNER}
 	db.users.update(people())
 	for user in QUALITY_ROLE_USERS:
-		db.users[user] = {"enabled": 1, "email": f"{user}@example.invalid"}
+		db.users[user] = {"enabled": 1, "email": f"mail-{user}"}
 	return db
 
 
@@ -502,7 +502,7 @@ class TestWhatIsAReleaseSave(unittest.TestCase):
 			self.assertEqual([e[1:] for e in db.saves()], [("S1", False), ("S1", False)])
 		self.assertEqual(f.sendmail.call_count, 2)
 		for call in f.sendmail.call_args_list:
-			self.assertIn("quality-1@example.invalid", call.kwargs["recipients"])
+			self.assertIn("mail-quality-1", call.kwargs["recipients"])
 		self.assertEqual(len(lote_amb_inserts(f)), 2)
 
 	def test_a_flag_that_arrives_as_data_is_not_a_release(self):
