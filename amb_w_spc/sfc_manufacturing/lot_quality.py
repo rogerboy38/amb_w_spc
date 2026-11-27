@@ -54,6 +54,8 @@ TASKS-390: muted mail is noted, not queued (decision 333, `_send_summary`); a sh
 
 TASKS-391: a container created under a sub-lot whose status comes from a certificate inherits it at its birth
 (decision 342, amends 336, `insert_child`); a sub-lot created after an approval is still born Pending.
+TASKS-392: the same for a container created directly under a lot (decision 344); a copy of a lot record carries
+no certificate link (decision 345, `reset_for_copy`; the three link fields are also "no copy" in the DocType).
 
 No move under a hold (TASKS-388, decision 329): `parent_batch_amb` of a record cannot be changed while the chain
 above its stored parent, or above its new parent, holds a record on a hand hold (`_refuse_move_under_hold`), and a
@@ -1088,9 +1090,9 @@ def _inherits_at_birth(child, parent):
 	Pending as in 336: a sub-lot (level 2) under anything, a container under another container, a child of any
 	other level.
 
-	The status is the sub-lot's `certificate_status`, not its `quality_status`: the two are the same unless the
-	sub-lot is on a hand hold, and then the container takes what the sub-lot's certificate says, not the hold,
-	exactly as the write-down of an approval writes the containers below a held sub-lot (`_plan`; decision 315,
+	The status is the parent's `certificate_status`, not its `quality_status`: the two are the same unless the
+	parent is on a hand hold, and then the container takes what the parent's certificate says, not the hold,
+	exactly as the write-down of an approval writes the containers below a held lot or sub-lot (`_plan`; decision 315,
 	reading 1 of TASKS-391): the hold is on the one record that is held."""
 	if _level(child) != CONTAINER_LEVEL or _level(parent) not in CERTIFICATE_LEVELS:
 		return None
@@ -1105,20 +1107,20 @@ def insert_child(child, parent):
 	"""`create_child_batch`'s insert. `child` is the new document, not yet inserted; `parent` the document it is
 	created under. Whatever the caller put in the quality fields is cleared first.
 
-	Decision 342 (TASKS-391, amends 336): a CONTAINER (level 3) created under a SUB-LOT (level 2) whose status
-	comes from a certificate takes that sub-lot's verdict as "Inherited" from the same certificate
-	(`released_by_doctype` / `released_by` / `certificate_status` the same as the sub-lot's), with ONE history row
-	"created after approval of <certificate>: inherits from <sub-lot>": containers follow their sub-lot (decision
-	319), and a container born Pending there could never be certified (certificates are made for levels 1 and 2).
-	A sub-lot on a hand hold: the container takes what the sub-lot's certificate says (its `certificate_status`),
-	not Hold, as the write-down does (`_inherits_at_birth`). No certificate link is written on the container (the
+	Decisions 342 and 344 (TASKS-391/392, amend 336): a CONTAINER (level 3) created directly under a LOT (level 1)
+	or a SUB-LOT (level 2) whose status comes from a certificate takes that record's verdict as "Inherited" from
+	the same certificate (`released_by_doctype` / `released_by` / `certificate_status` the same as the parent's),
+	with ONE history row "created after approval of <certificate>: inherits from <parent>": containers follow the
+	record above them (decision 319), and a container born Pending there could never be certified (certificates
+	are made for levels 1 and 2). A parent on a hand hold: the container takes what the parent's certificate says
+	(its `certificate_status`), not Hold, as the write-down does (`_inherits_at_birth`). No certificate link is written on the container (the
 	write-down writes none on records that inherit either).
 
 	Decision 336 (TASKS-390), for every other child: born Pending with no certificate (empty `status_source`,
 	`released_by*`, `certificate_status`). Under a parent that names a certificate it gets one history row
 	"created after approval of <certificate>: Pending until certified". That is: a SUB-LOT (level 2) created after
-	an approval; a container under a lot (level 1) or under another container (`create_child_batch` does not
-	check the parent's level); a container under a sub-lot whose certificate says no status. How "after" is
+	an approval; a container under another container (`create_child_batch` does not check the parent's level); a
+	container under a lot or sub-lot whose certificate says no status. How "after" is
 	decided: a child inserted here is after the approval of every certificate its parent carries at this moment,
 	with no date to compare. A record carries a certificate in `released_by*` only once an approval (or the
 	write-down of one, decision 319) has written it there, and the write-down reaches every record below that

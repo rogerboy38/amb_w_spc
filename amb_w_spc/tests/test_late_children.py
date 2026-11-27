@@ -1,4 +1,7 @@
-# TASKS-391, DB-free: what a new child of a released record is born with.
+# TASKS-391 and TASKS-392, DB-free: what a new child of a released record is born with, and what a copy carries.
+#
+#   * decision 344 (TASKS-392, amends 342): the same as below for a container created directly under a LOT
+#   * decision 345 (TASKS-392): a copy of a lot record carries no certificate link
 #
 #   * decision 342 (amends 336): a CONTAINER (level 3) created under a SUB-LOT (level 2) whose status comes from a
 #     certificate takes that sub-lot's certificate verdict as "Inherited" from the same certificate, with ONE
@@ -6,7 +9,7 @@
 #     the container takes what the sub-lot's certificate says (`certificate_status`), not Hold, as the
 #     write-down of an approval does (reading 1)
 #   * a SUB-LOT (level 2) created after an approval is still born Pending (336), and so is every other child
-#     (a container under a lot or under a container; a sub-lot whose certificate says no status)
+#     (a container under a container; a parent whose certificate says no status)
 #   * decision 343: `create_child_batch` gives a new child no certificate link (`coa_reference`, `coa_amb`,
 #     `coa_amb2` empty), whatever the parent carries
 #
@@ -164,6 +167,22 @@ class TestEveryOtherChildIsStillBornPending(unittest.TestCase):
 		(row,) = child.rows
 		self.assertIn("Pending until certified", row["comments"])
 
+	def test_a_container_under_a_sub_lot_whose_certificate_says_no_status_is_born_pending(self):
+		for parent in (
+			dict(released(), certificate_status=None),
+			dict(released(), certificate_status="Pending"),
+			dict(released(), released_by_doctype=None),
+		):
+			with self.subTest(parent=parent):
+				_out, child, _f = create("3", **parent)
+				self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
+				self.assertIn("Pending until certified", child.rows[0]["comments"])
+
+	def test_a_level_4_child_is_not_created(self):
+		out, child, _f = create("4", **released())
+		self.assertFalse(out["success"])
+		self.assertIsNone(child.inserted)
+
 
 class TestAContainerUnderACertifiedLotInherits(unittest.TestCase):
 	"""Decision 344 (TASKS-392, amends 342): the record directly above, lot or sub-lot."""
@@ -183,22 +202,6 @@ class TestAContainerUnderACertifiedLotInherits(unittest.TestCase):
 	def test_a_sub_lot_under_an_approved_lot_is_still_born_pending(self):
 		_out, child, _f = create("2", custom_batch_level="1", **released("Passed", "Own certificate"))
 		self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
-
-	def test_a_container_under_a_sub_lot_whose_certificate_says_no_status_is_born_pending(self):
-		for parent in (
-			dict(released(), certificate_status=None),
-			dict(released(), certificate_status="Pending"),
-			dict(released(), released_by_doctype=None),
-		):
-			with self.subTest(parent=parent):
-				_out, child, _f = create("3", **parent)
-				self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
-				self.assertIn("Pending until certified", child.rows[0]["comments"])
-
-	def test_a_level_4_child_is_not_created(self):
-		out, child, _f = create("4", **released())
-		self.assertFalse(out["success"])
-		self.assertIsNone(child.inserted)
 
 
 class TestADuplicateCarriesNoCertificateLink(unittest.TestCase):
@@ -221,6 +224,17 @@ class TestADuplicateCarriesNoCertificateLink(unittest.TestCase):
 		self.assertEqual(copy.get("quality_status"), lq.PENDING)
 		for fieldname in lq.GUARDED_FIELDS[1:]:
 			self.assertIsNone(copy.get(fieldname), fieldname)
+
+	def test_the_forms_own_duplicate_does_not_copy_the_three_links(self):
+		"""The form's Duplicate menu item copies every field not marked "no copy" (Frappe's client copy_doc); the
+		three certificate links are marked, as are the quality fields."""
+		import json
+		import pathlib
+
+		meta = json.loads((pathlib.Path(bam.__file__).parent / "batch_amb.json").read_text(encoding="utf-8"))
+		no_copy = {f["fieldname"]: f.get("no_copy") for f in meta["fields"]}
+		for fieldname in (*LINKS, *lq.GUARDED_FIELDS):
+			self.assertEqual(no_copy.get(fieldname), 1, fieldname)
 
 
 class TestANewChildCarriesNoCertificateLink(unittest.TestCase):

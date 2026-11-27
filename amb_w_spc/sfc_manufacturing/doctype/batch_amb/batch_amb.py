@@ -1800,9 +1800,9 @@ def create_child_batch(parent_name, child_level):
         # Set at the insert below (lot_quality.insert_child). TASKS-390, decision 336: a child is born Pending
         # with no certificate; under a record whose status comes from a certificate (approved before the child
         # existed) it gets one history row "created after approval of <certificate>: Pending until certified".
-        # TASKS-391, decision 342: except a container (level 3) under a sub-lot (level 2) whose status comes from
-        # a certificate: it takes that sub-lot's certificate verdict as "Inherited", with one history row
-        # "created after approval of <certificate>: inherits from <sub-lot>".
+        # TASKS-391/392, decisions 342 and 344: except a container (level 3) directly under a lot or a sub-lot
+        # whose status comes from a certificate: it takes that record's certificate verdict as "Inherited", with
+        # one history row "created after approval of <certificate>: inherits from <parent>".
         
         # ============================================================
         # 7. RESET CHILD-SPECIFIC FIELDS (Start fresh)
