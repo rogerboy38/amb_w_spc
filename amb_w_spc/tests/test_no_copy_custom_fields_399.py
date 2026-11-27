@@ -75,9 +75,14 @@ class TestThePatch(unittest.TestCase):
 				"batch_output_products",
 				"custom_historic_sales_lots",
 				*lq.COPY_CLEARED_HEADER_FIGURES,
+				*lq.COPY_CLEARED_PROCESS_FIELDS,
 			},
 		)
-		self.assertEqual(len(patch.FIELDS), 16)
+		self.assertEqual(len(patch.FIELDS), 23)
+		for name in ("production_start_date", "production_end_date", "batch_status", "custom_last_api_sync"):
+			self.assertIn(name, patch.FIELDS)  # decision 357 (TASKS-400)
+		for name in ("total_production_cost", "cost_per_kg", "calculated_total_weight"):
+			self.assertNotIn(name, patch.FIELDS)  # left as they are
 		self.assertEqual(len(set(patch.FIELDS)), len(patch.FIELDS))
 
 	def test_a_second_run_changes_nothing(self):

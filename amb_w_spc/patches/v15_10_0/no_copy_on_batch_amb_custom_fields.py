@@ -1,5 +1,5 @@
 # Copyright (c) 2026, AMB and contributors
-"""TASKS-399 (decisions 355 and 356): "no copy" on the site Custom Fields of Batch AMB that hold what the source
+"""TASKS-399 (decisions 355 and 356) and TASKS-400 (decision 357): "no copy" on the site Custom Fields of Batch AMB that hold what the source
 lot did, so the form's Duplicate does not copy them.
 
 On a site where one of these fields is ALSO a site Custom Field, Frappe 16.17.5's meta keeps the Custom Field over
@@ -19,7 +19,7 @@ Field rows; migrate clears the caches after the sync in any case."""
 
 import frappe
 
-from amb_w_spc.sfc_manufacturing.lot_quality import COPY_CLEARED_HEADER_FIGURES
+from amb_w_spc.sfc_manufacturing.lot_quality import COPY_CLEARED_HEADER_FIGURES, COPY_CLEARED_PROCESS_FIELDS
 
 DOCTYPE = "Batch AMB"
 # decision 355: the three record tables that are site Custom Fields on the sandbox (353); decision 356: every header
@@ -30,6 +30,7 @@ FIELDS = (
 	"batch_output_products",
 	"custom_historic_sales_lots",
 	*COPY_CLEARED_HEADER_FIGURES,
+	*COPY_CLEARED_PROCESS_FIELDS,  # decision 357 (TASKS-400); on the sandbox the production dates and batch_status
 )
 
 

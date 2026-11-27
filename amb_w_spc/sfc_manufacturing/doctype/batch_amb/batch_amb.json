@@ -4887,6 +4887,7 @@
   },
   {
    "fieldname": "actual_completion",
+   "no_copy": 1,
    "fieldtype": "Datetime",
    "label": "Actual Completion",
    "hidden": 0,
@@ -4897,6 +4898,7 @@
   },
   {
    "fieldname": "actual_start",
+   "no_copy": 1,
    "fieldtype": "Datetime",
    "label": "Actual Start",
    "hidden": 0,
@@ -4947,6 +4949,7 @@
   },
   {
    "fieldname": "batch_status",
+   "no_copy": 1,
    "fieldtype": "Select",
    "label": "Batch Status",
    "hidden": 0,
@@ -5050,6 +5053,7 @@
   },
   {
    "fieldname": "custom_last_api_sync",
+   "no_copy": 1,
    "fieldtype": "Datetime",
    "label": "Custom Last Api Sync",
    "hidden": 0,
@@ -5196,6 +5200,7 @@
   },
   {
    "fieldname": "processing_status",
+   "no_copy": 1,
    "fieldtype": "Select",
    "label": "Processing Status",
    "hidden": 0,
@@ -5217,6 +5222,7 @@
   },
   {
    "fieldname": "production_end_date",
+   "no_copy": 1,
    "fieldtype": "Date",
    "label": "Production End Date",
    "hidden": 0,
@@ -5248,6 +5254,7 @@
   },
   {
    "fieldname": "production_start_date",
+   "no_copy": 1,
    "fieldtype": "Date",
    "label": "Production Start Date",
    "hidden": 0,

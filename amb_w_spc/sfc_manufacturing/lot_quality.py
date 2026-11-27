@@ -415,6 +415,21 @@ COPY_CLEARED_HEADER_FIGURES = {
 	"total_batch_cost": None,  # Data: BOM cost x produced_qty + labour + overhead (calculate_costs)
 	"cost_per_unit": None,  # Data: total_batch_cost / produced_qty (calculate_costs)
 }
+# Decision 357 (TASKS-400): what the source lot did, as times and dates, starts empty; its two statuses start as a
+# new lot record's do. They are emptied here and the insert fills them as for any new record (Frappe 16.17.5
+# `Document._set_defaults`: an empty field takes the new document's default; a Select with no default takes its
+# first option): on the sandbox `batch_status` (a site Custom Field, options "Draft\nIn Progress\nCompleted\n
+# Cancelled") becomes "Draft", as `create_child_batch` sets for a new child; `processing_status` has no default and
+# no options, so it stays empty, as on a new lot. Fieldname -> start value before the insert.
+COPY_CLEARED_PROCESS_FIELDS = {
+	"custom_last_api_sync": None,  # Datetime: written with the barrel serials by the serial-tracking sync
+	"actual_start": None,  # Datetime: set when processing starts
+	"actual_completion": None,  # Datetime: set when processing completes
+	"production_start_date": None,  # Date: entered (also a site Custom Field on the sandbox)
+	"production_end_date": None,  # Date: entered (also a site Custom Field on the sandbox)
+	"processing_status": None,  # Select: as a new lot record (the insert's default)
+	"batch_status": None,  # Select: as a new lot record (the insert's default; "Draft" on the sandbox)
+}
 
 
 def reset_for_copy(doc):
@@ -424,7 +439,8 @@ def reset_for_copy(doc):
 	pointer is kept. `frappe.copy_doc` copies child tables whatever "no copy" says (its `ignore_no_copy` defaults
 	to True), so the rows are emptied here, not left to the DocType flag. Decision 353 (TASKS-398): so are the record
 	tables (`COPY_EMPTIED_RECORD_TABLES`); the setup table (`COPY_KEPT_SETUP_TABLES`) is kept. Decision 356
-	(TASKS-399): the header figures of `COPY_CLEARED_HEADER_FIGURES` start empty or zero."""
+	(TASKS-399): the header figures of `COPY_CLEARED_HEADER_FIGURES` start empty or zero. Decision 357 (TASKS-400):
+	the fields of `COPY_CLEARED_PROCESS_FIELDS` start empty, the statuses then as a new lot record's."""
 	doc.quality_status = PENDING
 	for fieldname in GUARDED_FIELDS[1:]:
 		doc.set(fieldname, None)
@@ -436,6 +452,9 @@ def reset_for_copy(doc):
 		doc.set(fieldname, [])
 	# decision 356 (TASKS-399): nor the header figures that come from them or from what the source lot did
 	for fieldname, value in COPY_CLEARED_HEADER_FIGURES.items():
+		doc.set(fieldname, value)
+	# decision 357 (TASKS-400): nor its times, dates and statuses
+	for fieldname, value in COPY_CLEARED_PROCESS_FIELDS.items():
 		doc.set(fieldname, value)
 
 

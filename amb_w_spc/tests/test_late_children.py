@@ -512,6 +512,43 @@ class TestADuplicateCopiesSetupTablesOnly(unittest.TestCase):
 		for name in ("planned_qty", "labor_cost", "overhead_cost", "material_cost", "total_production_cost"):
 			self.assertFalse(no_copy.get(name), name)  # left as they are (see the report of TASKS-399)
 
+	def test_a_server_duplicate_clears_the_times_dates_and_statuses(self):
+		"""Decision 357 (TASKS-400): emptied before the insert, which gives the statuses a new lot record's defaults."""
+		self.assertEqual(
+			lq.COPY_CLEARED_PROCESS_FIELDS,
+			{
+				"custom_last_api_sync": None,
+				"actual_start": None,
+				"actual_completion": None,
+				"production_start_date": None,
+				"production_end_date": None,
+				"processing_status": None,
+				"batch_status": None,
+			},
+		)
+		source = {
+			"custom_last_api_sync": "2026-11-01 10:00:00",
+			"actual_start": "2026-11-01 08:00:00",
+			"actual_completion": "2026-11-02 18:00:00",
+			"production_start_date": "2026-11-01",
+			"production_end_date": "2026-11-02",
+			"processing_status": "Completed",
+			"batch_status": "Completed",
+		}
+		left = {"total_production_cost": 5, "cost_per_kg": 6, "calculated_total_weight": 7}
+		_out, copy = duplicate(rec("L"), parent_batch_amb="L", custom_batch_level="2", **source, **left)
+		for name in source:
+			self.assertIsNone(copy.get(name), name)
+		for name, value in left.items():
+			self.assertEqual(copy.get(name), value, name)  # left as they are (decision 357)
+
+	def test_the_json_marks_the_times_dates_and_statuses_no_copy_and_not_the_three_left(self):
+		no_copy = {f["fieldname"]: f.get("no_copy") for f in self.meta()["fields"]}
+		for name in lq.COPY_CLEARED_PROCESS_FIELDS:
+			self.assertEqual(no_copy[name], 1, name)
+		for name in ("total_production_cost", "cost_per_kg", "calculated_total_weight"):
+			self.assertFalse(no_copy.get(name), name)
+
 	def test_the_json_marks_every_record_table_no_copy_and_not_the_setup_table(self):
 		no_copy = {f["fieldname"]: f.get("no_copy") for f in self.meta()["fields"]}
 		for name in (*self.RECORD, lq.HISTORY_TABLE):
