@@ -2065,10 +2065,10 @@ def duplicate_batch(source_name):
         new_batch.lote_amb_reference = None
         new_batch.custom_generated_batch_name = None
         new_batch.custom_golden_number = None
-        # a copy is a new lot record: it starts Pending, with no certificate (TASKS-384 B3)
-        lot_quality.reset_for_copy(new_batch)
-
-        new_batch.insert()
+        # a copy is a new lot record (TASKS-384 B3, decisions 345 and 346): Pending, no certificate, no certificate
+        # link, none of the source's history rows, its parent pointer kept, one history row "copied from <source>";
+        # a container under a certified lot or sub-lot inherits as a new one does (lot_quality.insert_copy)
+        lot_quality.insert_copy(new_batch, source_name)
 
         return new_batch.name
 

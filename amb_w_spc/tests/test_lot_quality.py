@@ -767,9 +767,16 @@ class TestTheHandWritersAreGone(unittest.TestCase):
 			released_by="CERT-1",
 			certificate_status="Passed",
 			insert=mock.Mock(),
+			# TASKS-397 (decision 346): the copy carries one history row, which needs a plant and an item
+			current_plant2="1 (Mix)",
+			current_item_code="0227",
+			processing_history=[],
+			flags={},
 		)
 		copy.set = lambda k, v: setattr(copy, k, v)
-		f = mock.MagicMock()
+		copy.get = lambda k, default=None: getattr(copy, k, default)
+		copy.append = lambda table, row: getattr(copy, table).append(row)
+		f = fake_frappe()
 		f.get_doc.return_value = source
 		f.copy_doc.return_value = copy
 
@@ -777,7 +784,7 @@ class TestTheHandWritersAreGone(unittest.TestCase):
 			copy.at_insert = [getattr(copy, k) for k in lq.GUARDED_FIELDS]
 
 		copy.insert.side_effect = insert
-		with mock.patch.object(bam, "frappe", f):
+		with mock.patch.object(bam, "frappe", f), site(Table(), frappe=f):
 			bam.duplicate_batch("LOTE-1")
 		self.assertEqual(copy.at_insert, ["Pending", None, None, None, None])
 

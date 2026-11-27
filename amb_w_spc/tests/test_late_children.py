@@ -2,6 +2,10 @@
 #
 #   * decision 344 (TASKS-392, amends 342): the same as below for a container created directly under a LOT
 #   * decision 345 (TASKS-392): a copy of a lot record carries no certificate link
+#   * decision 346 (TASKS-397): a duplicate of a lot record copies none of the source's history rows and gets ONE
+#     row "copied from <source>" through the module's own insert; it keeps its parent pointer, no certificate link
+#     and Pending; a duplicated container under a certified lot or sub-lot inherits as in 344, else Pending (336);
+#     the form's own Duplicate copies no history row ("no copy" on `processing_history`)
 #
 #   * decision 342 (amends 336): a CONTAINER (level 3) created under a SUB-LOT (level 2) whose status comes from a
 #     certificate takes that sub-lot's certificate verdict as "Inherited" from the same certificate, with ONE
@@ -266,6 +270,158 @@ class TestANewChildCarriesNoCertificateLink(unittest.TestCase):
 		self.assertTrue(out["success"], out)
 		for fieldname in LINKS:
 			self.assertIsNone(child.get(fieldname), fieldname)
+
+
+SOURCE_ROWS = (
+	{
+		"processing_action": "Quality Status Changed",
+		"comments": "source row: approved",
+		"batch_reference": "SRC",
+	},
+	{"processing_action": "Notifications Sent", "comments": "source row: mailed", "batch_reference": "SRC"},
+)
+
+
+def duplicate(*stored, **copy_fields):
+	"""-> (result, copy) of `duplicate_batch("SRC")`: `frappe.copy_doc` gives a copy with these fields, the source's
+	certificate fields and links, and the source's history rows (it copies child tables whatever "no copy" says);
+	the lot table holds the `stored` records the copy's parent pointer may name."""
+	copy = Child()
+	fields = dict(
+		{
+			"current_plant2": "1 (Mix)",
+			"current_item_code": "0227",
+			"coa_reference": "COA-CUST-1",
+			"coa_amb": "COA-CUST-1",
+			"coa_amb2": "CERT-SRC",
+		},
+		**released("Passed", "Own certificate", cert="CERT-SRC"),
+	)
+	for key, value in dict(fields, **copy_fields).items():
+		copy.set(key, value)
+	copy.processing_history = [dict(row) for row in SOURCE_ROWS]
+	f = fake_frappe()
+	f.get_doc.return_value = Fields(name="SRC")
+	f.copy_doc.return_value = copy
+	with mock.patch.object(bam, "frappe", f), site(Table(*stored), frappe=f):
+		out = bam.duplicate_batch("SRC")
+	return out, copy
+
+
+class TestADuplicateIsACleanNewRecord(unittest.TestCase):
+	"""Decision 346 (TASKS-397): `duplicate_batch`."""
+
+	def test_none_of_the_sources_history_rows_is_copied_and_it_gets_one_copied_from_row(self):
+		for parent in (None, "L"):
+			with self.subTest(parent=parent):
+				out, copy = duplicate(
+					rec("L"), parent_batch_amb=parent, custom_batch_level="2" if parent else "1"
+				)
+				self.assertEqual(out, "LOTE-NEW")
+				(row,) = copy.rows
+				self.assertNotIn("source row", row["comments"])
+				self.assertEqual(
+					(
+						row["processing_action"],
+						row["quality_status"],
+						row["changed_by"],
+						row["batch_reference"],
+					),
+					("Quality Status Changed", "Pending", USER, "LOTE-NEW"),
+				)
+				self.assertIn("reason: copied from SRC", row["comments"])
+				self.assertIn("certificate: from none to none", row["comments"])
+				self.assertIs(copy.flag_at_insert, lq._WRITER)  # the module's own insert
+				self.assertEqual(copy.flags, {})  # ... and the flag is down after it
+
+	def test_it_keeps_its_parent_pointer_no_certificate_link_and_pending(self):
+		_out, copy = duplicate(rec("L"), parent_batch_amb="L", custom_batch_level="2")
+		self.assertEqual(copy.get("parent_batch_amb"), "L")
+		self.assertEqual(copy.inserted, PENDING_NO_CERTIFICATE)
+		for fieldname in LINKS:
+			self.assertIsNone(copy.get(fieldname), fieldname)
+
+	def test_a_container_duplicate_under_a_certified_lot_or_sub_lot_inherits(self):
+		for level in ("1", "2"):
+			for source in ("Own certificate", "Inherited"):
+				with self.subTest(level=level, source=source):
+					parent = rec("P", level, None if level == "1" else "L", "Failed", source, cert="CERT-P")
+					_out, copy = duplicate(parent, parent_batch_amb="P", custom_batch_level="3")
+					self.assertEqual(copy.inserted, inherited("CERT-P", "Failed"))
+					(row,) = copy.rows
+					for needle in (
+						"created after approval of COA AMB2 CERT-P: inherits from P",
+						"from Pending to Failed",
+						"certificate: from none to COA AMB2 CERT-P (says Failed)",
+						"copied from SRC",
+					):
+						self.assertIn(needle, row["comments"])
+					self.assertNotIn("source row", row["comments"])
+					for fieldname in LINKS:
+						self.assertIsNone(copy.get(fieldname), fieldname)
+
+	def test_it_is_the_same_birth_as_a_new_container_under_the_same_parent(self):
+		# insert_copy goes through insert_child: same values, same row text plus "copied from"
+		for parent in (
+			rec("P", "2", "L", "Passed", "Own certificate", cert="CERT-P"),
+			rec("P", "2", "L", "Hold", "Hold action", cert="CERT-P", says="Passed"),
+			rec("P", "2", "L", "Passed", "Inherited", cert="CERT-L"),
+		):
+			with self.subTest(parent=parent):
+				_out, copy = duplicate(parent, parent_batch_amb="P", custom_batch_level="3")
+				fields = dict(parent, name="SUB-1", current_plant2="1 (Mix)", current_item_code="0227")
+				_r, child, _f = create("3", **fields)
+				self.assertEqual(copy.inserted, child.inserted)
+				expected = child.rows[0]["comments"].replace("SUB-1", "P")
+				self.assertEqual(
+					copy.rows[0]["comments"].split(" | by ")[0],
+					expected.split(" | by ")[0] + " | copied from SRC",
+				)
+
+	def test_under_an_uncertified_parent_a_container_duplicate_is_pending(self):
+		for parent in (rec("P", "2", "L"), rec("P", "2", "L", "Hold", "Hold action")):
+			with self.subTest(parent=parent):
+				_out, copy = duplicate(parent, parent_batch_amb="P", custom_batch_level="3")
+				self.assertEqual(copy.inserted, PENDING_NO_CERTIFICATE)
+				(row,) = copy.rows
+				self.assertIn("reason: copied from SRC", row["comments"])
+				self.assertNotIn("approval", row["comments"])
+
+	def test_a_duplicate_other_than_such_a_container_is_pending_with_the_336_row(self):
+		# a sub-lot under a certified lot; a container under a certified container
+		for parent, level in (
+			(rec("P", "1", None, "Passed", "Own certificate", cert="CERT-P"), "2"),
+			(rec("P", "3", "S", "Passed", "Inherited", cert="CERT-P"), "3"),
+		):
+			with self.subTest(parent_level=parent["custom_batch_level"], level=level):
+				_out, copy = duplicate(parent, parent_batch_amb="P", custom_batch_level=level)
+				self.assertEqual(copy.inserted, PENDING_NO_CERTIFICATE)
+				(row,) = copy.rows
+				self.assertIn(
+					"created after approval of COA AMB2 CERT-P: Pending until certified", row["comments"]
+				)
+				self.assertIn("copied from SRC", row["comments"])
+
+	def test_a_parent_pointer_to_a_record_that_no_longer_exists_is_kept_and_the_copy_is_pending(self):
+		_out, copy = duplicate(parent_batch_amb="GONE", custom_batch_level="3")
+		self.assertEqual(copy.get("parent_batch_amb"), "GONE")
+		self.assertEqual(copy.inserted, PENDING_NO_CERTIFICATE)
+		(row,) = copy.rows
+		self.assertIn("reason: copied from SRC", row["comments"])
+
+	def test_the_forms_own_duplicate_copies_no_history_row(self):
+		"""The form's Duplicate (Frappe's client `frappe.model.copy_doc`, create_new.js) skips a Table field marked
+		"no copy" with all its rows; it sends no name of the source, so the server writes no "copied from" row for
+		it (see the report of TASKS-397)."""
+		import json
+		import pathlib
+
+		meta = json.loads((pathlib.Path(bam.__file__).parent / "batch_amb.json").read_text(encoding="utf-8"))
+		(field,) = [f for f in meta["fields"] if f["fieldname"] == lq.HISTORY_TABLE]
+		self.assertEqual((field["fieldtype"], field.get("no_copy")), ("Table", 1))
+		# ... and the parent pointer is copied by it (kept)
+		(parent,) = [f for f in meta["fields"] if f["fieldname"] == lq.PARENT_FIELD]
+		self.assertFalse(parent.get("no_copy"))
 
 
 if __name__ == "__main__":

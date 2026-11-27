@@ -56,6 +56,9 @@ TASKS-391: a container created under a sub-lot whose status comes from a certifi
 (decision 342, amends 336, `insert_child`); a sub-lot created after an approval is still born Pending.
 TASKS-392: the same for a container created directly under a lot (decision 344); a copy of a lot record carries
 no certificate link (decision 345, `reset_for_copy`; the three link fields are also "no copy" in the DocType).
+TASKS-397: a duplicate of a lot record is a clean new record (decision 346, `insert_copy`): none of the source's
+history rows (the history table is also "no copy" in the DocType), one row "copied from <source>" written here, the
+parent pointer kept, and a duplicated container under a certified lot or sub-lot inherits as a new one does (344).
 
 No move under a hold (TASKS-388, decision 329): `parent_batch_amb` of a record cannot be changed while the chain
 above its stored parent, or above its new parent, holds a record on a hand hold (`_refuse_move_under_hold`), and a
@@ -383,12 +386,31 @@ COPY_CLEARED_LINKS = (*LINK_FIELDS, "coa_amb")
 
 def reset_for_copy(doc):
 	"""A copy of a lot record is a new record: it starts Pending, with no certificate and, decision 345 (TASKS-392,
-	extends 343), with no certificate link (`coa_reference`, `coa_amb2`, `coa_amb`), as a new child does."""
+	extends 343), with no certificate link (`coa_reference`, `coa_amb2`, `coa_amb`), as a new child does.
+	Decision 346 (TASKS-397): and with none of the source's history rows (`processing_history` empty); the parent
+	pointer is kept. `frappe.copy_doc` copies child tables whatever "no copy" says (its `ignore_no_copy` defaults
+	to True), so the rows are emptied here, not left to the DocType flag."""
 	doc.quality_status = PENDING
 	for fieldname in GUARDED_FIELDS[1:]:
 		doc.set(fieldname, None)
 	for fieldname in COPY_CLEARED_LINKS:
 		doc.set(fieldname, None)
+	doc.set(HISTORY_TABLE, [])
+
+
+def insert_copy(copy, source):
+	"""`duplicate_batch`'s insert (decision 346, TASKS-397). `copy` is the new document made by `frappe.copy_doc`
+	of lot record `source` (its name), not yet inserted. It is reset (`reset_for_copy`: Pending, no certificate,
+	no certificate link, no history row of the source) and inserted by `insert_child` under the record its parent
+	pointer names, which it keeps: the same function, so the same rule, as a child created under that record
+	(336, 342, 344), and ONE history row that says "copied from <source>" in every case.
+
+	The parent is read as stored (`LotTable.get`), not from the copy. A copy with no parent (a lot), or whose
+	parent no longer exists, is born Pending with the one row "copied from <source>"."""
+	reset_for_copy(copy)
+	parent_name = copy.get(PARENT_FIELD)
+	parent = (LotTable().get(parent_name) if parent_name else None) or {}
+	return insert_child(copy, parent, copied_from=source)
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -1103,9 +1125,9 @@ def _inherits_at_birth(child, parent):
 	return (certificate[0], certificate[1], says)
 
 
-def insert_child(child, parent):
-	"""`create_child_batch`'s insert. `child` is the new document, not yet inserted; `parent` the document it is
-	created under. Whatever the caller put in the quality fields is cleared first.
+def insert_child(child, parent, copied_from=None):
+	"""`create_child_batch`'s insert, and `insert_copy`'s. `child` is the new document, not yet inserted; `parent`
+	the document it is created under. Whatever the caller put in the quality fields is cleared first.
 
 	Decisions 342 and 344 (TASKS-391/392, amend 336): a CONTAINER (level 3) created directly under a LOT (level 1)
 	or a SUB-LOT (level 2) whose status comes from a certificate takes that record's verdict as "Inherited" from
@@ -1128,19 +1150,27 @@ def insert_child(child, parent):
 	(Pending, or a hand hold with no certificate behind it): the child is born Pending with no row, an insert like
 	any other, judged by the guard.
 
-	A record of level 4 or more is never created here: `create_child_batch` refuses every level but 2 and 3. The
-	write-down does not write such a record either (`_plan`)."""
+	A record of level 4 or more is never created here by `create_child_batch`, which refuses every level but 2
+	and 3. The write-down does not write such a record either (`_plan`).
+
+	`copied_from` (decision 346, TASKS-397, from `insert_copy`): the name of the lot record this one is a copy of.
+	The rule above is the same; the one history row also says "copied from <source>", and a copy gets that row
+	even under a parent that names no certificate (then it says only that, and the copy is Pending). A copy may
+	be of any level, a lot (level 1, usually with no parent) included."""
 	for fieldname in GUARDED_FIELDS:
 		child.set(fieldname, None)
 	child.set("quality_status", PENDING)
 	certificate = _certificate_of(parent)
-	if not certificate:
+	if not certificate and not copied_from:
 		return child.insert()  # Pending, no certificate: an insert like any other, judged by the guard
 	values = dict.fromkeys(GUARDED_FIELDS)
 	values["quality_status"] = PENDING
-	named = f"{certificate[0]} {certificate[1]}".strip()
-	inherits = _inherits_at_birth(child, parent)
-	if inherits:
+	named = f"{certificate[0]} {certificate[1]}".strip() if certificate else ""
+	inherits = _inherits_at_birth(child, parent) if certificate else None
+	if not certificate:
+		reason = f"copied from {copied_from}"
+		note = None
+	elif inherits:
 		values = {
 			"quality_status": inherits[2],
 			"status_source": INHERITED,
@@ -1160,6 +1190,8 @@ def insert_child(child, parent):
 	else:
 		reason = f"created after approval of {named}: Pending until certified"
 		note = "created under {}, whose status comes from {}".format(parent.get("name"), named)
+	if certificate and copied_from:
+		note = " | ".join(part for part in (note, f"copied from {copied_from}") if part)
 	child.append(HISTORY_TABLE, _history_row(child, dict.fromkeys(GUARDED_FIELDS), values, reason, note))
 	# the row is the module's: the guard's first line names it (`_name_own_rows`)
 	child.flags[WRITER_FLAG] = _WRITER
