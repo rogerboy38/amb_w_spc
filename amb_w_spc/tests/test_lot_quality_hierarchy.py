@@ -7,7 +7,8 @@
 #   * a record on a hand hold keeps Hold and stores the verdict; the records below it are written as usual
 #   * a withdrawal also resets a record that still names the certificate but is no longer reached by the walk
 #     down (moved under another parent before the guard refused that)
-#   * a new sub-lot or container under a released record is born released (Inherited)
+#   * a new sub-lot or container created under a released record is born Pending with no certificate
+#     (decision 336); the next approval of the record above reaches it
 #   * how it is written: one full save and ONE history row for the lot and for each sub-lot; the containers by
 #     one column write per sub-lot, named in that sub-lot's row; one read per level of the tree
 #
@@ -365,7 +366,8 @@ class TestWithdrawalFindsWhatWasMoved(unittest.TestCase):
 		self.assertEqual(t.state("C21"), PENDING)
 
 	def test_a_record_the_walk_cannot_reach_below_the_lot_is_reset_and_follows_the_lot(self):
-		# a level 4 record born under a released container carries the certificate; the walk stops at level 3
+		# a level 4 record that carries the certificate (born under a released container before TASKS-390, decision
+		# 336); the walk stops at level 3
 		t = self.released(
 			dict(rec("P1", "4", "C21", "Passed", "Inherited", "CERT-L"), released_by_doctype=CUSTOMER)
 		)
