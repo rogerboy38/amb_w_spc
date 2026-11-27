@@ -719,10 +719,11 @@ class TestANewChild(unittest.TestCase):
 			**kw,
 		)
 
-	def test_a_sub_lot_or_container_created_after_its_parents_approval_is_born_pending(self):
+	def test_a_sub_lot_created_after_its_parents_approval_is_born_pending(self):
 		# TASKS-390, decision 336 (replaces TASKS-384 B4's birth "Inherited" with the parent's verdict). The parent
-		# here is a LOT (no level): a container under a SUB-LOT inherits since decision 342 (test_late_children)
-		for level in ("2", "3"):
+		# here is a LOT (no level). A CONTAINER under a lot or a sub-lot inherits since decisions 342 and 344
+		# (TASKS-392): see test_late_children.
+		for level in ("2",):
 			for status in ("Passed", "Failed", "Hold"):
 				for source in ("Own certificate", "Inherited"):
 					with self.subTest(level=level, status=status, source=source):

@@ -375,10 +375,17 @@ def refuse_merge_under_hold(doc, method=None, old=None, new=None, merge=False):
 			)
 
 
+# every link from a lot record to a certificate: the two the approval writes and the older `coa_amb`
+COPY_CLEARED_LINKS = (*LINK_FIELDS, "coa_amb")
+
+
 def reset_for_copy(doc):
-	"""A copy of a lot record is a new record: it starts Pending, with no certificate."""
+	"""A copy of a lot record is a new record: it starts Pending, with no certificate and, decision 345 (TASKS-392,
+	extends 343), with no certificate link (`coa_reference`, `coa_amb2`, `coa_amb`), as a new child does."""
 	doc.quality_status = PENDING
 	for fieldname in GUARDED_FIELDS[1:]:
+		doc.set(fieldname, None)
+	for fieldname in COPY_CLEARED_LINKS:
 		doc.set(fieldname, None)
 
 
@@ -1073,17 +1080,19 @@ def _reset_elsewhere(table, lot, this, certificate_doctype, certificate, wrote, 
 
 
 def _inherits_at_birth(child, parent):
-	"""Decision 342 (TASKS-391, amends 336): -> (doctype, certificate, status) a new child takes as "Inherited", or
-	None when it is born Pending. Only a CONTAINER (level 3) created directly under a SUB-LOT (level 2) whose
-	status comes from a certificate (`released_by` and its type set) and whose `certificate_status` is a status a
-	certificate gives (Passed / Failed / Hold). Everything else is born Pending as in 336: a sub-lot (level 2)
-	under anything, a container under a lot (level 1) or under another container, a child of any other level.
+	"""Decisions 342 and 344 (TASKS-391/392, amend 336): -> (doctype, certificate, status) a new child takes as
+	"Inherited", or None when it is born Pending. Only a CONTAINER (level 3) created directly under a LOT (level 1,
+	also an empty level) or a SUB-LOT (level 2) whose status comes from a certificate (`released_by` and its type
+	set) and whose `certificate_status` is a status a certificate gives (Passed / Failed / Hold): the record
+	directly above it, as the write-down of an approval writes containers under either. Everything else is born
+	Pending as in 336: a sub-lot (level 2) under anything, a container under another container, a child of any
+	other level.
 
 	The status is the sub-lot's `certificate_status`, not its `quality_status`: the two are the same unless the
 	sub-lot is on a hand hold, and then the container takes what the sub-lot's certificate says, not the hold,
 	exactly as the write-down of an approval writes the containers below a held sub-lot (`_plan`; decision 315,
 	reading 1 of TASKS-391): the hold is on the one record that is held."""
-	if _level(child) != CONTAINER_LEVEL or _level(parent) != "2":
+	if _level(child) != CONTAINER_LEVEL or _level(parent) not in CERTIFICATE_LEVELS:
 		return None
 	certificate = _certificate_of(parent)
 	says = parent.get("certificate_status")

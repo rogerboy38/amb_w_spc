@@ -158,14 +158,31 @@ class TestEveryOtherChildIsStillBornPending(unittest.TestCase):
 						"created after approval of COA AMB2 CERT-L: Pending until certified", row["comments"]
 					)
 
-	def test_a_container_not_directly_under_a_sub_lot_is_born_pending(self):
-		# narrowest reading: under a lot (level 1, also an empty level) or under another container (level 3)
-		for parent_level in ("1", None, "3"):
-			with self.subTest(parent_level=parent_level):
-				_out, child, _f = create("3", custom_batch_level=parent_level, **released())
-				self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
-				(row,) = child.rows
-				self.assertIn("Pending until certified", row["comments"])
+	def test_a_container_under_another_container_is_born_pending(self):
+		_out, child, _f = create("3", custom_batch_level="3", **released())
+		self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
+		(row,) = child.rows
+		self.assertIn("Pending until certified", row["comments"])
+
+
+class TestAContainerUnderACertifiedLotInherits(unittest.TestCase):
+	"""Decision 344 (TASKS-392, amends 342): the record directly above, lot or sub-lot."""
+
+	def test_under_an_approved_lot_it_inherits_and_under_an_approved_sub_lot_too(self):
+		for parent_level in ("1", None, "2"):
+			for source in ("Own certificate", "Inherited"):
+				with self.subTest(parent_level=parent_level, source=source):
+					out, child, _f = create(
+						"3", custom_batch_level=parent_level, **released("Passed", source)
+					)
+					self.assertTrue(out["success"], out)
+					self.assertEqual(child.inserted, inherited("CERT-L", "Passed"))
+					(row,) = child.rows
+					self.assertIn("created after approval of COA AMB2 CERT-L: inherits from", row["comments"])
+
+	def test_a_sub_lot_under_an_approved_lot_is_still_born_pending(self):
+		_out, child, _f = create("2", custom_batch_level="1", **released("Passed", "Own certificate"))
+		self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
 
 	def test_a_container_under_a_sub_lot_whose_certificate_says_no_status_is_born_pending(self):
 		for parent in (
@@ -182,6 +199,28 @@ class TestEveryOtherChildIsStillBornPending(unittest.TestCase):
 		out, child, _f = create("4", **released())
 		self.assertFalse(out["success"])
 		self.assertIsNone(child.inserted)
+
+
+class TestADuplicateCarriesNoCertificateLink(unittest.TestCase):
+	"""Decision 345 (TASKS-392, extends 343)."""
+
+	def test_a_duplicate_of_a_certified_lot_carries_no_link_and_starts_pending(self):
+		copy = Fields(
+			quality_status="Passed",
+			status_source="Own certificate",
+			released_by_doctype=INTERNAL,
+			released_by="CERT-L",
+			certificate_status="Passed",
+			coa_reference="COA-CUST-1",
+			coa_amb="COA-CUST-1",
+			coa_amb2="CERT-L",
+		)
+		lq.reset_for_copy(copy)
+		for fieldname in LINKS:
+			self.assertIsNone(copy.get(fieldname), fieldname)
+		self.assertEqual(copy.get("quality_status"), lq.PENDING)
+		for fieldname in lq.GUARDED_FIELDS[1:]:
+			self.assertIsNone(copy.get(fieldname), fieldname)
 
 
 class TestANewChildCarriesNoCertificateLink(unittest.TestCase):
