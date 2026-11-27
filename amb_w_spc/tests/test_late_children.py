@@ -513,7 +513,7 @@ class TestADuplicateCopiesSetupTablesOnly(unittest.TestCase):
 			self.assertFalse(no_copy.get(name), name)  # left as they are (see the report of TASKS-399)
 
 	def test_a_server_duplicate_clears_the_times_dates_and_statuses(self):
-		"""Decision 357 (TASKS-400): emptied before the insert, which gives the statuses a new lot record's defaults."""
+		"""Decision 357 (TASKS-400): the times and dates empty; the statuses as a new lot record's (Draft; empty)."""
 		self.assertEqual(
 			lq.COPY_CLEARED_PROCESS_FIELDS,
 			{
@@ -523,7 +523,7 @@ class TestADuplicateCopiesSetupTablesOnly(unittest.TestCase):
 				"production_start_date": None,
 				"production_end_date": None,
 				"processing_status": None,
-				"batch_status": None,
+				"batch_status": "Draft",
 			},
 		)
 		source = {
@@ -538,7 +538,7 @@ class TestADuplicateCopiesSetupTablesOnly(unittest.TestCase):
 		left = {"total_production_cost": 5, "cost_per_kg": 6, "calculated_total_weight": 7}
 		_out, copy = duplicate(rec("L"), parent_batch_amb="L", custom_batch_level="2", **source, **left)
 		for name in source:
-			self.assertIsNone(copy.get(name), name)
+			self.assertEqual(copy.get(name), "Draft" if name == "batch_status" else None, name)
 		for name, value in left.items():
 			self.assertEqual(copy.get(name), value, name)  # left as they are (decision 357)
 

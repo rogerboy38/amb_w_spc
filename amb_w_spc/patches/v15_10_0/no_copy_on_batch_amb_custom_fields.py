@@ -1,6 +1,6 @@
 # Copyright (c) 2026, AMB and contributors
-"""TASKS-399 (decisions 355 and 356) and TASKS-400 (decision 357): "no copy" on the site Custom Fields of Batch AMB that hold what the source
-lot did, so the form's Duplicate does not copy them.
+"""TASKS-399 (decisions 355 and 356) and TASKS-400 (decision 357): "no copy" on the site Custom Fields of
+Batch AMB that hold what the source lot did, so the form's Duplicate does not copy them.
 
 On a site where one of these fields is ALSO a site Custom Field, Frappe 16.17.5's meta keeps the Custom Field over
 the DocType JSON (`Meta.add_custom_fields` appends it; the field map keeps the last of a name), so the JSON's "no

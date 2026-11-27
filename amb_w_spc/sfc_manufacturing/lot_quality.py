@@ -416,19 +416,21 @@ COPY_CLEARED_HEADER_FIGURES = {
 	"cost_per_unit": None,  # Data: total_batch_cost / produced_qty (calculate_costs)
 }
 # Decision 357 (TASKS-400): what the source lot did, as times and dates, starts empty; its two statuses start as a
-# new lot record's do. They are emptied here and the insert fills them as for any new record (Frappe 16.17.5
-# `Document._set_defaults`: an empty field takes the new document's default; a Select with no default takes its
-# first option): on the sandbox `batch_status` (a site Custom Field, options "Draft\nIn Progress\nCompleted\n
-# Cancelled") becomes "Draft", as `create_child_batch` sets for a new child; `processing_status` has no default and
-# no options, so it stays empty, as on a new lot. Fieldname -> start value before the insert.
+# new lot record's do. `batch_status` is "Draft", what `create_child_batch` sets for a new child and the form's
+# own script for any new record; set here explicitly (TASKS-400 review, finding 2) because the DocType JSON gives
+# the field no options or default, so the insert's default (`Document._set_defaults`: a Select's first option)
+# would be "Draft" only on a site whose Custom Field adds the options, as the sandbox's does. `processing_status`
+# has no default and no options anywhere, so it starts empty, as on a new lot. On the form's Duplicate the form's
+# own script (`set_default_values`, on load of any new record) also sets `production_start_date` to today, as for
+# any new form (review finding 1). Fieldname -> start value.
 COPY_CLEARED_PROCESS_FIELDS = {
 	"custom_last_api_sync": None,  # Datetime: written with the barrel serials by the serial-tracking sync
 	"actual_start": None,  # Datetime: set when processing starts
 	"actual_completion": None,  # Datetime: set when processing completes
 	"production_start_date": None,  # Date: entered (also a site Custom Field on the sandbox)
 	"production_end_date": None,  # Date: entered (also a site Custom Field on the sandbox)
-	"processing_status": None,  # Select: as a new lot record (the insert's default)
-	"batch_status": None,  # Select: as a new lot record (the insert's default; "Draft" on the sandbox)
+	"processing_status": None,  # Select: as a new lot record (no default, no options)
+	"batch_status": "Draft",  # Select: as a new lot record (create_child_batch; the form's script)
 }
 
 
