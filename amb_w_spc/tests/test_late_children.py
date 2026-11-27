@@ -1,0 +1,219 @@
+# TASKS-391, DB-free: what a new child of a released record is born with.
+#
+#   * decision 342 (amends 336): a CONTAINER (level 3) created under a SUB-LOT (level 2) whose status comes from a
+#     certificate takes that sub-lot's certificate verdict as "Inherited" from the same certificate, with ONE
+#     history row "created after approval of <certificate>: inherits from <sub-lot>"; a sub-lot on a hand hold:
+#     the container takes what the sub-lot's certificate says (`certificate_status`), not Hold, as the
+#     write-down of an approval does (reading 1)
+#   * a SUB-LOT (level 2) created after an approval is still born Pending (336), and so is every other child
+#     (a container under a lot or under a container; a sub-lot whose certificate says no status)
+#   * decision 343: `create_child_batch` gives a new child no certificate link (`coa_reference`, `coa_amb`,
+#     `coa_amb2` empty), whatever the parent carries
+#
+# `create_child_batch` runs for real with a parent and a child that behave like documents; the child's insert
+# runs the REAL guard (test_lot_quality_hierarchy.Child).
+#
+# Run: python -m unittest amb_w_spc.tests.test_late_children   (no site needed)
+
+import unittest
+from unittest import mock
+
+from amb_w_spc.sfc_manufacturing import lot_quality as lq
+from amb_w_spc.sfc_manufacturing.doctype.batch_amb import batch_amb as bam
+from amb_w_spc.tests.test_lot_quality import INTERNAL, USER, Table, fake_frappe, rec, site
+from amb_w_spc.tests.test_lot_quality_hierarchy import PENDING_NO_CERTIFICATE, Child, Fields
+
+LINKS = ("coa_reference", "coa_amb", "coa_amb2")
+
+
+def create(child_level, **parent_fields):
+	"""-> (result, child, frappe) of `create_child_batch("SUB-1", child_level)` under a parent with these fields."""
+	fields = {
+		"name": "SUB-1",
+		"is_group": 1,
+		"custom_batch_level": "2",
+		"current_plant2": "1 (Mix)",
+		"current_item_code": "0227",
+		"item_to_manufacture": "0227",
+	}
+	parent = Fields(**dict(fields, **parent_fields))
+	parent.db_set = mock.Mock()
+	child = Child()
+	f = fake_frappe()
+	f.get_doc.return_value = parent
+	f.new_doc.return_value = child
+	with mock.patch.object(bam, "frappe", f), site(frappe=f):
+		out = bam.create_child_batch("SUB-1", child_level)
+	return out, child, f
+
+
+def released(status="Passed", source="Inherited", cert="CERT-L", says=None, **kw):
+	"""A parent whose status comes from a certificate; `says` = what that certificate says (default: status)."""
+	return dict(
+		{
+			"quality_status": status,
+			"status_source": source,
+			"released_by_doctype": INTERNAL,
+			"released_by": cert,
+			"certificate_status": says or status,
+		},
+		**kw,
+	)
+
+
+def inherited(cert, status):
+	return {
+		"quality_status": status,
+		"status_source": "Inherited",
+		"released_by_doctype": INTERNAL,
+		"released_by": cert,
+		"certificate_status": status,
+	}
+
+
+class TestAContainerUnderACertifiedSubLotInherits(unittest.TestCase):
+	def test_it_takes_the_sub_lots_verdict_from_the_same_certificate(self):
+		for status in ("Passed", "Failed", "Hold"):
+			for source in ("Own certificate", "Inherited"):
+				with self.subTest(status=status, source=source):
+					out, child, _f = create("3", **released(status, source, cert="CERT-S"))
+					self.assertTrue(out["success"], out)
+					self.assertEqual(child.inserted, inherited("CERT-S", status))
+					self.assertIs(child.flag_at_insert, lq._WRITER)  # the module's own insert
+					self.assertEqual(child.flags, {})  # ... and the flag is down after it
+
+	def test_its_birth_leaves_one_history_row_saying_it_inherits(self):
+		_out, child, _f = create("3", **released("Failed", "Own certificate", cert="CERT-S"))
+		(row,) = child.rows
+		self.assertEqual(
+			(row["processing_action"], row["quality_status"], row["changed_by"], row["batch_reference"]),
+			("Quality Status Changed", "Failed", USER, "LOTE-NEW"),
+		)
+		for needle in (
+			"created after approval of COA AMB2 CERT-S: inherits from SUB-1",
+			"from Pending to Failed",
+			"source: from none to Inherited",
+			"certificate: from none to COA AMB2 CERT-S (says Failed)",
+		):
+			self.assertIn(needle, row["comments"])
+		self.assertNotIn("Pending until certified", row["comments"])
+		self.assertNotIn("hand hold", row["comments"])
+
+	def test_under_a_sub_lot_on_a_hand_hold_it_takes_what_the_certificate_says_not_the_hold(self):
+		for says in ("Passed", "Failed"):
+			with self.subTest(says=says):
+				_out, child, _f = create("3", **released("Hold", "Hold action", cert="CERT-S", says=says))
+				self.assertEqual(child.inserted, inherited("CERT-S", says))
+				(row,) = child.rows
+				self.assertIn(
+					"created after approval of COA AMB2 CERT-S: inherits from SUB-1", row["comments"]
+				)
+				self.assertIn(
+					f"SUB-1 is on a hand hold: the container takes what COA AMB2 CERT-S says ({says}), not the hold",
+					row["comments"],
+				)
+		# a hold with no certificate behind it: no certificate was approved, Pending with no row (as in 336)
+		_out, child, _f = create("3", quality_status="Hold", status_source="Hold action")
+		self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
+		self.assertEqual(child.rows, [])
+
+	def test_its_birth_is_what_the_write_down_of_the_same_approval_gives_a_container(self):
+		# the same tree approved with the container already there: the container born later ends the same
+		for result in ("Pass", "Fail", "Partial"):
+			for held in (False, True):
+				with self.subTest(result=result, held=held):
+					t = Table(rec("L"), rec("S", "2", "L"), rec("C-OLD", "3", "S"))
+					with site(t):
+						lq.certificate_approved(INTERNAL, "CERT-L", "L", result)
+						if held:
+							lq.set_lot_quality_status(
+								"S", "Hold", reason="looked wrong", source="Hold action"
+							)
+							lq.certificate_approved(INTERNAL, "CERT-S", "S", result)
+					sub_lot = dict(t.rows["S"], name="SUB-1")
+					sub_lot.pop("custom_batch_level")
+					_out, child, _f = create("3", **sub_lot)
+					old = {f: t.rows["C-OLD"][f] or None for f in lq.GUARDED_FIELDS}
+					self.assertEqual(child.inserted, old)
+
+	def test_no_certificate_link_is_written_on_it(self):
+		_out, child, _f = create("3", **released(cert="CERT-S", coa_amb2="CERT-S"))
+		for fieldname in LINKS:
+			self.assertIsNone(child.get(fieldname), fieldname)
+
+
+class TestEveryOtherChildIsStillBornPending(unittest.TestCase):
+	def test_a_sub_lot_created_after_an_approval_is_born_pending(self):
+		# under a lot (level 1) and under a sub-lot (create_child_batch does not check the parent's level)
+		for parent_level in ("1", "2"):
+			for source in ("Own certificate", "Inherited"):
+				with self.subTest(parent_level=parent_level, source=source):
+					out, child, _f = create(
+						"2", custom_batch_level=parent_level, **released("Passed", source)
+					)
+					self.assertTrue(out["success"], out)
+					self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
+					(row,) = child.rows
+					self.assertIn(
+						"created after approval of COA AMB2 CERT-L: Pending until certified", row["comments"]
+					)
+
+	def test_a_container_not_directly_under_a_sub_lot_is_born_pending(self):
+		# narrowest reading: under a lot (level 1, also an empty level) or under another container (level 3)
+		for parent_level in ("1", None, "3"):
+			with self.subTest(parent_level=parent_level):
+				_out, child, _f = create("3", custom_batch_level=parent_level, **released())
+				self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
+				(row,) = child.rows
+				self.assertIn("Pending until certified", row["comments"])
+
+	def test_a_container_under_a_sub_lot_whose_certificate_says_no_status_is_born_pending(self):
+		for parent in (
+			dict(released(), certificate_status=None),
+			dict(released(), certificate_status="Pending"),
+			dict(released(), released_by_doctype=None),
+		):
+			with self.subTest(parent=parent):
+				_out, child, _f = create("3", **parent)
+				self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
+				self.assertIn("Pending until certified", child.rows[0]["comments"])
+
+	def test_a_level_4_child_is_not_created(self):
+		out, child, _f = create("4", **released())
+		self.assertFalse(out["success"])
+		self.assertIsNone(child.inserted)
+
+
+class TestANewChildCarriesNoCertificateLink(unittest.TestCase):
+	def test_a_child_under_a_certified_parent_has_none_of_the_three_links(self):
+		parent = released(
+			"Passed", "Own certificate", coa_reference="COA-CUST-1", coa_amb="COA-CUST-1", coa_amb2="CERT-L"
+		)
+		for level in ("2", "3"):
+			for parent_level in ("1", "2"):
+				with self.subTest(level=level, parent_level=parent_level):
+					out, child, _f = create(level, custom_batch_level=parent_level, **parent)
+					self.assertTrue(out["success"], out)
+					for fieldname in LINKS:
+						self.assertIsNone(child.get(fieldname), fieldname)
+
+	def test_a_link_already_on_the_new_document_does_not_survive(self):
+		# a default or a hook could fill a field of a new document; create_child_batch empties all three
+		parent = Fields(
+			name="SUB-1", is_group=1, current_plant2="1", current_item_code="0227", coa_reference="COA-CUST-1"
+		)
+		parent.db_set = mock.Mock()
+		child = Child()
+		child.coa_reference, child.coa_amb, child.coa_amb2 = "COA-X", "COA-X", "CERT-X"
+		f = fake_frappe()
+		f.get_doc.return_value = parent
+		f.new_doc.return_value = child
+		with mock.patch.object(bam, "frappe", f), site(frappe=f):
+			out = bam.create_child_batch("SUB-1", "2")
+		self.assertTrue(out["success"], out)
+		for fieldname in LINKS:
+			self.assertIsNone(child.get(fieldname), fieldname)
+
+
+if __name__ == "__main__":
+	unittest.main()

@@ -52,6 +52,9 @@ TASKS-390: muted mail is noted, not queued (decision 333, `_send_summary`); a sh
 (decision 336, `insert_child`); the worst result wins when more than one certificate stands for a record
 (decision 338, `others` of `certificate_approved`, a list as `standing` of `certificate_withdrawn`).
 
+TASKS-391: a container created under a sub-lot whose status comes from a certificate inherits it at its birth
+(decision 342, amends 336, `insert_child`); a sub-lot created after an approval is still born Pending.
+
 No move under a hold (TASKS-388, decision 329): `parent_batch_amb` of a record cannot be changed while the chain
 above its stored parent, or above its new parent, holds a record on a hand hold (`_refuse_move_under_hold`), and a
 merge of a record whose chain or whose target's chain holds one is refused (`refuse_merge_under_hold`).
@@ -1069,25 +1072,53 @@ def _reset_elsewhere(table, lot, this, certificate_doctype, certificate, wrote, 
 	return written
 
 
+def _inherits_at_birth(child, parent):
+	"""Decision 342 (TASKS-391, amends 336): -> (doctype, certificate, status) a new child takes as "Inherited", or
+	None when it is born Pending. Only a CONTAINER (level 3) created directly under a SUB-LOT (level 2) whose
+	status comes from a certificate (`released_by` and its type set) and whose `certificate_status` is a status a
+	certificate gives (Passed / Failed / Hold). Everything else is born Pending as in 336: a sub-lot (level 2)
+	under anything, a container under a lot (level 1) or under another container, a child of any other level.
+
+	The status is the sub-lot's `certificate_status`, not its `quality_status`: the two are the same unless the
+	sub-lot is on a hand hold, and then the container takes what the sub-lot's certificate says, not the hold,
+	exactly as the write-down of an approval writes the containers below a held sub-lot (`_plan`; decision 315,
+	reading 1 of TASKS-391): the hold is on the one record that is held."""
+	if _level(child) != CONTAINER_LEVEL or _level(parent) != "2":
+		return None
+	certificate = _certificate_of(parent)
+	says = parent.get("certificate_status")
+	if not certificate or not certificate[0] or says not in RESULT_TO_LOT_STATUS.values():
+		return None
+	return (certificate[0], certificate[1], says)
+
+
 def insert_child(child, parent):
 	"""`create_child_batch`'s insert. `child` is the new document, not yet inserted; `parent` the document it is
-	created under. The child is ALWAYS born Pending with no certificate (empty `status_source`, `released_by*`,
-	`certificate_status`).
+	created under. Whatever the caller put in the quality fields is cleared first.
 
-	Decision 336 (TASKS-390): a sub-lot or container created under a record AFTER that record's certificate was
-	approved starts Pending with no certificate, and one history row says "created after approval of <certificate>:
-	Pending until certified". How "after" is decided: a child inserted here is after the approval of every
-	certificate its parent carries at this moment, with no date to compare. A record carries a certificate in
-	`released_by*` only once an approval (or the write-down of one, decision 319) has written it there, and the
-	write-down reaches every record below that exists at that moment; the child does not exist until this insert.
-	So when the parent names a certificate, that certificate was approved before the child existed, and the child
-	is created after it. The certificate's `approval_date` (a Date) and the parent's history are not read: the
-	order of events is enough, and a date of the same day could not order them. A parent that names no certificate
+	Decision 342 (TASKS-391, amends 336): a CONTAINER (level 3) created under a SUB-LOT (level 2) whose status
+	comes from a certificate takes that sub-lot's verdict as "Inherited" from the same certificate
+	(`released_by_doctype` / `released_by` / `certificate_status` the same as the sub-lot's), with ONE history row
+	"created after approval of <certificate>: inherits from <sub-lot>": containers follow their sub-lot (decision
+	319), and a container born Pending there could never be certified (certificates are made for levels 1 and 2).
+	A sub-lot on a hand hold: the container takes what the sub-lot's certificate says (its `certificate_status`),
+	not Hold, as the write-down does (`_inherits_at_birth`). No certificate link is written on the container (the
+	write-down writes none on records that inherit either).
+
+	Decision 336 (TASKS-390), for every other child: born Pending with no certificate (empty `status_source`,
+	`released_by*`, `certificate_status`). Under a parent that names a certificate it gets one history row
+	"created after approval of <certificate>: Pending until certified". That is: a SUB-LOT (level 2) created after
+	an approval; a container under a lot (level 1) or under another container (`create_child_batch` does not
+	check the parent's level); a container under a sub-lot whose certificate says no status. How "after" is
+	decided: a child inserted here is after the approval of every certificate its parent carries at this moment,
+	with no date to compare. A record carries a certificate in `released_by*` only once an approval (or the
+	write-down of one, decision 319) has written it there, and the write-down reaches every record below that
+	exists at that moment; the child does not exist until this insert. A parent that names no certificate
 	(Pending, or a hand hold with no certificate behind it): the child is born Pending with no row, an insert like
 	any other, judged by the guard.
 
-	Before TASKS-390 (B4) the child was born with the parent's certificate, its verdict and source "Inherited".
-	Records that existed when the certificate was approved are still written down as before (`_approve`)."""
+	A record of level 4 or more is never created here: `create_child_batch` refuses every level but 2 and 3. The
+	write-down does not write such a record either (`_plan`)."""
 	for fieldname in GUARDED_FIELDS:
 		child.set(fieldname, None)
 	child.set("quality_status", PENDING)
@@ -1097,16 +1128,28 @@ def insert_child(child, parent):
 	values = dict.fromkeys(GUARDED_FIELDS)
 	values["quality_status"] = PENDING
 	named = f"{certificate[0]} {certificate[1]}".strip()
-	child.append(
-		HISTORY_TABLE,
-		_history_row(
-			child,
-			dict.fromkeys(GUARDED_FIELDS),
-			values,
-			f"created after approval of {named}: Pending until certified",
-			"created under {}, whose status comes from {}".format(parent.get("name"), named),
-		),
-	)
+	inherits = _inherits_at_birth(child, parent)
+	if inherits:
+		values = {
+			"quality_status": inherits[2],
+			"status_source": INHERITED,
+			"released_by_doctype": inherits[0],
+			"released_by": inherits[1],
+			"certificate_status": inherits[2],
+		}
+		reason = "created after approval of {}: inherits from {}".format(named, parent.get("name"))
+		note = None
+		if parent.get("status_source") == HOLD_ACTION:
+			note = (
+				"{} is on a hand hold: the container takes what {} says ({}), not the hold, as the write-down "
+				"of an approval does".format(parent.get("name"), named, inherits[2])
+			)
+		for fieldname, value in values.items():
+			child.set(fieldname, value)
+	else:
+		reason = f"created after approval of {named}: Pending until certified"
+		note = "created under {}, whose status comes from {}".format(parent.get("name"), named)
+	child.append(HISTORY_TABLE, _history_row(child, dict.fromkeys(GUARDED_FIELDS), values, reason, note))
 	# the row is the module's: the guard's first line names it (`_name_own_rows`)
 	child.flags[WRITER_FLAG] = _WRITER
 	try:

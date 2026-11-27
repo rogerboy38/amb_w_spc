@@ -1782,16 +1782,27 @@ def create_child_batch(parent_name, child_level):
         child.tds_item_name = parent.tds_item_name
         child.item_code = parent.item_code
         child.tds_info = parent.tds_info
-        child.coa_amb = parent.coa_amb
-        child.coa_reference = parent.coa_reference
+        # TASKS-391, decision 343: a new child starts with NO certificate link. The parent's `coa_reference` /
+        # `coa_amb` are no longer copied, and `coa_amb2` is left empty too: a link names the certificate approved
+        # for THAT record (lot_quality writes it at the approval, on that record only). Readers of a child's links:
+        # the BOM formula COA lookup reads the ROOT's links, not the child's (amb_w_tds bom_formula `_resolve_coa`
+        # -> `_batch_root`); Sample Request AMB prefills its `coa_amb` from the lot record it names only when that
+        # record has one, and its two checks compare only when the record has one (sample_request_amb.py
+        # `validate_batch_consistency`, `validate_coa_from_batch`); the certificate pickers, `standing_certificates`
+        # and the release (lot_quality) read the certificates' `batch_reference` and the lot's `released_by*`,
+        # never these links.
+        for fieldname in ("coa_reference", "coa_amb", "coa_amb2"):
+            child.set(fieldname, None)
         
         # ============================================================
         # 6. QUALITY STATUS FIELDS
         # ============================================================
-        # Set at the insert below (lot_quality.insert_child). TASKS-390, decision 336: a child is always born
-        # Pending with no certificate; under a record whose status comes from a certificate (approved before the
-        # child existed) it gets one history row "created after approval of <certificate>: Pending until
-        # certified". (TASKS-384 B4 gave it the parent's certificate and verdict as "Inherited"; no longer.)
+        # Set at the insert below (lot_quality.insert_child). TASKS-390, decision 336: a child is born Pending
+        # with no certificate; under a record whose status comes from a certificate (approved before the child
+        # existed) it gets one history row "created after approval of <certificate>: Pending until certified".
+        # TASKS-391, decision 342: except a container (level 3) under a sub-lot (level 2) whose status comes from
+        # a certificate: it takes that sub-lot's certificate verdict as "Inherited", with one history row
+        # "created after approval of <certificate>: inherits from <sub-lot>".
         
         # ============================================================
         # 7. RESET CHILD-SPECIFIC FIELDS (Start fresh)

@@ -8,7 +8,8 @@
 #   * a withdrawal also resets a record that still names the certificate but is no longer reached by the walk
 #     down (moved under another parent before the guard refused that)
 #   * a new sub-lot or container created under a released record is born Pending with no certificate
-#     (decision 336); the next approval of the record above reaches it
+#     (decision 336); the next approval of the record above reaches it. A container created under a released
+#     SUB-LOT inherits since decision 342 (TASKS-391): tests/test_late_children.py
 #   * how it is written: one full save and ONE history row for the lot and for each sub-lot; the containers by
 #     one column write per sub-lot, named in that sub-lot's row; one read per level of the tree
 #
@@ -719,7 +720,8 @@ class TestANewChild(unittest.TestCase):
 		)
 
 	def test_a_sub_lot_or_container_created_after_its_parents_approval_is_born_pending(self):
-		# TASKS-390, decision 336 (replaces TASKS-384 B4's birth "Inherited" with the parent's verdict)
+		# TASKS-390, decision 336 (replaces TASKS-384 B4's birth "Inherited" with the parent's verdict). The parent
+		# here is a LOT (no level): a container under a SUB-LOT inherits since decision 342 (test_late_children)
 		for level in ("2", "3"):
 			for status in ("Passed", "Failed", "Hold"):
 				for source in ("Own certificate", "Inherited"):
