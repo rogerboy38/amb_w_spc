@@ -3202,6 +3202,14 @@ def batch_amb_quality_status_guard(doc, method=None):
     lot_quality.refuse_hand_change(doc, method)
 
 
+def batch_amb_before_rename(doc, method=None, old=None, new=None, merge=False):
+    """doc_events hook on Batch AMB, `before_rename` (TASKS-388, decision 329): a merge that would move records
+    out from under a hand hold, or under one, is refused for every role. A hook, like the guard, so that it runs
+    whichever class Frappe loads; the class's own `NestedSet.before_rename` runs first. What it covers:
+    `lot_quality.refuse_merge_under_hold`."""
+    lot_quality.refuse_merge_under_hold(doc, method, old, new, merge)
+
+
 def batch_amb_validate(doc, method=None):
     """Hook for validate event - ensures Golden Number is generated."""
     _set_batch_naming_on_doc(doc)

@@ -44,7 +44,12 @@ A release is quiet record by record and summed up once (TASKS-387 item 4, decisi
 and the lot controller then skips its per-record mail (`notify_stakeholders`, with its "Notifications Sent" history
 row) and its Lote AMB sync. Instead `certificate_approved` / `certificate_withdrawn` send ONE summary per call that
 wrote any record (`send_release_summary`): who, what, every record written. See there for how it waits for the
-commit.
+commit. A release never fails because of mail (TASKS-388, decision 328): a summary that cannot be queued is
+written into the release's own history row as "summary not sent: <reason>" and the release stands.
+
+No move under a hold (TASKS-388, decision 329): `parent_batch_amb` of a record cannot be changed while the chain
+above its stored parent, or above its new parent, holds a record on a hand hold (`_refuse_move_under_hold`), and a
+merge of a record whose chain or whose target's chain holds one is refused (`refuse_merge_under_hold`).
 """
 
 import html
@@ -85,6 +90,7 @@ CERTIFICATE_LEVELS = ("1", "2")
 CONTAINER_LEVEL = "3"
 
 HISTORY_TABLE = "processing_history"
+HISTORY_DOCTYPE = "Batch Processing History"  # the child DocType of HISTORY_TABLE
 HISTORY_ACTION = "Quality Status Changed"  # an option of Batch Processing History.processing_action
 
 # How the guard knows a save is this module's: the writer puts THIS OBJECT in doc.flags for the length of its own
@@ -224,8 +230,10 @@ def refuse_hand_change(doc, method=None):
 	"Inherited", or whose stored `released_by` names a certificate (its own, an inherited one, or one stored
 	under a hand hold), is refused the same way: the record's status belongs to the tree it sits in, and what
 	is below it inherits through it. A Pending record with no certificate moves freely, and so does a record
-	on a hand hold that no certificate speaks for. Not covered: a direct column write of the parent, as above;
-	`certificate_withdrawn` therefore also looks for its records by `released_by*`.
+	on a hand hold that no certificate speaks for, unless a hand hold is on the chain above its stored parent or
+	above its new parent (decision 329, `_refuse_move_under_hold`). Not covered: a direct column write of the
+	parent, as above; `certificate_withdrawn` therefore also looks for its records by `released_by*`. A merge:
+	`refuse_merge_under_hold`.
 	"""
 	if _is_writer_save(doc):
 		_name_own_rows(doc)
@@ -262,6 +270,7 @@ def _refuse_parent_change(doc, before):
 	if old == new:
 		return
 	if before.get("status_source") != INHERITED and not before.get("released_by"):
+		_refuse_move_under_hold(doc, old, new)
 		return
 	frappe.throw(
 		_(
@@ -277,6 +286,73 @@ def _refuse_parent_change(doc, before):
 		frappe.ValidationError,
 		title=_("Quality status"),
 	)
+
+
+def _hold_on_chain(start, skip=()):
+	"""Walk up `parent_batch_amb` from `start` (included), reading each stored record -> the name of the first one
+	whose `status_source` is "Hold action", or None. Loop guard: a record met twice ends the walk, and so does a
+	record in `skip` (the record being moved: its own row is the one being changed) or one that does not exist;
+	neither refuses."""
+	seen, name = set(skip), start
+	while name and name not in seen:
+		seen.add(name)
+		record = frappe.db.get_value(DOCTYPE, name, ["name", PARENT_FIELD, "status_source"], as_dict=True)
+		if not record:
+			return None
+		if record.get("status_source") == HOLD_ACTION:
+			return record.get("name") or name
+		name = record.get(PARENT_FIELD)
+	return None
+
+
+def _refuse_move_under_hold(doc, old, new):
+	"""Decision 329: a change of `parent_batch_amb` is refused when the chain above the stored parent `old` (the
+	parent included) or above the new parent `new` (included) holds a record on a hand hold: the move would take
+	the record, and what is below it, out from under the hold, or put it under one. The record itself is not
+	judged (narrowest reading): a hold on the record being moved moves with it. Every role; the guard's two
+	lines call it."""
+	for parent, way in ((old, "off"), (new, "under")):
+		held = _hold_on_chain(parent, skip=(doc.name,) if doc.name else ())
+		if not held:
+			continue
+		if way == "off":
+			what = _("it would leave the hold on lot record {0} (its parent {1} or above)").format(held, old)
+		else:
+			what = _("it would come under the hold on lot record {0} (its new parent {1} or above)").format(
+				held, new
+			)
+		frappe.throw(
+			_(
+				"Lot record {0} cannot be moved (parent: {1} to {2}): {3}. A record on a hand hold, and what is below it, stays where it is until the hold is lifted."
+			).format(doc.name or _("new"), old or _("none"), new or _("none"), what),
+			frappe.ValidationError,
+			title=_("Quality status"),
+		)
+
+
+def refuse_merge_under_hold(doc, method=None, old=None, new=None, merge=False):
+	"""doc_events hook on Batch AMB, `before_rename` (decision 329). What Frappe 16.17.5 does
+	(`frappe/model/rename_doc.py` `rename_doc`): it runs `before_rename` on the record (the controller's, then the
+	hooks), then rewrites EVERY Link field that names the old name to the new one by a direct column write
+	(`update_link_field_values` -> `frappe.db.set_value(..., update_modified=False)`: no event on the records
+	changed), the children's `parent_batch_amb` included; on a merge it then deletes the old record.
+	  * A plain rename moves nothing: the children follow the renamed record, the hold stays on it. Not refused.
+	  * A merge moves the old record's children (and every other Link to it: Batches, certificates) under the
+	    target, and deletes the old record with its hold. Refused when the chain from the old record (included)
+	    or from the target (included) holds a record on a hand hold, for every role.
+	Not covered: `rename_doc(..., validate=False)` from server code, which skips `before_rename`."""
+	if not merge:
+		return
+	for start in (old or doc.name, new):
+		held = _hold_on_chain(start)
+		if held:
+			frappe.throw(
+				_(
+					"Lot record {0} cannot be merged into {1}: lot record {2} is on a hand hold, and a merge would move the records linked to {0} out from under that hold, or under it. Lift the hold first."
+				).format(old or doc.name, new, held),
+				frappe.ValidationError,
+				title=_("Quality status"),
+			)
 
 
 def reset_for_copy(doc):
@@ -298,6 +374,10 @@ class LotTable:
 	# (certificate type, certificate) while `_approve` / `_withdraw` write: each save is then a release save
 	# (`is_release_save`)
 	release = None
+	# {record name: name of the history row its FIRST save of this table wrote}, in the order saved: where a
+	# summary that was not sent is recorded (`_note_on_release_row`, decision 328). An attribute, not a method:
+	# amb_w_tds's cross-app test checks that its table answers every public method of this one.
+	written_rows = None
 
 	def released_by(self, certificate_doctype, certificate):
 		"""-> every record whose status is said by this certificate, wherever it sits in the tree."""
@@ -375,7 +455,7 @@ class LotTable:
 			after = dict(before)
 		for fieldname, value in values.items():
 			doc.set(fieldname, value)
-		doc.append(HISTORY_TABLE, _history_row(doc, before, after, reason, note, self.acting_on))
+		row = doc.append(HISTORY_TABLE, _history_row(doc, before, after, reason, note, self.acting_on))
 		doc.flags[WRITER_FLAG] = _WRITER
 		if self.release:
 			doc.flags[RELEASE_FLAG] = _RELEASE
@@ -386,7 +466,26 @@ class LotTable:
 		finally:
 			doc.flags.pop(WRITER_FLAG, None)
 			doc.flags.pop(RELEASE_FLAG, None)
+		# Frappe names the appended child row when the save inserts it
+		row_name = row.get("name") if isinstance(row, dict) else getattr(row, "name", None)
+		if row_name:
+			if self.written_rows is None:
+				self.written_rows = {}
+			self.written_rows.setdefault(name, row_name)
 		return True
+
+	def _add_to_row(self, row_name, text):
+		"""Append `text` to the `comments` of one stored history row, by a direct column write on the child table
+		(`Batch Processing History`): no document event runs, the lot record itself is not saved again, and no
+		guarded field is touched. Private: see `written_rows`."""
+		stored = frappe.db.get_value(HISTORY_DOCTYPE, row_name, "comments") or ""
+		frappe.db.set_value(
+			HISTORY_DOCTYPE,
+			row_name,
+			"comments",
+			f"{stored} | {text}" if stored else text,
+			update_modified=False,
+		)
 
 
 def _history_row(doc, before, after, reason, note, acting_on=None):
@@ -568,9 +667,9 @@ def certificate_approved(certificate_doctype, certificate, lot, result):
 	that. Raises (frappe.throw) if result has no mapping or a record cannot be written; everything is written
 	in the caller's transaction, nothing is committed here. When any record was written, ONE summary is queued
 	(`send_release_summary`). -> the number of records written."""
-	journal = []
-	written = _approve(LotTable(), certificate_doctype, certificate, lot, result, journal)
-	send_release_summary(certificate_doctype, certificate, lot, journal, result=result)
+	journal, table = [], LotTable()
+	written = _approve(table, certificate_doctype, certificate, lot, result, journal)
+	send_release_summary(certificate_doctype, certificate, lot, journal, result=result, table=table)
 	return written
 
 
@@ -590,9 +689,9 @@ def certificate_withdrawn(certificate_doctype, certificate, lot, standing=None):
 	the lot's status comes from another certificate. When any record was written, ONE summary is queued
 	(`send_release_summary`).
 	-> the number of records written."""
-	journal = []
-	written = _withdraw(LotTable(), certificate_doctype, certificate, lot, standing, journal)
-	send_release_summary(certificate_doctype, certificate, lot, journal, withdrawn=True)
+	journal, table = [], LotTable()
+	written = _withdraw(table, certificate_doctype, certificate, lot, standing, journal)
+	send_release_summary(certificate_doctype, certificate, lot, journal, withdrawn=True, table=table)
 	return written
 
 
@@ -1014,7 +1113,35 @@ def release_summary_text(
 	return subject, body
 
 
-def send_release_summary(certificate_doctype, certificate, lot, journal, result=None, withdrawn=False):
+NOT_SENT = "summary not sent"
+
+
+def _valid_addresses(emails):
+	"""-> the addresses Frappe would accept (`frappe.utils.validate_email_address`, without raising). Checked here,
+	before `sendmail`, because Frappe's queue drops a mail with an invalid recipient by writing an Error Log
+	("Invalid email address", `QueueBuilder.as_dict`) and queuing nothing; decision 328 wants no Error Log. A User's
+	address is validated when the User is saved, so this matters only for an address written past that."""
+	return [email for email in emails if frappe.utils.validate_email_address(email)]
+
+
+def _note_on_release_row(table, lot, journal, text):
+	"""Write `text` into the release's own history row (decision 328), in the release's transaction: the row of the
+	certificate's lot record `lot` when this release saved it, else the row of the first record this release saved
+	(a release that wrote only records elsewhere: a withdrawal that reset moved records). Every release that wrote
+	anything saved at least one record with a row (a container is column-written only together with the saved
+	record above it), so a row is there. -> the record whose row got the text, or None."""
+	rows = getattr(table, "written_rows", None) or {}
+	order = [lot] + [j["name"] for j in journal]
+	for name in order:
+		if name in rows:
+			table._add_to_row(rows[name], text)
+			return name
+	return None
+
+
+def send_release_summary(
+	certificate_doctype, certificate, lot, journal, result=None, withdrawn=False, table=None
+):
 	"""ONE message for one approval or withdrawal that wrote any record (`journal` non-empty); nothing otherwise.
 
 	Sent after commit only, and dropped on rollback, because of how Frappe 16.17.5 queues mail:
@@ -1023,13 +1150,21 @@ def send_release_summary(certificate_doctype, certificate, lot, journal, result=
 	With the default `delayed=True` and no `now`, nothing else happens: the row is sent later by the scheduler's
 	queue flush, which sees it only once the transaction has committed; a rollback removes the row with the
 	release (also a rollback to a savepoint). `now=True` would add `q.send` to `frappe.db.after_commit` (reset on
-	a full rollback, but not on a savepoint rollback), so it is NOT used. No commit, no try/except here.
+	a full rollback, but not on a savepoint rollback), so it is NOT used. No commit here.
 
-	A summary that cannot be queued fails the release, visibly: an exception of `sendmail` is not caught, and a
-	`sendmail` that queues nothing for a non-empty list of recipients (Frappe drops an invalid address, logging it,
-	and every recipient who has unsubscribed) is refused with a message; the caller's transaction then rolls the
-	whole release back. No recipient at all (every one disabled, or without an address): nothing is sent, the
-	release stands."""
+	A release never fails because of mail (decision 328). Two outcomes are not a sent summary, and each is written
+	into the release's own history row ("summary not sent: <reason>", no address; `_note_on_release_row`, a column
+	write of that row's `comments` in the same transaction), and the release stands, with no Error Log:
+	  * `sendmail` raises `frappe.OutgoingEmailError`: there is no outgoing Email Account
+	    (`EmailAccount.find_outgoing(_raise_error=True)` throws it while the queue row is built). It is the only
+	    exception caught, because it is the only one queuing a mail raises for a reason of mail: an invalid address
+	    is caught inside Frappe (`QueueBuilder.as_dict`, which logs it and queues nothing; see `_valid_addresses`),
+	    and SMTP is not touched without `now`. Anything else (a read, the insert of the queue row, a bug) is not
+	    mail being off and still fails the release. The message `frappe.throw` put on the response for that
+	    exception is taken off again (the release did not fail), and a notice says the summary was not sent.
+	  * `sendmail` queues nothing for a non-empty list (every recipient has unsubscribed).
+	No recipient at all (every one disabled, or without an address): nothing is sent and nothing is written, as
+	before. Every address invalid: nothing is sent and the row says so."""
 	if not journal:
 		return None
 	row = (
@@ -1051,19 +1186,41 @@ def send_release_summary(certificate_doctype, certificate, lot, journal, result=
 		withdrawn=withdrawn,
 		cancelled=withdrawn and int(row.get("docstatus") or 0) == 2,
 	)
-	queued = frappe.sendmail(
-		recipients=recipients,
-		subject=subject,
-		message=body,
-		reference_doctype=certificate_doctype,
-		reference_name=certificate,
-	)
-	if not queued:
-		frappe.throw(
-			_(
-				"The release summary of {0} {1} could not be queued (Frappe queued no mail for its {2} recipient(s): an invalid address, or every recipient has unsubscribed). Nothing was written; correct the user's e-mail address and repeat the action."
-			).format(certificate_doctype, certificate, len(recipients)),
-			frappe.ValidationError,
-			title=_("Quality status"),
+	valid = _valid_addresses(recipients)
+	if not valid:
+		reason = f"no valid address for its {len(recipients)} recipient(s)"
+		return _not_sent(table, certificate_doctype, certificate, lot, journal, reason)
+	messages = getattr(frappe.local, "message_log", None)
+	shown = len(messages) if isinstance(messages, list) else None
+	try:
+		queued = frappe.sendmail(
+			recipients=valid,
+			subject=subject,
+			message=body,
+			reference_doctype=certificate_doctype,
+			reference_name=certificate,
 		)
+	except frappe.OutgoingEmailError:
+		if shown is not None:
+			frappe.local.message_log = frappe.local.message_log[:shown]  # the release stands: not an error
+		reason = "no outgoing email account (OutgoingEmailError)"
+		return _not_sent(table, certificate_doctype, certificate, lot, journal, reason)
+	if not queued:
+		reason = f"no mail queued for its {len(valid)} recipient(s): every recipient has unsubscribed"
+		return _not_sent(table, certificate_doctype, certificate, lot, journal, reason)
 	return queued
+
+
+def _not_sent(table, certificate_doctype, certificate, lot, journal, reason):
+	"""The summary was not sent: the release's history row says why, the user is told, the release stands. -> None"""
+	text = f"{NOT_SENT}: {reason}"
+	where = _note_on_release_row(table, lot, journal, text)
+	frappe.msgprint(
+		_("{0} {1}: the release stands; its summary was not sent ({2}).").format(
+			certificate_doctype, certificate, reason
+		)
+		+ (" " + _("This is written in the history of lot record {0}.").format(where) if where else ""),
+		indicator="orange",
+		alert=True,
+	)
+	return None

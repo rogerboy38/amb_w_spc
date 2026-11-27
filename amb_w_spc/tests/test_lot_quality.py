@@ -36,6 +36,10 @@ class Refused(Exception):
 	pass
 
 
+class NoOutgoingAccount(Exception):
+	"""Stands in for `frappe.OutgoingEmailError` (which is not a ValidationError in Frappe 16.17.5)."""
+
+
 def rec(
 	name, level="1", parent=None, status="Pending", source=None, cert=None, says=None, cert_type=INTERNAL
 ):
@@ -64,6 +68,8 @@ class Table:
 		self.history = []  # one entry per saved change: (lot, before, after, reason, note)
 		self.column_writes = []  # direct column writes: (names, values)
 		self.reads = []  # every read: ("get", name) or ("children", [names])
+		# as LotTable: {record: name of the history row its first save wrote}; `_add_to_row` writes into it
+		self.written_rows = {}
 
 	def get(self, name):
 		self.reads.append(("get", name))
@@ -98,10 +104,18 @@ class Table:
 				return False
 			after = dict(before)
 		self.rows[name].update(values)
+		row = f"ROW-{len(self.history) + 1}"
 		self.history.append(
-			types.SimpleNamespace(lot=name, before=before, after=after, reason=reason, note=note)
+			types.SimpleNamespace(
+				lot=name, before=before, after=after, reason=reason, note=note, row=row, added=[]
+			)
 		)
+		self.written_rows.setdefault(name, row)
 		return True
+
+	def _add_to_row(self, row_name, text):
+		(entry,) = [h for h in self.history if h.row == row_name]
+		entry.added.append(text)
 
 	# what a test reads
 	def state(self, name):
@@ -124,6 +138,9 @@ def fake_frappe():
 	f.session.user = USER
 	f.utils.nowdate.return_value = "2026-11-26"
 	f.utils.now.return_value = "2026-11-26 10:00:00.000000"
+	f.OutgoingEmailError = NoOutgoingAccount
+	f.utils.validate_email_address.side_effect = lambda email, throw=False: email  # test tokens are valid
+	f.local.message_log = []
 	return f
 
 

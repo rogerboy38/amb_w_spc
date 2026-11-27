@@ -7,8 +7,11 @@
 #   * ONE summary per approval / withdrawal that wrote any record, to the certificate's filler, the session user
 #     and the owner of the lot's Work Order: enabled users only, each once, never Administrator / Guest; it lists
 #     the certificate, its result and every record written (containers included); nothing written: no message
-#   * the summary is a queued mail: inserted in the release's transaction, sent after commit, gone on rollback;
-#     a summary that cannot be queued fails the release
+#   * the summary is a queued mail: inserted in the release's transaction, sent after commit, gone on rollback
+#   * TASKS-388, decision 328: a release never fails because of mail. No outgoing account (sendmail raises
+#     frappe.OutgoingEmailError), every recipient unsubscribed (sendmail queues nothing) or no valid address: the
+#     release stands and its own history row says "summary not sent: <reason>", no address, no Error Log; any other
+#     exception still fails the release
 #
 # Run: python -m unittest amb_w_spc.tests.test_release_summary   (no site needed)
 
@@ -22,7 +25,17 @@ from unittest import mock
 
 from amb_w_spc.sfc_manufacturing import lot_quality as lq
 from amb_w_spc.sfc_manufacturing.doctype.batch_amb import batch_amb as bam
-from amb_w_spc.tests.test_lot_quality import INTERNAL, USER, Db, Refused, Table, fake_frappe, rec, site
+from amb_w_spc.tests.test_lot_quality import (
+	INTERNAL,
+	USER,
+	Db,
+	NoOutgoingAccount,
+	Refused,
+	Table,
+	fake_frappe,
+	rec,
+	site,
+)
 
 FILLER, WO_OWNER = "quality-filler", "planner"
 EMAIL = {
@@ -267,30 +280,146 @@ class TestAfterCommitOnly(SummaryCase):
 			self.approve(t, f)
 		f.sendmail.assert_not_called()
 
-	def test_a_summary_that_cannot_be_queued_fails_the_release_visibly(self):
-		t, f = Table(*tree()), summary_frappe()
-		f.sendmail.side_effect = (
-			lambda **k: None
-		)  # Frappe queued nothing (an invalid address, all unsubscribed)
-		with self.assertRaises(Refused):
-			self.approve(t, f)
-		self.assertIn("could not be queued", f.throw.call_args.args[0])
-		t, f = Table(*tree()), summary_frappe()
-		f.sendmail.side_effect = OSError("queue unavailable")
-		with self.assertRaises(OSError):  # not caught
-			self.approve(t, f)
-
-	def test_the_source_queues_without_now_and_without_a_try(self):
+	def test_the_source_queues_without_now_and_catches_only_the_missing_outgoing_account(self):
 		fn = ast.parse(inspect.getsource(lq.send_release_summary)).body[0]
 		calls = [
 			n for n in ast.walk(fn) if isinstance(n, ast.Call) and ast.unparse(n.func) == "frappe.sendmail"
 		]
 		self.assertEqual(len(calls), 1)
 		self.assertFalse({k.arg for k in calls[0].keywords} & {"now", "delayed"})
-		self.assertFalse([n for n in ast.walk(fn) if isinstance(n, ast.Try)])
+		(handler,) = [h for n in ast.walk(fn) if isinstance(n, ast.Try) for h in n.handlers]
+		self.assertEqual(ast.unparse(handler.type), "frappe.OutgoingEmailError")  # not Exception, not bare
+		(trying,) = [n for n in ast.walk(fn) if isinstance(n, ast.Try)]
+		self.assertEqual([ast.unparse(n.value.func) for n in trying.body], ["frappe.sendmail"])  # only it
 		code = "\n".join(ast.unparse(n) for n in fn.body[1:])  # without the docstring
 		self.assertNotIn("after_commit", code)
 		self.assertNotIn("commit(", code)
+		self.assertNotIn("log_error", code)
+
+
+# ----------------------------------------------------------------------------------------------------------------
+# TASKS-388, decision 328: a release never fails because of mail
+# ----------------------------------------------------------------------------------------------------------------
+def no_outgoing_account(f):
+	"""What Frappe 16.17.5 does without an outgoing Email Account: `EmailAccount.find_outgoing(_raise_error=True)`
+	calls `frappe.throw(..., frappe.OutgoingEmailError)`, which puts a red message on the response and raises."""
+
+	def sendmail(**kwargs):
+		f.local.message_log.append(
+			{"message": "Please setup default outgoing Email Account", "raise_exception": 1}
+		)
+		raise NoOutgoingAccount("Please setup default outgoing Email Account")
+
+	f.sendmail.side_effect = sendmail
+	return f
+
+
+def every_recipient_unsubscribed(f):
+	f.sendmail.side_effect = lambda **kwargs: []  # QueueBuilder.process: no final recipient -> []
+	return f
+
+
+class TestMailNeverFailsARelease(SummaryCase):
+	def notes(self, table):
+		return {h.lot: h.added for h in table.history if h.added}
+
+	def assert_stands_with_note(self, table, f, written, needle, on="L"):
+		self.assertEqual(written, 6)  # the release stands: every record written
+		(text,) = self.notes(table)[on]
+		self.assertTrue(text.startswith("summary not sent: "), text)
+		self.assertIn(needle, text)
+		for address in EMAIL.values():
+			self.assertNotIn(address, text)  # no address in the row
+		self.assertEqual(list(self.notes(table)), [on])  # one row, the release's own
+		f.log_error.assert_not_called()  # no Error Log
+		self.assertEqual(f.local.message_log, [])  # no red message on a release that stood
+
+	def test_no_outgoing_account_the_approval_stands_and_its_row_says_so(self):
+		t, f = Table(*tree()), no_outgoing_account(summary_frappe())
+		written = self.approve(t, f)
+		self.assertEqual(t.state("L"), ("Passed", "Own certificate", "CERT-L", "Passed"))
+		self.assert_stands_with_note(t, f, written, "no outgoing email account")
+		self.assertIn("summary was not sent", f.msgprint.call_args.args[0])
+		self.assertEqual(f.msgprint.call_args.kwargs.get("indicator"), "orange")
+
+	def test_no_outgoing_account_a_withdrawal_and_a_cancel_stand_and_their_row_says_so(self):
+		for docstatus in (0, 2):
+			with self.subTest(docstatus=docstatus):
+				t = Table(*tree())
+				self.approve(t, summary_frappe())
+				f = no_outgoing_account(summary_frappe(docstatus=docstatus))
+				written = self.withdraw(t, f)
+				self.assertEqual(t.state("L"), ("Pending", "", None, None))
+				self.assert_stands_with_note(t, f, written, "no outgoing email account")
+
+	def test_every_recipient_unsubscribed_the_release_stands_and_its_row_says_so(self):
+		t, f = Table(*tree()), every_recipient_unsubscribed(summary_frappe())
+		written = self.approve(t, f)
+		self.assertEqual(f.sendmail.call_count, 1)
+		self.assert_stands_with_note(t, f, written, "every recipient has unsubscribed")
+		self.assertIn("3 recipient(s)", self.notes(t)["L"][0])
+
+	def test_a_normal_queue_writes_no_such_text(self):
+		t, f = Table(*tree()), summary_frappe()
+		self.approve(t, f)
+		self.assertEqual(len(f.tx.pending), 1)
+		self.assertEqual(self.notes(t), {})
+		f.msgprint.assert_not_called()
+
+	def test_an_invalid_address_never_reaches_frappe_which_would_write_an_error_log(self):
+		invalid = {EMAIL[WO_OWNER]}
+		t, f = Table(*tree()), summary_frappe()
+		f.utils.validate_email_address.side_effect = lambda e, throw=False: "" if e in invalid else e
+		self.approve(t, f)
+		self.assertEqual(self.mails(f)[0]["recipients"], [EMAIL[FILLER], EMAIL[USER]])
+		self.assertEqual(self.notes(t), {})
+		# every address invalid: nothing sent, the row says so
+		t, f = Table(*tree()), summary_frappe()
+		f.utils.validate_email_address.side_effect = lambda e, throw=False: ""
+		written = self.approve(t, f)
+		f.sendmail.assert_not_called()
+		self.assert_stands_with_note(t, f, written, "no valid address")
+
+	def test_an_exception_that_is_not_the_missing_account_still_fails_the_release(self):
+		for exc in (OSError("queue unavailable"), Refused("the queue row was refused"), RuntimeError("bug")):
+			with self.subTest(exc=exc):
+				t, f = Table(*tree()), summary_frappe()
+				f.sendmail.side_effect = exc
+				with self.assertRaises(type(exc)):
+					self.approve(t, f)
+				self.assertEqual(self.notes(t), {})
+		# and from the summary's own reads, before sendmail
+		t, f = Table(*tree()), summary_frappe()
+		f.db.get_value.side_effect = KeyError("filled_by")
+		with self.assertRaises(KeyError):
+			self.approve(t, f)
+
+	def test_a_release_that_saved_only_records_elsewhere_writes_the_text_in_the_first_ones_row(self):
+		# the lot's status comes from another certificate; CERT-L still speaks for a sub-lot moved under M
+		t = Table(
+			rec("L", status="Passed", source="Own certificate", cert="CERT-0"),
+			rec("M"),
+			rec("X", "2", "M", status="Passed", source="Own certificate", cert="CERT-L"),
+			rec("XC", "3", "X", status="Passed", source="Inherited", cert="CERT-L"),
+		)
+		f = no_outgoing_account(summary_frappe())
+		self.assertEqual(self.withdraw(t, f), 2)  # X saved, XC by column write; L not written
+		self.assertEqual(
+			self.notes(t), {"X": ["summary not sent: no outgoing email account (OutgoingEmailError)"]}
+		)
+		self.assertIn("history of lot record X", f.msgprint.call_args.args[0])
+
+	def test_the_contract_functions_keep_their_signatures(self):
+		self.assertEqual(
+			list(inspect.signature(lq.certificate_approved).parameters),
+			["certificate_doctype", "certificate", "lot", "result"],
+		)
+		self.assertEqual(
+			list(inspect.signature(lq.certificate_withdrawn).parameters),
+			["certificate_doctype", "certificate", "lot", "standing"],
+		)
+		public = {n for n, _f in inspect.getmembers(lq.LotTable, inspect.isfunction) if not n.startswith("_")}
+		self.assertEqual(public, {"released_by", "get", "children", "write_columns", "save"})
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -354,6 +483,7 @@ class ControllerDoc:
 
 	def append(self, table, row):
 		self.fields.setdefault(table, []).append(row)
+		return row  # as Frappe's append: the child row, named when the save inserts it
 
 	def get_doc_before_save(self):
 		stored = dict(self.db.rows[self.name], batch_status="Draft")
@@ -366,6 +496,9 @@ class ControllerDoc:
 		lq.refuse_hand_change(self, "before_validate")
 		bam.BatchAMB.validate(self)
 		stored_rows = list(self.fields["processing_history"])  # update_children: what is on the doc now
+		for row in stored_rows:
+			if isinstance(row, dict):
+				row.setdefault("name", f"{self.name}-ROW-{len(self.db.history.get(self.name, [])) + 1}")
 		self.db.rows[self.name] = {k: v for k, v in self.fields.items() if k != "processing_history"}
 		self.db.history.setdefault(self.name, []).extend(stored_rows)
 		bam.BatchAMB.on_update(self)
@@ -392,8 +525,31 @@ def controller_site(db):
 			return [types.SimpleNamespace(parent=u) for u in QUALITY_ROLE_USERS]
 		return lot_get_all(doctype, filters=filters, fields=fields, **kwargs)
 
+	def stored_row(name):
+		(row,) = [
+			r for rows in db.history.values() for r in rows if isinstance(r, dict) and r.get("name") == name
+		]
+		return row
+
+	lot_get_value, lot_set_value = f.db.get_value.side_effect, f.db.set_value.side_effect
+
+	def get_value(dt, name, fields, as_dict=False):
+		if dt == lq.HISTORY_DOCTYPE:  # a stored history row, by its name
+			db.log.append(("get_value", dt, name, fields))
+			return stored_row(name).get(fields)
+		return lot_get_value(dt, name, fields, as_dict=as_dict)
+
+	def set_value(dt, filters, fieldname, value=None, update_modified=True):
+		if dt == lq.HISTORY_DOCTYPE:  # a column write of one stored history row
+			db.log.append(("set_value", dt, filters, fieldname, update_modified))
+			stored_row(filters)[fieldname] = value
+			return
+		return lot_set_value(dt, filters, fieldname)
+
 	f.get_doc.side_effect = get_doc
 	f.get_all.side_effect = get_all
+	f.db.get_value.side_effect = get_value
+	f.db.set_value.side_effect = set_value
 	f.docs = docs
 	with contextlib.ExitStack() as stack:
 		stack.enter_context(site(frappe=f))
@@ -484,6 +640,39 @@ class TestTheControllerUnderARelease(unittest.TestCase):
 					before = list(doc.fields["processing_history"])
 					bam.BatchAMB.on_update(doc)
 				self.assertEqual(doc.fields["processing_history"], before)
+
+
+class TestTheControllerWithMailOff(unittest.TestCase):
+	"""Decision 328 through the real LotTable.save, the real guard and BatchAMB.validate / on_update."""
+
+	def test_no_outgoing_account_the_stored_row_of_the_lot_says_so_and_nothing_is_saved_again(self):
+		db = controller_db()
+		with controller_site(db) as f:
+			no_outgoing_account(f)
+			written = lq.certificate_approved(INTERNAL, "CERT-L", "L", "Pass")
+		self.assertEqual(written, 6)
+		self.assertEqual(db.rows["L"]["quality_status"], "Passed")
+		self.assertEqual([e[1] for e in db.saves()], ["L", "S1", "S2"])  # no second save of L for the note
+		(row,) = db.history["L"]
+		self.assertEqual(row["processing_action"], lq.HISTORY_ACTION)  # the release's own row
+		self.assertTrue(
+			row["comments"].endswith(" | summary not sent: no outgoing email account (OutgoingEmailError)"),
+			row["comments"],
+		)
+		self.assertIn("from Pending to Passed", row["comments"])  # what the save wrote is kept
+		for name in ("S1", "S2"):
+			self.assertNotIn("summary not sent", db.history[name][0]["comments"])
+		(write,) = [e for e in db.log if e[0] == "set_value" and e[1] == lq.HISTORY_DOCTYPE]
+		self.assertEqual(write[2:], (row["name"], "comments", False))
+		f.log_error.assert_not_called()
+
+	def test_a_normal_queue_leaves_the_row_as_saved(self):
+		db = controller_db()
+		with controller_site(db) as f:
+			lq.certificate_approved(INTERNAL, "CERT-L", "L", "Pass")
+		self.assertNotIn("summary not sent", db.history["L"][0]["comments"])
+		self.assertFalse([e for e in db.log if e[0] == "set_value" and e[1] == lq.HISTORY_DOCTYPE])
+		self.assertEqual(f.sendmail.call_count, 1)
 
 
 class TestWhatIsAReleaseSave(unittest.TestCase):
