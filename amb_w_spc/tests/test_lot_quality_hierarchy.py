@@ -34,6 +34,14 @@ from amb_w_spc.tests.test_lot_quality import (
 )
 
 PENDING = ("Pending", "", None, None)
+# what a new child is born with (TASKS-390, decision 336)
+PENDING_NO_CERTIFICATE = {
+	"quality_status": "Pending",
+	"status_source": None,
+	"released_by_doctype": None,
+	"released_by": None,
+	"certificate_status": None,
+}
 
 
 def tree(*changed, sublots=3, containers=2):
@@ -708,33 +716,26 @@ class TestANewChild(unittest.TestCase):
 			**kw,
 		)
 
-	def test_a_new_sub_lot_or_container_under_a_released_record_is_released_as_inherited(self):
+	def test_a_sub_lot_or_container_created_after_its_parents_approval_is_born_pending(self):
+		# TASKS-390, decision 336 (replaces TASKS-384 B4's birth "Inherited" with the parent's verdict)
 		for level in ("2", "3"):
 			for status in ("Passed", "Failed", "Hold"):
-				out, child, _f = self.create(
-					level, **self.released(quality_status=status, certificate_status=status)
-				)
-				self.assertTrue(out["success"], out)
-				self.assertEqual(
-					child.inserted,
-					{
-						"quality_status": status,
-						"status_source": "Inherited",
-						"released_by_doctype": INTERNAL,
-						"released_by": "CERT-1",
-						"certificate_status": status,
-					},
-				)
-				self.assertIs(child.flag_at_insert, lq._WRITER)  # the module's own insert ...
-				self.assertEqual(child.flags, {})  # ... and the flag is down after it
+				for source in ("Own certificate", "Inherited"):
+					with self.subTest(level=level, status=status, source=source):
+						out, child, _f = self.create(
+							level,
+							**self.released(
+								quality_status=status, certificate_status=status, status_source=source
+							),
+						)
+						self.assertTrue(out["success"], out)
+						self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
+						self.assertIs(
+							child.flag_at_insert, lq._WRITER
+						)  # the module's own insert (its row) ...
+						self.assertEqual(child.flags, {})  # ... and the flag is down after it
 
-	def test_it_follows_a_parent_that_itself_inherits(self):
-		_out, child, _f = self.create("3", **self.released(status_source="Inherited"))
-		self.assertEqual(
-			(child.inserted["status_source"], child.inserted["released_by"]), ("Inherited", "CERT-1")
-		)
-
-	def test_its_birth_leaves_one_history_row_written_by_the_insert(self):
+	def test_its_birth_leaves_one_history_row_saying_it_was_created_after_the_approval(self):
 		_out, child, _f = self.create(**self.released())
 		(row,) = child.rows
 		self.assertEqual(
@@ -745,15 +746,40 @@ class TestANewChild(unittest.TestCase):
 				row["item_code"],
 				row["changed_by"],
 			),
-			("Quality Status Changed", "Passed", "1 (Mix)", "0227", USER),
+			("Quality Status Changed", "Pending", "1 (Mix)", "0227", USER),
 		)
 		for needle in (
-			"from Pending to Passed",
-			"source: from none to Inherited",
-			"COA AMB2 CERT-1",
-			"LOTE-1",
+			"created after approval of COA AMB2 CERT-1: Pending until certified",
+			"from Pending to Pending",
+			"source: from none to none",
+			"certificate: from none to none",
+			"created under LOTE-1",
 		):
 			self.assertIn(needle, row["comments"])
+
+	def test_a_value_the_caller_set_on_the_child_does_not_survive(self):
+		# create_child_batch copies no quality field; whatever is on the new document, the birth is Pending
+		parent = Fields(**self.released(name="LOTE-1", current_plant2="1", current_item_code="0227"))
+		child = Child()
+		child.quality_status, child.released_by, child.status_source = "Passed", "CERT-9", "Inherited"
+		child.current_plant2, child.current_item_code = "1", "0227"
+		with site():
+			lq.insert_child(child, parent)
+		self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
+
+	def test_after_the_birth_the_next_approval_above_writes_it_down_as_before(self):
+		# a child born Pending has no certificate of its own: the next approval of its parent reaches it (319)
+		t = Table(
+			rec("L", status="Passed", source="Own certificate", cert="CERT-1"),
+			rec("S-NEW", "2", "L"),
+		)
+		with site(t):
+			lq.certificate_withdrawn(INTERNAL, "CERT-1", "L")
+			self.assertEqual(
+				t.state("S-NEW"), ("Pending", "", None, None)
+			)  # not written: CERT-1 never wrote it
+			lq.certificate_approved(INTERNAL, "CERT-2", "L", "Fail")
+		self.assertEqual(t.state("S-NEW"), ("Failed", "Inherited", "CERT-2", "Failed"))
 
 	def test_the_row_of_its_birth_names_the_new_record(self):
 		# review finding 11: the row is appended before the insert, when the record has no name; the guard's
@@ -806,16 +832,15 @@ class TestANewChild(unittest.TestCase):
 			self.assertIsNone(child.flag_at_insert)  # an insert like any other: the guard judged it
 			self.assertEqual(child.rows, [])
 
-	def test_under_a_record_on_hand_hold_it_takes_what_the_certificate_says(self):
+	def test_under_a_record_on_hand_hold_it_is_born_pending_too(self):
 		_out, child, _f = self.create(**self.released(quality_status="Hold", status_source="Hold action"))
-		self.assertEqual(
-			(child.inserted["quality_status"], child.inserted["status_source"]), ("Passed", "Inherited")
-		)
-		# a hold with no certificate behind it: nothing to inherit
+		self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
+		(row,) = child.rows
+		self.assertIn("created after approval of COA AMB2 CERT-1", row["comments"])
+		# a hold with no certificate behind it: no certificate was approved, no row
 		_out, child, _f = self.create(quality_status="Hold", status_source="Hold action")
-		self.assertEqual(
-			(child.inserted["quality_status"], child.inserted["status_source"]), ("Pending", None)
-		)
+		self.assertEqual(child.inserted, PENDING_NO_CERTIFICATE)
+		self.assertEqual(child.rows, [])
 
 	def test_a_child_that_cannot_carry_its_history_row_is_not_created_and_the_user_is_told_why(self):
 		parent = self.released(current_plant2=None)

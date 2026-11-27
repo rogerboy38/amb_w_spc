@@ -1788,9 +1788,10 @@ def create_child_batch(parent_name, child_level):
         # ============================================================
         # 6. QUALITY STATUS FIELDS
         # ============================================================
-        # TASKS-384 B4: set at the insert below (lot_quality.insert_child): a child under a record whose status
-        # comes from a certificate is born with the parent's certificate, its verdict and source "Inherited";
-        # otherwise Pending.
+        # Set at the insert below (lot_quality.insert_child). TASKS-390, decision 336: a child is always born
+        # Pending with no certificate; under a record whose status comes from a certificate (approved before the
+        # child existed) it gets one history row "created after approval of <certificate>: Pending until
+        # certified". (TASKS-384 B4 gave it the parent's certificate and verdict as "Inherited"; no longer.)
         
         # ============================================================
         # 7. RESET CHILD-SPECIFIC FIELDS (Start fresh)

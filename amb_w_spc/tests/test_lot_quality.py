@@ -22,6 +22,8 @@ import types
 import unittest
 from unittest import mock
 
+import frappe as real_frappe
+
 from amb_w_spc.sfc_manufacturing import lot_quality as lq
 from amb_w_spc.sfc_manufacturing.doctype.batch_amb import batch_amb as bam
 
@@ -141,14 +143,37 @@ def fake_frappe():
 	f.OutgoingEmailError = NoOutgoingAccount
 	f.utils.validate_email_address.side_effect = lambda email, throw=False: email  # test tokens are valid
 	f.local.message_log = []
+	# decision 333: Frappe's own function, which reads `frappe.flags.mute_emails` and `frappe.conf.mute_emails`;
+	# `site()` gives it empty flags and conf (mail not muted), `mail_settings()` sets them
+	f.are_emails_muted = real_frappe.are_emails_muted
 	return f
 
 
 @contextlib.contextmanager
-def site(table=None, frappe=None):
-	"""The module with a fake frappe and, when given, the in-memory table behind its public functions."""
+def mail_settings(flags=None, conf=None):
+	"""What `frappe.are_emails_muted` reads, for the length of a test: `frappe.local.flags` and `frappe.local.conf`
+	(the real ones, behind Frappe's proxies `frappe.flags` / `frappe.conf`), restored after."""
+	saved = {key: getattr(real_frappe.local, key, None) for key in ("flags", "conf")}
+	real_frappe.local.flags = real_frappe._dict(flags or {})
+	real_frappe.local.conf = real_frappe._dict(conf or {})
+	try:
+		yield
+	finally:
+		for key, value in saved.items():
+			if value is None:
+				with contextlib.suppress(AttributeError):
+					delattr(real_frappe.local, key)
+			else:
+				setattr(real_frappe.local, key, value)
+
+
+@contextlib.contextmanager
+def site(table=None, frappe=None, mail=None):
+	"""The module with a fake frappe and, when given, the in-memory table behind its public functions. `mail`:
+	{"flags": ..., "conf": ...} for `mail_settings` (default: empty, mail not muted)."""
 	f = frappe or fake_frappe()
 	with contextlib.ExitStack() as stack:
+		stack.enter_context(mail_settings(**(mail or {})))
 		stack.enter_context(mock.patch.object(lq, "frappe", f))
 		stack.enter_context(mock.patch.object(lq, "_", lambda s: s))
 		if table is not None:

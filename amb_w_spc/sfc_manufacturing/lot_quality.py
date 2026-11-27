@@ -47,6 +47,11 @@ wrote any record (`send_release_summary`): who, what, every record written. See 
 commit. A release never fails because of mail (TASKS-388, decision 328): a summary that cannot be queued is
 written into the release's own history row as "summary not sent: <reason>" and the release stands.
 
+TASKS-390: muted mail is noted, not queued (decision 333, `_send_summary`); a share is summed up like a release
+(decision 334, `certificate_shared`); a child created after its parent's certificate was approved is born Pending
+(decision 336, `insert_child`); the worst result wins when more than one certificate stands for a record
+(decision 338, `others` of `certificate_approved`, a list as `standing` of `certificate_withdrawn`).
+
 No move under a hold (TASKS-388, decision 329): `parent_batch_amb` of a record cannot be changed while the chain
 above its stored parent, or above its new parent, holds a record on a hand hold (`_refuse_move_under_hold`), and a
 merge of a record whose chain or whose target's chain holds one is refused (`refuse_merge_under_hold`).
@@ -100,7 +105,8 @@ WRITER_FLAG = "lot_quality_writer"
 _WRITER = object()
 # The same, for the saves of a RELEASE only (an approval or a withdrawal of a certificate, `LotTable.save` with
 # `LotTable.release` set): the lot controller asks `is_release_save` and skips its per-record mail and its Lote AMB
-# sync. Not set by `insert_child`, nor by a hand hold placed or lifted: those saves are not a release.
+# sync. Not set by `insert_child`, nor by a hand hold placed or lifted: those saves are not a release. Also set for
+# the saves of the install reset (TASKS-390 item 7, `patches/v15_9_0`): a reset at migrate mails nobody per record.
 RELEASE_FLAG = "lot_quality_release"
 _RELEASE = object()
 # who never receives a summary (narrowest reading of "enabled users only": these two are not people)
@@ -139,13 +145,24 @@ def _link_at_approval(certificate_doctype, certificate):
 def _link_at_withdrawal(record, certificate_doctype, certificate, standing):
 	"""-> what becomes of the record's link when the certificate is withdrawn: nothing ({}) unless the field
 	still points at the withdrawn certificate; then the certificate that still stands when it is of the same
-	type (the field links to one type), else empty."""
+	type (the field links to one type), else empty. `standing`: a list (`_standing_list`); of several of the
+	same type, the one that holds the status when it is of that type, else the first."""
 	fieldname = CERTIFICATE_LINKS.get(certificate_doctype)
 	if not fieldname or record.get(fieldname) != certificate:
 		return {}
-	if standing and standing.get("doctype") == certificate_doctype and standing.get("name"):
-		return {fieldname: standing.get("name")}
-	return {fieldname: None}
+	same = [s for s in standing if s.get("doctype") == certificate_doctype and s.get("name")]
+	if not same:
+		return {fieldname: None}
+	# a result with no mapping is refused, with its own message, where the status is decided
+	mapped = [
+		(s.get("doctype"), s.get("name"), s.get("result"), RESULT_TO_LOT_STATUS[s.get("result")])
+		for s in standing
+		if s.get("result") in RESULT_TO_LOT_STATUS
+	]
+	holder = _worst(mapped)
+	if holder and holder[0] == certificate_doctype and holder[1]:
+		return {fieldname: holder[1]}
+	return {fieldname: same[0].get("name")}
 
 
 def _name_own_rows(doc):
@@ -419,6 +436,8 @@ class LotTable:
 		containers only, by the approval / withdrawal of the certificate above them, because a lot can have
 		hundreds of containers and a full save of each would run the whole lot controller per container inside
 		the approval, and any unrelated validation failure of one container would stop the release of the lot.
+		The install reset (TASKS-390 item 7) uses it too, for a record that cannot carry a history row: that
+		record is then named in the patch's output and in an Info Comment on it.
 		The record of each container's release is the history row of the lot or sub-lot it was written with
 		(`_containers_note`: every container by name, with its status before and after, the certificate, who and
 		when), and on the container itself `released_by*` and `status_source`."""
@@ -478,14 +497,22 @@ class LotTable:
 		"""Append `text` to the `comments` of one stored history row, by a direct column write on the child table
 		(`Batch Processing History`): no document event runs, the lot record itself is not saved again, and no
 		guarded field is touched. Private: see `written_rows`."""
-		stored = frappe.db.get_value(HISTORY_DOCTYPE, row_name, "comments") or ""
-		frappe.db.set_value(
-			HISTORY_DOCTYPE,
-			row_name,
-			"comments",
-			f"{stored} | {text}" if stored else text,
-			update_modified=False,
+		_append_to_row(row_name, text)
+
+
+def missing_for_history_row(doc):
+	"""-> the labels of what a lot record lacks to carry a history row (its plant; its current item or its item to
+	manufacture), [] when it can carry one. The rule of `_history_row`; the install reset (item 7) asks it too."""
+	plant = doc.get("current_plant2")
+	item_code = doc.get("current_item_code") or doc.get("item_to_manufacture")
+	return [
+		label
+		for label, value in (
+			(_("Current Plant"), plant),
+			(_("Current Item Code / Item to Manufacture"), item_code),
 		)
+		if not value
+	]
 
 
 def _history_row(doc, before, after, reason, note, acting_on=None):
@@ -502,14 +529,7 @@ def _history_row(doc, before, after, reason, note, acting_on=None):
 	certificate of `acting_on` and has never opened this record. The rule itself is the same."""
 	plant = doc.get("current_plant2")
 	item_code = doc.get("current_item_code") or doc.get("item_to_manufacture")
-	missing = [
-		label
-		for label, value in (
-			(_("Current Plant"), plant),
-			(_("Current Item Code / Item to Manufacture"), item_code),
-		)
-		if not value
-	]
+	missing = missing_for_history_row(doc)
 	if missing and acting_on and doc.name and acting_on != doc.name:
 		frappe.throw(
 			_(
@@ -659,16 +679,23 @@ def set_lot_quality_status(lot, status, certificate=None, reason=None, certifica
 	return _set(LotTable(), lot, status, certificate, reason, certificate_doctype, source)
 
 
-def certificate_approved(certificate_doctype, certificate, lot, result):
+def certificate_approved(certificate_doctype, certificate, lot, result, others=None):
 	"""The certificate reached "Approved". Map `result` (Pass/Fail/Partial) and write the lot `lot` (a Batch AMB
 	name, level 1 or 2) as source "Own certificate", with the certificate in the lot's link field of its type
 	(`coa_reference` / `coa_amb2`), then write down the hierarchy (B4): every record below it becomes "Inherited"
 	from this certificate (no link written), except a record with a certificate of its own and what is below
 	that. Raises (frappe.throw) if result has no mapping or a record cannot be written; everything is written
 	in the caller's transaction, nothing is committed here. When any record was written, ONE summary is queued
-	(`send_release_summary`). -> the number of records written."""
+	(`send_release_summary`). -> the number of records written.
+
+	`others` (decision 338, worst result wins): None, or a list of dicts {"doctype", "name", "result"} of the OTHER
+	certificates that still stand for the same record `lot` (amb_w_tds's definition of "standing"). The record
+	takes the worst mapped status (Failed over Hold over Passed) of this certificate and `others`; when one of
+	`others` is strictly worse, IT holds the status: `released_by*` name it, the records below inherit from it, and
+	the history row says that it holds the status. On a tie this certificate holds it. The link field still
+	names this certificate (it is the one approved for the record). None or [] is the behaviour before TASKS-390."""
 	journal, table = [], LotTable()
-	written = _approve(table, certificate_doctype, certificate, lot, result, journal)
+	written = _approve(table, certificate_doctype, certificate, lot, result, journal, others=others)
 	send_release_summary(certificate_doctype, certificate, lot, journal, result=result, table=table)
 	return written
 
@@ -677,7 +704,9 @@ def certificate_withdrawn(certificate_doctype, certificate, lot, standing=None):
 	"""The certificate left "Approved" by Reject (to Draft) or a shared COA AMB was cancelled.
 
 	`standing` = None, or a dict {"doctype":…, "name":…, "result":…} of ANOTHER approved certificate of the same
-	record that still stands: the lot then takes that one's mapped status instead of Pending. Resets only the
+	record that still stands: the lot then takes that one's mapped status instead of Pending. It may also be a
+	list of such dicts (decision 338): the lot then takes the worst mapped status of them (Failed over Hold over
+	Passed; on a tie the first in the list), from the certificate that has it. Resets only the
 	records this certificate wrote (B4): the lot when its `released_by` is this certificate, and the records
 	below it whose `released_by` is this certificate. Without a standing certificate a sub-lot takes the status
 	of its nearest certified ancestor (as "Inherited"), or Pending when there is none.
@@ -877,8 +906,46 @@ def _nearest_certified_ancestor(table, record, excluding=None):
 	return None
 
 
-def _approve(table, certificate_doctype, certificate, lot, result, journal=None):
+# decision 338: the worse verdict wins when more than one certificate stands for a record
+SEVERITY = {"Passed": 1, "Hold": 2, "Failed": 3}
+
+
+def _standing_list(standing):
+	"""`standing` as a list: None or [] -> [], one dict -> [it], a list -> itself."""
+	if not standing:
+		return []
+	if isinstance(standing, dict):
+		return [standing]
+	return list(standing)
+
+
+def _checked(entry, this, what):
+	"""One standing certificate -> (doctype, name, result, mapped status), or refused: it must not be `this`, its
+	result must have a mapping and it must be named with its type."""
+	if (entry.get("doctype"), entry.get("name")) == this:
+		frappe.throw(what)
+	status = _mapped(entry.get("result"))
+	if not (entry.get("doctype") and entry.get("name")):
+		frappe.throw(_("The certificate that still stands must be named with its type."))
+	return (entry.get("doctype"), entry.get("name"), entry.get("result"), status)
+
+
+def _worst(candidates):
+	"""-> the candidate (doctype, name, result, status) with the worst status; the first of equals."""
+	worst = None
+	for candidate in candidates:
+		if worst is None or SEVERITY[candidate[3]] > SEVERITY[worst[3]]:
+			worst = candidate
+	return worst
+
+
+def _approve(table, certificate_doctype, certificate, lot, result, journal=None, others=None):
 	status = _mapped(result)
+	this = (certificate_doctype, certificate)
+	beside = [
+		_checked(entry, this, _("The certificate being approved cannot also be one that stands beside it."))
+		for entry in _standing_list(others)
+	]
 	# not locked: two approvals in the same tree at once each plan from this read (the concurrent-approval race)
 	record = _target(table, certificate_doctype, certificate, lot)
 	table.acting_on = record["name"]
@@ -891,14 +958,20 @@ def _approve(table, certificate_doctype, certificate, lot, result, journal=None)
 			frappe.ValidationError,
 			title=_("Quality status"),
 		)
-	view = (certificate_doctype, certificate, status)
+	holder = _worst([(certificate_doctype, certificate, result, status), *beside])
+	view = (holder[0], holder[1], holder[3])
+	reason = f"certificate {certificate_doctype} {certificate} approved with result {result}"
+	if holder[:2] != this:
+		reason += (
+			"; {} {} (result {}) still stands for this record and holds the status {}: the worst result wins"
+		).format(*holder)
 	return _write_down(
 		table,
 		record,
 		dict(_values(record, view, OWN_CERTIFICATE), **_link_at_approval(certificate_doctype, certificate)),
 		view,
 		_has_no_certificate_of_its_own,
-		f"certificate {certificate_doctype} {certificate} approved with result {result}",
+		reason,
 		journal,
 	)
 
@@ -925,19 +998,30 @@ def _withdraw(table, certificate_doctype, certificate, lot, standing=None, journ
 	def wrote(child, parent=None):
 		return _certificate_of(child) == this  # only the records this certificate wrote
 
+	standing = _standing_list(standing)
 	link = _link_at_withdrawal(record, certificate_doctype, certificate, standing)
 	written = 0
 	if wrote(record):
 		if standing:
-			if (standing.get("doctype"), standing.get("name")) == this:
-				frappe.throw(_("The certificate that still stands cannot be the one that is withdrawn."))
-			view = (standing.get("doctype"), standing.get("name"), _mapped(standing.get("result")))
-			if not (view[0] and view[1]):
-				frappe.throw(_("The certificate that still stands must be named with its type."))
+			stands = [
+				_checked(
+					entry, this, _("The certificate that still stands cannot be the one that is withdrawn.")
+				)
+				for entry in standing
+			]
+			holder = _worst(stands)
+			view = (holder[0], holder[1], holder[3])
 			source = OWN_CERTIFICATE
-			reason = "certificate {} {} withdrawn; {} {} still stands with result {}".format(
-				certificate_doctype, certificate, view[0], view[1], standing.get("result")
+			reason = (
+				f"certificate {certificate_doctype} {certificate} withdrawn; "
+				f"{holder[0]} {holder[1]} still stands with result {holder[2]}"
 			)
+			if len(stands) > 1:
+				listed = ", ".join(f"{d} {n} {r}" for d, n, r, _s in stands)
+				reason += (
+					f"; it holds the status {holder[3]}, the worst of the {len(stands)} certificates still "
+					f"standing ({listed})"
+				)
 		else:
 			view, source, reason = _without(table, record, this, certificate_doctype, certificate)
 		written += _write_down(
@@ -986,41 +1070,44 @@ def _reset_elsewhere(table, lot, this, certificate_doctype, certificate, wrote, 
 
 
 def insert_child(child, parent):
-	"""`create_child_batch`'s insert (B4). A new sub-lot or container under a record whose status comes from a
-	certificate is born with that status: the parent's certificate, what it says, source "Inherited", and one
-	history row. Under a record no certificate speaks for, it is born Pending. `child` is the new document, not
-	yet inserted; `parent` the document it is created under.
+	"""`create_child_batch`'s insert. `child` is the new document, not yet inserted; `parent` the document it is
+	created under. The child is ALWAYS born Pending with no certificate (empty `status_source`, `released_by*`,
+	`certificate_status`).
 
-	A parent on hand hold: the child takes what the parent's certificate says, not the hold (the hold is on the
-	parent record; see the module docstring)."""
+	Decision 336 (TASKS-390): a sub-lot or container created under a record AFTER that record's certificate was
+	approved starts Pending with no certificate, and one history row says "created after approval of <certificate>:
+	Pending until certified". How "after" is decided: a child inserted here is after the approval of every
+	certificate its parent carries at this moment, with no date to compare. A record carries a certificate in
+	`released_by*` only once an approval (or the write-down of one, decision 319) has written it there, and the
+	write-down reaches every record below that exists at that moment; the child does not exist until this insert.
+	So when the parent names a certificate, that certificate was approved before the child existed, and the child
+	is created after it. The certificate's `approval_date` (a Date) and the parent's history are not read: the
+	order of events is enough, and a date of the same day could not order them. A parent that names no certificate
+	(Pending, or a hand hold with no certificate behind it): the child is born Pending with no row, an insert like
+	any other, judged by the guard.
+
+	Before TASKS-390 (B4) the child was born with the parent's certificate, its verdict and source "Inherited".
+	Records that existed when the certificate was approved are still written down as before (`_approve`)."""
+	for fieldname in GUARDED_FIELDS:
+		child.set(fieldname, None)
+	child.set("quality_status", PENDING)
 	certificate = _certificate_of(parent)
-	says = parent.get("certificate_status")
+	if not certificate:
+		return child.insert()  # Pending, no certificate: an insert like any other, judged by the guard
 	values = dict.fromkeys(GUARDED_FIELDS)
 	values["quality_status"] = PENDING
-	if certificate and says in LOT_STATUSES:
-		values = {
-			"quality_status": says,
-			"status_source": INHERITED,
-			"released_by_doctype": certificate[0] or None,
-			"released_by": certificate[1],
-			"certificate_status": says,
-		}
-	for fieldname, value in values.items():
-		child.set(fieldname, value)
-	if not values["status_source"]:
-		return child.insert()  # Pending, no certificate: an insert like any other, judged by the guard
+	named = f"{certificate[0]} {certificate[1]}".strip()
 	child.append(
 		HISTORY_TABLE,
 		_history_row(
 			child,
 			dict.fromkeys(GUARDED_FIELDS),
 			values,
-			"created under {}, which {} {} says is {}".format(
-				parent.get("name"), certificate[0], certificate[1], says
-			),
-			None,
+			f"created after approval of {named}: Pending until certified",
+			"created under {}, whose status comes from {}".format(parent.get("name"), named),
 		),
 	)
+	# the row is the module's: the guard's first line names it (`_name_own_rows`)
 	child.flags[WRITER_FLAG] = _WRITER
 	try:
 		return child.insert()
@@ -1139,6 +1226,52 @@ def _note_on_release_row(table, lot, journal, text):
 	return None
 
 
+def _append_to_row(row_name, text):
+	"""Append `text` to the `comments` of one stored history row (`Batch Processing History`) by a direct column
+	write on the child table: no document event runs, the lot record is not saved again, no guarded field is
+	touched, `modified` is not changed."""
+	stored = frappe.db.get_value(HISTORY_DOCTYPE, row_name, "comments") or ""
+	frappe.db.set_value(
+		HISTORY_DOCTYPE,
+		row_name,
+		"comments",
+		f"{stored} | {text}" if stored else text,
+		update_modified=False,
+	)
+
+
+def _info_comment(lot, text):
+	"""An Info Comment on lot record `lot` (what `Document.add_comment("Info", text)` inserts, without loading the
+	record). Used where a lot record has no history row to carry `text`."""
+	return frappe.get_doc(
+		{
+			"doctype": "Comment",
+			"comment_type": "Info",
+			"comment_email": frappe.session.user,
+			"reference_doctype": DOCTYPE,
+			"reference_name": lot,
+			"content": text,
+		}
+	).insert(ignore_permissions=True)
+
+
+def _note_on_latest_row(lot, text):
+	"""Decision 334 (the share writes no row of its own): append `text` to the LATEST history row of lot record `lot`
+	(highest `idx` of its `processing_history`), by the same column write as a release's note. A lot record with no
+	history row gets an Info Comment instead. -> where it was written, in words for the user."""
+	row_name = frappe.db.get_value(
+		HISTORY_DOCTYPE,
+		{"parent": lot, "parenttype": DOCTYPE, "parentfield": HISTORY_TABLE},
+		"name",
+		order_by="idx desc",
+	)
+	if row_name:
+		_append_to_row(row_name, text)
+		return _("This is written in the history of lot record {0}.").format(lot)
+	_info_comment(lot, text)
+	return _("Lot record {0} has no history row: this is written in a comment on it.").format(lot)
+
+
 def send_release_summary(
 	certificate_doctype, certificate, lot, journal, result=None, withdrawn=False, table=None
 ):
@@ -1152,19 +1285,11 @@ def send_release_summary(
 	release (also a rollback to a savepoint). `now=True` would add `q.send` to `frappe.db.after_commit` (reset on
 	a full rollback, but not on a savepoint rollback), so it is NOT used. No commit here.
 
-	A release never fails because of mail (decision 328). Two outcomes are not a sent summary, and each is written
-	into the release's own history row ("summary not sent: <reason>", no address; `_note_on_release_row`, a column
-	write of that row's `comments` in the same transaction), and the release stands, with no Error Log:
-	  * `sendmail` raises `frappe.OutgoingEmailError`: there is no outgoing Email Account
-	    (`EmailAccount.find_outgoing(_raise_error=True)` throws it while the queue row is built). It is the only
-	    exception caught, because it is the only one queuing a mail raises for a reason of mail: an invalid address
-	    is caught inside Frappe (`QueueBuilder.as_dict`, which logs it and queues nothing; see `_valid_addresses`),
-	    and SMTP is not touched without `now`. Anything else (a read, the insert of the queue row, a bug) is not
-	    mail being off and still fails the release. The message `frappe.throw` put on the response for that
-	    exception is taken off again (the release did not fail), and a notice says the summary was not sent.
-	  * `sendmail` queues nothing for a non-empty list (every recipient has unsubscribed).
-	No recipient at all (every one disabled, or without an address): nothing is sent and nothing is written, as
-	before. Every address invalid: nothing is sent and the row says so."""
+	A release never fails because of mail (decision 328). What is not a sent summary is written into the release's
+	own history row ("summary not sent: <reason>", no address; `_note_on_release_row`, a column write of that row's
+	`comments` in the same transaction), and the release stands, with no Error Log: see `_send_summary`, the one
+	function of this module that calls `frappe.sendmail`. No recipient at all (every one disabled, or without an
+	address): nothing is sent and nothing is written, as before."""
 	if not journal:
 		return None
 	row = (
@@ -1186,10 +1311,83 @@ def send_release_summary(
 		withdrawn=withdrawn,
 		cancelled=withdrawn and int(row.get("docstatus") or 0) == 2,
 	)
+
+	def note(text):
+		where = _note_on_release_row(table, lot, journal, text)
+		return _("This is written in the history of lot record {0}.").format(where) if where else None
+
+	return _send_summary(certificate_doctype, certificate, recipients, subject, body, note, _("the release"))
+
+
+def share_summary_text(certificate_doctype, certificate, lot, result):
+	"""-> (subject, HTML body) of the share's summary (decision 334): the certificate, its result, that it was
+	shared, by whom, for which lot record."""
+	e = html.escape
+	subject = f"{certificate_doctype} {certificate} shared ({result or ''}): lot record {lot}"
+	body = (
+		f"<p>{e(certificate_doctype)} {e(certificate)} was shared with result {e(result or '')}, "
+		f"for lot record {e(lot)}.</p><p>Shared by {e(frappe.session.user or '')}.</p>"
+	)
+	return subject, body
+
+
+def certificate_shared(certificate_doctype, certificate, lot):
+	"""The certificate was shared (COA AMB `on_submit`; decision 334): ONE summary, under the rules of a release.
+
+	Writes no lot status and no history row of its own. Recipients as for a release (`release_summary_recipients`:
+	the certificate's `filled_by`, the session user who shared, the owner of the Work Order of lot record `lot`;
+	enabled users only, never Administrator or Guest, each once). Queued, no `now`, through `_send_summary`, so it
+	never fails the share for a reason of mail: muted mail, no outgoing account, nothing queued or no valid address
+	is written as "summary not sent: <reason>" on the LATEST history row of lot record `lot` by a column write in
+	the share's transaction, or in an Info Comment on the lot record when it has no history row
+	(`_note_on_latest_row`); no Error Log. `lot` empty: nothing. -> what `frappe.sendmail` returned, or None."""
+	if not lot:
+		return None
+	row = (
+		frappe.db.get_value(
+			certificate_doctype, certificate, ["filled_by", "docstatus", "overall_result"], as_dict=True
+		)
+		or {}
+	)
+	recipients = release_summary_recipients(certificate_doctype, certificate, lot, row)
+	if not recipients:
+		return None
+	subject, body = share_summary_text(certificate_doctype, certificate, lot, row.get("overall_result"))
+	return _send_summary(
+		certificate_doctype,
+		certificate,
+		recipients,
+		subject,
+		body,
+		lambda text: _note_on_latest_row(lot, text),
+		_("the share"),
+	)
+
+
+def _send_summary(certificate_doctype, certificate, recipients, subject, body, note, what):
+	"""THE ONE call of `frappe.sendmail` in this module (a release's summary and a share's). `note(text)` writes
+	"summary not sent: ..." where the caller keeps it and returns, in words, where that is (or None); `what` names
+	the action that stands ("the release", "the share"). What is not a sent summary, each written by `note`:
+	  * mail is muted (decision 333): `frappe.are_emails_muted()` (Frappe 16.17.5: `flags.mute_emails` or the site
+	    config's `mute_emails`) is asked BEFORE `sendmail`, which is then not called. Under muted mail Frappe's
+	    `EmailAccount.find_default_outgoing` returns a dummy account, so `sendmail` would queue a row "Not Sent" that
+	    leaves when mail is unmuted;
+	  * every address invalid (`_valid_addresses`), so nothing reaches Frappe's queue, which would write an Error Log;
+	  * `sendmail` raises `frappe.OutgoingEmailError`: there is no outgoing Email Account
+	    (`EmailAccount.find_outgoing(_raise_error=True)` throws it while the queue row is built). It is the only
+	    exception caught, because it is the only one queuing a mail raises for a reason of mail: an invalid address
+	    is caught inside Frappe (`QueueBuilder.as_dict`, which logs it and queues nothing; see `_valid_addresses`),
+	    and SMTP is not touched without `now`. Anything else (a read, the insert of the queue row, a bug) is not
+	    mail being off and still fails the action. The message `frappe.throw` put on the response for that
+	    exception is taken off again (the action did not fail), and a notice says the summary was not sent;
+	  * `sendmail` queues nothing for a non-empty list (every recipient has unsubscribed, or an address refused).
+	A recipient left out for an invalid address, when others were queued, is noted too."""
 	valid = _valid_addresses(recipients)
 	if not valid:
 		reason = f"no valid address for its {len(recipients)} recipient(s)"
-		return _not_sent(table, certificate_doctype, certificate, lot, journal, reason)
+		return _not_sent(certificate_doctype, certificate, reason, note, what)
+	if frappe.are_emails_muted():
+		return _not_sent(certificate_doctype, certificate, "mail is muted", note, what)
 	messages = getattr(frappe.local, "message_log", None)
 	shown = len(messages) if isinstance(messages, list) else None
 	try:
@@ -1202,9 +1400,9 @@ def send_release_summary(
 		)
 	except frappe.OutgoingEmailError:
 		if shown is not None:
-			frappe.local.message_log = frappe.local.message_log[:shown]  # the release stands: not an error
+			frappe.local.message_log = frappe.local.message_log[:shown]  # the action stands: not an error
 		reason = "no outgoing email account (OutgoingEmailError)"
-		return _not_sent(table, certificate_doctype, certificate, lot, journal, reason)
+		return _not_sent(certificate_doctype, certificate, reason, note, what)
 	if not queued:
 		# TASKS-388 review, finding 1: Frappe queues nothing both when every recipient has unsubscribed and when the
 		# queue refused an address (a recipient's or the sender's); the text says both, not a cause it cannot know.
@@ -1212,23 +1410,22 @@ def send_release_summary(
 			f"no mail queued for its {len(valid)} recipient(s) "
 			"(every recipient unsubscribed, or an address the mail queue refused)"
 		)
-		return _not_sent(table, certificate_doctype, certificate, lot, journal, reason)
+		return _not_sent(certificate_doctype, certificate, reason, note, what)
 	if len(valid) < len(recipients):
-		# TASKS-388 review, finding 3: a recipient left out for an invalid address is said on the release's row.
+		# TASKS-388 review, finding 3: a recipient left out for an invalid address is said on the action's row.
 		dropped = len(recipients) - len(valid)
-		_note_on_release_row(table, lot, journal, f"{NOT_SENT} to {dropped} recipient(s): no valid address")
+		note(f"{NOT_SENT} to {dropped} recipient(s): no valid address")
 	return queued
 
 
-def _not_sent(table, certificate_doctype, certificate, lot, journal, reason):
-	"""The summary was not sent: the release's history row says why, the user is told, the release stands. -> None"""
-	text = f"{NOT_SENT}: {reason}"
-	where = _note_on_release_row(table, lot, journal, text)
+def _not_sent(certificate_doctype, certificate, reason, note, what):
+	"""The summary was not sent: `note` writes why, the user is told, the action stands. -> None"""
+	where = note(f"{NOT_SENT}: {reason}")
 	frappe.msgprint(
-		_("{0} {1}: the release stands; its summary was not sent ({2}).").format(
-			certificate_doctype, certificate, reason
+		_("{0} {1}: {2} stands; its summary was not sent ({3}).").format(
+			certificate_doctype, certificate, what, reason
 		)
-		+ (" " + _("This is written in the history of lot record {0}.").format(where) if where else ""),
+		+ (" " + where if where else ""),
 		indicator="orange",
 		alert=True,
 	)

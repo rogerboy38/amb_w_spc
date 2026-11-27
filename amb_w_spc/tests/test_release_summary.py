@@ -281,7 +281,16 @@ class TestAfterCommitOnly(SummaryCase):
 		f.sendmail.assert_not_called()
 
 	def test_the_source_queues_without_now_and_catches_only_the_missing_outgoing_account(self):
-		fn = ast.parse(inspect.getsource(lq.send_release_summary)).body[0]
+		# TASKS-390: the one call of sendmail moved from send_release_summary into _send_summary, which the share's
+		# summary uses too; it is the only one in the module
+		module = ast.parse(pathlib.Path(lq.__file__).read_text(encoding="utf-8"))
+		every = [
+			n
+			for n in ast.walk(module)
+			if isinstance(n, ast.Call) and ast.unparse(n.func) == "frappe.sendmail"
+		]
+		self.assertEqual(len(every), 1)
+		fn = ast.parse(inspect.getsource(lq._send_summary)).body[0]
 		calls = [
 			n for n in ast.walk(fn) if isinstance(n, ast.Call) and ast.unparse(n.func) == "frappe.sendmail"
 		]
@@ -415,8 +424,15 @@ class TestMailNeverFailsARelease(SummaryCase):
 	def test_the_contract_functions_keep_their_signatures(self):
 		self.assertEqual(
 			list(inspect.signature(lq.certificate_approved).parameters),
-			["certificate_doctype", "certificate", "lot", "result"],
+			[
+				"certificate_doctype",
+				"certificate",
+				"lot",
+				"result",
+				"others",
+			],  # TASKS-390: others (decision 338)
 		)
+		self.assertIsNone(inspect.signature(lq.certificate_approved).parameters["others"].default)
 		self.assertEqual(
 			list(inspect.signature(lq.certificate_withdrawn).parameters),
 			["certificate_doctype", "certificate", "lot", "standing"],
@@ -510,7 +526,7 @@ class ControllerDoc:
 
 
 @contextlib.contextmanager
-def controller_site(db):
+def controller_site(db, mail=None):
 	f = db.frappe()
 	docs = []
 
@@ -555,7 +571,7 @@ def controller_site(db):
 	f.db.set_value.side_effect = set_value
 	f.docs = docs
 	with contextlib.ExitStack() as stack:
-		stack.enter_context(site(frappe=f))
+		stack.enter_context(site(frappe=f, mail=mail))
 		stack.enter_context(mock.patch.object(bam, "frappe", f))
 		stack.enter_context(mock.patch.object(bam, "_", lambda s: s))
 		stack.enter_context(mock.patch.object(bam, "_sync_from_work_order", lambda doc: None))
