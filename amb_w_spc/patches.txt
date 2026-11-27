@@ -193,3 +193,10 @@ amb_w_spc.patches.v15_7_0.batch_amb_track_changes
 # AT THE PARENT (child table on the parent doctype, never nested inside
 # container_barrels — G-5/M90). Additive; the golden minter is untouched.
 amb_w_spc.patches.v15_8_0.b3b_historic_lot_capture
+
+# v15_9_0 (TASKS-390, decision 339) — lots set Passed / Failed / Hold by hand under the old guard: every Batch AMB
+# not Pending with no certificate (released_by empty) is reset to Pending through lot_quality's one writer, with a
+# history row "reset at install: no certificate"; a record that cannot carry a row is reset by the writer's column
+# write and listed (output + Info Comment). This file has no [pre_model_sync] / [post_model_sync] headers, so every
+# line runs before the DocType sync: the patch reloads Batch AMB and its history row first. Counts printed.
+amb_w_spc.patches.v15_9_0.reset_lots_without_certificate
