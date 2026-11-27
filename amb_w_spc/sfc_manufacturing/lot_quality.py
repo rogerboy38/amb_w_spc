@@ -382,6 +382,18 @@ def refuse_merge_under_hold(doc, method=None, old=None, new=None, merge=False):
 
 # every link from a lot record to a certificate: the two the approval writes and the older `coa_amb`
 COPY_CLEARED_LINKS = (*LINK_FIELDS, "coa_amb")
+# Decision 353 (TASKS-398): the child tables of a lot record that hold what THIS lot did or holds (record tables).
+# A copy starts with none of their rows; the setup table (`batch_parameters`: what to measure, with its limits) is
+# kept. `processing_history` (346) is emptied with them. `custom_historic_sales_lots` is a site Custom Field (patch
+# v15_8_0): emptied here when present; the form's Duplicate copies it (its "no copy" is not in the DocType JSON).
+COPY_EMPTIED_RECORD_TABLES = (
+	"output_products",
+	"batch_output_products",
+	"container_barrels",
+	"quality_test_results",
+	"custom_historic_sales_lots",
+)
+COPY_KEPT_SETUP_TABLES = ("batch_parameters",)
 
 
 def reset_for_copy(doc):
@@ -389,13 +401,17 @@ def reset_for_copy(doc):
 	extends 343), with no certificate link (`coa_reference`, `coa_amb2`, `coa_amb`), as a new child does.
 	Decision 346 (TASKS-397): and with none of the source's history rows (`processing_history` empty); the parent
 	pointer is kept. `frappe.copy_doc` copies child tables whatever "no copy" says (its `ignore_no_copy` defaults
-	to True), so the rows are emptied here, not left to the DocType flag."""
+	to True), so the rows are emptied here, not left to the DocType flag. Decision 353 (TASKS-398): so are the record
+	tables (`COPY_EMPTIED_RECORD_TABLES`); the setup table (`COPY_KEPT_SETUP_TABLES`) is kept."""
 	doc.quality_status = PENDING
 	for fieldname in GUARDED_FIELDS[1:]:
 		doc.set(fieldname, None)
 	for fieldname in COPY_CLEARED_LINKS:
 		doc.set(fieldname, None)
 	doc.set(HISTORY_TABLE, [])
+	# decision 353 (TASKS-398): no record table is copied; the setup table is kept as copied
+	for fieldname in COPY_EMPTIED_RECORD_TABLES:
+		doc.set(fieldname, [])
 
 
 def insert_copy(copy, source):

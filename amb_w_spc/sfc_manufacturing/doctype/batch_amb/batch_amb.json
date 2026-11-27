@@ -2950,6 +2950,7 @@
   {
    "description": "Output products from this batch (Level 2 transformation)",
    "fieldname": "output_products",
+   "no_copy": 1,
    "fieldtype": "Table",
    "insert_after": "output_products_section",
    "label": "Output Products",
@@ -2965,6 +2966,7 @@
   },
   {
    "fieldname": "batch_output_products",
+   "no_copy": 1,
    "fieldtype": "Table",
    "label": "Batch Output Products",
    "options": "Batch Output Product",
@@ -3988,7 +3990,7 @@
    "make_attachment_public": 0,
    "mandatory_depends_on": null,
    "max_height": null,
-   "no_copy": 0,
+   "no_copy": 1,
    "non_negative": 0,
    "oldfieldname": null,
    "oldfieldtype": null,
@@ -4679,6 +4681,7 @@
   },
   {
    "fieldname": "quality_test_results",
+   "no_copy": 1,
    "fieldtype": "Table",
    "insert_after": "quality_tests_section",
    "label": "Quality Test Results",

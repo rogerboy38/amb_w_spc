@@ -448,5 +448,41 @@ class TestADuplicateIsACleanNewRecord(unittest.TestCase):
 		self.assertFalse(parent.get("no_copy"))
 
 
+class TestADuplicateCopiesSetupTablesOnly(unittest.TestCase):
+	"""Decision 353 (TASKS-398): a copy keeps the setup table and none of the record tables."""
+
+	RECORD = ("output_products", "batch_output_products", "container_barrels", "quality_test_results")
+
+	def meta(self):
+		import json
+		import pathlib
+
+		return json.loads((pathlib.Path(bam.__file__).parent / "batch_amb.json").read_text(encoding="utf-8"))
+
+	def test_a_server_duplicate_keeps_the_setup_table_and_empties_every_record_table(self):
+		tables = {
+			name: [{"row": name}] for name in (*lq.COPY_EMPTIED_RECORD_TABLES, *lq.COPY_KEPT_SETUP_TABLES)
+		}
+		_out, copy = duplicate(rec("L"), parent_batch_amb="L", custom_batch_level="2", **tables)
+		for name in lq.COPY_EMPTIED_RECORD_TABLES:
+			self.assertEqual(copy.get(name), [], name)
+		self.assertEqual(copy.get("batch_parameters"), [{"row": "batch_parameters"}])
+		self.assertEqual(len(copy.rows), 1)  # and the one history row of 346
+
+	def test_every_table_of_the_doctype_is_classed(self):
+		tables = {
+			f["fieldname"] for f in self.meta()["fields"] if f["fieldtype"] in ("Table", "Table MultiSelect")
+		}
+		classed = {*lq.COPY_EMPTIED_RECORD_TABLES, *lq.COPY_KEPT_SETUP_TABLES, lq.HISTORY_TABLE}
+		self.assertEqual(tables - classed, set())  # a new table must be classed before it is copied
+		self.assertEqual(set(self.RECORD) | {"batch_parameters"}, tables - {lq.HISTORY_TABLE})
+
+	def test_the_json_marks_every_record_table_no_copy_and_not_the_setup_table(self):
+		no_copy = {f["fieldname"]: f.get("no_copy") for f in self.meta()["fields"]}
+		for name in (*self.RECORD, lq.HISTORY_TABLE):
+			self.assertEqual(no_copy[name], 1, name)
+		self.assertFalse(no_copy["batch_parameters"])
+
+
 if __name__ == "__main__":
 	unittest.main()
