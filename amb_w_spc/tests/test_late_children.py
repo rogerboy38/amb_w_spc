@@ -311,6 +311,30 @@ def duplicate(*stored, **copy_fields):
 class TestADuplicateIsACleanNewRecord(unittest.TestCase):
 	"""Decision 346 (TASKS-397): `duplicate_batch`."""
 
+	def test_a_source_without_a_plant_or_an_item_is_refused_naming_the_source(self):
+		"""Review finding 1: the copy's one row needs them; the refusal names the source and what it lacks."""
+		for missing in ({"current_plant2": None}, {"current_item_code": None, "item_to_manufacture": None}):
+			with self.subTest(missing=missing):
+				copy = Child()
+				for key, value in dict(
+					{"current_plant2": "1 (Mix)", "current_item_code": "0227", "custom_batch_level": "1"},
+					**missing,
+				).items():
+					copy.set(key, value)
+				with site(Table()) as f:
+					with self.assertRaises(Exception):
+						lq.insert_copy(copy, "SRC")
+				text = str(f.throw.call_args_list[0])
+				self.assertIn("Lot record SRC cannot be duplicated: it has no", text)
+				self.assertIn('("copied from SRC") needs it', text)
+				self.assertIsNone(copy.inserted)  # nothing was written
+
+	def test_the_copy_names_no_work_order(self):
+		"""Review finding 5: the older Work Order field too, or the planned-quantity sync adds a second row."""
+		_out, copy = duplicate(rec("L"), parent_batch_amb="L", custom_batch_level="2", work_order="WO-1")
+		self.assertIsNone(copy.get("work_order"))
+		self.assertIsNone(copy.get("work_order_ref"))
+
 	def test_none_of_the_sources_history_rows_is_copied_and_it_gets_one_copied_from_row(self):
 		for parent in (None, "L"):
 			with self.subTest(parent=parent):

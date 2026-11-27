@@ -2061,6 +2061,9 @@ def duplicate_batch(source_name):
         new_batch = frappe.copy_doc(source_batch)
 
         new_batch.work_order_ref = None
+        # TASKS-397 review, finding 5: the older Work Order field too, or validate's planned-quantity sync reads it and
+        # adds a second history row to a copy that is to have one (decision 346)
+        new_batch.work_order = None
         new_batch.stock_entry_reference = None
         new_batch.lote_amb_reference = None
         new_batch.custom_generated_batch_name = None

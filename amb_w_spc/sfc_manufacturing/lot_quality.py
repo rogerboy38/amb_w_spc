@@ -405,8 +405,22 @@ def insert_copy(copy, source):
 	pointer names, which it keeps: the same function, so the same rule, as a child created under that record
 	(336, 342, 344), and ONE history row that says "copied from <source>" in every case.
 
-	The parent is read as stored (`LotTable.get`), not from the copy. A copy with no parent (a lot), or whose
-	parent no longer exists, is born Pending with the one row "copied from <source>"."""
+	The parent is read as stored (`LotTable.get`), not from the copy. A copy with no parent (a lot) is born Pending
+	with the one row "copied from <source>". (A parent pointer to a record that no longer exists is refused by the
+	framework's link check before this runs.)
+
+	TASKS-397 review, finding 1: the one row needs a plant and an item, as every history row does. A source that
+	lacks them is refused here, naming the source and what it lacks, before anything is written: a copy of it
+	could not carry its "copied from" row."""
+	missing = missing_for_history_row(copy)
+	if missing:
+		frappe.throw(
+			_(
+				"Lot record {0} cannot be duplicated: it has no {1}, and the copy's one history row (\"copied from "
+				'{0}") needs it. Fill it on lot record {0} and duplicate it again.'
+			).format(source, _(" and no ").join(missing)),
+			title=_("Duplicate Batch"),
+		)
 	reset_for_copy(copy)
 	parent_name = copy.get(PARENT_FIELD)
 	parent = (LotTable().get(parent_name) if parent_name else None) or {}
