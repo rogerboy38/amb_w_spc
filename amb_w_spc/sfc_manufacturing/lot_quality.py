@@ -993,7 +993,8 @@ def release_summary_text(
 			)
 		else:
 			taken = f"lot record {e(lot)} was not written by this withdrawal"
-		head = f"{e(certificate_doctype)} {e(certificate)} was withdrawn ({how}); {taken}."
+		said = f" Its result was {e(result)}." if result else ""
+		head = f"{e(certificate_doctype)} {e(certificate)} was withdrawn ({how}); {taken}.{said}"
 		subject = f"{certificate_doctype} {certificate} withdrawn: {len(journal)} lot record(s) written"
 	else:
 		head = f"{e(certificate_doctype)} {e(certificate)} was approved with result {e(result or '')}."
@@ -1032,7 +1033,10 @@ def send_release_summary(certificate_doctype, certificate, lot, journal, result=
 	if not journal:
 		return None
 	row = (
-		frappe.db.get_value(certificate_doctype, certificate, ["filled_by", "docstatus"], as_dict=True) or {}
+		frappe.db.get_value(
+			certificate_doctype, certificate, ["filled_by", "docstatus", "overall_result"], as_dict=True
+		)
+		or {}
 	)
 	recipients = release_summary_recipients(certificate_doctype, certificate, lot, row)
 	if not recipients:
@@ -1042,7 +1046,8 @@ def send_release_summary(certificate_doctype, certificate, lot, journal, result=
 		certificate,
 		lot,
 		journal,
-		result=result,
+		# TASKS-387 review, finding 7: a withdrawal also gives the certificate's result, read from the certificate
+		result=result if result is not None else row.get("overall_result"),
 		withdrawn=withdrawn,
 		cancelled=withdrawn and int(row.get("docstatus") or 0) == 2,
 	)

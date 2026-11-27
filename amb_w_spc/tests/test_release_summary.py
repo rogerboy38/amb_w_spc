@@ -102,7 +102,7 @@ def summary_frappe(
 			u = users.get(name)
 			return None if u is None else {k: u.get(k) for k in fields}
 		assert dt == INTERNAL and as_dict, (dt, fields)
-		return {"filled_by": filled_by, "docstatus": docstatus}
+		return {"filled_by": filled_by, "docstatus": docstatus, "overall_result": "Pass"}
 
 	f.db.get_value.side_effect = get_value
 	f.sendmail.side_effect = tx.sendmail
@@ -167,6 +167,7 @@ class TestOneSummary(SummaryCase):
 			"<li>C21 (level 3): Passed &rarr; Pending, source none, column write</li>", mail["message"]
 		)
 		self.assertIn("withdrawn: 6 lot record(s) written", mail["subject"])
+		self.assertIn("Its result was Pass.", mail["message"])  # review finding 7: the result is given
 		self.assertEqual(mail["recipients"], [EMAIL[FILLER], EMAIL[USER], EMAIL[WO_OWNER]])
 
 	def test_a_cancelled_certificate_says_cancelled(self):
@@ -410,7 +411,7 @@ def lote_amb_inserts(f):
 
 def controller_db():
 	db = Db(*tree())
-	db.certificates[(INTERNAL, "CERT-L")] = {"filled_by": FILLER, "docstatus": 0}
+	db.certificates[(INTERNAL, "CERT-L")] = {"filled_by": FILLER, "docstatus": 0, "overall_result": "Pass"}
 	db.work_orders["WO-1"] = {"owner": WO_OWNER}
 	db.users.update(people())
 	for user in QUALITY_ROLE_USERS:
