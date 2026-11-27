@@ -257,9 +257,12 @@ class BatchAMB(NestedSet):
         # Quality status changed: notify. The history row of the change is NOT written here (TASKS-384 B3):
         # the only writer of the status, lot_quality.set_lot_quality_status, appends it before this save, with
         # who, when, from, to, which certificate and why. A second row here would double it.
+        # TASKS-387 item 4 (decision 324): not in a release save (a certificate's approval or withdrawal writing
+        # this record). The release sends ONE summary for all its records (lot_quality.send_release_summary);
+        # notify_stakeholders would mail the quality roles once per record and append a "Notifications Sent" row.
         doc_before = self.get_doc_before_save()
         if doc_before and hasattr(doc_before, 'quality_status'):
-            if doc_before.quality_status != self.quality_status:
+            if doc_before.quality_status != self.quality_status and not lot_quality.is_release_save(self):
                 self.notify_stakeholders()
 
     def before_save(self):
@@ -274,11 +277,18 @@ class BatchAMB(NestedSet):
 
     def on_update(self):
         """After update hook"""
-        self.sync_with_lote_amb()
+        # TASKS-387 item 4 (decision 324): a release save (a certificate's approval or withdrawal writing this
+        # record) does not sync with Lote AMB. The sync inserts a Lote AMB and sets `lote_amb_reference` here,
+        # after the record was written, so the link is never stored and every such save made a new orphan.
+        # Ordinary saves are unchanged by this task.
+        if not lot_quality.is_release_save(self):
+            self.sync_with_lote_amb()
         # TASKS-384, decision 311: the Work Order is the truth and the lot record follows it. A lot save writes
         # no Work Order status, in any docstatus; the two writers that did (from batch_status and from
         # processing_status) are gone.
-        self.log_batch_history()
+        # TASKS-387 item 4: no `log_batch_history` here, for any save. Frappe 16.17.5 `Document._save` writes the
+        # record (`db_update`) and its child rows (`update_children`) BEFORE `run_post_save_methods` runs
+        # `on_update`, so a row appended here was never written by this save.
 
     def on_submit(self):
         """On submit"""
@@ -1772,15 +1782,27 @@ def create_child_batch(parent_name, child_level):
         child.tds_item_name = parent.tds_item_name
         child.item_code = parent.item_code
         child.tds_info = parent.tds_info
-        child.coa_amb = parent.coa_amb
-        child.coa_reference = parent.coa_reference
+        # TASKS-391, decision 343: a new child starts with NO certificate link. The parent's `coa_reference` /
+        # `coa_amb` are no longer copied, and `coa_amb2` is left empty too: a link names the certificate approved
+        # for THAT record (lot_quality writes it at the approval, on that record only). Readers of a child's links:
+        # the BOM formula COA lookup reads the ROOT's links, not the child's (amb_w_tds bom_formula `_resolve_coa`
+        # -> `_batch_root`); Sample Request AMB prefills its `coa_amb` from the lot record it names only when that
+        # record has one, and its two checks compare only when the record has one (sample_request_amb.py
+        # `validate_batch_consistency`, `validate_coa_from_batch`); the certificate pickers, `standing_certificates`
+        # and the release (lot_quality) read the certificates' `batch_reference` and the lot's `released_by*`,
+        # never these links.
+        for fieldname in ("coa_reference", "coa_amb", "coa_amb2"):
+            child.set(fieldname, None)
         
         # ============================================================
         # 6. QUALITY STATUS FIELDS
         # ============================================================
-        # TASKS-384 B4: set at the insert below (lot_quality.insert_child): a child under a record whose status
-        # comes from a certificate is born with the parent's certificate, its verdict and source "Inherited";
-        # otherwise Pending.
+        # Set at the insert below (lot_quality.insert_child). TASKS-390, decision 336: a child is born Pending
+        # with no certificate; under a record whose status comes from a certificate (approved before the child
+        # existed) it gets one history row "created after approval of <certificate>: Pending until certified".
+        # TASKS-391/392, decisions 342 and 344: except a container (level 3) directly under a lot or a sub-lot
+        # whose status comes from a certificate: it takes that record's certificate verdict as "Inherited", with
+        # one history row "created after approval of <certificate>: inherits from <parent>".
         
         # ============================================================
         # 7. RESET CHILD-SPECIFIC FIELDS (Start fresh)
@@ -2039,14 +2061,17 @@ def duplicate_batch(source_name):
         new_batch = frappe.copy_doc(source_batch)
 
         new_batch.work_order_ref = None
+        # TASKS-397 review, finding 5: the older Work Order field too, or validate's planned-quantity sync reads it and
+        # adds a second history row to a copy that is to have one (decision 346)
+        new_batch.work_order = None
         new_batch.stock_entry_reference = None
         new_batch.lote_amb_reference = None
         new_batch.custom_generated_batch_name = None
         new_batch.custom_golden_number = None
-        # a copy is a new lot record: it starts Pending, with no certificate (TASKS-384 B3)
-        lot_quality.reset_for_copy(new_batch)
-
-        new_batch.insert()
+        # a copy is a new lot record (TASKS-384 B3, decisions 345 and 346): Pending, no certificate, no certificate
+        # link, none of the source's history rows, its parent pointer kept, one history row "copied from <source>";
+        # a container under a certified lot or sub-lot inherits as a new one does (lot_quality.insert_copy)
+        lot_quality.insert_copy(new_batch, source_name)
 
         return new_batch.name
 
@@ -3190,6 +3215,14 @@ def batch_amb_quality_status_guard(doc, method=None):
     the note on `override_doctype_class` in hooks.py), in which case `BatchAMB.validate` never runs, while the
     doc_events hooks always do. What it covers and what it does not: `lot_quality.refuse_hand_change`."""
     lot_quality.refuse_hand_change(doc, method)
+
+
+def batch_amb_before_rename(doc, method=None, old=None, new=None, merge=False):
+    """doc_events hook on Batch AMB, `before_rename` (TASKS-388, decision 329): a merge that would move records
+    out from under a hand hold, or under one, is refused for every role. A hook, like the guard, so that it runs
+    whichever class Frappe loads; the class's own `NestedSet.before_rename` runs first. What it covers:
+    `lot_quality.refuse_merge_under_hold`."""
+    lot_quality.refuse_merge_under_hold(doc, method, old, new, merge)
 
 
 def batch_amb_validate(doc, method=None):

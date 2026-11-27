@@ -3,6 +3,9 @@
 # are written by the lot's certificate through lot_quality.set_lot_quality_status only. This replaces the role
 # guard of TASKS-342 (Quality Manager / Quality User could change it).
 # Every test here fails when the guard body is removed or when it is unhooked from hooks.py.
+# TASKS-388, decision 329: no move under a hold. A change of parent_batch_amb is refused when the chain above the
+# stored parent or above the new parent holds a record on a hand hold ("Hold action"), and so is a merge that would
+# move records out from under a hold or under one (`before_rename`).
 #
 # Run: python -m unittest amb_w_spc.tests.test_quality_status_guard   (no site needed)
 
@@ -56,18 +59,34 @@ class Doc:
 		return self._before
 
 
-def fake_frappe(roles=()):
+def fake_frappe(roles=(), stored=None):
+	"""`stored`: {name: {"parent_batch_amb", "status_source"}}, the lot records the chain walk of decision 329
+	reads (`frappe.db.get_value`); a name not in it does not exist."""
 	f = mock.MagicMock()
 	f.get_roles.return_value = list(roles)
 	f.throw.side_effect = Refused
 	f.ValidationError = Refused
+	stored = stored or {}
+	f.reads = []
+
+	def get_value(doctype, name, fields, as_dict=False):
+		assert doctype == "Batch AMB" and as_dict, (doctype, fields)
+		f.reads.append(name)
+		if name not in stored:
+			return None
+		return {"name": name, **{k: stored[name].get(k) for k in fields if k != "name"}}
+
+	f.db.get_value.side_effect = get_value
 	return f
 
 
 class Case(unittest.TestCase):
+	stored = None  # the lot records the chain walk reads
+
 	def guard(self, doc, roles=(), method="before_validate"):
 		"""-> True when the guard refused"""
-		f = fake_frappe(roles)
+		f = fake_frappe(roles, self.stored)
+		self.last = f
 		with (
 			mock.patch.object(lq, "frappe", f),
 			mock.patch.object(bam, "frappe", f),
@@ -298,6 +317,155 @@ class TestTheParentPointer(Case):
 			for value in ("CERT-2", None):
 				doc = Doc(old=before, **dict(before, **{fieldname: value}))
 				self.assertFalse(self.guard(doc, ["Quality User"]), (fieldname, value))
+
+
+def lot(parent=None, source=None):
+	return {"parent_batch_amb": parent, "status_source": source}
+
+
+# H is on a hand hold; HS is under it, HSS under HS. P and Q are free lots, PS is under P.
+STORED = {
+	"H": lot(None, "Hold action"),
+	"HS": lot("H", "Inherited"),
+	"HSS": lot("HS"),
+	"P": lot(),
+	"PS": lot("P"),
+	"Q": lot(None, "Own certificate"),
+	"R": lot("P"),  # the record being moved in most tests, as stored
+}
+
+
+class TestNoMoveUnderAHold(Case):
+	"""TASKS-388, decision 329: `parent_batch_amb` cannot change while the chain above the stored parent or above
+	the new parent holds a record whose status_source is "Hold action"."""
+
+	stored = STORED
+
+	def moved(self, old, new, name="R", **state):
+		before = dict(state, parent_batch_amb=old)
+		return Doc(old=before, name=name, **dict(before, parent_batch_amb=new))
+
+	def test_a_move_off_a_held_lot_is_refused_for_every_role_on_both_lines(self):
+		for old in ("H", "HS", "HSS"):  # the held lot itself, or anywhere above the stored parent
+			for roles in EVERY_ROLE_SET:
+				for method in ("before_validate", "on_update"):
+					self.assertTrue(self.guard(self.moved(old, "P"), roles, method), (old, roles, method))
+		self.assertTrue(self.guard(self.moved("HS", None)))  # taken out of the tree
+		self.assertTrue(self.guard(self.moved("HS", "Q")))
+
+	def test_a_move_under_a_held_lot_is_refused_for_every_role_on_both_lines(self):
+		for new in ("H", "HS", "HSS"):
+			for roles in EVERY_ROLE_SET:
+				for method in ("before_validate", "on_update"):
+					self.assertTrue(self.guard(self.moved("P", new), roles, method), (new, roles, method))
+		self.assertTrue(self.guard(self.moved(None, "HSS")))  # a root put under a hold
+
+	def test_the_message_names_the_held_record_and_the_way(self):
+		for old, new, needles in (
+			("HS", "P", ("R", "HS", "P", "leave the hold on lot record H")),
+			("P", "HSS", ("R", "P", "HSS", "come under the hold on lot record H")),
+		):
+			self.assertTrue(self.guard(self.moved(old, new)))
+			msg = self.last.throw.call_args.args[0]
+			for needle in (*needles, "until the hold is lifted"):
+				self.assertIn(needle, msg)
+
+	def test_a_free_move_passes(self):
+		for old, new in (("P", "Q"), ("PS", "Q"), (None, "PS"), ("P", None), ("Q", "P")):
+			self.assertFalse(self.guard(self.moved(old, new), ["Manufacturing User"]), (old, new))
+		# and the chain walk read both chains to their top
+		self.guard(self.moved("PS", "Q"))
+		self.assertEqual(self.last.reads, ["PS", "P", "Q"])
+
+	def test_the_record_being_moved_is_not_judged_its_hold_moves_with_it(self):
+		self.assertFalse(self.guard(self.moved("P", "Q", quality_status="Hold", status_source="Hold action")))
+
+	def test_a_save_that_does_not_move_the_record_reads_nothing(self):
+		self.assertFalse(self.guard(self.moved("HS", "HS")))
+		self.assertEqual(self.last.reads, [])
+
+	def test_a_new_record_is_placed_under_a_held_lot_not_moved(self):
+		self.assertFalse(self.guard(Doc(name=None, parent_batch_amb="HS")))  # narrowest reading: inserts pass
+		self.assertEqual(self.last.reads, [])
+
+	def test_the_loop_guard_ends_the_walk_without_refusing(self):
+		loop = dict(STORED, A=lot("B"), B=lot("A"))
+		f = fake_frappe(stored=loop)
+		with mock.patch.object(lq, "frappe", f), mock.patch.object(lq, "_", lambda s: s):
+			self.assertIsNone(lq._hold_on_chain("A"))
+			self.assertEqual(f.reads, ["A", "B"])
+		self.stored = loop
+		self.assertFalse(self.guard(self.moved("A", "P")))
+		# a new parent whose chain runs through the record being moved: the walk stops at the record itself
+		self.stored = dict(STORED, R=lot("P"), K=lot("R"))
+		self.assertFalse(self.guard(self.moved("P", "K")))
+		self.assertEqual(self.last.reads, ["P", "K"])
+		# a parent that does not exist ends the walk
+		self.stored = STORED
+		self.assertFalse(self.guard(self.moved("GONE", "P")))
+
+	def test_a_loop_through_a_held_record_refuses(self):
+		self.stored = dict(STORED, A=lot("B", "Hold action"), B=lot("A"))
+		self.assertTrue(self.guard(self.moved("B", "P")))
+
+	def test_the_refusal_for_a_record_that_carries_a_certificate_stays_first(self):
+		self.assertTrue(
+			self.guard(self.moved("P", "Q", **INHERITED_STATE))
+		)  # no hold anywhere: still refused
+		self.assertIn("The certificate must be rejected first", self.last.throw.call_args.args[0])
+		self.assertTrue(self.guard(self.moved("HS", "Q", **INHERITED_STATE)))
+		self.assertIn("The certificate must be rejected first", self.last.throw.call_args.args[0])
+
+	def test_the_writers_own_save_is_not_judged(self):
+		doc = self.moved("HS", "P")
+		doc.flags = {lq.WRITER_FLAG: lq._WRITER}
+		self.assertFalse(self.guard(doc))
+
+
+class TestNoMergeUnderAHold(unittest.TestCase):
+	"""TASKS-388, decision 329: Frappe's merge rewrites the children's parent_batch_amb by a direct column write and
+	deletes the old record, so the merge is refused at `before_rename` when it would move records out from under
+	a hold or under one. A plain rename moves nothing."""
+
+	def rename(self, old, new, merge, stored=STORED):
+		"""-> True when refused; the call is what Frappe's `Document.hook` makes: f(doc, method, old, new, merge)"""
+		f = fake_frappe(stored=stored)
+		self.last = f
+		doc = Doc(name=old)
+		with mock.patch.object(lq, "frappe", f), mock.patch.object(lq, "_", lambda s: s):
+			try:
+				bam.batch_amb_before_rename(doc, "before_rename", old, new, merge)
+				return False
+			except Refused:
+				return True
+
+	def test_a_merge_of_a_held_lot_is_refused(self):
+		self.assertTrue(self.rename("H", "P", True))
+		msg = self.last.throw.call_args.args[0]
+		for needle in ("H cannot be merged into P", "lot record H is on a hand hold", "Lift the hold first"):
+			self.assertIn(needle, msg)
+
+	def test_a_merge_of_a_record_under_a_hold_or_into_one_is_refused(self):
+		for old, new in (("HS", "P"), ("HSS", "PS"), ("PS", "H"), ("P", "HSS"), ("R", "HS")):
+			self.assertTrue(self.rename(old, new, True), (old, new))
+
+	def test_a_free_merge_and_any_plain_rename_pass(self):
+		self.assertFalse(self.rename("PS", "Q", True))
+		for old, new in (("H", "H-NEW"), ("HS", "HS-NEW"), ("P", "P-NEW")):
+			self.assertFalse(self.rename(old, new, False), (old, new))
+			self.assertEqual(self.last.reads, [])
+
+	def test_the_merge_walk_has_the_loop_guard(self):
+		self.assertFalse(self.rename("A", "Q", True, stored=dict(STORED, A=lot("B"), B=lot("A"))))
+
+	def test_hooked_at_before_rename(self):
+		events = importlib.import_module("amb_w_spc.hooks").doc_events["Batch AMB"]
+		self.assertEqual(
+			events["before_rename"],
+			["amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_before_rename"],
+		)
+		mod, _, fn = events["before_rename"][0].rpartition(".")
+		self.assertIs(getattr(importlib.import_module(mod), fn), bam.batch_amb_before_rename)
 
 
 class TestWiring(Case):

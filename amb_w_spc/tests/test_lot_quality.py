@@ -22,6 +22,8 @@ import types
 import unittest
 from unittest import mock
 
+import frappe as real_frappe
+
 from amb_w_spc.sfc_manufacturing import lot_quality as lq
 from amb_w_spc.sfc_manufacturing.doctype.batch_amb import batch_amb as bam
 
@@ -34,6 +36,10 @@ INTERNAL, CUSTOMER = "COA AMB2", "COA AMB"
 
 class Refused(Exception):
 	pass
+
+
+class NoOutgoingAccount(Exception):
+	"""Stands in for `frappe.OutgoingEmailError` (which is not a ValidationError in Frappe 16.17.5)."""
 
 
 def rec(
@@ -64,6 +70,8 @@ class Table:
 		self.history = []  # one entry per saved change: (lot, before, after, reason, note)
 		self.column_writes = []  # direct column writes: (names, values)
 		self.reads = []  # every read: ("get", name) or ("children", [names])
+		# as LotTable: {record: name of the history row its first save wrote}; `_add_to_row` writes into it
+		self.written_rows = {}
 
 	def get(self, name):
 		self.reads.append(("get", name))
@@ -98,10 +106,18 @@ class Table:
 				return False
 			after = dict(before)
 		self.rows[name].update(values)
+		row = f"ROW-{len(self.history) + 1}"
 		self.history.append(
-			types.SimpleNamespace(lot=name, before=before, after=after, reason=reason, note=note)
+			types.SimpleNamespace(
+				lot=name, before=before, after=after, reason=reason, note=note, row=row, added=[]
+			)
 		)
+		self.written_rows.setdefault(name, row)
 		return True
+
+	def _add_to_row(self, row_name, text):
+		(entry,) = [h for h in self.history if h.row == row_name]
+		entry.added.append(text)
 
 	# what a test reads
 	def state(self, name):
@@ -124,14 +140,40 @@ def fake_frappe():
 	f.session.user = USER
 	f.utils.nowdate.return_value = "2026-11-26"
 	f.utils.now.return_value = "2026-11-26 10:00:00.000000"
+	f.OutgoingEmailError = NoOutgoingAccount
+	f.utils.validate_email_address.side_effect = lambda email, throw=False: email  # test tokens are valid
+	f.local.message_log = []
+	# decision 333: Frappe's own function, which reads `frappe.flags.mute_emails` and `frappe.conf.mute_emails`;
+	# `site()` gives it empty flags and conf (mail not muted), `mail_settings()` sets them
+	f.are_emails_muted = real_frappe.are_emails_muted
 	return f
 
 
 @contextlib.contextmanager
-def site(table=None, frappe=None):
-	"""The module with a fake frappe and, when given, the in-memory table behind its public functions."""
+def mail_settings(flags=None, conf=None):
+	"""What `frappe.are_emails_muted` reads, for the length of a test: `frappe.local.flags` and `frappe.local.conf`
+	(the real ones, behind Frappe's proxies `frappe.flags` / `frappe.conf`), restored after."""
+	saved = {key: getattr(real_frappe.local, key, None) for key in ("flags", "conf")}
+	real_frappe.local.flags = real_frappe._dict(flags or {})
+	real_frappe.local.conf = real_frappe._dict(conf or {})
+	try:
+		yield
+	finally:
+		for key, value in saved.items():
+			if value is None:
+				with contextlib.suppress(AttributeError):
+					delattr(real_frappe.local, key)
+			else:
+				setattr(real_frappe.local, key, value)
+
+
+@contextlib.contextmanager
+def site(table=None, frappe=None, mail=None):
+	"""The module with a fake frappe and, when given, the in-memory table behind its public functions. `mail`:
+	{"flags": ..., "conf": ...} for `mail_settings` (default: empty, mail not muted)."""
 	f = frappe or fake_frappe()
 	with contextlib.ExitStack() as stack:
+		stack.enter_context(mail_settings(**(mail or {})))
 		stack.enter_context(mock.patch.object(lq, "frappe", f))
 		stack.enter_context(mock.patch.object(lq, "_", lambda s: s))
 		if table is not None:
@@ -493,12 +535,29 @@ class Db:
 	def __init__(self, *records, plant="1 (Mix)", item="0227"):
 		self.rows = {r["name"]: dict(r, current_plant2=plant, current_item_code=item) for r in records}
 		self.history, self.log, self.docs = {}, [], []
+		# what the release summary reads (TASKS-387 item 4): {(certificate type, name): {field: value}},
+		# {Work Order: {field: value}}, {user: {"enabled", "email"}}; empty: nobody to tell, no mail
+		self.certificates, self.work_orders, self.users = {}, {}, {}
 
 	def frappe(self):
 		f = fake_frappe()
-		f.db.get_value.side_effect = lambda dt, name, fields, as_dict=False: (
-			{k: self.rows[name].get(k) for k in fields} if name in self.rows else None
-		)
+
+		def get_value(dt, name, fields, as_dict=False):
+			if dt == "Batch AMB":
+				source = self.rows.get(name)
+			elif dt == "Work Order":
+				source = self.work_orders.get(name)
+			elif dt == "User":
+				source = self.users.get(name)
+			else:
+				source = self.certificates.get((dt, name))
+			if source is None:
+				return None
+			if isinstance(fields, str):
+				return source.get(fields)
+			return {k: source.get(k) for k in fields}
+
+		f.db.get_value.side_effect = get_value
 
 		def get_doc(doctype, name):
 			assert doctype == "Batch AMB"
@@ -708,9 +767,16 @@ class TestTheHandWritersAreGone(unittest.TestCase):
 			released_by="CERT-1",
 			certificate_status="Passed",
 			insert=mock.Mock(),
+			# TASKS-397 (decision 346): the copy carries one history row, which needs a plant and an item
+			current_plant2="1 (Mix)",
+			current_item_code="0227",
+			processing_history=[],
+			flags={},
 		)
 		copy.set = lambda k, v: setattr(copy, k, v)
-		f = mock.MagicMock()
+		copy.get = lambda k, default=None: getattr(copy, k, default)
+		copy.append = lambda table, row: getattr(copy, table).append(row)
+		f = fake_frappe()
 		f.get_doc.return_value = source
 		f.copy_doc.return_value = copy
 
@@ -718,7 +784,7 @@ class TestTheHandWritersAreGone(unittest.TestCase):
 			copy.at_insert = [getattr(copy, k) for k in lq.GUARDED_FIELDS]
 
 		copy.insert.side_effect = insert
-		with mock.patch.object(bam, "frappe", f):
+		with mock.patch.object(bam, "frappe", f), site(Table(), frappe=f):
 			bam.duplicate_batch("LOTE-1")
 		self.assertEqual(copy.at_insert, ["Pending", None, None, None, None])
 

@@ -258,6 +258,12 @@ doc_events = {
         "on_trash": [
             "amb_w_spc.sfc_manufacturing.batch_projection.disable_projected_batches",
         ],
+        # TASKS-388 (decision 329): a merge cannot move records out from under a hand hold, or under one. Frappe
+        # rewrites the children's parent_batch_amb on a merge by a direct column write, which the guard above
+        # never sees; so the merge itself is refused here (sfc_manufacturing/lot_quality.py).
+        "before_rename": [
+            "amb_w_spc.sfc_manufacturing.doctype.batch_amb.batch_amb.batch_amb_before_rename",
+        ],
     },
     # Phase 1 item 1.4 — controller-only guard: native Batch is a read-only
     # projection; create/edit without the controller flag is rejected.

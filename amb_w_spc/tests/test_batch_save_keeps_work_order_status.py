@@ -50,7 +50,6 @@ def lot(**fields):
 	)
 	doc.__dict__.update(fields)
 	doc.sync_with_lote_amb = lambda: None
-	doc.log_batch_history = lambda *a, **k: None
 	return doc
 
 
@@ -150,7 +149,10 @@ class SourceRatchet(unittest.TestCase):
 				self.assertNotIn(name, names)
 				self.assertNotIn(name, called)
 
-	def test_on_update_calls_only_its_two_remaining_steps(self):
+	def test_on_update_calls_only_its_remaining_step_and_asks_lot_quality_first(self):
+		"""TASKS-387 item 4: `log_batch_history` is no longer called (a row appended in on_update, after Frappe
+		wrote the record and its rows, was never stored); `sync_with_lote_amb` runs unless lot_quality says the save
+		is a release save."""
 		defs = [n for n in self.cls.body if isinstance(n, ast.FunctionDef) and n.name == "on_update"]
 		self.assertEqual(len(defs), 1)
 		called = {
@@ -158,7 +160,7 @@ class SourceRatchet(unittest.TestCase):
 			for n in ast.walk(defs[0])
 			if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
 		}
-		self.assertEqual(called, {"sync_with_lote_amb", "log_batch_history"})
+		self.assertEqual(called, {"sync_with_lote_amb", "is_release_save"})
 
 	def test_only_the_known_off_save_functions_write_a_work_order(self):
 		writers = set()
