@@ -2638,7 +2638,7 @@
    "make_attachment_public": 0,
    "mandatory_depends_on": null,
    "max_height": null,
-   "no_copy": 0,
+   "no_copy": 1,
    "non_negative": 0,
    "oldfieldname": null,
    "oldfieldtype": null,
@@ -2768,7 +2768,7 @@
    "make_attachment_public": 0,
    "mandatory_depends_on": null,
    "max_height": null,
-   "no_copy": 0,
+   "no_copy": 1,
    "non_negative": 0,
    "oldfieldname": null,
    "oldfieldtype": null,
@@ -2898,7 +2898,7 @@
    "make_attachment_public": 0,
    "mandatory_depends_on": null,
    "max_height": null,
-   "no_copy": 0,
+   "no_copy": 1,
    "non_negative": 0,
    "oldfieldname": null,
    "oldfieldtype": null,
@@ -4068,7 +4068,7 @@
    "make_attachment_public": 0,
    "mandatory_depends_on": null,
    "max_height": null,
-   "no_copy": 0,
+   "no_copy": 1,
    "non_negative": 0,
    "oldfieldname": null,
    "oldfieldtype": null,
@@ -4119,6 +4119,7 @@
   },
   {
    "fieldname": "total_container_qty",
+   "no_copy": 1,
    "fieldtype": "Float",
    "label": "Total Container Qty",
    "hidden": 0,
@@ -4129,6 +4130,7 @@
   },
   {
    "fieldname": "total_containers",
+   "no_copy": 1,
    "fieldtype": "Int",
    "label": "Total Containers",
    "hidden": 0,
@@ -5017,6 +5019,7 @@
   },
   {
    "fieldname": "cost_per_unit",
+   "no_copy": 1,
    "fieldtype": "Data",
    "label": "Cost Per Unit",
    "hidden": 0,
@@ -5057,6 +5060,7 @@
   },
   {
    "fieldname": "custom_produced_qty",
+   "no_copy": 1,
    "fieldtype": "Float",
    "label": "Custom Produced Qty",
    "hidden": 0,
@@ -5077,6 +5081,7 @@
   },
   {
    "fieldname": "custom_serial_numbers",
+   "no_copy": 1,
    "fieldtype": "Long Text",
    "label": "Custom Serial Numbers",
    "hidden": 0,
@@ -5170,6 +5175,7 @@
   },
   {
    "fieldname": "processed_quantity",
+   "no_copy": 1,
    "fieldtype": "Float",
    "label": "Processed Quantity",
    "hidden": 0,
@@ -5200,6 +5206,7 @@
   },
   {
    "fieldname": "produced_qty",
+   "no_copy": 1,
    "fieldtype": "Float",
    "label": "Produced Qty",
    "hidden": 0,
@@ -5322,6 +5329,7 @@
   },
   {
    "fieldname": "total_batch_cost",
+   "no_copy": 1,
    "fieldtype": "Data",
    "label": "Total Batch Cost",
    "hidden": 0,
@@ -5354,6 +5362,7 @@
   },
   {
    "fieldname": "yield_percentage",
+   "no_copy": 1,
    "fieldtype": "Float",
    "label": "Yield Percentage",
    "hidden": 0,

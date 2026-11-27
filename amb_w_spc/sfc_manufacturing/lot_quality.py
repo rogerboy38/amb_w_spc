@@ -385,11 +385,11 @@ COPY_CLEARED_LINKS = (*LINK_FIELDS, "coa_amb")
 # Decision 353 (TASKS-398): the child tables of a lot record that hold what THIS lot did or holds (record tables).
 # A copy starts with none of their rows; the setup table (`batch_parameters`: what to measure, with its limits) is
 # kept. `processing_history` (346) is emptied with them. `custom_historic_sales_lots` is a site Custom Field (patch
-# v15_8_0): emptied here when present; the form's Duplicate copies it (its "no copy" is not in the DocType JSON).
+# v15_8_0): emptied here when present; its "no copy" is set by patch v15_10_0 (decision 355), not the DocType JSON.
 # TASKS-398 review, finding 1: on a site where `output_products` / `batch_output_products` ALSO exist as site Custom
 # Fields (no copy off), Frappe's meta keeps the Custom Field over the DocType JSON, so the form's Duplicate copies
-# them there despite the JSON's "no copy"; only a Custom Field change fixes that (for a ruling). The server copy
-# empties them on every site.
+# them there despite the JSON's "no copy"; decision 355 (TASKS-399): patch v15_10_0 sets "no copy" on those Custom
+# Fields. The server copy empties them on every site.
 COPY_EMPTIED_RECORD_TABLES = (
 	"output_products",
 	"batch_output_products",
@@ -398,6 +398,23 @@ COPY_EMPTIED_RECORD_TABLES = (
 	"custom_historic_sales_lots",
 )
 COPY_KEPT_SETUP_TABLES = ("batch_parameters",)
+# Decision 356 (TASKS-399): the header figures a copy starts empty or zero: each comes from the source's record
+# tables or from what the source lot did, and is recomputed or re-entered on the copy. Fieldname -> start value.
+COPY_CLEARED_HEADER_FIGURES = {
+	"total_gross_weight": 0,  # Float: sum of the barrels' gross weight (calculate_container_weights)
+	"total_tara_weight": 0,  # Float: sum of the barrels' tare weight
+	"total_net_weight": 0,  # Float: sum of the barrels' net weight
+	"barrel_count": 0,  # Int: barrels with a serial number
+	"total_container_qty": 0,  # Float: sum of the barrels' net weight (calculate_totals)
+	"total_containers": 0,  # Int: number of barrel rows (calculate_totals)
+	"custom_serial_numbers": None,  # Long Text: the barrel serials, written by the serial-tracking sync
+	"processed_quantity": 0,  # Float: what the lot processed
+	"produced_qty": 0,  # Float: what the lot produced
+	"custom_produced_qty": 0,  # Float: what the lot produced (also a site Custom Field: patch v15_10_0)
+	"yield_percentage": 0,  # Float: processed_quantity / planned_qty (calculate_yield_percentage)
+	"total_batch_cost": None,  # Data: BOM cost x produced_qty + labour + overhead (calculate_costs)
+	"cost_per_unit": None,  # Data: total_batch_cost / produced_qty (calculate_costs)
+}
 
 
 def reset_for_copy(doc):
@@ -406,7 +423,8 @@ def reset_for_copy(doc):
 	Decision 346 (TASKS-397): and with none of the source's history rows (`processing_history` empty); the parent
 	pointer is kept. `frappe.copy_doc` copies child tables whatever "no copy" says (its `ignore_no_copy` defaults
 	to True), so the rows are emptied here, not left to the DocType flag. Decision 353 (TASKS-398): so are the record
-	tables (`COPY_EMPTIED_RECORD_TABLES`); the setup table (`COPY_KEPT_SETUP_TABLES`) is kept."""
+	tables (`COPY_EMPTIED_RECORD_TABLES`); the setup table (`COPY_KEPT_SETUP_TABLES`) is kept. Decision 356
+	(TASKS-399): the header figures of `COPY_CLEARED_HEADER_FIGURES` start empty or zero."""
 	doc.quality_status = PENDING
 	for fieldname in GUARDED_FIELDS[1:]:
 		doc.set(fieldname, None)
@@ -416,6 +434,9 @@ def reset_for_copy(doc):
 	# decision 353 (TASKS-398): no record table is copied; the setup table is kept as copied
 	for fieldname in COPY_EMPTIED_RECORD_TABLES:
 		doc.set(fieldname, [])
+	# decision 356 (TASKS-399): nor the header figures that come from them or from what the source lot did
+	for fieldname, value in COPY_CLEARED_HEADER_FIGURES.items():
+		doc.set(fieldname, value)
 
 
 def insert_copy(copy, source):

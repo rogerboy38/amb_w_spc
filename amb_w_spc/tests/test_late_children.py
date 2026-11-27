@@ -477,6 +477,24 @@ class TestADuplicateCopiesSetupTablesOnly(unittest.TestCase):
 		self.assertEqual(tables - classed, set())  # a new table must be classed before it is copied
 		self.assertEqual(set(self.RECORD) | {"batch_parameters"}, tables - {lq.HISTORY_TABLE})
 
+	def test_a_server_duplicate_starts_the_header_figures_empty_or_zero(self):
+		"""Decision 356 (TASKS-399)."""
+		source = {name: (7 if value == 0 else "7") for name, value in lq.COPY_CLEARED_HEADER_FIGURES.items()}
+		_out, copy = duplicate(
+			rec("L"), parent_batch_amb="L", custom_batch_level="2", planned_qty=10, **source
+		)
+		for name, value in lq.COPY_CLEARED_HEADER_FIGURES.items():
+			self.assertEqual(copy.get(name), value, name)
+		self.assertEqual(copy.get("planned_qty"), 10)  # not a figure of what the source did: kept
+
+	def test_the_json_marks_every_cleared_header_figure_no_copy(self):
+		no_copy = {f["fieldname"]: f.get("no_copy") for f in self.meta()["fields"]}
+		self.assertEqual(len(lq.COPY_CLEARED_HEADER_FIGURES), 13)
+		for name in lq.COPY_CLEARED_HEADER_FIGURES:
+			self.assertEqual(no_copy[name], 1, name)
+		for name in ("planned_qty", "labor_cost", "overhead_cost", "material_cost", "total_production_cost"):
+			self.assertFalse(no_copy.get(name), name)  # left as they are (see the report of TASKS-399)
+
 	def test_the_json_marks_every_record_table_no_copy_and_not_the_setup_table(self):
 		no_copy = {f["fieldname"]: f.get("no_copy") for f in self.meta()["fields"]}
 		for name in (*self.RECORD, lq.HISTORY_TABLE):

@@ -286,14 +286,15 @@ class TestTheRealTable(unittest.TestCase):
 			},
 		)
 
-	def test_patches_txt_names_it_once_and_last(self):
+	def test_patches_txt_names_it_once_and_after_every_older_patch(self):
 		lines = [
 			line.strip()
 			for line in PATCHES_TXT.read_text(encoding="utf-8").splitlines()
 			if line.strip() and not line.strip().startswith("#")
 		]
 		self.assertEqual(lines.count(PATCH), 1)
-		self.assertEqual(lines[-1], PATCH)
+		# TASKS-399: patch v15_10_0 runs after it; this one still runs after every older patch
+		self.assertEqual(lines[-2:], [PATCH, "amb_w_spc.patches.v15_10_0.no_copy_on_batch_amb_custom_fields"])
 		self.assertFalse(
 			[line for line in lines if line.startswith("[")]
 		)  # still the old format: no sections
