@@ -493,12 +493,29 @@ class Db:
 	def __init__(self, *records, plant="1 (Mix)", item="0227"):
 		self.rows = {r["name"]: dict(r, current_plant2=plant, current_item_code=item) for r in records}
 		self.history, self.log, self.docs = {}, [], []
+		# what the release summary reads (TASKS-387 item 4): {(certificate type, name): {field: value}},
+		# {Work Order: {field: value}}, {user: {"enabled", "email"}}; empty: nobody to tell, no mail
+		self.certificates, self.work_orders, self.users = {}, {}, {}
 
 	def frappe(self):
 		f = fake_frappe()
-		f.db.get_value.side_effect = lambda dt, name, fields, as_dict=False: (
-			{k: self.rows[name].get(k) for k in fields} if name in self.rows else None
-		)
+
+		def get_value(dt, name, fields, as_dict=False):
+			if dt == "Batch AMB":
+				source = self.rows.get(name)
+			elif dt == "Work Order":
+				source = self.work_orders.get(name)
+			elif dt == "User":
+				source = self.users.get(name)
+			else:
+				source = self.certificates.get((dt, name))
+			if source is None:
+				return None
+			if isinstance(fields, str):
+				return source.get(fields)
+			return {k: source.get(k) for k in fields}
+
+		f.db.get_value.side_effect = get_value
 
 		def get_doc(doctype, name):
 			assert doctype == "Batch AMB"

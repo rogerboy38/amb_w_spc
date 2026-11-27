@@ -257,9 +257,12 @@ class BatchAMB(NestedSet):
         # Quality status changed: notify. The history row of the change is NOT written here (TASKS-384 B3):
         # the only writer of the status, lot_quality.set_lot_quality_status, appends it before this save, with
         # who, when, from, to, which certificate and why. A second row here would double it.
+        # TASKS-387 item 4 (decision 324): not in a release save (a certificate's approval or withdrawal writing
+        # this record). The release sends ONE summary for all its records (lot_quality.send_release_summary);
+        # notify_stakeholders would mail the quality roles once per record and append a "Notifications Sent" row.
         doc_before = self.get_doc_before_save()
         if doc_before and hasattr(doc_before, 'quality_status'):
-            if doc_before.quality_status != self.quality_status:
+            if doc_before.quality_status != self.quality_status and not lot_quality.is_release_save(self):
                 self.notify_stakeholders()
 
     def before_save(self):
@@ -274,11 +277,18 @@ class BatchAMB(NestedSet):
 
     def on_update(self):
         """After update hook"""
-        self.sync_with_lote_amb()
+        # TASKS-387 item 4 (decision 324): a release save (a certificate's approval or withdrawal writing this
+        # record) does not sync with Lote AMB. The sync inserts a Lote AMB and sets `lote_amb_reference` here,
+        # after the record was written, so the link is never stored and every such save made a new orphan.
+        # Ordinary saves are unchanged by this task.
+        if not lot_quality.is_release_save(self):
+            self.sync_with_lote_amb()
         # TASKS-384, decision 311: the Work Order is the truth and the lot record follows it. A lot save writes
         # no Work Order status, in any docstatus; the two writers that did (from batch_status and from
         # processing_status) are gone.
-        self.log_batch_history()
+        # TASKS-387 item 4: no `log_batch_history` here, for any save. Frappe 16.17.5 `Document._save` writes the
+        # record (`db_update`) and its child rows (`update_children`) BEFORE `run_post_save_methods` runs
+        # `on_update`, so a row appended here was never written by this save.
 
     def on_submit(self):
         """On submit"""

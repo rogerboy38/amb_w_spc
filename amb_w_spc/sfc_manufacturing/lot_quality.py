@@ -38,7 +38,16 @@ takes it back when the field still points at the withdrawn certificate. Records 
 The two fields stay editable by hand and are NOT guarded: they are a pointer for readers, not the status.
 
 What the refusal covers and what it does not: see `refuse_hand_change`.
+
+A release is quiet record by record and summed up once (TASKS-387 item 4, decisions 324 and 325): the saves of
+`LotTable.save` made for a certificate's approval or withdrawal carry a second private object (`is_release_save`),
+and the lot controller then skips its per-record mail (`notify_stakeholders`, with its "Notifications Sent" history
+row) and its Lote AMB sync. Instead `certificate_approved` / `certificate_withdrawn` send ONE summary per call that
+wrote any record (`send_release_summary`): who, what, every record written. See there for how it waits for the
+commit.
 """
+
+import html
 
 import frappe
 from frappe import _
@@ -83,6 +92,13 @@ HISTORY_ACTION = "Quality Status Changed"  # an option of Batch Processing Histo
 # Server Script's dict) can be it; see `refuse_hand_change` for what remains.
 WRITER_FLAG = "lot_quality_writer"
 _WRITER = object()
+# The same, for the saves of a RELEASE only (an approval or a withdrawal of a certificate, `LotTable.save` with
+# `LotTable.release` set): the lot controller asks `is_release_save` and skips its per-record mail and its Lote AMB
+# sync. Not set by `insert_child`, nor by a hand hold placed or lifted: those saves are not a release.
+RELEASE_FLAG = "lot_quality_release"
+_RELEASE = object()
+# who never receives a summary (narrowest reading of "enabled users only": these two are not people)
+NOT_PEOPLE = ("Administrator", "Guest")
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -153,6 +169,16 @@ def _is_writer_save(doc):
 	flags = getattr(doc, "flags", None)
 	get = getattr(flags, "get", None)
 	return bool(get) and get(WRITER_FLAG) is _WRITER
+
+
+def is_release_save(doc):
+	"""True while `doc` is being saved by this module's writer for a certificate's approval or withdrawal (TASKS-387
+	item 4). The lot controller asks this, instead of reading a flag itself (contract point 3): under it the
+	per-record mail and the Lote AMB sync do not run. Compared by identity, like the guard's pass: nothing that
+	arrives as data can be it."""
+	flags = getattr(doc, "flags", None)
+	get = getattr(flags, "get", None)
+	return _is_writer_save(doc) and bool(get) and get(RELEASE_FLAG) is _RELEASE
 
 
 def _label(fieldname):
@@ -269,6 +295,9 @@ class LotTable:
 	# the record of the certificate being approved or withdrawn, set by `_approve` / `_withdraw`: a refusal on
 	# another record written with it says so (the user is looking at the certificate, not at that record)
 	acting_on = None
+	# (certificate type, certificate) while `_approve` / `_withdraw` write: each save is then a release save
+	# (`is_release_save`)
+	release = None
 
 	def released_by(self, certificate_doctype, certificate):
 		"""-> every record whose status is said by this certificate, wherever it sits in the tree."""
@@ -348,12 +377,15 @@ class LotTable:
 			doc.set(fieldname, value)
 		doc.append(HISTORY_TABLE, _history_row(doc, before, after, reason, note, self.acting_on))
 		doc.flags[WRITER_FLAG] = _WRITER
+		if self.release:
+			doc.flags[RELEASE_FLAG] = _RELEASE
 		try:
 			# the authority for this write is the certificate's approval, checked where the certificate is
 			# approved: the approver need not hold write permission on the lot record
 			doc.save(ignore_permissions=True)
 		finally:
 			doc.flags.pop(WRITER_FLAG, None)
+			doc.flags.pop(RELEASE_FLAG, None)
 		return True
 
 
@@ -534,8 +566,12 @@ def certificate_approved(certificate_doctype, certificate, lot, result):
 	(`coa_reference` / `coa_amb2`), then write down the hierarchy (B4): every record below it becomes "Inherited"
 	from this certificate (no link written), except a record with a certificate of its own and what is below
 	that. Raises (frappe.throw) if result has no mapping or a record cannot be written; everything is written
-	in the caller's transaction, nothing is committed here. -> the number of records written."""
-	return _approve(LotTable(), certificate_doctype, certificate, lot, result)
+	in the caller's transaction, nothing is committed here. When any record was written, ONE summary is queued
+	(`send_release_summary`). -> the number of records written."""
+	journal = []
+	written = _approve(LotTable(), certificate_doctype, certificate, lot, result, journal)
+	send_release_summary(certificate_doctype, certificate, lot, journal, result=result)
+	return written
 
 
 def certificate_withdrawn(certificate_doctype, certificate, lot, standing=None):
@@ -551,9 +587,13 @@ def certificate_withdrawn(certificate_doctype, certificate, lot, standing=None):
 	moved, or the walk down does not reach it), is reset too: each takes its own nearest certified ancestor's
 	status, or Pending. The lot's link field (`coa_reference` / `coa_amb2`), when it still points at this
 	certificate, is set to the standing certificate if that is of the same type, else emptied; this also when
-	the lot's status comes from another certificate.
+	the lot's status comes from another certificate. When any record was written, ONE summary is queued
+	(`send_release_summary`).
 	-> the number of records written."""
-	return _withdraw(LotTable(), certificate_doctype, certificate, lot, standing)
+	journal = []
+	written = _withdraw(LotTable(), certificate_doctype, certificate, lot, standing, journal)
+	send_release_summary(certificate_doctype, certificate, lot, journal, withdrawn=True)
+	return written
 
 
 def lift_hand_hold(lot, reason):
@@ -666,10 +706,27 @@ def _containers_note(containers):
 	return "containers written with this row, without a row of their own: " + "; ".join(parts)
 
 
-def _write_down(table, top, top_values, view, follows, reason):
+def _journal(journal, record, values, how):
+	"""One line of the release summary: a record counted as written, its status from -> to and its source."""
+	if journal is None:
+		return
+	journal.append(
+		{
+			"name": record["name"],
+			"level": _level(record),
+			"from": _norm("quality_status", record.get("quality_status")),
+			"to": _norm("quality_status", values.get("quality_status", record.get("quality_status"))),
+			"source": values.get("status_source", record.get("status_source")) or "",
+			"how": how,
+		}
+	)
+
+
+def _write_down(table, top, top_values, view, follows, reason, journal=None):
 	"""Write `top` and what follows it. Top first, then each sub-lot, each save followed by the column write of
 	its containers. Nothing is caught: the first record that cannot be written stops the caller, whose
-	transaction holds every write made so far. -> the number of records written."""
+	transaction holds every write made so far. -> the number of records written; `journal` gets one line per
+	record counted."""
 	written = 0
 	for entry in _plan(table, top, top_values, view, follows):
 		record, containers = entry["record"], entry["containers"]
@@ -680,14 +737,18 @@ def _write_down(table, top, top_values, view, follows, reason):
 			note=_containers_note(containers),
 			always=bool(containers),
 		)
-		written += 1 if saved else 0
+		if saved:
+			written += 1
+			_journal(journal, record, entry["values"], "saved")
 		groups = {}
 		for container, values in containers:
 			key = tuple((fieldname, values.get(fieldname)) for fieldname in GUARDED_FIELDS)
-			groups.setdefault(key, []).append(container["name"])
-		for key, names in groups.items():
-			table.write_columns(names, dict(key))
-			written += len(names)
+			groups.setdefault(key, []).append(container)
+		for key, records in groups.items():
+			table.write_columns([c["name"] for c in records], dict(key))
+			written += len(records)
+			for container in records:
+				_journal(journal, container, dict(key), "column write")
 	return written
 
 
@@ -717,11 +778,12 @@ def _nearest_certified_ancestor(table, record, excluding=None):
 	return None
 
 
-def _approve(table, certificate_doctype, certificate, lot, result):
+def _approve(table, certificate_doctype, certificate, lot, result, journal=None):
 	status = _mapped(result)
 	# not locked: two approvals in the same tree at once each plan from this read (the concurrent-approval race)
 	record = _target(table, certificate_doctype, certificate, lot)
 	table.acting_on = record["name"]
+	table.release = (certificate_doctype, certificate)
 	if _level(record) not in CERTIFICATE_LEVELS:
 		frappe.throw(
 			_(
@@ -738,6 +800,7 @@ def _approve(table, certificate_doctype, certificate, lot, result):
 		view,
 		_has_no_certificate_of_its_own,
 		f"certificate {certificate_doctype} {certificate} approved with result {result}",
+		journal,
 	)
 
 
@@ -754,9 +817,10 @@ def _without(table, record, this, certificate_doctype, certificate):
 	return view, INHERITED, reason
 
 
-def _withdraw(table, certificate_doctype, certificate, lot, standing=None):
+def _withdraw(table, certificate_doctype, certificate, lot, standing=None, journal=None):
 	record = _target(table, certificate_doctype, certificate, lot)
 	table.acting_on = record["name"]
+	table.release = (certificate_doctype, certificate)
 	this = (certificate_doctype, certificate)
 
 	def wrote(child, parent=None):
@@ -778,7 +842,7 @@ def _withdraw(table, certificate_doctype, certificate, lot, standing=None):
 		else:
 			view, source, reason = _without(table, record, this, certificate_doctype, certificate)
 		written += _write_down(
-			table, record, dict(_values(record, view, source), **link), view, wrote, reason
+			table, record, dict(_values(record, view, source), **link), view, wrote, reason, journal
 		)
 	elif link:
 		# this certificate did not write the record's status (nothing of that to take back), but the record's
@@ -788,11 +852,13 @@ def _withdraw(table, certificate_doctype, certificate, lot, standing=None):
 			link,
 			reason=f"certificate {certificate_doctype} {certificate} withdrawn; the status comes from another certificate",
 		)
-		written += 1 if saved else 0
-	return written + _reset_elsewhere(table, record, this, certificate_doctype, certificate, wrote)
+		if saved:
+			written += 1
+			_journal(journal, record, link, "saved (certificate link only)")
+	return written + _reset_elsewhere(table, record, this, certificate_doctype, certificate, wrote, journal)
 
 
-def _reset_elsewhere(table, lot, this, certificate_doctype, certificate, wrote):
+def _reset_elsewhere(table, lot, this, certificate_doctype, certificate, wrote, journal=None):
 	"""After the walk down from the certificate's lot: reset every record that STILL names the certificate in
 	`released_by*` (a query on those two fields, not on the tree). These are records the walk does not reach: a
 	record moved under another parent, a record below one of another level, a record below a sub-lot that got a
@@ -815,6 +881,7 @@ def _reset_elsewhere(table, lot, this, certificate_doctype, certificate, wrote):
 			view,
 			wrote,
 			"{} (found by its certificate, outside the walk down from {})".format(reason, lot["name"]),
+			journal,
 		)
 	return written
 
@@ -877,3 +944,121 @@ def _lift(table, lot, reason):
 		{"quality_status": status, "status_source": source},
 		reason=f"hand hold lifted: {reason}",
 	)
+
+
+# ----------------------------------------------------------------------------------------------------------------
+# the release summary (TASKS-387 item 4, decision 325): one message per certificate event that wrote any record
+# ----------------------------------------------------------------------------------------------------------------
+def release_summary_recipients(certificate_doctype, certificate, lot, certificate_row=None):
+	"""-> [e-mail] of the summary, each once: the certificate's `filled_by`, the session user (who approved, or who
+	rejected or cancelled), and the owner of the Work Order named by the lot record named in the call
+	(`work_order_ref`). Enabled users with an e-mail address only; "Administrator" and "Guest" never. No role is
+	read: no role-wide mail. Read errors are not caught (a site without `filled_by` fails here, visibly)."""
+	row = certificate_row
+	if row is None:
+		row = (
+			frappe.db.get_value(certificate_doctype, certificate, ["filled_by", "docstatus"], as_dict=True)
+			or {}
+		)
+	work_order = frappe.db.get_value(DOCTYPE, lot, "work_order_ref") if lot else None
+	work_order_owner = frappe.db.get_value("Work Order", work_order, "owner") if work_order else None
+	users = []
+	for user in (row.get("filled_by"), frappe.session.user, work_order_owner):
+		if user and user not in NOT_PEOPLE and user not in users:
+			users.append(user)
+	emails = []
+	for user in users:
+		person = frappe.db.get_value("User", user, ["enabled", "email"], as_dict=True)
+		if not person or not int(person.get("enabled") or 0):
+			continue  # a disabled or deleted user is skipped
+		email = person.get("email")
+		if email and email not in emails:
+			emails.append(email)
+	return emails
+
+
+def release_summary_text(
+	certificate_doctype, certificate, lot, journal, result=None, withdrawn=False, cancelled=False
+):
+	"""-> (subject, HTML body) of the summary: the certificate, its result (for a withdrawal: that it was withdrawn,
+	how, and the status the lot record took), who, and every record written with its status from -> to, its source
+	and how it was written (a full save with a history row, or a container's column write)."""
+	e = html.escape
+	if withdrawn:
+		how = "cancelled" if cancelled else "rejected back from Approved"
+		mine = [j for j in journal if j["name"] == lot]
+		if mine:
+			taken = "lot record {} now {} (source {})".format(
+				e(lot), e(mine[0]["to"]), e(mine[0]["source"] or "none")
+			)
+		else:
+			taken = f"lot record {e(lot)} was not written by this withdrawal"
+		head = f"{e(certificate_doctype)} {e(certificate)} was withdrawn ({how}); {taken}."
+		subject = f"{certificate_doctype} {certificate} withdrawn: {len(journal)} lot record(s) written"
+	else:
+		head = f"{e(certificate_doctype)} {e(certificate)} was approved with result {e(result or '')}."
+		subject = (
+			f"{certificate_doctype} {certificate} approved ({result}): {len(journal)} lot record(s) written"
+		)
+	lines = "".join(
+		"<li>{} (level {}): {} &rarr; {}, source {}, {}</li>".format(
+			e(j["name"]), e(j["level"]), e(j["from"]), e(j["to"]), e(j["source"] or "none"), e(j["how"])
+		)
+		for j in journal
+	)
+	body = (
+		f"<p>{head}</p><p>By {e(frappe.session.user or '')}. {len(journal)} lot record(s) written:</p>"
+		f"<ul>{lines}</ul>"
+	)
+	return subject, body
+
+
+def send_release_summary(certificate_doctype, certificate, lot, journal, result=None, withdrawn=False):
+	"""ONE message for one approval or withdrawal that wrote any record (`journal` non-empty); nothing otherwise.
+
+	Sent after commit only, and dropped on rollback, because of how Frappe 16.17.5 queues mail:
+	`frappe.sendmail` (`frappe/email/__init__.py`) builds an Email Queue document and INSERTS it in the current
+	transaction (`QueueBuilder.process(send_now=False)` -> `EmailQueue.new` -> `insert`; Email Queue is InnoDB).
+	With the default `delayed=True` and no `now`, nothing else happens: the row is sent later by the scheduler's
+	queue flush, which sees it only once the transaction has committed; a rollback removes the row with the
+	release (also a rollback to a savepoint). `now=True` would add `q.send` to `frappe.db.after_commit` (reset on
+	a full rollback, but not on a savepoint rollback), so it is NOT used. No commit, no try/except here.
+
+	A summary that cannot be queued fails the release, visibly: an exception of `sendmail` is not caught, and a
+	`sendmail` that queues nothing for a non-empty list of recipients (Frappe drops an invalid address, logging it,
+	and every recipient who has unsubscribed) is refused with a message; the caller's transaction then rolls the
+	whole release back. No recipient at all (every one disabled, or without an address): nothing is sent, the
+	release stands."""
+	if not journal:
+		return None
+	row = (
+		frappe.db.get_value(certificate_doctype, certificate, ["filled_by", "docstatus"], as_dict=True) or {}
+	)
+	recipients = release_summary_recipients(certificate_doctype, certificate, lot, row)
+	if not recipients:
+		return None
+	subject, body = release_summary_text(
+		certificate_doctype,
+		certificate,
+		lot,
+		journal,
+		result=result,
+		withdrawn=withdrawn,
+		cancelled=withdrawn and int(row.get("docstatus") or 0) == 2,
+	)
+	queued = frappe.sendmail(
+		recipients=recipients,
+		subject=subject,
+		message=body,
+		reference_doctype=certificate_doctype,
+		reference_name=certificate,
+	)
+	if not queued:
+		frappe.throw(
+			_(
+				"The release summary of {0} {1} could not be queued (Frappe queued no mail for its {2} recipient(s): an invalid address, or every recipient has unsubscribed). Nothing was written; correct the user's e-mail address and repeat the action."
+			).format(certificate_doctype, certificate, len(recipients)),
+			frappe.ValidationError,
+			title=_("Quality status"),
+		)
+	return queued

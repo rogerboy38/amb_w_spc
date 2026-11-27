@@ -557,7 +557,12 @@ class TestTheRealTable(unittest.TestCase):
 		for _kind, _filters, fields, kwargs in queries:
 			self.assertEqual(fields, list(lq.RECORD_FIELDS))
 			self.assertEqual(kwargs.get("limit_page_length"), 0)
-		self.assertEqual(f.db.get_value.call_count, 1)  # the certificate's own record; no read per record
+		record_reads = [
+			c
+			for c in f.db.get_value.call_args_list
+			if c.args[0] == "Batch AMB" and c.args[2] != "work_order_ref"
+		]
+		self.assertEqual(len(record_reads), 1)  # the certificate's own record; no read per record
 
 	def test_the_containers_are_written_by_one_column_write_per_sub_lot_after_its_save(self):
 		db = self.db()
