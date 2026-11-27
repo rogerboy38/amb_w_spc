@@ -386,6 +386,10 @@ COPY_CLEARED_LINKS = (*LINK_FIELDS, "coa_amb")
 # A copy starts with none of their rows; the setup table (`batch_parameters`: what to measure, with its limits) is
 # kept. `processing_history` (346) is emptied with them. `custom_historic_sales_lots` is a site Custom Field (patch
 # v15_8_0): emptied here when present; the form's Duplicate copies it (its "no copy" is not in the DocType JSON).
+# TASKS-398 review, finding 1: on a site where `output_products` / `batch_output_products` ALSO exist as site Custom
+# Fields (no copy off), Frappe's meta keeps the Custom Field over the DocType JSON, so the form's Duplicate copies
+# them there despite the JSON's "no copy"; only a Custom Field change fixes that (for a ruling). The server copy
+# empties them on every site.
 COPY_EMPTIED_RECORD_TABLES = (
 	"output_products",
 	"batch_output_products",
