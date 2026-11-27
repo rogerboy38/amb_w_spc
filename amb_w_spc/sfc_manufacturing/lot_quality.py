@@ -1206,8 +1206,17 @@ def send_release_summary(
 		reason = "no outgoing email account (OutgoingEmailError)"
 		return _not_sent(table, certificate_doctype, certificate, lot, journal, reason)
 	if not queued:
-		reason = f"no mail queued for its {len(valid)} recipient(s): every recipient has unsubscribed"
+		# TASKS-388 review, finding 1: Frappe queues nothing both when every recipient has unsubscribed and when the
+		# queue refused an address (a recipient's or the sender's); the text says both, not a cause it cannot know.
+		reason = (
+			f"no mail queued for its {len(valid)} recipient(s) "
+			"(every recipient unsubscribed, or an address the mail queue refused)"
+		)
 		return _not_sent(table, certificate_doctype, certificate, lot, journal, reason)
+	if len(valid) < len(recipients):
+		# TASKS-388 review, finding 3: a recipient left out for an invalid address is said on the release's row.
+		dropped = len(recipients) - len(valid)
+		_note_on_release_row(table, lot, journal, f"{NOT_SENT} to {dropped} recipient(s): no valid address")
 	return queued
 
 

@@ -356,7 +356,9 @@ class TestMailNeverFailsARelease(SummaryCase):
 		t, f = Table(*tree()), every_recipient_unsubscribed(summary_frappe())
 		written = self.approve(t, f)
 		self.assertEqual(f.sendmail.call_count, 1)
-		self.assert_stands_with_note(t, f, written, "every recipient has unsubscribed")
+		self.assert_stands_with_note(
+			t, f, written, "every recipient unsubscribed, or an address the mail queue refused"
+		)
 		self.assertIn("3 recipient(s)", self.notes(t)["L"][0])
 
 	def test_a_normal_queue_writes_no_such_text(self):
@@ -372,7 +374,8 @@ class TestMailNeverFailsARelease(SummaryCase):
 		f.utils.validate_email_address.side_effect = lambda e, throw=False: "" if e in invalid else e
 		self.approve(t, f)
 		self.assertEqual(self.mails(f)[0]["recipients"], [EMAIL[FILLER], EMAIL[USER]])
-		self.assertEqual(self.notes(t), {})
+		# review finding 3: the recipient left out is said on the release's row
+		self.assertIn("summary not sent to 1 recipient(s): no valid address", self.notes(t)["L"][0])
 		# every address invalid: nothing sent, the row says so
 		t, f = Table(*tree()), summary_frappe()
 		f.utils.validate_email_address.side_effect = lambda e, throw=False: ""
