@@ -19,12 +19,17 @@ Field rows; migrate clears the caches after the sync in any case."""
 
 import frappe
 
+from amb_w_spc.sfc_manufacturing.lot_quality import COPY_CLEARED_HEADER_FIGURES
+
 DOCTYPE = "Batch AMB"
+# decision 355: the three record tables that are site Custom Fields on the sandbox (353); decision 356: every header
+# figure a copy clears, since any of them may be a site Custom Field on a site not read (TASKS-399 review, finding
+# 1; on the sandbox only `custom_produced_qty` is). An absent one prints "absent" and costs nothing.
 FIELDS = (
-	"output_products",  # decision 355: a record table (353)
-	"batch_output_products",  # decision 355: a record table (353)
-	"custom_historic_sales_lots",  # decision 355: a record table (353)
-	"custom_produced_qty",  # decision 356: a header figure of the source (a site Custom Field on the sandbox)
+	"output_products",
+	"batch_output_products",
+	"custom_historic_sales_lots",
+	*COPY_CLEARED_HEADER_FIGURES,
 )
 
 

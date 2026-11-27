@@ -61,14 +61,24 @@ class TestThePatch(unittest.TestCase):
 		self.assertEqual(out["batch_output_products"], "already 1")
 		self.assertEqual(out["custom_historic_sales_lots"], "absent")
 		self.assertEqual(out["custom_produced_qty"], "absent")
+		self.assertEqual(out["total_net_weight"], "absent")
 		self.assertEqual(t.writes, [("Custom Field", "Batch AMB-output_products", "no_copy", 1, False)])
 		self.assertEqual(t.cleared, ["Batch AMB"])
 
-	def test_all_four_names_are_covered(self):
+	def test_the_three_record_tables_and_every_cleared_header_figure_are_covered(self):
+		from amb_w_spc.sfc_manufacturing import lot_quality as lq
+
 		self.assertEqual(
 			set(patch.FIELDS),
-			{"output_products", "batch_output_products", "custom_historic_sales_lots", "custom_produced_qty"},
+			{
+				"output_products",
+				"batch_output_products",
+				"custom_historic_sales_lots",
+				*lq.COPY_CLEARED_HEADER_FIGURES,
+			},
 		)
+		self.assertEqual(len(patch.FIELDS), 16)
+		self.assertEqual(len(set(patch.FIELDS)), len(patch.FIELDS))
 
 	def test_a_second_run_changes_nothing(self):
 		t = CustomFieldTable(*(cf(n) for n in patch.FIELDS))
@@ -78,7 +88,7 @@ class TestThePatch(unittest.TestCase):
 		self.assertEqual((t.writes, t.cleared, t.rows), ([], [], before))
 
 	def test_no_other_property_and_no_other_row_is_touched(self):
-		others = (cf("output_products", dt="Batch AMB2"), cf("barrel_count"), cf("custom_historic_lot_real"))
+		others = (cf("output_products", dt="Batch AMB2"), cf("planned_qty"), cf("custom_historic_lot_real"))
 		t = CustomFieldTable(cf("output_products", reqd=0, hidden=0, read_only=0), *others)
 		before = copy.deepcopy(t.rows)
 		run(t)

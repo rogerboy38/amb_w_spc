@@ -489,7 +489,24 @@ class TestADuplicateCopiesSetupTablesOnly(unittest.TestCase):
 
 	def test_the_json_marks_every_cleared_header_figure_no_copy(self):
 		no_copy = {f["fieldname"]: f.get("no_copy") for f in self.meta()["fields"]}
-		self.assertEqual(len(lq.COPY_CLEARED_HEADER_FIGURES), 13)
+		self.assertEqual(  # TASKS-399 review, finding 5: the names pinned, not only their number
+			set(lq.COPY_CLEARED_HEADER_FIGURES),
+			{
+				"total_gross_weight",
+				"total_tara_weight",
+				"total_net_weight",
+				"barrel_count",
+				"total_container_qty",
+				"total_containers",
+				"custom_serial_numbers",
+				"processed_quantity",
+				"produced_qty",
+				"custom_produced_qty",
+				"yield_percentage",
+				"total_batch_cost",
+				"cost_per_unit",
+			},
+		)
 		for name in lq.COPY_CLEARED_HEADER_FIGURES:
 			self.assertEqual(no_copy[name], 1, name)
 		for name in ("planned_qty", "labor_cost", "overhead_cost", "material_cost", "total_production_cost"):

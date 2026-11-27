@@ -293,8 +293,11 @@ class TestTheRealTable(unittest.TestCase):
 			if line.strip() and not line.strip().startswith("#")
 		]
 		self.assertEqual(lines.count(PATCH), 1)
-		# TASKS-399: patch v15_10_0 runs after it; this one still runs after every older patch
-		self.assertEqual(lines[-2:], [PATCH, "amb_w_spc.patches.v15_10_0.no_copy_on_batch_amb_custom_fields"])
+		# TASKS-399: newer patches may follow it; every patch before it is older (v15_9_0 and below)
+		older = lines[: lines.index(PATCH)]
+		self.assertTrue(older)
+		minor = lambda line: int(line.split(".")[2].split("_")[1])  # noqa: E731  amb_w_spc.patches.v15_<minor>_<n>
+		self.assertTrue(all(minor(line) <= 9 for line in older if line.startswith("amb_w_spc.patches.v15_")))
 		self.assertFalse(
 			[line for line in lines if line.startswith("[")]
 		)  # still the old format: no sections
